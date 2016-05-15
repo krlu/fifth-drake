@@ -16,8 +16,25 @@
         <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
     </head>
     <body>
-        @* And here's where we render the `Html` object containing
-         * the page content. *@
-        @content
+        <div class="container" id="form">
+            <form method="get" action="/form">
+                <fieldset id="settings">
+                    <legend>Analytics Settings:</legend>
+                    YouTube Link: <textarea name="link" placeholder="https://www.youtube.com/watch?v=NVNLAdVL44w" rows="1" cols="30" style="resize:none;"></textarea><br>
+                    Ban Phase: <textarea name="ban" placeholder="5:56" rows="1" cols="10" style="resize:none;"></textarea><br>
+                    PreGameScreen: <textarea name="pregame" placeholder="10:55" rows="1" cols="10" style="resize:none;"></textarea><br>
+                    Start Time: <textarea name="start" placeholder="11:13" rows="1" cols="10" style="resize:none;"></textarea><br>
+                    End Time: <textarea name="end" placeholder="13:13" rows="1" cols="10" style="resize:none;"></textarea><br>
+                    <button id="submit" type="submit">Analyze!</button>
+                </fieldset>
+            </form>
+        </div>
+        <div class="container" id="json">
+            <code>
+                <pre id="jsontext">
+    @content
+            </pre>
+            </code>
+        </div>
     </body>
 </html>
