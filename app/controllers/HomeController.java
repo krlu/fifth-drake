@@ -1,11 +1,12 @@
 package controllers;
 
 import com.google.gson.Gson;
+//import dataPipeline.FramePipeline;
 import dataPipeline.FramePipeline;
+import dataPipeline.models.trackingdata.ChampionTrackingData;
 import models.FormSubmission;
 
-
-import ocr.OCR;
+//import ocr.OCR;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core;
 import play.data.Form;
@@ -13,14 +14,15 @@ import play.data.FormFactory;
 import org.bytedeco.javacv.FrameGrabber;
 import play.mvc.*;
 import org.bytedeco.javacpp.opencv_imgcodecs;
+import tracking.OpenCVTemplateMatching;
 import views.html.*;
+
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.util.*;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import javax.inject.Inject;
-
-
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -52,24 +54,45 @@ public class HomeController extends Controller {
 
         Form<FormSubmission> userForm = ff.form(FormSubmission.class);
         FormSubmission submitted = userForm.bindFromRequest().get();
- //       OCR api = new OCR(Language.ENGLISH);
-        OCR api = new OCR(OCR.Language.ENGLISH);
+
+        String redTeam[] = {"Janna", "Azir", "Elise", "Azir", "Gragas"};
+        String blueTeam[] = {"Janna", "Azir", "Janna", "Azir", "Janna"};
+
+        OpenCVTemplateMatching tempMatch = new OpenCVTemplateMatching(redTeam, blueTeam);
+
+        BufferedImage[] imageArray = new BufferedImage[10];
+        List<Mat> matList = new ArrayList<Mat>();
+        ChampionTrackingData[] champObjectArray;
+
+        for (int p = 0; p < 10; p++)
+        {
+            BufferedImage full = tempMatch.loadBufferedImage("Data/res/TestFrames/" + "Frame" + p + ".png");
+            imageArray[p] = tempMatch.cropImage(1620, 780, 300, 300, full);
+            Optional <Mat> opt = tempMatch.imageToMat("Data/res/TestFrames/" + "Frame" + p + ".png");
+            Mat screenMat = opt.orElseThrow(() -> new MissingResourceException("tst", "tst", "tst"));
+            matList.add(screenMat);
+        }
+
+        champObjectArray = tempMatch.controlCenter(matList);
+// //       OCR api = new OCR(Language.ENGLISH);
+// //       OCR api = new OCR(OCR.Language.ENGLISH);
+//
+//        Mat[] matArray = list.toArray(new Mat[list.size()]);
+//        api.performOCR(matArray);
+//
+//        String csv = api.getResultAsCSV();        int[] start = parseTime(submitted.getStart());
         int[] start = parseTime(submitted.getStart());
         int[] end = parseTime(submitted.getEnd());
         int[] ban = parseTime(submitted.getBan());
         int[] load = parseTime(submitted.getPregame());
 
-        FramePipeline fp = new FramePipeline("https://www.youtube.com/watch?v=NVNLAdVL44w", start, end, ban, load, "public/vids");
-
+        FramePipeline fp = new FramePipeline("https://www.youtube.com/watch?v=NVNLAdVL44w", start, end, ban, load, "public/vids/");
         List<Mat> list = fp.getFrames();
-        Mat[] matArray = list.toArray(new Mat[list.size()]);
-        api.performOCR(matArray);
-
-        String csv = api.getResultAsCSV();
-        api.close();
-
-        //this will return the swag that is the json file
-        return ok(index.render(csv));
+//        String s = String.valueOf(list.size());
+//        api.close();
+//
+//        //this will return the swag that is the json file
+        return ok(index.render(String.valueOf(list.size())));
     }
 
 
