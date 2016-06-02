@@ -23,7 +23,7 @@ libraryDependencies += "com.squareup.okio" % "okio-parent" % "1.7.0"
 libraryDependencies += "com.squareup.okhttp3" % "parent" % "3.2.0"
 libraryDependencies += "com.google.guava" % "guava" % "19.0"
 
-javaOptions in run += "-Docr.trainedFilePath=" + Option(System.getProperty("ocr.trainedFilePath")).getOrElse("C:\\Users\\Owner\\Desktop\\GitHub\\esportscv\\src\\main\\resources")
+javaOptions in run += "-Docr.tessdataPath=" + Option(System.getProperty("ocr.tessdataPath")).getOrElse("C:\\Users\\Kenneth\\Documents\\GitHub\\esportsAnalyticsWeb\\app\\")
 
 lazy val myProject = (project in file("."))
   .enablePlugins(PlayJava, PlayEbean)

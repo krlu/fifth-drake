@@ -3,10 +3,16 @@ package controllers;
 import com.google.gson.Gson;
 //import dataPipeline.FramePipeline;
 import dataPipeline.FramePipeline;
+import dataPipeline.dbhandling.FrameData;
+import dataPipeline.dbhandling.PostgresFrameDataHandler;
+import dataPipeline.dbhandling.PostgresRiotDataHandler;
+import dataPipeline.dbhandling.RiotData;
+import dataPipeline.models.RiotID;
 import dataPipeline.models.trackingdata.ChampionTrackingData;
 import models.FormSubmission;
 
 //import ocr.OCR;
+import ocr.OCR;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core;
 import play.data.Form;
@@ -14,6 +20,7 @@ import play.data.FormFactory;
 import org.bytedeco.javacv.FrameGrabber;
 import play.mvc.*;
 import org.bytedeco.javacpp.opencv_imgcodecs;
+import riot.RiotPipeline;
 import tracking.OpenCVTemplateMatching;
 import views.html.*;
 
@@ -54,49 +61,34 @@ public class HomeController extends Controller {
 
         Form<FormSubmission> userForm = ff.form(FormSubmission.class);
         FormSubmission submitted = userForm.bindFromRequest().get();
-
-        String redTeam[] = {"Janna", "Azir", "Elise", "Azir", "Gragas"};
-        String blueTeam[] = {"Janna", "Azir", "Janna", "Azir", "Janna"};
-
-        OpenCVTemplateMatching tempMatch = new OpenCVTemplateMatching(redTeam, blueTeam);
-
-        BufferedImage[] imageArray = new BufferedImage[10];
-        List<Mat> matList = new ArrayList<Mat>();
-        ChampionTrackingData[] champObjectArray;
-
-        for (int p = 0; p < 10; p++)
-        {
-            BufferedImage full = tempMatch.loadBufferedImage("Data/res/TestFrames/" + "Frame" + p + ".png");
-            imageArray[p] = tempMatch.cropImage(1620, 780, 300, 300, full);
-            Optional <Mat> opt = tempMatch.imageToMat("Data/res/TestFrames/" + "Frame" + p + ".png");
-            Mat screenMat = opt.orElseThrow(() -> new MissingResourceException("tst", "tst", "tst"));
-            matList.add(screenMat);
-        }
-
-        champObjectArray = tempMatch.controlCenter(matList);
-// //       OCR api = new OCR(Language.ENGLISH);
-// //       OCR api = new OCR(OCR.Language.ENGLISH);
-//
-//        Mat[] matArray = list.toArray(new Mat[list.size()]);
-//        api.performOCR(matArray);
-//
-//        String csv = api.getResultAsCSV();        int[] start = parseTime(submitted.getStart());
+        String link = submitted.getLink();
         int[] start = parseTime(submitted.getStart());
         int[] end = parseTime(submitted.getEnd());
         int[] ban = parseTime(submitted.getBan());
         int[] load = parseTime(submitted.getPregame());
 
-        FramePipeline fp = new FramePipeline("https://www.youtube.com/watch?v=NVNLAdVL44w", start, end, ban, load, "public/vids/");
+        FramePipeline fp = new FramePipeline(link, start, end, ban, load, "C:/Users/Kenneth/" +
+                "Documents/GitHub/esportsAnalyticsWeb/public/vids/");
+        System.out.println("getting frames....");
         List<Mat> list = fp.getFrames();
-//        String s = String.valueOf(list.size());
-//        api.close();
-//
-//        //this will return the swag that is the json file
+
+        String redTeam[] = {"Ekko", "RekSai", "Corki", "Caitlyn", "Morgana"};
+        String blueTeam[] = {"Poppy", "Graves", "Lulu", "Kalista", "Alistar"};
+
+        OpenCVTemplateMatching tempMatch = new OpenCVTemplateMatching(redTeam, blueTeam);
+        FrameData psql = new PostgresFrameDataHandler("localhost", 5432, "league_analytics", "postgres", "123");
+
+        System.out.println("ocr.tessdataPath: " + System.getProperty("ocr.tessdataPath"));
+        OCR ocr = new OCR(OCR.Language.ENGLISH);
+        ocr.performOCR(list.toArray(new Mat[0]));
+        ocr.getResults(psql);
+
+        ChampionTrackingData[] champObjectArray = tempMatch.controlCenter(list, fp.parseYouTubeID(link));
+        for(ChampionTrackingData ctd : champObjectArray)
+            psql.addTrackingData(ctd);
+
         return ok(index.render(String.valueOf(list.size())));
     }
-
-
-
 
     public int[] parseTime(String str) {
         int[] ret = new int[3];
@@ -123,17 +115,4 @@ public class HomeController extends Controller {
             redMap.put(champ, m);
         }
     }
-
-
-//    public Result test() throws FileNotFoundException, FrameGrabber.Exception {
-//        System.out.println("this tests works!");
-//
-//        Form<FormSubmission> userForm = formFactory.form(FormSubmission.class);
-//        FormSubmission fs = userForm.bindFromRequest().get();
-//        System.out.println(fs.getLink());
-//        System.out.println(fs.getStart());
-//        return redirect(routes.HomeController.index());
-//    }
-
-
 }
