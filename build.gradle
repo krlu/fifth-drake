@@ -1,0 +1,16 @@
+plugins {
+	id "java"
+	id "idea"
+	id "scala"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+}
