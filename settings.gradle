@@ -1,0 +1,2 @@
+include ':eSportsCV'
+project(':eSportsCV').projectDir = new File(settingsDir, '../eSportsCV')
