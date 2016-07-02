@@ -1,0 +1,26 @@
+import org.gradle.internal.os.OperatingSystem
+
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			url "http://dl.bintray.com/palantir/releases"
+		}
+	}
+	dependencies {
+		classpath 'com.palantir:gradle-gitsemver:0.6.0'
+	}
+}
+plugins{
+    id "java"
+    id "org.flywaydb.flyway" version "4.0.3"
+}
+repositories {
+    mavenCentral()
+}
+flyway {
+}
+dependencies {
+    compile 'org.postgresql:postgresql:9.4.1208.jre7'
+}
+
