@@ -11,16 +11,34 @@ buildscript {
 		classpath 'com.palantir:gradle-gitsemver:0.6.0'
 	}
 }
+
 plugins{
     id "java"
+	id "scala"
     id "org.flywaydb.flyway" version "4.0.3"
 }
+
+configurations {
+    provided {
+        dependencies.all { dep ->
+            configurations.default.exclude group: dep.group, module: dep.name
+        }
+    }
+    compile.extendsFrom provided
+}
+
 repositories {
     mavenCentral()
 }
-flyway {
-}
+
 dependencies {
+   
     compile 'org.postgresql:postgresql:9.4.1208.jre7'
+    compile 'org.scalikejdbc:scalikejdbc_2.11:2.4.2'
+    compile 'org.scalikejdbc:scalikejdbc-config_2.11:2.4.2'
+    compile 'org.scalikejdbc:scalikejdbc-interpolation_2.11:2.4.2'
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'ch.qos.logback:logback-classic:1.1.7'
+    provided 'org.immutables:value:2.2.2'
 }
 
