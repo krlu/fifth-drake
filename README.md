@@ -1,6 +1,9 @@
 # Databases
 Handles all database builds, migrations, table and schema generation 
-Currently supports: PostgreSQL
+
+Currently supports: PostgreSQL, MongoDB
+
+Requirements: PostgreSQL 9.4+, MongoDB 3.2.7 
 ## How to build postgres:
 If constructing new database from scratch, first create the database league_analytics in postgres: 
 > ./gradlew flywaymigrate
