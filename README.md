@@ -1,5 +1,7 @@
-# Databases
+# Climb-Core
 Handles all database builds, migrations, table and schema generation 
+
+Provides Data handling and abstractions in both Java and Python 
 
 Currently supports: PostgreSQL, MongoDB
 
