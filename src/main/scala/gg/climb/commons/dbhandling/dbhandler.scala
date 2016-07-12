@@ -11,14 +11,13 @@ class dbhandler(host: String, port: Int, db : String,  user : String, password: 
     sql"select * from league.game_identifier".map(s => s).list.apply()
   }
   for(rs <- lcs_game){
-    println(rs.string(1))
+    println(rs)
   }
 }
 
 object dbhandler{
   def main(args: Array[String]): Unit ={
     val dbh = new dbhandler("localhost", 5432, "league_analytics", "kenneth", "asdfasdf")
-
   }
 
 
