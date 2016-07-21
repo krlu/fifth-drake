@@ -1,0 +1,28 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			url "http://dl.bintray.com/palantir/releases"
+		}
+	}
+	dependencies {
+		classpath 'com.palantir:gradle-gitsemver:0.6.0'
+	}
+}
+
+plugins {
+	id 'scala'
+	id 'idea'
+}
+
+apply plugin: "gitsemver"
+
+version semverVersion()
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.scala-lang:scala-library:2.11.8'
+}
