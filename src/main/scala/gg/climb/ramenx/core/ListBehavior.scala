@@ -15,8 +15,11 @@ class ListBehavior[Time, +A](f: Time => A)(implicit ordering: Ordering[Time])
       }
     getVal(this)(t)
   }
+
+  override def map[B](f: (A) => B) = new ListBehavior[Time, B](f.compose[Time](current))
 }
 
 object ListBehavior {
-  def pure[Time, A](x: A): Behavior[Time, A] = new ListBehavior[Time, A](_ => x)
+  def always[Time, A](x: A)(implicit ordering: Ordering[Time]): Behavior[Time, A] =
+    new ListBehavior[Time, A](_ => x)(ordering)
 }

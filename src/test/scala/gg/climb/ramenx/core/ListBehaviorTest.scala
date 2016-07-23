@@ -11,9 +11,15 @@ class ListBehaviorTest extends UnitTestSpec {
   }
 
   it should "be creatable with a constant value" in {
-    val behavior: Behavior[Int, Int] = ListBehavior.pure[Int, Int](0)
+    val behavior: Behavior[Int, Int] = ListBehavior.always[Int, Int](0)
     assert(behavior.get(0).self == 0)
     assert(behavior.get(1).self == 0)
     assert(behavior.get(10).self == 0)
+  }
+
+  it should "be mappable" in {
+    val behavior: Behavior[Int, String] = new ListBehavior[Int, Int](identity).map(_.toString)
+    assert(behavior.get(0) == "0")
+    assert(behavior.get(1) == "1")
   }
 }
