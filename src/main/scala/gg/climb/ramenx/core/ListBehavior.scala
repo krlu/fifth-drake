@@ -3,17 +3,19 @@ package gg.climb.ramenx.core
 /**
   * Created by prasanth on 7/20/16.
   */
-class ListBehavior[time <: Ordered[time], +A](f: time => A) extends Behavior[time, A] {
+class ListBehavior[Time, +A](f: Time => A)(implicit ordering: Ordering[Time])
+  extends Behavior[Time, A] {
+  import ordering._
 
-  val current: time => A = f
-  val next: Option[(time, ListBehavior[time, A])] = None
+  val current: Time => A = f
+  val next: Option[(Time, ListBehavior[Time, A])] = None
 
-  override def get(t: time): A = {
-    def getVal(listBehavior: ListBehavior[time, A]) : time => A = listBehavior.next match {
-      case None => listBehavior.current
-      case Some((t2, behavior)) if t < t2 => listBehavior.current
-      case Some((_, behavior)) => getVal(behavior)
-    }
+  override def get(t: Time): A = {
+    def getVal(listBehavior: ListBehavior[Time, A]) : Time => A = listBehavior.next match {
+        case None => listBehavior.current
+        case Some((t2, behavior)) if t < t2 => listBehavior.current
+        case Some((_, behavior)) => getVal(behavior)
+      }
     getVal(this)(t)
   }
 }
