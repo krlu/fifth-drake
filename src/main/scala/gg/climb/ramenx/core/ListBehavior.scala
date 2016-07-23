@@ -1,8 +1,5 @@
 package gg.climb.ramenx.core
 
-/**
-  * Created by prasanth on 7/20/16.
-  */
 class ListBehavior[Time, +A](f: Time => A)(implicit ordering: Ordering[Time])
   extends Behavior[Time, A] {
   import ordering._
@@ -18,4 +15,8 @@ class ListBehavior[Time, +A](f: Time => A)(implicit ordering: Ordering[Time])
       }
     getVal(this)(t)
   }
+}
+
+object ListBehavior {
+  def pure[Time, A](x: A): Behavior[Time, A] = new ListBehavior[Time, A](_ => x)
 }
