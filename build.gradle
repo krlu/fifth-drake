@@ -14,9 +14,13 @@ buildscript {
 
 plugins{
     id "java"
-	id "scala"
+    id "scala"
+    id "idea"
     id "org.flywaydb.flyway" version "4.0.3"
 }
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 configurations {
     provided {
@@ -40,7 +44,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'org.mongodb.scala:mongo-scala-driver_2.11:1.1.1'
+    compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.3.0'
 
     provided 'org.immutables:value:2.2.2'
 }
-
