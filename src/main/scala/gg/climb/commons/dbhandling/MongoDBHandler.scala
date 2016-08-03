@@ -10,6 +10,8 @@ import gg.climb.lolobjects.game.{ImmutableLocationData, PlayerState, PlayerState
 import gg.climb.lolobjects.{ImmutableInternalId, ImmutableRiotId, InternalId}
 import org.bson.Document
 
+import scala.collection.mutable
+
 class MongoDBHandler(){
   val mongoClient: MongoClient = new MongoClient("localhost" , 27017);
   val names  = mongoClient.listDatabaseNames()
@@ -20,14 +22,15 @@ class MongoDBHandler(){
 	//////////////////////////////////////////// Getter Time Series Data//////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	def getPlayerStatesForGame(gameKey : Int): List[PlayerState] = {
+	def getPlayerStatesForGame(gameKey : Int): List[(Integer,List[PlayerState])] = {
 		val raw_data = getGameData(gameKey)
-		var playerStates = List.empty[PlayerState]
+		val entireGame = new mutable.MutableList[(Integer,List[PlayerState])]
 		while(raw_data.hasNext) {
 			val raw_stats = raw_data.next()
 			val time = raw_stats.getInteger("t")
 			val players = raw_stats.get("playerStats").asInstanceOf[Document]
 			val keyIt: util.Iterator[String] = players.keySet().iterator()
+			var playerStates = List.empty[PlayerState]
 			while(keyIt.hasNext()){
 				val builder = new PlayerStateBuilder()
 				val player = players.get(keyIt.next()).asInstanceOf[Document]
@@ -42,8 +45,9 @@ class MongoDBHandler(){
 					.build()
 				playerStates = state :: playerStates
 			}
+			entireGame.+=:(time, playerStates)
 		}
-		return playerStates
+		return entireGame.toList.sortWith(_._1<_._1)
 	}
 
 	private def getRealLocationData(rawData : Document) : ImmutableLocationData = {
@@ -207,17 +211,17 @@ object MongoDBHandler{
   def apply() = new MongoDBHandler()
   def main(args : Array[String]): Unit = {
     val dbh = MongoDBHandler()
-	  val team = dbh.getTeam("immortals")
-	  val playerIt = team.getPlayers().iterator()
-	  while(playerIt.hasNext){
-		  println(playerIt.next())
-	  }
+//	  val team = dbh.getTeam("immortals")
+//	  val playerIt = team.getPlayers().iterator()
+//	  while(playerIt.hasNext){
+//		  println(playerIt.next())
+//	  }
 //	  val player = dbh.getPlayer("huni")
 //	  println(player)
-//		val states: List[PlayerState] = dbh.getPlayerStatesForGame(1001790043)
-//	  for(state <- states){
-//		  println(state)
-//	  }
-//	  println(states.size)
+		val states = dbh.getPlayerStatesForGame(1001790043)
+	  for(state <- states){
+		  println(state)
+	  }
+	  println(states.size)
   }
 }
