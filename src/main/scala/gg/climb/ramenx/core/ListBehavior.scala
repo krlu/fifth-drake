@@ -7,7 +7,7 @@ class ListBehavior[Time, +A](f: Time => A)(implicit ordering: Ordering[Time])
   val current: Time => A = f
   val next: Option[(Time, ListBehavior[Time, A])] = None
 
-  override def get(t: Time): A = {
+  override def apply(t: Time): A = {
     def getVal(listBehavior: ListBehavior[Time, A]) : Time => A = listBehavior.next match {
         case None => listBehavior.current
         case Some((t2, behavior)) if t < t2 => listBehavior.current
