@@ -21,7 +21,10 @@ class MongoDBHandler(){
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////// Getter Time Series Data//////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	/** Gets all states for a specified game
+		* @param gameKey
+		* @return List of pairs (time, player states) ordered by timestamp
+		*/
 	def getPlayerStatesForGame(gameKey : Int): List[(Integer,List[PlayerState])] = {
 		val raw_data = getGameData(gameKey)
 		val entireGame = new mutable.MutableList[(Integer,List[PlayerState])]
@@ -71,8 +74,10 @@ class MongoDBHandler(){
 	//////////////////////////////////////////// Getter for Static Data///////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 	/**
 		* @param riotId
+		* @return Player java object
 		*/
 	def getPlayerByRiotId(riotId: ImmutableRiotId[Player]): Player ={
 		val builder = ImmutablePlayer.builder()
@@ -88,6 +93,10 @@ class MongoDBHandler(){
 
 	}
 
+	/**
+		* @param teamSlug
+		* @return Team java object
+		*/
 	def getTeam(teamSlug : String) : Team = {
 		val teamData = getTeamData(teamSlug)
 		val builder = new TeamBuilder()
