@@ -1,6 +1,5 @@
 import java.io.File
 
-import gg.climb.lolobjects.{ImmutableInternalId, ImmutableRiotId, InternalId, RiotId}
 import gg.climb.lolobjects.game._
 import scalikejdbc._
 
@@ -34,37 +33,13 @@ class PostgresDBHandler(host: String, port: Int, db : String,  user : String, pa
 	  return champId(0)
 	}
 	private def constructChampion(rs: WrappedResultSet): Champion ={
-		val id = ImmutableInternalId.of(rs.int("id")).asInstanceOf[InternalId[Champion]]
-		val riot_id = ImmutableRiotId.of(rs.int("riot_id").toString).asInstanceOf[RiotId[Champion]]
-		val name = rs.string("name")
-		return new ChampionBuilder().internalId(id).name(name).image(getChampionImage(id.getId))
-			.stats(getChampionStats(id.getId)).riotId(riot_id).build()
+		return null
 	}
 	private def getChampionStats(championId: Int): ChampionStats = {
-		val champStats: List[ChampionStats] = DB readOnly { implicit session =>
-			SQL(s"SELECT * FROM league.champion_stats Where champion_id=$championId").map(rs =>
-				new ChampionStatsBuilder().armor(rs.int("armor")).armorPerLevel(rs.int("armor_per_level"))
-				  .attackDamage(rs.int("attack_damage")).attackDamagePerLevel(rs.int("attack_damage_per_level"))
-				  .attackRange(rs.int("attack_range")).attackSpeedOffset(rs.int("attack_speed_offset"))
-				  .attackSpeedPerLevel(rs.int("attack_speed_per_level")).crit(rs.int("crit"))
-					.critPerLevel(rs.int("crit_per_level")).hp(rs.int("hp")).hpPerLevel(rs.int("hp_per_level"))
-					.hpRegen(rs.int("hp_regen")).hpRegenPerLevel(rs.int("hp_regen_per_level"))
-				  .moveSpeed(rs.int("move_speed")).mp(rs.int("mp")).mpPerLevel(rs.int("mp_per_level"))
-					.mpRegen(rs.int("mp_regen")).mpRegenPerLevel(rs.int("mp_regen_per_level"))
-					.spellBlock(rs.int("spell_block")).spellBlockPerLevel(rs.int("spell_block_per_level")).build()
-			).list.apply()
-		}
-		return champStats(0)
+		return null
 	}
 	private def getChampionImage(championId: Int): ChampionImage = {
-		val champImages: List[ChampionImage] = DB readOnly { implicit session =>
-			SQL(s"SELECT * FROM league.champion_image Where champion_id=$championId").map(rs =>
-				new ChampionImageBuilder().full(rs.string("image_full")).group(rs.string("image_group"))
-					.sprite(rs.string("sprite")).width(rs.int("width")).height(rs.int("height")).x(rs.int("x_position"))
-					.y(rs.int("y_position")).localFile(getChampionFile(rs.string("image_full"))).build()
-			).list.apply()
-		}
-		return champImages(0)
+		return null
 	}
 	private def getChampionFile(imageFull: String): File ={
 		val filePath = "/"
