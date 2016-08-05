@@ -1,5 +1,0 @@
-package reasoning
-
-class main {
-
-}

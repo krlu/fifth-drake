@@ -12,6 +12,5 @@ repositories {
 }
 
 dependencies {
-	compile group: 'io.reactivex', name: 'rxscala_2.11', version: '0.26.2'
-	compile project(":eSportsCV")
+	compile project(":climb-core")
 }
