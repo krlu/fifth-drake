@@ -1,13 +1,12 @@
 package gg.climb.lolobjects.esports
 
-import gg.climb.lolobjects.{InternalId, RiotId}
+import gg.climb.lolobjects.RiotId
 
-class Player(internalId: InternalId[Player],
-             riotId: RiotId[Player],
-             firstName: String,
-             lastName: String,
+class Player(riotId: RiotId[Player],
              ign: String,
              role: Role,
-             region: String,
-             teamId: Option[InternalId[Team]],
-             teamIds: Traversable[InternalId[Team]])
+             team: String)
+
+object Player{
+	def apply(riotId: RiotId[Player], ign: String, role: Role, team : String) = new Player(riotId, ign, role, team)
+}
