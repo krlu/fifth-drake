@@ -1,12 +1,12 @@
 package gg.climb.lolobjects.game.state
 
-import gg.climb.lolobjects.RiotId
-import gg.climb.lolobjects.game.Champion
+class ChampionState(val hp: Double,
+										val mp: Double,
+										val xp: Double,
+										val name: String)  {
 
-class ChampionState(hp: Double,
-                    mp: Double,
-                    xp: Double,
-                    name: String)
+	override def toString = s"ChampionState(hp=$hp, mp=$mp, xp=$xp, name=$name)"
+}
 
 object ChampionState {
 	def apply(hp: Double,

@@ -38,4 +38,11 @@ object Role {
     case "support" => Support()
     case _ => throw new IllegalArgumentException(String.format("`%s' is not a valid role", s));
   }
+
+  def compare(actual: Role, expected: Role): Boolean = {
+    actual match {
+      case `expected` => true
+      case _ => false
+    }
+  }
 }

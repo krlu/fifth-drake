@@ -42,6 +42,5 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'org.mongodb.scala:mongo-scala-driver_2.11:1.0.1'
 
-    // temporary until ramenX stored in private dist repo
-    compile fileTree(dir: '../ramenX/build/libs/', include: '*.jar')
+    compile project(":ramenX")
 }
