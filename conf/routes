@@ -3,8 +3,8 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
-GET     /form                       controllers.HomeController.JarTester
+# GET     /                           controllers.HomeController.index
+# GET     /form                       controllers.HomeController.JarTester
 
 # An example controller showing how to write asynchronous code
 
@@ -13,3 +13,5 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 POST    /assets/*file               controllers.Assets.versioned(path="/public", file)
 
+GET		/             				controllers.MapController.getName
+GET     /request                    controllers.MapController.showRequest

@@ -1,4 +1,4 @@
-name := """esportsAnalyticsWeb"""
+name := """fifth-drake"""
 
 version := "1.0-SNAPSHOT"
 
