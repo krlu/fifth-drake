@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 import gg.climb.lolobjects.RiotId
 import gg.climb.lolobjects.esports.{Player, Role, Team}
 import gg.climb.lolobjects.game.LocationData
-import gg.climb.lolobjects.game.state.{ChampionState, GameState, PlayerState, TeamState}
+import gg.climb.lolobjects.game.state._
 import org.mongodb.scala.bson.BsonNull
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.model.Filters._
@@ -17,7 +17,8 @@ class MongoDBHandler(){
   val mongoClient: MongoClient = MongoClient("mongodb://localhost")
   val names: Observable[String] = mongoClient.listDatabaseNames()
   val database = mongoClient.getDatabase("league_analytics")
-
+	val RED = 100
+	val BLUE = 200
 
 	def getCompleteGame(gameKey : Int): List[GameState] ={
 		val ob: FindObservable[Document] = database.getCollection("game_" + gameKey).find()
@@ -33,8 +34,8 @@ class MongoDBHandler(){
 		val blueTeamStats = Document(teamStats.getOrElse("200", BsonNull()).asDocument)
 		val playerStats = Document(doc.getOrElse("playerStats", BsonNull()).asDocument)
 
-		val blue = getTeamState(redTeamStats, playerStats, 100)
-		val red = getTeamState(blueTeamStats, playerStats, 200)
+		val blue = getTeamState(redTeamStats, playerStats, RED)
+		val red = getTeamState(blueTeamStats, playerStats, BLUE)
 		GameState(time, red, blue)
 	}
 
@@ -45,16 +46,22 @@ class MongoDBHandler(){
 
 		val states = playerStats.keySet
 			.filter(key => playerStats.getOrElse(key, BsonNull()).asDocument.getInt32("teamId").getValue == side)
-			.map(key => getPlayerState(Document(playerStats.getOrElse(key, BsonNull()).asDocument))).toList
+			.map(key => getPlayerState(Document(playerStats.getOrElse(key, BsonNull()).asDocument), side)).toList
 		TeamState(states, barons, dragons, turrets)
 	}
 
-	private def getPlayerState(playerStat : Document) : PlayerState = {
+	private def getPlayerState(playerStat : Document, side: Int) : PlayerState = {
 		val playerId = RiotId[Player](playerStat.getOrElse("playerId", BsonNull()).asString.getValue)
 		val player = getPlayer(playerId)
 		val championState = getChampionState(playerStat)
 	  val location = getLocationData(playerStat)
-		PlayerState(player, championState, location)
+		var color = SideColor.BLUE
+		side match {
+			case RED => color = SideColor.RED
+			case BLUE => color = SideColor.BLUE
+			case _ => throw new IllegalArgumentException("side must be 100 or 200 but intead was: " + side)
+		}
+		PlayerState(player, championState, location, color)
 	}
 
 	private def getLocationData(doc : Document): LocationData = {
