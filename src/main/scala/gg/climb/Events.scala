@@ -3,6 +3,7 @@ package gg.climb
 import gg.climb.analytics.EventStreamFactory
 import gg.climb.lolobjects.esports.{Bot, Role, Support}
 import gg.climb.lolobjects.game.state.PlayerState
+import gg.climb.ramenx.core.EventStream
 
 import scala.concurrent.duration._
 
@@ -11,9 +12,36 @@ import scala.concurrent.duration._
   */
 object Events {
   def main(args: Array[String]): Unit = {
-    val time = getLaneSwap(1001790061)
-    println("There should be no lane swap in P1-TSM-G2. Time of lane swap in seconds: " + time.toSeconds)
+    val stream = laneswap(1001790061)
   }
+
+  /**
+    * A gank has occurred if:
+    * 1) player exits roaming
+    * 2) skirmish occurs within 15 seconds
+    */
+
+  /**
+    * A teamfight has occurred if:
+    * 1) pairwise distance between players is less than 2000 units
+    * 2) min 4v4
+    * 3) hp loss above 100 per second
+    * 4) mp usage above 100 per second
+    */
+
+  /**
+    * A skirmish has occurred if:
+    * 1) min 1v1
+    * 2) pairwise distance less than 1500
+    * 3) hp loss above 100 per second
+    * 4) mp usage above 100 per second
+    */
+
+  /**
+    * A player is roaming if:
+    * 1) not in any lane
+    * 2) not in base
+    */
 
   /**
     * A lane swap has occurred if:
@@ -24,15 +52,15 @@ object Events {
     * @param game The game ID
     * @return time at which a lane swap occurred
     */
-  def getLaneSwap(game: Int): Duration = {
+  private def laneswap(game: Int): EventStream[Duration, Unit] = {
     EventStreamFactory.gameStateStream(game)
-      .filter(gs => {
-        val notInBot = gs.blue.players.count(laneSwapRule) + gs.red.players.count(laneSwapRule)
+      .map[Unit](gs => {
+        val notInBot = gs.blue.players.count(laneswapRule) + gs.red.players.count(laneswapRule)
         gs.blue.turrets == 0 && gs.red.turrets == 0 && gs.timestamp.gt(Duration(110, SECONDS)) && notInBot > 0
-      })(0)._1
+      })
   }
 
-  private def laneSwapRule(ps: PlayerState): Boolean = {
+  private def laneswapRule(ps: PlayerState): Boolean = {
      !ps.location.inBotLane && !ps.location.inBase &&
        (Role.compare(ps.player.role, Bot()) || Role.compare(ps.player.role, Support()))
   }
