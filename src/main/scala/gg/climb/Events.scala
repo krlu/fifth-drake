@@ -12,7 +12,7 @@ import scala.concurrent.duration._
   */
 object Events {
   def main(args: Array[String]): Unit = {
-    val stream = laneswap(1001790061)
+    val swap = laneswap(1001790061).scan[Boolean](false, (_,_) => true)
   }
 
   /**
