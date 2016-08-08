@@ -6,6 +6,8 @@ class GameState(val timestamp: Duration,
 								val red : TeamState,
 								val blue : TeamState)  {
 
+	lazy val teams: List[TeamState] = List(blue, red)
+
 	override def toString = s"GameState(timestamp=$timestamp,\nred=$red,\nblue=$blue)"
 }
 

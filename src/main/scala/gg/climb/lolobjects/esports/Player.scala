@@ -8,6 +8,15 @@ class Player(val riotId: RiotId[Player],
 						 val team: String)  {
 
 	override def toString = s"Player(riotId=$riotId, ign=$ign, role=$role, team=$team)"
+
+	def canEqual(other: Any): Boolean = other.isInstanceOf[Player]
+
+	override def equals(other: Any): Boolean = other match {
+		case that: Player =>
+			(that canEqual this) &&
+				riotId == that.riotId
+		case _ => false
+	}
 }
 
 object Player{
