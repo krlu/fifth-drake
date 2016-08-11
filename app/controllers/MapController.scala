@@ -1,8 +1,10 @@
 package controllers
 
 import gg.climb.commons.dbhandling.MongoDBHandler
-import gg.climb.lolobjects.game.state.GameState
-import play.api.libs.json.Json
+import gg.climb.lolobjects.esports.Player
+import gg.climb.lolobjects.game.LocationData
+import gg.climb.lolobjects.game.state.{ChampionState, GameState, PlayerState}
+import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc._
 
 class MapController extends Controller {
@@ -36,21 +38,55 @@ class MapController extends Controller {
 	def getGameData(gameId: Int) = Action {
 		val dBHandler = MongoDBHandler()
 		val data: List[GameState] = dBHandler.getCompleteGame(gameId)
-		val timeStamps: List[Int] = data.map(state => state.timestamp.toMillis.toInt)
-		val arrOfTimes = Json.toJson(timeStamps)
-		Ok(Json.obj("id" -> gameId, "data"-> arrOfTimes))
+		var arrOfStates: JsArray = Json.arr()
+		for(gameState <- data){
+			arrOfStates = arrOfStates.append(buildJson(gameState))
+		}
+		Ok(Json.obj("id" -> gameId, "data"-> arrOfStates))
 	}
+
+	def buildJson(state : GameState): JsObject ={
+		var playerArray = Json.arr()
+		val allPlayers = state.red.players ++ state.blue.players
+		for(player <- allPlayers)
+			playerArray = playerArray.append(buildPlayerStateJson(player))
+		Json.obj("timeStamp" -> state.timestamp.toMillis, "players" -> playerArray)
+	}
+
+	def buildPlayerStateJson(playerState: PlayerState): JsObject ={
+		Json.obj("side" -> playerState.sideColor, "player" -> buildPlayerJson(playerState.player),
+			"location" -> buildLocationJson(playerState.location),
+			"champion" -> buildChampionStateJson(playerState.championState))
+	}
+	def buildPlayerJson(player: Player): JsObject = Json.obj("riotId" -> player.riotId.id,
+		"ign" -> player.ign, "role" -> player.role.name, "team" -> player.team)
+
+	def buildLocationJson(location: LocationData): JsObject = Json.obj("x" -> location.x,
+		"y" -> location.y, "confidence" -> location.confidence)
+
+	def buildChampionStateJson(championState: ChampionState):JsObject = {
+		val lvlData: (Int, Int, Int) = calculateLevel(championState.xp.toInt)
+		Json.obj("hp" -> championState.hp, "mp" -> championState.mp, "cumulativeXP" -> championState.xp,
+			"lvl" -> lvlData._1, "xp" -> lvlData._2, "xpNeededToLvl"-> lvlData._3, "name" -> championState.name)
+	}
+
 
 	/**
 		* Remainder and XP for Next Level default to 0 if current level is 18
+		*
 		* @param cumulativeXP
 		* @return (currentLevel, currentXP remainder, XP for Next Level)
 		*/
-	def calculateLevel(cumulativeXP : Int): (Int, Int, Int) = {
-		val filteredLevels = levels.filter(tuple => tuple._2 < cumulativeXP)
-		val levelTuple = filteredLevels(filteredLevels.size - 1)
-		val remainder = cumulativeXP - levelTuple._2
-		(levelTuple._1, remainder, xpToObtainLvl(levelTuple._1 + 1))
+	def calculateLevel(cumulativeXP: Int): (Int, Int, Int) = {
+		val filteredLevels: List[(Int, Int)] = levels.filter(tuple => tuple._2 <= cumulativeXP)
+		if(filteredLevels.isEmpty)
+			(18, 0, 0)
+		else {
+			val levelTuple: (Int, Int) = filteredLevels(filteredLevels.size - 1)
+			val remainder = cumulativeXP - levelTuple._2
+			val xpNeededForNextLvl = xpToObtainLvl(levelTuple._1 + 1) - remainder
+			(levelTuple._1, remainder, xpNeededForNextLvl)
+		}
 	}
 
 	/**
