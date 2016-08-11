@@ -1,7 +1,13 @@
 package controllers
 
-import play.api.libs.json.Json
+import com.mongodb.Mongo
+import gg.climb.commons.dbhandling.MongoDBHandler
+import gg.climb.lolobjects.game.state.GameState
+import play.api.libs.json.{JsArray, Json}
 import play.api.mvc._
+
+import scala.collection.immutable.Seq
+import scala.concurrent.duration.Duration
 
 class MapController extends Controller {
 	val levels = List((1, 0),
@@ -23,14 +29,20 @@ class MapController extends Controller {
 										(17, 16480),
 										(18, 18360))
 
+	def getName = Action {
+			Ok("Jim")
+	}
+
 	def showRequest = Action { request =>
 		Ok("Got request [" + request + "]")
 	}
 
 	def getGameData(gameId: Int) = Action {
-		Ok(Json.obj("id" -> gameId, "dank" -> "meme"))
-		//TODO: query climb-core for game data
-		//TODO: should be returned as JSON
+		val dBHandler = MongoDBHandler()
+		val data: List[GameState] = dBHandler.getCompleteGame(gameId)
+		val timeStamps: List[String] = data.map(state => state.timestamp.toString)
+		val arrOfTimes = Json.toJson(timeStamps)
+		Ok(Json.obj("id" -> gameId, "data"-> arrOfTimes))
 	}
 
 	/**
