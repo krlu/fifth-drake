@@ -1,13 +1,9 @@
 package controllers
 
-import com.mongodb.Mongo
 import gg.climb.commons.dbhandling.MongoDBHandler
 import gg.climb.lolobjects.game.state.GameState
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.Json
 import play.api.mvc._
-
-import scala.collection.immutable.Seq
-import scala.concurrent.duration.Duration
 
 class MapController extends Controller {
 	val levels = List((1, 0),
@@ -40,7 +36,7 @@ class MapController extends Controller {
 	def getGameData(gameId: Int) = Action {
 		val dBHandler = MongoDBHandler()
 		val data: List[GameState] = dBHandler.getCompleteGame(gameId)
-		val timeStamps: List[String] = data.map(state => state.timestamp.toString)
+		val timeStamps: List[Int] = data.map(state => state.timestamp.toMillis.toInt)
 		val arrOfTimes = Json.toJson(timeStamps)
 		Ok(Json.obj("id" -> gameId, "data"-> arrOfTimes))
 	}
