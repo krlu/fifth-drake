@@ -28,7 +28,7 @@ class MapController extends Controller {
 										(18, 18360))
 
 	def getName = Action {
-			Ok("Jim")
+			Ok(views.html.index("hello world"))
 	}
 
 	def showRequest = Action { request =>
@@ -79,7 +79,7 @@ class MapController extends Controller {
 		*/
 	def calculateLevel(cumulativeXP: Int): (Int, Int, Int) = {
 		val filteredLevels: List[(Int, Int)] = levels.filter(tuple => tuple._2 <= cumulativeXP)
-		if(filteredLevels.isEmpty)
+		if(filteredLevels.size == levels.size)
 			(18, 0, 0)
 		else {
 			val levelTuple: (Int, Int) = filteredLevels(filteredLevels.size - 1)
@@ -103,7 +103,7 @@ class MapController extends Controller {
 object MapController {
 	def main(args : Array[String]): Unit ={
 		val mc = new MapController
-		println(mc.calculateLevel(6000))
+		println(mc.calculateLevel(60000))
 	}
 }
 
