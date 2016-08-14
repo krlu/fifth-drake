@@ -4,6 +4,9 @@ import gg.climb.commons.dbhandling.MongoDBHandler
 import gg.climb.lolobjects.esports.Player
 import gg.climb.lolobjects.game.LocationData
 import gg.climb.lolobjects.game.state.{ChampionState, GameState, PlayerState}
+import org.bson.BsonInt32
+import org.mongodb.scala.bson.{BsonNull, BsonValue}
+import org.mongodb.scala.bson.collection.immutable.Document
 import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc._
 
@@ -35,6 +38,33 @@ class MapController extends Controller {
 		Ok("Got request [" + request + "]")
 	}
 
+	/*********************************************************************************************************************
+	**************************************** Loading Identifiers for all Games *******************************************
+	*********************************************************************************************************************/
+
+	def allGames() = Action {
+		val dbHandler = MongoDBHandler()
+		val gids: List[Document] = dbHandler.getAllGIDs()
+		var arrOfGIDs: JsArray = Json.arr()
+		for( gid <- gids){
+			arrOfGIDs = arrOfGIDs.append(buildGIDJson(gid))
+		}
+		Ok(arrOfGIDs)
+	}
+
+	def buildGIDJson(gameIdentifier : Document): JsObject ={
+		val gameKey: Int = gameIdentifier.getOrElse("gameKey", BsonNull()).asInt32.getValue
+		val gameDate: Long  = gameIdentifier.getOrElse("gameDate", BsonNull()).asInt64.getValue
+		val team1 = gameIdentifier.getOrElse("team1", BsonNull()).asString.getValue
+		val team2 = gameIdentifier.getOrElse("team2", BsonNull()).asString.getValue
+		val realm = gameIdentifier.getOrElse("realm", BsonNull()).asString.getValue
+		return Json.obj("gameKey"-> gameKey, "gameDate" -> gameDate, "team1" -> team1, "team2" -> team2, "realm"-> realm)
+	}
+
+	/*********************************************************************************************************************
+	****************************************** Loading Data From Given Game **********************************************
+	*********************************************************************************************************************/
+
 	def getGameData(gameId: Int) = Action {
 		val dBHandler = MongoDBHandler()
 		val data: List[GameState] = dBHandler.getCompleteGame(gameId)
@@ -53,18 +83,18 @@ class MapController extends Controller {
 		Json.obj("timeStamp" -> state.timestamp.toMillis, "players" -> playerArray)
 	}
 
-	def buildPlayerStateJson(playerState: PlayerState): JsObject ={
+	private def buildPlayerStateJson(playerState: PlayerState): JsObject ={
 		Json.obj("side" -> playerState.sideColor, "player" -> buildPlayerJson(playerState.player),
 			"location" -> buildLocationJson(playerState.location),
 			"champion" -> buildChampionStateJson(playerState.championState))
 	}
-	def buildPlayerJson(player: Player): JsObject = Json.obj("riotId" -> player.riotId.id,
+	private def buildPlayerJson(player: Player): JsObject = Json.obj("riotId" -> player.riotId.id,
 		"ign" -> player.ign, "role" -> player.role.name, "team" -> player.team)
 
-	def buildLocationJson(location: LocationData): JsObject = Json.obj("x" -> location.x,
+	private def buildLocationJson(location: LocationData): JsObject = Json.obj("x" -> location.x,
 		"y" -> location.y, "confidence" -> location.confidence)
 
-	def buildChampionStateJson(championState: ChampionState):JsObject = {
+	private def buildChampionStateJson(championState: ChampionState):JsObject = {
 		val lvlData: (Int, Int, Int) = calculateLevel(championState.xp.toInt)
 		Json.obj("hp" -> championState.hp, "mp" -> championState.mp, "cumulativeXP" -> championState.xp,
 			"lvl" -> lvlData._1, "xp" -> lvlData._2, "xpNeededToLvl"-> lvlData._3, "name" -> championState.name)
