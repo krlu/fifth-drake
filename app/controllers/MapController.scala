@@ -4,13 +4,14 @@ import gg.climb.commons.dbhandling.MongoDBHandler
 import gg.climb.lolobjects.esports.Player
 import gg.climb.lolobjects.game.LocationData
 import gg.climb.lolobjects.game.state.{ChampionState, GameState, PlayerState}
-import org.bson.BsonInt32
-import org.mongodb.scala.bson.{BsonNull, BsonValue}
+import org.mongodb.scala.bson.BsonNull
 import org.mongodb.scala.bson.collection.immutable.Document
 import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc._
 
 class MapController extends Controller {
+	val dbHandler = MongoDBHandler()
+
 	val levels = List((1, 0),
 										(2, 280),
 										(3,	660),
@@ -43,8 +44,16 @@ class MapController extends Controller {
 	*********************************************************************************************************************/
 
 	def allGames() = Action {
-		val dbHandler = MongoDBHandler()
 		val gids: List[Document] = dbHandler.getAllGIDs()
+		var arrOfGIDs: JsArray = Json.arr()
+		for( gid <- gids){
+			arrOfGIDs = arrOfGIDs.append(buildGIDJson(gid))
+		}
+		Ok(arrOfGIDs)
+	}
+
+	def gamesByTeam(teamAcronym: String) = Action {
+		val gids: List[Document] = dbHandler.getGIDsByTeamAcronym(teamAcronym)
 		var arrOfGIDs: JsArray = Json.arr()
 		for( gid <- gids){
 			arrOfGIDs = arrOfGIDs.append(buildGIDJson(gid))
@@ -66,8 +75,7 @@ class MapController extends Controller {
 	*********************************************************************************************************************/
 
 	def getGameData(gameId: Int) = Action {
-		val dBHandler = MongoDBHandler()
-		val data: List[GameState] = dBHandler.getCompleteGame(gameId)
+		val data: List[GameState] = dbHandler.getCompleteGame(gameId)
 		var arrOfStates: JsArray = Json.arr()
 		for(gameState <- data){
 			arrOfStates = arrOfStates.append(buildJson(gameState))
