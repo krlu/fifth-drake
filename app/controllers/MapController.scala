@@ -111,31 +111,22 @@ class MapController extends Controller {
 
 	/**
 		* Remainder and XP for Next Level default to 0 if current level is 18
-		*
 		* @param cumulativeXP
 		* @return (currentLevel, currentXP remainder, XP for Next Level)
 		*/
 	def calculateLevel(cumulativeXP: Int): (Int, Int, Int) = {
 		val filteredLevels: List[(Int, Int)] = levels.filter(tuple => tuple._2 <= cumulativeXP)
-		if(filteredLevels.size == levels.size)
-			(18, 0, 0)
-		else {
-			val levelTuple: (Int, Int) = filteredLevels(filteredLevels.size - 1)
-			val remainder = cumulativeXP - levelTuple._2
-			val xpNeededForNextLvl = xpToObtainLvl(levelTuple._1 + 1) - remainder
-			(levelTuple._1, remainder, xpNeededForNextLvl)
-		}
+		val levelTuple: (Int, Int) = filteredLevels(filteredLevels.size - 1)
+		val remainder = cumulativeXP - levelTuple._2
+		val xpNeededForNextLvl = xpToObtainLvl(levelTuple._1 + 1) - remainder
+		(levelTuple._1, remainder, xpNeededForNextLvl)
 	}
 
 	/**
 		* @param lvl
-		* @return non-cumulative XP needed to obtain next level
+		* @return non-cumulative XP needed to obtain level
 		*/
-	def xpToObtainLvl(lvl : Int): Int = {
-		if (lvl < 2 || lvl > 18)
-			throw new IllegalArgumentException("lvl must be between 2 and 18 inclusive, but was" + lvl)
-		100 * (lvl - 2) + 280
-	}
+	def xpToObtainLvl(lvl : Int): Int = if (lvl < 2 || lvl > 18) 0 else 100 * (lvl - 2) + 280
 }
 
 object MapController {
