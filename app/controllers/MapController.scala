@@ -9,6 +9,8 @@ import org.mongodb.scala.bson.collection.immutable.Document
 import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc._
 
+import scala.collection.mutable
+
 class MapController extends Controller {
 	val dbHandler = MongoDBHandler()
 
@@ -47,27 +49,35 @@ class MapController extends Controller {
 		val gids: List[Document] = dbHandler.getAllGIDs()
 		var arrOfGIDs: JsArray = Json.arr()
 		for( gid <- gids){
-			arrOfGIDs = arrOfGIDs.append(buildGIDJson(gid))
+			val gameKey = gid.getOrElse("gameKey", BsonNull()).asInt32.getValue
+			val vodURL = dbHandler.getYoutubeURLForGame(gameKey)
+			arrOfGIDs = arrOfGIDs.append(buildGIDJson(gid, vodURL))
 		}
 		Ok(arrOfGIDs)
 	}
 
 	def gamesByTeam(teamAcronym: String) = Action {
 		val gids: List[Document] = dbHandler.getGIDsByTeamAcronym(teamAcronym)
-		var arrOfGIDs: JsArray = Json.arr()
+		val arrOfGIDs: mutable.MutableList[JsObject] = new mutable.MutableList[JsObject]
 		for( gid <- gids){
-			arrOfGIDs = arrOfGIDs.append(buildGIDJson(gid))
+			val gameKey = gid.getOrElse("gameKey", BsonNull()).asInt32.getValue
+			val vodURL = dbHandler.getYoutubeURLForGame(gameKey)
+			arrOfGIDs.+=:(buildGIDJson(gid, vodURL))
 		}
-		Ok(arrOfGIDs)
+		for(element <- arrOfGIDs){
+			element.value.getOrElse("vod", null).toString()
+		}
+		Ok(views.html.Application.games(arrOfGIDs.toList))
 	}
 
-	def buildGIDJson(gameIdentifier : Document): JsObject ={
+	def buildGIDJson(gameIdentifier : Document, youtubeURL: String): JsObject ={
 		val gameKey: Int = gameIdentifier.getOrElse("gameKey", BsonNull()).asInt32.getValue
 		val gameDate: Long  = gameIdentifier.getOrElse("gameDate", BsonNull()).asInt64.getValue
 		val team1 = gameIdentifier.getOrElse("team1", BsonNull()).asString.getValue
 		val team2 = gameIdentifier.getOrElse("team2", BsonNull()).asString.getValue
 		val realm = gameIdentifier.getOrElse("realm", BsonNull()).asString.getValue
-		return Json.obj("gameKey"-> gameKey, "gameDate" -> gameDate, "team1" -> team1, "team2" -> team2, "realm"-> realm)
+		return Json.obj("gameKey"-> gameKey, "gameDate" -> gameDate,
+			"team1" -> team1, "team2" -> team2, "realm"-> realm, "vod"-> youtubeURL)
 	}
 
 	/*********************************************************************************************************************

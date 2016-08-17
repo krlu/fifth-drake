@@ -1,0 +1,11 @@
+@import play.api.libs.json.{JsObject,JsValue}
+@import play.twirl.api.Html
+
+@(gids : Seq[JsObject])
+<h1>Games</h1>
+
+<ul>
+    @for(gid <- gids) {
+    <li>@gid <a href= @Html(gid.value.getOrElse("vod", null).toString)>VOD</a></li>
+    }
+</ul>
