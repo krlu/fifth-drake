@@ -7,6 +7,7 @@ class GameState(val timestamp: Duration,
 								val blue : TeamState)  {
 
 	lazy val teams: List[TeamState] = List(blue, red)
+	lazy val players: List[PlayerState] = teams.flatMap(ts => ts.players)
 
 	override def toString = s"GameState(timestamp=$timestamp,\nred=$red,\nblue=$blue)"
 }
