@@ -18,7 +18,7 @@ object Element {
     */
   def hp(game: Int): Map[Player, EventStream[Duration, Double]] = {
     val stream = EventStreamFactory.gameStateStream(game).map(gs => gs.teams.flatMap(ts => ts.players))
-    val players = stream.first().map(ps => ps.player)
+    val players = stream.first._2.map(ps => ps.player)
 
     players.map(p => {
       val hp = stream.map(list => list.find(ps => ps.player.equals(p)).get.championState.hp)
@@ -34,7 +34,7 @@ object Element {
     */
   def mp(game: Int): Map[Player, EventStream[Duration, Double]] = {
     val stream = EventStreamFactory.gameStateStream(game).map(gs => gs.teams.flatMap(ts => ts.players))
-    val players = stream.first().map(ps => ps.player)
+    val players = stream.first._2.map(ps => ps.player)
 
     players.map(p => {
       val mp = stream.map(list => list.find(ps => ps.player.equals(p)).get.championState.mp)
@@ -50,7 +50,7 @@ object Element {
     */
   def xp(game: Int): Map[Player, EventStream[Duration, Double]] = {
     val stream = EventStreamFactory.gameStateStream(game).map(gs => gs.teams.flatMap(ts => ts.players))
-    val players = stream.first().map(ps => ps.player)
+    val players = stream.first._2.map(ps => ps.player)
 
     players.map(p => {
       val xp = stream.map(list => list.find(ps => ps.player.equals(p)).get.championState.xp)
