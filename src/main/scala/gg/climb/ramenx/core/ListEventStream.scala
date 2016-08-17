@@ -7,7 +7,7 @@ class ListEventStream[Time, A](stream: List[(Time, A)])(implicit order: Ordering
 
   private val events = stream.sortWith({case ((t1, _), (t2, _)) => order.lt(t1, t2)})
 
-  override def size(): Int = {
+  override def size: Int = {
     events.size
   }
 
@@ -19,7 +19,11 @@ class ListEventStream[Time, A](stream: List[(Time, A)])(implicit order: Ordering
     events(n)
   }
 
-  override def getAll(): List[(Time, A)] = events
+  override def first: (Time, A) = events.head
+
+  override def last: (Time, A) = events.last
+
+  override def getAll: List[(Time, A)] = events
 
   override def merge(other: EventStream[Time, A], select: (A, A) => A): EventStream[Time, A] = {
     def mergeList(l1: List[(Time, A)])(l2: List[(Time, A)]): List[(Time, A)] = (l1, l2) match {
