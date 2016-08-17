@@ -18,3 +18,8 @@ GET     /request                    controllers.MapController.showRequest
 GET     /lol/games/id/:id           controllers.MapController.getGameData(id: Int)
 GET     /lol/games/                 controllers.MapController.allGames
 GET     /lol/games/team/:team       controllers.MapController.gamesByTeam(team: String)
+GET     /api/game/*id               controllers.Assets.versioned(path="/public", id)
+
+
+# Map resources for node_module
+GET     /node_modules/*file         controllers.NodeModulesController.at(file)

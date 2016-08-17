@@ -1,0 +1,29 @@
+#map {
+    /*background-image: url("map.jpg");*/
+    margin-left: auto;
+    margin-right: auto;
+    height: 512px;
+    width: 512px;
+    padding: 0;
+    top: 100px;
+}
+
+.image {
+    height: 110%;
+    width: 110%;
+    overflow: hidden;
+    top: -5px;
+    left: -5px;
+}
+
+.imageContainer {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid;
+    background-size: 34px 34px;
+    background-position-y: -2px;
+    background-position-x: -2px;
+    position: absolute;
+    transition: transform 1s linear;
+}
