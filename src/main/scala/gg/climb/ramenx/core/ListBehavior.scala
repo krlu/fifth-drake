@@ -1,11 +1,17 @@
 package gg.climb.ramenx.core
 
-class ListBehavior[Time, +A](f: Time => A)(implicit ordering: Ordering[Time])
+class ListBehavior[Time, +A](initial: Time => A, fs: List[(Time, Time => A)])
+                            (implicit ordering: Ordering[Time])
   extends Behavior[Time, A] {
   import ordering._
 
-  val current: Time => A = f
-  val next: Option[(Time, ListBehavior[Time, A])] = None
+  def this(f: Time => A)(implicit ordering: Ordering[Time]) = this(f, Nil)
+
+  val current: Time => A = initial
+  val next: Option[(Time, ListBehavior[Time, A])] = fs match {
+    case Nil => None
+    case x::xs => Some((x._1, new ListBehavior[Time, A](x._2, xs)))
+  }
 
   override def apply(t: Time): A = {
     def getVal(listBehavior: ListBehavior[Time, A]) : Time => A = listBehavior.next match {

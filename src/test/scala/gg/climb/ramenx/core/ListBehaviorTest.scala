@@ -22,7 +22,4 @@ class ListBehaviorTest extends UnitTestSpec {
     assert(behavior(0) == "0")
     assert(behavior(1) == "1")
   }
-
-  it should "combine with an EventStream" in {
-  }
 }
