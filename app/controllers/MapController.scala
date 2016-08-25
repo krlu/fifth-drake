@@ -1,9 +1,12 @@
 package controllers
 
+import java.util.Date
+
 import gg.climb.commons.dbhandling.MongoDBHandler
 import gg.climb.lolobjects.esports.Player
 import gg.climb.lolobjects.game.LocationData
 import gg.climb.lolobjects.game.state.{ChampionState, GameState, PlayerState}
+import org.joda.time.DateTime
 import org.mongodb.scala.bson.BsonNull
 import org.mongodb.scala.bson.collection.immutable.Document
 import play.api.libs.json.{JsArray, JsObject, Json}
@@ -47,13 +50,13 @@ class MapController extends Controller {
 
 	def allGames() = Action {
 		val gids: List[Document] = dbHandler.getAllGIDs()
-		var arrOfGIDs: JsArray = Json.arr()
+    val arrOfGIDs: mutable.MutableList[JsObject] = new mutable.MutableList[JsObject]
 		for( gid <- gids){
 			val gameKey = gid.getOrElse("gameKey", BsonNull()).asInt32.getValue
 			val vodURL = dbHandler.getYoutubeURLForGame(gameKey)
-			arrOfGIDs = arrOfGIDs.append(buildGIDJson(gid, vodURL))
+      arrOfGIDs.+=:(buildGIDJson(gid, vodURL))
 		}
-		Ok(arrOfGIDs)
+    Ok(views.html.Application.games(arrOfGIDs.toList))
 	}
 
 	def gamesByTeam(teamAcronym: String) = Action {
@@ -76,7 +79,8 @@ class MapController extends Controller {
 		val team1 = gameIdentifier.getOrElse("team1", BsonNull()).asString.getValue
 		val team2 = gameIdentifier.getOrElse("team2", BsonNull()).asString.getValue
 		val realm = gameIdentifier.getOrElse("realm", BsonNull()).asString.getValue
-		return Json.obj("gameKey"-> gameKey, "gameDate" -> gameDate,
+    val time: Date = new DateTime(gameDate).toDate
+		return Json.obj("gameKey"-> gameKey, "gameDate" -> time.toString,
 			"team1" -> team1, "team2" -> team2, "realm"-> realm, "vod"-> youtubeURL)
 	}
 
