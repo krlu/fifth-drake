@@ -1,2 +1,5 @@
-include ':eSportsCV'
-project(':eSportsCV').projectDir = new File(settingsDir, '../eSportsCV')
+include ':climb-core'
+project(':climb-core').projectDir = new File(settingsDir, '../climb-core')
+
+include ':ramenX'
+project(':ramenX').projectDir = new File(settingsDir, '../ramenX')
