@@ -19,7 +19,7 @@
     <ul class="list-group">
         @for(gid <- gids) {
         <li class="list-group-item">
-            <a href= /lol/games/id/@Html(gid.value.getOrElse("gameKey", null).toString) class="list-group-item">
+            <a href= /lol/games/id/@Html(gid.value.getOrElse("gameKey", null).toString)/@Html(gid.value.getOrElse("vodURL", null).toString) class="list-group-item">
                 @gid.value.get("team1") vs @gid.value.get("team2") @gid.value.get("gameDate")
             </a>
         </li>

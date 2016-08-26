@@ -81,21 +81,23 @@ class MapController extends Controller {
 		val realm = gameIdentifier.getOrElse("realm", BsonNull()).asString.getValue
     val time: Date = new DateTime(gameDate).toDate
 		return Json.obj("gameKey"-> gameKey, "gameDate" -> time.toString,
-			"team1" -> team1, "team2" -> team2, "realm"-> realm, "vod"-> youtubeURL)
+			"team1" -> team1, "team2" -> team2, "realm"-> realm, "vodURL"-> youtubeURL.split("v=")(1).split("&t=")(0))
 	}
 
 	/*********************************************************************************************************************
 	****************************************** Loading Data From Given Game **********************************************
 	*********************************************************************************************************************/
 
-	def getGameData(gameId: Int) = Action {
+	def getGameData(gameId: Int, vodID : String) = Action {
+    println(vodID.replace("\"", ""))
 		val data: List[GameState] = dbHandler.getCompleteGame(gameId)
 		var arrOfStates: JsArray = Json.arr()
 		for(gameState <- data){
 			arrOfStates = arrOfStates.append(buildJson(gameState))
 		}
-//    ok(views.html.Application.gamepage())
-    Ok(Json.obj("id" -> gameId, "data"-> arrOfStates))
+    val vodURL = "https://www.youtube.com/embed/" + vodID.replace("\"", "")
+    val json: JsObject = Json.obj("id" -> gameId, "data"-> arrOfStates, "vodURL" -> vodURL)
+    Ok(views.html.Application.gamepage(json))
 	}
 
 	def buildJson(state : GameState): JsObject ={

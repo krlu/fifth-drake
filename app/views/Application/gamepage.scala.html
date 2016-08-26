@@ -1,4 +1,31 @@
+@import play.api.libs.json.{JsObject,JsValue}
+@import play.twirl.api.Html
 
-<div class="embed-responsive embed-responsive-4by3">
-<iframe width="640" height="360" src="https://www.youtube.com/embed/QCCOZ16b4K4" frameborder="0" allowfullscreen></iframe>
-</div>
+@(data : JsObject)
+<head>
+    <title>Games</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="@routes.Assets.versioned("javascripts/VideoController.ts")" type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="embed-responsive embed-responsive-4by3">
+        <iframe width="640" height="360" src=@Html(data.value.getOrElse("vodURL", null).toString)
+        frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div id="player"></div>
+    <br/>
+    <button type="button" onclick="seek(642)">Go to a firstblood</button>
+    <br/>
+    <button type="button" onclick="seek(883)">Go to a rift attempt</button>
+    <br/>
+    <button type="button" onclick="seek(1041)">Go to dragon attempt</button>
+    <br/>
+    <input type="number" min="0" max="1000000" name="value" id="value" />
+    <input type="button" value="submit" onclick="jumpVideo()" />
+
+</body>

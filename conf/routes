@@ -15,7 +15,7 @@ POST    /assets/*file               controllers.Assets.versioned(path="/public",
 
 GET		/             				controllers.MapController.getName
 GET     /request                    controllers.MapController.showRequest
-GET     /lol/games/id/:id           controllers.MapController.getGameData(id: Int)
+GET     /lol/games/id/:id/:url      controllers.MapController.getGameData(id: Int, url: String)
 GET     /lol/games/                 controllers.MapController.allGames
 GET     /lol/games/team/:team       controllers.MapController.gamesByTeam(team: String)
 GET     /api/game/*id               controllers.Assets.versioned(path="/public", id)
