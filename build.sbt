@@ -27,6 +27,7 @@ libraryDependencies += "com.typesafe" % "config" % "1.3.0"
 //javaOptions in run += "-Docr.tessdataPath=" + Option(System.getProperty("ocr.tessdataPath")).getOrElse("C:\\Users\\Kenneth\\Documents\\GitHub\\esportsAnalyticsWeb\\app\\")
 
 lazy val myProject = (project in file("."))
-  .enablePlugins(PlayJava, PlayEbean)
+  .enablePlugins(PlayJava, PlayEbean, SbtWeb)
+pipelineStages := Seq(rjs)
 
 fork in run := true
