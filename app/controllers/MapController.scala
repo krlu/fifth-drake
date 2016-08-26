@@ -88,14 +88,14 @@ class MapController extends Controller {
 	****************************************** Loading Data From Given Game **********************************************
 	*********************************************************************************************************************/
 
-	def getGameData(gameId: Int, youtubeURL : String) = Action {
+	def getGameData(gameId: Int) = Action {
 		val data: List[GameState] = dbHandler.getCompleteGame(gameId)
 		var arrOfStates: JsArray = Json.arr()
 		for(gameState <- data){
 			arrOfStates = arrOfStates.append(buildJson(gameState))
 		}
 //    ok(views.html.Application.gamepage())
-    Ok(Json.obj("id" -> gameId, "data"-> arrOfStates, "url" -> youtubeURL))
+    Ok(Json.obj("id" -> gameId, "data"-> arrOfStates))
 	}
 
 	def buildJson(state : GameState): JsObject ={
