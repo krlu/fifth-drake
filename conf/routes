@@ -13,7 +13,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 POST    /assets/*file               controllers.Assets.versioned(path="/public", file)
 
-GET		/             				controllers.MapController.getName
+GET		/             				controllers.MapController.loadHomePage
 GET     /request                    controllers.MapController.showRequest
 GET     /lol/games/id/:id/:url      controllers.MapController.getGameData(id: Int, url: String)
 GET     /lol/games/                 controllers.MapController.allGames

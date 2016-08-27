@@ -1,17 +1,21 @@
-@*
- * This template is called from the `index` template. This template
- * handles the rendering of the page header and body tags. It takes
- * two arguments, a `String` for the title of the page and an `Html`
- * object to insert into the body of the page.
- *@
-@(title: String)(content: Html)
-
 <!DOCTYPE html>
-    <html lang="en">
-        <head>
-            @* Here's where we render the page title `String`. *@
-<title>@title</title>
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-<link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-</head>
+<html lang="en">
+    <head>
+        <title>Fifth-Drake</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+    </head>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Fifth-Drake</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/lol/games/ ">Games</a></li>
+            </ul>
+        </div>
+    </nav>
 </html>

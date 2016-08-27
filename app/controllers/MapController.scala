@@ -36,8 +36,8 @@ class MapController extends Controller {
                     (17, 16480),
                     (18, 18360))
 
-  def getName = Action {
-    Ok(views.html.index("hello world"))
+  def loadHomePage = Action {
+    Ok(views.html.main())
   }
 
   def showRequest = Action { request =>
