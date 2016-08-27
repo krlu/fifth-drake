@@ -49,7 +49,9 @@ class MapController extends Controller {
   *********************************************************************************************************************/
 
   def allGames() = Action {
-    val gids: List[Document] = dbHandler.getAllGIDs()
+    val gids: List[Document] = dbHandler.getAllGIDs().sortBy(doc =>
+      doc.getOrElse("gameDate", BsonNull()).asInt64.getValue
+    )
     val arrOfGIDs: mutable.MutableList[JsObject] = new mutable.MutableList[JsObject]
     for( gid <- gids){
       val gameKey = gid.getOrElse("gameKey", BsonNull()).asInt32.getValue
@@ -60,15 +62,14 @@ class MapController extends Controller {
   }
 
   def gamesByTeam(teamAcronym: String) = Action {
-    val gids: List[Document] = dbHandler.getGIDsByTeamAcronym(teamAcronym)
+    val gids: List[Document] = dbHandler.getGIDsByTeamAcronym(teamAcronym).sortBy(doc =>
+      doc.getOrElse("gameDate", BsonNull()).asInt64.getValue
+    )
     val arrOfGIDs: mutable.MutableList[JsObject] = new mutable.MutableList[JsObject]
     for( gid <- gids){
       val gameKey = gid.getOrElse("gameKey", BsonNull()).asInt32.getValue
       val vodURL = dbHandler.getYoutubeURLForGame(gameKey)
       arrOfGIDs.+=:(buildGIDJson(gid, vodURL))
-    }
-    for(element <- arrOfGIDs){
-      element.value.getOrElse("vod", null).toString()
     }
     Ok(views.html.Application.games(arrOfGIDs.toList))
   }
