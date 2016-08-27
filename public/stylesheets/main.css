@@ -9,3 +9,23 @@
 #form {
     float: left;
 }
+
+#player{
+    float: left
+}
+
+#map{
+    float: left
+}
+
+#display{
+    width: 100%;
+    position: absolute;
+    left: 16px;
+    overflow: hidden;
+}
+
+#inputs{
+    position: absolute;
+    top: 512px;
+}

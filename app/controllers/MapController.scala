@@ -90,7 +90,6 @@ class MapController extends Controller {
   *********************************************************************************************************************/
 
   def getGameData(gameId: Int, vodID : String) = Action {
-    println(vodID.replace("\"", ""))
     val data: List[GameState] = dbHandler.getCompleteGame(gameId)
     var arrOfStates: JsArray = Json.arr()
     for(gameState <- data){

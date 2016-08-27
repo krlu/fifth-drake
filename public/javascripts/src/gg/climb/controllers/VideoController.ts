@@ -19,7 +19,7 @@ function loadVod(newId){
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-      height: '400',
+      height: '512',
       width: '600',
       videoId: videoId,
       events: {
