@@ -1,6 +1,8 @@
 package gg.climb.ramenx.core
 
-class ListBehavior[Time, +A](initial: Time => A, fs: List[(Time, Time => A)])
+import scalaz.Monoid
+
+class ListBehavior[Time, A](initial: Time => A, fs: List[(Time, Time => A)])
                             (implicit ordering: Ordering[Time])
   extends Behavior[Time, A] {
   import ordering._
@@ -23,6 +25,30 @@ class ListBehavior[Time, +A](initial: Time => A, fs: List[(Time, Time => A)])
   }
 
   override def map[B](f: (A) => B) = new ListBehavior[Time, B](f.compose[Time](current))
+
+  override def sampledBy(start: Time, increment: Time, end: Time)(implicit m: Monoid[Time]): EventStream[Time, A] = {
+    def sample(current: Time): List[(Time, A)] = ordering.gteq(current, end) match {
+      case true => List((current, this(current)))
+      case false => (current, this(current)) :: sample(m.append(current, increment))
+    }
+    new ListEventStream[Time, A](sample(start))
+  }
+
+  /**
+    * @param prev - computes t1 - t2
+    * @return
+    */
+  override def withPrev(diff: Time, prev: (Time, Time) => Time)
+                       (implicit m: Monoid[Time]): Behavior[Time, (Option[A], A)] = {
+    new ListBehavior[Time, (Option[A], A)](t => ordering.lt(prev(t, diff), m.zero) match {
+      case true => (None, this(t))
+      case false => (Some(this(prev(t, diff))), this(t))
+    })
+  }
+
+  override def zip[B](other: Behavior[Time, B]): Behavior[Time, (A, B)] = {
+    new ListBehavior[Time, (A, B)](t => (this(t), other(t)))(ordering)
+  }
 }
 
 object ListBehavior {
