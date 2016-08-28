@@ -14,7 +14,7 @@ import play.api.mvc._
 
 import scala.collection.mutable
 
-class MapController extends Controller {
+class GameDataController extends Controller {
   val dbHandler = MongoDBHandler()
 
   val levels = List((1, 0),
@@ -148,8 +148,8 @@ class MapController extends Controller {
 
 object MapController {
   def main(args : Array[String]): Unit ={
-    val mc = new MapController
-    println(mc.calculateLevel(60000))
+    val gdc = new GameDataController
+    println(gdc.calculateLevel(60000))
   }
 }
 

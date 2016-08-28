@@ -11,8 +11,16 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        var myGids = []
+        @for(gid <- gids){
+            myGids.push(@Html(gid.toString))
+        }
+    </script>
+    <script src="@routes.Assets.versioned("javascripts/src/gg/climb/controllers/GamesListController.ts")"
+    type="text/javascript"></script>
 </head>
-<body>
+<body onload="makeList(myGids)">
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -25,14 +33,13 @@
 </nav>
 <div class="container">
     <h2>Games</h2>
-    <ul class="list-group">
-        @for(gid <- gids) {
-        <li class="list-group-item">
-            <a href= /lol/games/id/@Html(gid.value.getOrElse("gameKey", null).toString)/@Html(gid.value.getOrElse("vodURL", null).toString) class="list-group-item">
-                @gid.value.get("team1") vs @gid.value.get("team2") @gid.value.get("gameDate")
-            </a>
-        </li>
-        }
+    <ul id = "gamesList" class="list-group">
+     </ul>
+     <div class="col-xs-3" id="inputs">
+    <input class="form-control" type="text" name="team" id="team" />
+    <input type="button" class="btn btn-primary" value="filter" onclick="filterBy()" />
+    <input type="button" class="btn btn-primary" value="clear-filter" onclick="makeList(myGids)" />
+    </div>
 </div>
 
 </body>
