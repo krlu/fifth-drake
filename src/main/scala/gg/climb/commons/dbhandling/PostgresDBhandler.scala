@@ -53,20 +53,23 @@ class PostgresDBHandler(host: String, port: Int, db : String,  user : String, pa
     return tagIds.map(id => RiotId[Player](id.toString)).toSet
   }
 
-  def insertTag(tagData : ( String, String, String, String, Long, Set[RiotId[Player]])): Unit = {
-    val query = s"'${tagData._1}', '${tagData._2}', '${tagData._3}', '${tagData._4}', '${tagData._5}'"
+  def insertTag(tag : Tag): Unit = {
+    require(!tag.hasInternalId, "Cannot insert Tag with InternalId, check that this Tag already exists in DB!")
+    val query = s"'${tag.gameKey.id}','${tag.title}','${tag.description}'," +
+                s"'${tag.category.name}','${tag.timestamp.toMillis}'"
     DB localTx { implicit session => {
         val tag_id: Long = SQL(s"insert into league.tag (game_key, title, description, category, timestamp) " +
           s"values ($query)").updateAndReturnGeneratedKey().apply()
-        tagData._6.foreach(id => {
+        tag.players.foreach((id: Player) => {
           SQL(s"INSERT INTO league.player_to_tag (internal_tag_id, player_riot_id) " +
-            s"values ($tag_id, ${id.id})").update.apply()
+            s"values ($tag_id, ${id.riotId.id})").update.apply()
         })
       }
     }
   }
 
   def updateTag(tag: Tag): Unit = {
+    require(tag.hasInternalId, "Tag is missing InternalId, check if Tag exists in DB!")
     DB localTx { implicit session => {
         SQL(s"UPDATE league.tag SET game_key=${tag.gameKey.id}, title='${tag.title}', " +
         s"description='${tag.description}', category='${tag.category.name}', timestamp=${tag.timestamp.toMillis}" +
