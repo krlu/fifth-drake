@@ -34,6 +34,8 @@ repositories {
 }
 
 dependencies {
+
+    compile 'org.scalatest:scalatest_2.11:3.0.0'
     compile 'org.postgresql:postgresql:9.4.1208.jre7'
     compile 'org.scalikejdbc:scalikejdbc_2.11:2.4.2'
     compile 'org.scalikejdbc:scalikejdbc-config_2.11:2.4.2'

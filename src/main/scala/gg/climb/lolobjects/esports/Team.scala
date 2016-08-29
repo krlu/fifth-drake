@@ -9,6 +9,7 @@ class Team(val riotId: RiotId[Team],
            val name: String,
            val acronym: String,
            val players: Traversable[Player]){
+  
   override def toString = s"riotId=$riotId, name=$name, acronym=$acronym, players=$players"
 }
 
