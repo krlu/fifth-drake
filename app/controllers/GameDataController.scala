@@ -19,13 +19,13 @@ class GameDataController extends Controller {
 
   val levels = List((1, 0),
                     (2, 280),
-                    (3,	660),
-                    (4,	1140),
-                    (5,	1720),
-                    (6,	2400),
-                    (7,	3180),
-                    (8,	4060),
-                    (9,	5040),
+                    (3, 660),
+                    (4, 1140),
+                    (5, 1720),
+                    (6, 2400),
+                    (7, 3180),
+                    (8, 4060),
+                    (9, 5040),
                     (10, 6120),
                     (11, 7300),
                     (12, 8580),
@@ -37,7 +37,7 @@ class GameDataController extends Controller {
                     (18, 18360))
 
   def loadHomePage = Action {
-    Ok(views.html.main())
+    Ok(views.html.main)
   }
 
   def showRequest = Action { request =>
@@ -81,8 +81,12 @@ class GameDataController extends Controller {
     val team2 = gameIdentifier.getOrElse("team2", BsonNull()).asString.getValue
     val realm = gameIdentifier.getOrElse("realm", BsonNull()).asString.getValue
     val time: Date = new DateTime(gameDate).toDate
-    return Json.obj("gameKey"-> gameKey, "gameDate" -> time.toString,
-      "team1" -> team1, "team2" -> team2, "realm"-> realm, "vodURL"-> youtubeURL.split("v=")(1).split("&t=")(0))
+    Json.obj("gameKey"-> gameKey,
+             "gameDate" -> time.toString,
+             "team1" -> team1,
+             "team2" -> team2,
+             "realm"-> realm,
+             "vodURL"-> youtubeURL.split("v=")(1).split("&t=")(0))
   }
 
   /*********************************************************************************************************************
@@ -128,19 +132,19 @@ class GameDataController extends Controller {
 
   /**
     * Remainder and XP for Next Level default to 0 if current level is 18
-    * @param cumulativeXP
+    * @param cumulativeXP Total xp for the champion
     * @return (currentLevel, currentXP remainder, XP for Next Level)
     */
   def calculateLevel(cumulativeXP: Int): (Int, Int, Int) = {
     val filteredLevels: List[(Int, Int)] = levels.filter(tuple => tuple._2 <= cumulativeXP)
-    val levelTuple: (Int, Int) = filteredLevels(filteredLevels.size - 1)
+    val levelTuple: (Int, Int) = filteredLevels.last
     val remainder = cumulativeXP - levelTuple._2
     val xpNeededForNextLvl = xpToObtainLvl(levelTuple._1 + 1) - remainder
     (levelTuple._1, remainder, xpNeededForNextLvl)
   }
 
   /**
-    * @param lvl
+    * @param lvl The current level of the champion
     * @return non-cumulative XP needed to obtain level
     */
   def xpToObtainLvl(lvl : Int): Int = if (lvl < 2 || lvl > 18) 0 else 100 * (lvl - 2) + 280
