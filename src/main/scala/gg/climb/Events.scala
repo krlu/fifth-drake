@@ -6,6 +6,7 @@ import gg.climb.lolobjects.game.state.PlayerState
 import gg.climb.ramenx.core.{Behavior, EventStream}
 
 import scala.concurrent.duration._
+import scalaz.Monoid
 
 /**
   * Created by michael on 8/4/16.
@@ -17,6 +18,11 @@ object Events {
     */
   type Group = Set[Player]
 
+  implicit val m = new Monoid[Duration] {
+    override def zero: Duration = Duration.Zero
+    override def append(f1: Duration, f2: => Duration): Duration = f1 + f2
+  }
+
   /**
     * A gank has occurred if:
     * 1) player exits roaming
@@ -24,11 +30,7 @@ object Events {
     * 3) less than 3 turrets taken by either team
     */
   def gank(players: Behavior[Duration, Map[Player, PlayerState]],
-           turrets: EventStream[Duration, (Int, Int)]): EventStream[Duration, Map[Group, Group]] = {
-    val roams = roam(players)
-    val skirmishes = skirmish(players)
-    ???
-  }
+           turrets: EventStream[Duration, (Int, Int)]): EventStream[Duration, Map[Group, Group]] = ???
 
   /**
     * A teamfight has occurred if:
@@ -59,18 +61,20 @@ object Events {
                     minPlayers: Int,
                     maxPlayers: Int): EventStream[Duration, Set[Group]] = {
 
-    def hpLoss: Behavior[Duration, Map[Player, Double]] = players.withPrev(Duration(5, SECONDS))
+    def hpLoss: Behavior[Duration, Map[Player, Double]] = players.withPrev(Duration(5, SECONDS), (t1, t2) => t1 - t2)
       .map({
         case (Some(x), y) => y.map({
           case (player, state) => player -> (x(player).championState.hp - state.championState.hp)
         })
+        case (None, y) => y.map(x => x._1 -> 0.0)
       })
 
-    def mpLoss = players.withPrev(Duration(5, SECONDS))
+    def mpLoss = players.withPrev(Duration(5, SECONDS), (t1, t2) => t1 - t2)
       .map({
         case (Some(x), y) => y.map({
           case (player, state) => player -> (x(player).championState.mp - state.championState.mp)
         })
+        case (None, y) => y.map(x => x._1 -> 0.0)
       })
 
     def partition(states: Map[Player, PlayerState]): Set[Group] = {
@@ -93,7 +97,8 @@ object Events {
         })
       })
 
-      groups.toSet.map({case (player, group) => group.map(ps => ps.player)})
+      val x: ((Player, Set[PlayerState])) => Group = {case (player, group) => group.map(ps => ps.player)}
+      groups.toSet.map(x)
     }
 
     def groups: Behavior[Duration, Set[Group]] = players.map(partition)
@@ -109,7 +114,7 @@ object Events {
 
     hpLoss.zip(mpLoss)
           .zip(groups)
-          .sampledBy(Duration.Zero, Duration(1, SECONDS))
+          .sampledBy(Duration.Zero, Duration(1, SECONDS), Duration.Inf)
           .map(filterGroups)
           .filter(_.nonEmpty)
   }
@@ -127,10 +132,10 @@ object Events {
     def findRoamingPlayers: Map[Player, PlayerState] => Group = {
       states => states.filter({case (p, ps) => isRoaming(p, ps)})
                       .toSet
-                      .map({case (p, ps) => ps.player})
+                      .map((x: (Player, PlayerState)) => x match {case (p, ps) => ps.player})
     }
 
-    players.sampledBy(Duration.Zero, Duration(1, SECONDS))
+    players.sampledBy(Duration.Zero, Duration(1, SECONDS), Duration.Inf)
            .map(findRoamingPlayers)
   }
 
@@ -142,10 +147,10 @@ object Events {
     * @return
     */
   def dragon(takedown: EventStream[Duration, Unit],
-             locations: Behavior[Duration, Set[PlayerState]]): EventStream[Duration, Group] = {
+             locations: Behavior[Duration, Map[Player, LocationData]]): EventStream[Duration, Group] = {
     Behavior.Whenever(locations)
             .<@(takedown)
-            .map(set => set.filter(ps => ps.location.nearDragon).map(ps => ps.player))
+            .map(players => players.filter(_._2.nearDragon).keySet)
   }
 
   /**
