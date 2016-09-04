@@ -18,8 +18,9 @@ object Events {
     */
   type Group = Set[Player]
 
-  implicit val m = new Monoid[Duration] {
+  implicit val monoidDuration: Monoid[Duration] = new Monoid[Duration] {
     override def zero: Duration = Duration.Zero
+
     override def append(f1: Duration, f2: => Duration): Duration = f1 + f2
   }
 
@@ -54,6 +55,8 @@ object Events {
     fight(players, 100, 100, 1500, 2, 7)
   }
 
+  def prevDuration(d: Duration, interval: Duration): Duration = d - interval
+
   private def fight(players: Behavior[Duration, Map[Player, PlayerState]],
                     hpLossThreshold: Double,
                     mpLossThreshold: Double,
@@ -66,7 +69,7 @@ object Events {
         case (Some(x), y) => y.map({
           case (player, state) => player -> (x(player).championState.hp - state.championState.hp)
         })
-        case (None, y) => y.map(x => x._1 -> 0.0)
+        case (None, y) => y.map(_._1 -> 0.0)
       })
 
     def mpLoss = players.withPrev(Duration(5, SECONDS), (t1, t2) => t1 - t2)
@@ -74,7 +77,7 @@ object Events {
         case (Some(x), y) => y.map({
           case (player, state) => player -> (x(player).championState.mp - state.championState.mp)
         })
-        case (None, y) => y.map(x => x._1 -> 0.0)
+        case (None, y) => y.map(_._1 -> 0.0)
       })
 
     def partition(states: Map[Player, PlayerState]): Set[Group] = {
@@ -83,7 +86,7 @@ object Events {
         math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)) <= max
       }
 
-      var groups = states.mapValues(ps => Set(ps))
+      var groups: Map[Player, Set[PlayerState]] = states.mapValues(ps => Set(ps))
 
       groups.foreach({
         case (p1, g1) => groups.foreach({
@@ -130,7 +133,7 @@ object Events {
     }
 
     def findRoamingPlayers: Map[Player, PlayerState] => Group = {
-      states => states.filter({case (p, ps) => isRoaming(p, ps)})
+      (states: Map[Player, PlayerState]) => states.filter(p => isRoaming(p._1, p._2))
                       .toSet
                       .map((x: (Player, PlayerState)) => x match {case (p, ps) => ps.player})
     }
@@ -147,10 +150,11 @@ object Events {
     * @return
     */
   def dragon(takedown: EventStream[Duration, Unit],
-             locations: Behavior[Duration, Map[Player, LocationData]]): EventStream[Duration, Group] = {
+             locations: Behavior[Duration, Set[PlayerState]]): EventStream[Duration, Group] = {
+    def nearDragon(location: LocationData): Boolean = ???
     Behavior.Whenever(locations)
             .<@(takedown)
-            .map(players => players.filter(_._2.nearDragon).keySet)
+            .map(set => set.filter(ps => nearDragon(ps.location)).map(ps => ps.player))
   }
 
   /**

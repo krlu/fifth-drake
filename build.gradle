@@ -1,16 +1,35 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			url "http://dl.bintray.com/palantir/releases"
+		}
+	}
+	dependencies {
+		classpath 'com.palantir:gradle-gitsemver:0.6.0'
+	}
+}
+
 plugins {
 	id "java"
 	id "idea"
 	id "scala"
 }
 
+apply plugin: 'gitsemver'
+
+group "gg.climb"
+version semverVersion()
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 }
 
 dependencies {
-	compile project(":climb-core")
+	compile "gg.climb:climb-core:0.0.1"
+	compile "gg.climb:ramenX:0.0.2"
 }
