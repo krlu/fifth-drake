@@ -18,6 +18,9 @@ plugins {
 
 apply plugin: "gitsemver"
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 group "gg.climb"
 version semverVersion()
 
@@ -26,16 +29,13 @@ repositories {
 }
 
 publishing {
+    repositories {
+        mavenLocal()
+    }
     publications {
         mavenJava(MavenPublication) {
             from components.java
         }
-    }
-}
-
-publishing {
-    repositories {
-        mavenLocal()
     }
 }
 
