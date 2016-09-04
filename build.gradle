@@ -13,14 +13,30 @@ buildscript {
 plugins {
 	id 'scala'
 	id 'idea'
+	id 'maven-publish'
 }
 
 apply plugin: "gitsemver"
 
+group "gg.climb"
 version semverVersion()
 
 repositories {
 	mavenCentral()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
 }
 
 dependencies {
