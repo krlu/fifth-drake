@@ -14,23 +14,32 @@ plugins{
     id "java"
     id "scala"
     id "idea"
+	id 'maven-publish'
     id "org.flywaydb.flyway" version "4.0.3"
 }
+
+apply plugin: "gitsemver"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-configurations {
-    provided {
-        dependencies.all { dep ->
-            configurations.default.exclude group: dep.group, module: dep.name
-        }
-    }
-    compile.extendsFrom provided
-}
+group "gg.climb"
+version semverVersion()
 
 repositories {
     mavenCentral()
+	mavenLocal()
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 dependencies {
@@ -44,5 +53,5 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'org.mongodb.scala:mongo-scala-driver_2.11:1.0.1'
 
-    compile project(":ramenX")
+    compile 'gg.climb:ramenX:0.0.2'
 }
