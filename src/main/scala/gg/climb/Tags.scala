@@ -30,27 +30,23 @@ object Tags {
     def combineLists: (List[Tag], List[Tag]) => List[Tag] = (a, b) => a ++ b
 
     val roams = Events.roam(players).mapWithTime({
-      case (t, g) => {
+      case (t, g) =>
         List(Tag(game, "Roam", "One or more players roaming the map", Category("Generated"), t, g))
-      }
     })
 
     val skirmishes = Events.skirmish(players).mapWithTime({
-      case (t, sg) => {
+      case (t, sg) =>
         sg.map(g => Tag(game, "Skirmish", "A brawl with 2-7 players", Category("Generated"), t, g)).toList
-      }
     })
 
     val teamfights = Events.teamfight(players).mapWithTime({
-      case (t, sg) => {
+      case (t, sg) =>
         sg.map(g => Tag(game, "Teamfight", "A brawl with 8-10 players", Category("Generated"), t, g)).toList
-      }
     })
 
     val dragons = Events.dragon(dragonTakedowns, locations).mapWithTime({
-      case (t, g) => {
+      case (t, g) =>
         List(Tag(game, "Dragon", "Players involved in a dragon takedown", Category("Generated"), t, g))
-      }
     })
 
     roams.merge(skirmishes, combineLists)

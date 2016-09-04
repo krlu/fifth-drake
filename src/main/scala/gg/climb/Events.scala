@@ -150,11 +150,11 @@ object Events {
     * @return
     */
   def dragon(takedown: EventStream[Duration, Unit],
-             locations: Behavior[Duration, Set[PlayerState]]): EventStream[Duration, Group] = {
+             locations: Behavior[Duration, Map[Player, LocationData]]): EventStream[Duration, Group] = {
     def nearDragon(location: LocationData): Boolean = ???
     Behavior.Whenever(locations)
             .<@(takedown)
-            .map(set => set.filter(ps => nearDragon(ps.location)).map(ps => ps.player))
+            .map((players: Map[Player, LocationData]) => players.filter(x => nearDragon(x._2)).keySet)
   }
 
   /**
