@@ -1,0 +1,21 @@
+.timeline {
+	position: relative;
+	height: 20px;
+
+	.bar {
+		position: relative;
+		top: 5px;
+		height: 10px;
+		background: red;
+	}
+
+	.knob {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		width: 20px;
+		height: 20px;
+		background: blue;
+		border-radius: 50%;
+	}
+}
