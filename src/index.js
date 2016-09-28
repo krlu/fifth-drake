@@ -4,7 +4,7 @@
 require('./index.html');
 require('./styles/timeline.scss');
 
-var Elm = require('./Main.elm');
+var Elm = require('./elm/Main.elm');
 var mountNode = document.getElementById('main');
 
 // The third value on embed are the initial values for incomming ports into Elm
