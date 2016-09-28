@@ -20,7 +20,7 @@ module.exports = {
 		extensions: ['', '.js', 'elm']
 	},
 
-	devtools: "source-map",
+	devtool: "source-map",
 
 	module: {
 		preLoaders: [
