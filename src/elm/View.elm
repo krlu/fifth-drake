@@ -1,12 +1,12 @@
 module View exposing (view)
 
 import Css exposing (..)
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, p)
 import Html.Attributes exposing (class)
 import Html.Events exposing (on)
 import Json.Decode as Json
 import Messages exposing (Msg(KnobGrab))
-import Models exposing (Model, getCurrentValue)
+import Models exposing (Model, getCurrentPx)
 import Mouse
 
 styles = Css.asPairs >> Html.Attributes.style
@@ -14,18 +14,20 @@ styles = Css.asPairs >> Html.Attributes.style
 view : Model -> Html Msg
 view model =
   let
-    value = getCurrentValue model
+    value = getCurrentPx model
   in
-    div [ class "timeline" ]
+    div [ class "timeline"
+        ]
       [ div [ class "bar"
-            , styles [ width <| (model.maxVal |> toFloat |> px)
+            , styles [ width <| (model.width |> px)
                      ]
             ]
             []
       , div [ on "mousedown" (Json.map KnobGrab Mouse.position)
             , class "knob"
-            , styles [ left <| (value |> toFloat |> px)
+            , styles [ left <| (value |> px)
                      ]
             ]
             []
+      , p [] [ (Html.text << toString) model.value ]
       ]
