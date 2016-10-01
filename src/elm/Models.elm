@@ -2,9 +2,11 @@ module Models exposing (..)
 
 import Mouse
 
+type alias Value = Int
+
 type alias Model =
-  { value: Int
-  , maxVal: Int
+  { value: Value
+  , maxVal: Value
   , mouse: Maybe Drag
   , width: Float
   }
@@ -23,7 +25,7 @@ initialModel =
   , width = 500
   }
 
-getCurrentValue : Model -> Int
+getCurrentValue : Model -> Value
 getCurrentValue {value, maxVal, mouse, width} =
   case mouse of
     Nothing -> value
@@ -39,3 +41,10 @@ getCurrentPx ({width, maxVal} as model) =
     |> toFloat
     |> \val -> val / (toFloat maxVal) * width
 
+getValueAt : Model -> Mouse.Position -> Value
+getValueAt {width, maxVal} pos =
+  let
+      x = toFloat pos.x
+      max = toFloat maxVal
+  in
+  round <| x * max / width

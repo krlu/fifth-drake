@@ -5,7 +5,7 @@ import Html exposing (Html, div, text, p)
 import Html.Attributes exposing (class)
 import Html.Events exposing (on)
 import Json.Decode as Json
-import Messages exposing (Msg(KnobGrab))
+import Messages exposing (Msg(KnobGrab, BarClick))
 import Models exposing (Model, getCurrentPx)
 import Mouse
 
@@ -21,6 +21,7 @@ view model =
       [ div [ class "bar"
             , styles [ width <| (model.width |> px)
                      ]
+            , on "click" (Json.map BarClick Mouse.position)
             ]
             []
       , div [ on "mousedown" (Json.map KnobGrab Mouse.position)
