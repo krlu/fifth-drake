@@ -27,7 +27,6 @@ view model =
                     ]
             ]
             []
-      , text <| toString model.value
       ]
 
 px : Int -> String
