@@ -31,9 +31,9 @@ getCurrentValue {value, maxVal, mouse, width} =
     Nothing -> value
     Just {start, current} ->
       let
-          delta = current.x - start.x |> toFloat
+        delta = current.x - start.x |> toFloat
       in
-          max 0 << min maxVal <| value + truncate (delta / width * maxVal)
+        max 0 << min maxVal <| value + truncate (delta / width * maxVal)
 
 getCurrentPx : Model -> Float
 getCurrentPx ({width, maxVal} as model) =
@@ -44,7 +44,7 @@ getCurrentPx ({width, maxVal} as model) =
 getValueAt : Model -> Mouse.Position -> Value
 getValueAt {width, maxVal} pos =
   let
-      x = toFloat pos.x
-      max = toFloat maxVal
+    x = toFloat pos.x
+    max = toFloat maxVal
   in
-  round <| x * max / width
+    truncate <| x * max / width - 1
