@@ -1,4 +1,4 @@
-module Messages exposing (..)
+module Timeline.Messages exposing (..)
 
 import Mouse
 

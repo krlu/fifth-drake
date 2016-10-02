@@ -1,4 +1,4 @@
-module Models exposing (..)
+module Timeline.Models exposing (..)
 
 import Mouse
 

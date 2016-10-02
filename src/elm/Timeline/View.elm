@@ -1,12 +1,12 @@
-module View exposing (view)
+module Timeline.View exposing (view)
 
 import Css exposing (..)
 import Html exposing (Html, div, text, p)
 import Html.Attributes exposing (class)
 import Html.Events exposing (on)
 import Json.Decode as Json
-import Messages exposing (Msg(KnobGrab, BarClick))
-import Models exposing (Model, getCurrentPx)
+import Timeline.Messages exposing (Msg(KnobGrab, BarClick))
+import Timeline.Models exposing (Model, getCurrentPx)
 import Mouse
 
 styles = Css.asPairs >> Html.Attributes.style
@@ -30,5 +30,4 @@ view model =
                      ]
             ]
             []
-      , p [] [ (Html.text << toString) model.value ]
       ]

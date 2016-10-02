@@ -2,18 +2,18 @@ module Main exposing (..)
 
 import Html exposing (Html, div, text)
 import Html.App
-import Messages exposing (Msg)
-import Models exposing (Model, initialModel)
-import Subscriptions
-import Update
-import View
+import Timeline.Messages exposing (Msg)
+import Timeline.Models exposing (Model, initialModel)
+import Timeline.Subscriptions
+import Timeline.Update
+import Timeline.View
 
 init : (Model, Cmd Msg )
 init = (initialModel, Cmd.none)
 
 main : Program Never
 main = Html.App.program { init = init
-                        , view = View.view
-                        , update = Update.update
-                        , subscriptions = Subscriptions.subscriptions
+                        , view = Timeline.View.view
+                        , update = Timeline.Update.update
+                        , subscriptions = Timeline.Subscriptions.subscriptions
                         }

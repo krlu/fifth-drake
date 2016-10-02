@@ -1,7 +1,7 @@
-module Update exposing (update)
+module Timeline.Update exposing (update)
 
-import Messages exposing (Msg(..))
-import Models exposing (..)
+import Timeline.Messages exposing (Msg(..))
+import Timeline.Models exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = (update' msg model, Cmd.none)

@@ -1,7 +1,7 @@
-module Subscriptions exposing (subscriptions)
+module Timeline.Subscriptions exposing (subscriptions)
 
-import Messages exposing (Msg(..))
-import Models exposing (Model)
+import Timeline.Messages exposing (Msg(..))
+import Timeline.Models exposing (Model)
 import Mouse
 
 subscriptions : Model -> Sub Msg
