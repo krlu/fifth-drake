@@ -5,8 +5,8 @@ type alias Model =
   }
 
 type alias Player =
-  { x : Int
-  , y : Int
+  { x : Float
+  , y : Float
   }
 
 initialModel : Model
