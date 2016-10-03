@@ -2,6 +2,7 @@
 
 // Require index.html so it gets copied to dist
 require('./index.html');
+require('./styles/minimap.scss');
 require('./styles/timeline.scss');
 
 var Elm = require('./elm/Main.elm');

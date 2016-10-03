@@ -7,7 +7,7 @@ import Subscriptions
 import Update
 import View
 
-init : (Model, Cmd Msg )
+init : (Model, Cmd Msg)
 init = (initialModel, Cmd.none)
 
 main : Program Never
