@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "webpack.config.js",
+  "repository": {
+	  "type": "git",
+	  "url": "git@github.com:climb-gg/elmui.git"
+  },
   "dependencies": {
     "css-loader": "^0.25.0",
     "elm-css-webpack-loader": "^2.0.1",
@@ -15,7 +19,9 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.13.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack-dev-server": "^1.16.1"
+  },
   "scripts": {
     "api": "node api.js",
     "build": "webpack",
