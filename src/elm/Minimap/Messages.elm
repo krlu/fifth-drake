@@ -1,5 +1,8 @@
 module Minimap.Messages exposing (..)
 
-import Minimap.Models as MModel
+import Http
+import Minimap.Models exposing (..)
 
-type Msg = SetPlayers (List MModel.Player)
+type Msg
+  = SetPlayers (List Player)
+  | PlayerFetchFailure Http.Error
