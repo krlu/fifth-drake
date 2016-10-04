@@ -1,8 +1,8 @@
 module Minimap.View exposing (..)
 
-import Css exposing (..)
+import Css exposing (left, bottom, px)
 import Html exposing (..)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (..)
 import Minimap.Models exposing (Model)
 import Minimap.Messages exposing (Msg)
 import StyleUtils exposing (..)
@@ -24,4 +24,11 @@ view model =
   in
     div [ class "minimap"
         ]
-      playerIcons
+      (
+        [ img [ class "background"
+              , src "src/img/map.jpg"
+              ]
+            []
+        ]
+        ++ playerIcons
+      )

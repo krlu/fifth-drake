@@ -2,7 +2,6 @@
 		position: relative;
 		height: 500px;
 		width: 500px;
-		background: green;
 
 		.playerIcon {
 				position: absolute;
@@ -11,5 +10,10 @@
 				background: brown;
 				border-radius: 50%;
 				transform: translate(-50%, 50%);
+		}
+
+		.background {
+			height: 100%;
+			width: 100%;
 		}
 }

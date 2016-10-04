@@ -52,6 +52,10 @@ module.exports = {
 				],
 				loader: 'elm-webpack'
 			},
+			{
+				test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
+				loader: "file?name=[name].[ext]"
+			}
 		],
 		noParse: /\.elm$/
 	}
