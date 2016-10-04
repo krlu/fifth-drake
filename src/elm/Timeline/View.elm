@@ -20,7 +20,7 @@ view model =
       [ div [ class "bar"
             , styles [ width (model.width |> px)
                      ]
-            , on "click" (Json.map BarClick Mouse.position)
+            , on "mousedown" (Json.map BarClick Mouse.position)
             ]
             []
       , div [ on "mousedown" (Json.map KnobGrab Mouse.position)

@@ -1,7 +1,10 @@
+@import "./mixins";
+
 .timeline {
 	position: relative;
 	height: 20px;
 	width: 500px;
+	@include user-select(none);
 
 	.bar {
 		position: relative;

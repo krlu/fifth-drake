@@ -1,19 +1,22 @@
+@import "./mixins";
+
 .minimap {
-		position: relative;
-		height: 500px;
-		width: 500px;
+	position: relative;
+	height: 500px;
+	width: 500px;
+	@include user-select(none);
 
-		.playerIcon {
-				position: absolute;
-				width: 10px;
-				height: 10px;
-				background: brown;
-				border-radius: 50%;
-				transform: translate(-50%, 50%);
-		}
+	.playerIcon {
+		position: absolute;
+		width: 10px;
+		height: 10px;
+		background: brown;
+		border-radius: 50%;
+		transform: translate(-50%, 50%);
+	}
 
-		.background {
-			height: 100%;
-			width: 100%;
-		}
+	.background {
+		height: 100%;
+		width: 100%;
+	}
 }

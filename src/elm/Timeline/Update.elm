@@ -16,4 +16,4 @@ update' msg ({value, mouse} as model) =
     KnobRelease pos ->
       { model | mouse = Nothing, value = getCurrentValue model }
     BarClick pos ->
-      { model | value = getValueAt model pos }
+      { model | mouse = Just <| Drag pos pos, value = getValueAt model pos }
