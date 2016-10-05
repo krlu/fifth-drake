@@ -7,11 +7,3 @@ class ChampionState(val hp: Double,
 
 	override def toString = s"ChampionState(hp=$hp, mp=$mp, xp=$xp, name=$name)"
 }
-
-object ChampionState {
-	def apply(hp: Double,
-	          mp: Double,
-	          xp: Double,
-	          name: String) = new ChampionState(hp, mp, xp, name)
-}
-

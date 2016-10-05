@@ -52,6 +52,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'org.mongodb.scala:mongo-scala-driver_2.11:1.0.1'
+    compile 'com.typesafe.scala-logging:scala-logging_2.11:3.4.0'
 
     compile 'gg.climb:ramenX:0.0.2'
 }

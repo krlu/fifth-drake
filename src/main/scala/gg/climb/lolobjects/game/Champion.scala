@@ -11,13 +11,6 @@ class Champion(val internalId: InternalId[Champion],
                val stats: ChampionStats,
                val image: ChampionImage){
 
-  override def toString = s"$internalId=$internalId, riotId=$riotId, name=$name, stats=$stats, image=$image"
-}
-
-object Champion{
-  def apply( internalId: InternalId[Champion],
-             riotId: RiotId[Champion],
-             name: String,
-             stats: ChampionStats,
-             image: ChampionImage) = new Champion(internalId, riotId, name, stats, image)
+  override def toString = s"Champion(internalId=${internalId.id}, " +
+    s"riotId=${riotId.id}, name=$name, stats=$stats, image=$image)"
 }

@@ -11,11 +11,3 @@ class TeamState(val players : List[PlayerState],
 	override def toString = s"TeamState(players=$players,\nbarons=$barons,\ndragons=$dragons,\nturrets=$turrets)"
 }
 
-object TeamState {
-	def apply(players : List[PlayerState],
-	          barons : Int,
-	          dragons : Int,
-	          turrets : Int) = new TeamState(players, barons, dragons, turrets)
-}
-
-

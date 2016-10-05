@@ -12,8 +12,3 @@ class GameState(val timestamp: Duration,
 	override def toString = s"GameState(timestamp=$timestamp,\nred=$red,\nblue=$blue)"
 }
 
-object GameState {
-	def apply(timestamp: Duration,
-	          red : TeamState,
-	          blue : TeamState) = new GameState(timestamp, red, blue)
-}
