@@ -2,6 +2,7 @@ module View exposing (..)
 
 import Html exposing (..)
 import Html.App
+import Html.Attributes exposing (..)
 import Messages exposing (Msg(..))
 import Models exposing (Model)
 import Timeline.View as TView
@@ -16,6 +17,7 @@ view model =
   in
       div []
         [ minimap
+        , div [ class "hdivider" ] []
         , timeline
         , p [] [ (Html.text << toString << getCurrentValue) model.timeline ]
         ]

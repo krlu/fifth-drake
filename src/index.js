@@ -4,6 +4,7 @@
 require('./index.html');
 require('./styles/minimap.scss');
 require('./styles/timeline.scss');
+require('./styles/divider.scss');
 
 var Elm = require('./elm/Main.elm');
 var mountNode = document.getElementById('main');

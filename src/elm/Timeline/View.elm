@@ -35,7 +35,7 @@ view model =
                 ]
                 []
           ]
-      , div [ class "divider" ] []
+      , div [ class "vdivider" ] []
       , button [ class "play-button"
                , onClick PlayPause
                ]

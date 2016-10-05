@@ -1,0 +1,11 @@
+@import "./config";
+
+.vdivider {
+		height: 100%;
+		width: $divider-width;
+}
+
+.hdivider {
+		height: $divider-width;
+		width: 100%;
+}
