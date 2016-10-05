@@ -1,9 +1,10 @@
+@import "./config";
 @import "./mixins";
 
 .minimap {
 	position: relative;
-	height: 500px;
-	width: 500px;
+	height: $minimap-height;
+	width: $minimap-width;
 	@include user-select(none);
 
 	.playerIcon {

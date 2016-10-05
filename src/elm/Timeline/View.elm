@@ -19,20 +19,23 @@ view model =
         Pause -> "src/img/play1.svg"
     pxs = getCurrentPx model
   in
-    div [ class "timeline"
-        ]
-      [ div [ class "bar"
-            , styles [ Css.width (model.width |> px)
-                     ]
-            , on "mousedown" (Json.map BarClick Mouse.position)
+    div [ class "controls" ]
+      [ div [ class "timeline"
             ]
-            []
-      , div [ on "mousedown" (Json.map KnobGrab Mouse.position)
-            , class "knob"
-            , styles [ left (pxs |> px)
-                     ]
-            ]
-            []
+          [ div [ class "bar"
+                , styles [ Css.width (model.width |> px)
+                         ]
+                , on "mousedown" (Json.map BarClick Mouse.position)
+                ]
+                []
+          , div [ on "mousedown" (Json.map KnobGrab Mouse.position)
+                , class "knob"
+                , styles [ left (pxs |> px)
+                         ]
+                ]
+                []
+          ]
+      , div [ class "divider" ] []
       , button [ class "play-button"
                , onClick PlayPause
                ]
@@ -41,5 +44,4 @@ view model =
                 ]
               []
           ]
-      , p [] [ (Html.text << toString << getCurrentValue) model ]
       ]

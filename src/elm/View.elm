@@ -6,6 +6,7 @@ import Messages exposing (Msg(..))
 import Models exposing (Model)
 import Timeline.View as TView
 import Minimap.View as MView
+import Timeline.Models exposing (getCurrentValue)
 
 view : Model -> Html Msg
 view model =
@@ -16,4 +17,5 @@ view model =
       div []
         [ minimap
         , timeline
+        , p [] [ (Html.text << toString << getCurrentValue) model.timeline ]
         ]

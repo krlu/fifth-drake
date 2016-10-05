@@ -24,11 +24,11 @@ type Status
 
 initialModel : Model
 initialModel =
-  { value = 50
+  { value = 0
   , maxVal = 100
   , mouse = Nothing
   , status = Pause
-  , width = 500
+  , width = 462
   }
 
 getCurrentValue : Model -> Value
