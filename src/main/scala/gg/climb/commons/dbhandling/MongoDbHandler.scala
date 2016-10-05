@@ -17,7 +17,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-class MongoDbHandler(dbh: PostgresDbHandler, mongoClient: MongoClient) {
+class MongoDBHandler(dbh: PostgresDBHandler, mongoClient: MongoClient) {
 
   val TIMEOUT = Duration(5, TimeUnit.SECONDS)
 //  val mongoClient: MongoClient = MongoClient("mongodb://localhost")

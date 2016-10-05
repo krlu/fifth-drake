@@ -11,12 +11,12 @@ import org.scalatest.{Matchers, WordSpec}
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-class MongoDbHandlerTest extends WordSpec with Matchers{
+class MongoDBHandlerTest extends WordSpec with Matchers{
   val TIMEOUT = Duration(30, TimeUnit.SECONDS)
-  val pdbh = new PostgresDbHandler("localhost", 5432, "league_analytics", "kenneth", "asdfasdf")
+  val pdbh = new PostgresDBHandler("localhost", 5432, "league_analytics", "kenneth", "asdfasdf")
   val mongoClient: MongoClient = MongoClient("mongodb://localhost")
 
-  val dbh = new MongoDbHandler(pdbh, mongoClient)
+  val dbh = new MongoDBHandler(pdbh, mongoClient)
   "A MongoDBHandler " should {
 
     "query states of a game" in {

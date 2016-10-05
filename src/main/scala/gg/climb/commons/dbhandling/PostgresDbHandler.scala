@@ -13,7 +13,7 @@ import scalikejdbc._
 import scala.concurrent.duration.Duration
 
 
-class PostgresDbHandler(host: String, port: Int, db : String, user : String, password: String) {
+class PostgresDBHandler(host: String, port: Int, db : String, user : String, password: String) {
 
   GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(
     enabled = false,
@@ -48,11 +48,10 @@ class PostgresDbHandler(host: String, port: Int, db : String, user : String, pas
     * @return
     */
   private def buildTag(data: (Int, String, String, String, String, Long)): Tag =  data match {
-    case data : (Int, String, String, String, String, Long) => {
+    case data : (Int, String, String, String, String, Long) =>
       val tagId = new InternalId[Tag](data._1.toString)
       new Tag(tagId, new RiotId[Game](data._2), data._3, data._4, new Category(data._5),
         Duration(data._6, TimeUnit.MILLISECONDS), getPlayersForTag(tagId))
-    }
     case _  => throw new IllegalArgumentException("")
   }
   private def getPlayersForTag(tagId : InternalId[Tag]) : Set[Player] = {
@@ -70,7 +69,7 @@ class PostgresDbHandler(host: String, port: Int, db : String, user : String, pas
 
   def insertTag(tag : Tag): Unit = {
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
-      s"check that this Tag already exists in DB! Id is ${tag}")
+      s"check that this Tag already exists in DB! Id is $tag")
     val query = s"'${tag.gameKey.id}','${tag.title}','${tag.description}'," +
                 s"'${tag.category.name}','${tag.timestamp.toMillis}'"
     DB localTx { implicit session => {
@@ -235,7 +234,7 @@ class PostgresDbHandler(host: String, port: Int, db : String, user : String, pas
       case None => DB readOnly { implicit session =>
         SQL(s"SELECT team_id FROM league.player_team WHERE player_id = '$id' order by end_date desc")
           .map(rs => rs.string("team_id")
-        ).list().apply().apply(0)
+          ).list().apply().head
       }
       case _ => teamId.get
     }
