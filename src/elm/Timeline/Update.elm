@@ -17,3 +17,11 @@ update' msg ({value, mouse} as model) =
       { model | mouse = Nothing, value = getCurrentValue model }
     BarClick pos ->
       { model | mouse = Just <| Drag pos pos, value = getValueAt model pos }
+    PlayPause ->
+      { model | status = toggleStatus model.status
+              , value = if model.value >= model.maxVal then 0 else model.value }
+    TimerUpdate _ ->
+      if model.value >= model.maxVal then
+        { model | status = Pause }
+      else
+        { model | value = model.value + 1 }

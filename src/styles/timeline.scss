@@ -23,4 +23,13 @@
 		border-radius: 5px;
 		transform: translateX(-50%);
 	}
+
+	.play-button {
+		height: 50px;
+		width: 50px;
+		.play-pause-img {
+			height: 100%;
+			width: 100%;
+		}
+	}
 }

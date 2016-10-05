@@ -8,6 +8,8 @@ type alias Model =
   { value: Value
   , maxVal: Value
   , mouse: Maybe Drag
+
+  , status: Status
   , width: Float
   }
 
@@ -16,12 +18,16 @@ type alias Drag =
   , current: Mouse.Position
   }
 
+type Status
+  = Play
+  | Pause
+
 initialModel : Model
 initialModel =
   { value = 50
   , maxVal = 100
   , mouse = Nothing
-
+  , status = Pause
   , width = 500
   }
 
@@ -48,3 +54,9 @@ getValueAt {width, maxVal} pos =
     max = toFloat maxVal
   in
     truncate <| x * max / width - 1
+
+toggleStatus : Status -> Status
+toggleStatus x =
+  case x of
+    Play -> Pause
+    Pause -> Play
