@@ -5,12 +5,12 @@
 	display: flex;
 	height: $timeline-height;
 	width: $minimap-width;
+	@include user-select(none);
 
 	.timeline {
 		position: relative;
 		height: $timeline-height;
 		width: $minimap-width - $timeline-height - $divider-width;
-		@include user-select(none);
 
 		.bar {
 			position: relative;
