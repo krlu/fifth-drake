@@ -1,24 +1,28 @@
 module Minimap.View exposing (..)
 
+import Array
 import Css exposing (left, bottom, px)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Minimap.Models exposing (Model)
+import Maybe exposing (andThen)
 import Minimap.Messages exposing (Msg)
+import Minimap.Models exposing (Model)
 import StyleUtils exposing (..)
 
 view : Model -> Html Msg
 view model =
   let
     playerIcons =
-      List.map
+      List.filterMap
         (\player ->
-          div [ class "playerIcon"
-              , styles [ left (player.x |> px)
-                       , bottom (player.y |> px)
-                       ]
-              ]
-           []
+          Array.get 0 player.state
+            |> Maybe.map (\state ->
+              div [ class "playerIcon"
+                  , styles [ left (state.x |> px)
+                           , bottom (state.y |> px)
+                           ]
+                  ]
+               [])
         )
         model.players
   in

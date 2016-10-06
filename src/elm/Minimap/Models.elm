@@ -1,13 +1,19 @@
 module Minimap.Models exposing (..)
 
+import Array exposing (..)
+
 type alias Model =
   { players : List Player
   }
 
 type alias Player =
   { id: Int
-  , x : Float
-  , y : Float
+  , state: Array PlayerState
+  }
+
+type alias PlayerState =
+  { x: Float
+  , y: Float
   }
 
 initialModel : Model
