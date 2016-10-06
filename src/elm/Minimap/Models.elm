@@ -4,6 +4,7 @@ import Array exposing (..)
 
 type alias Model =
   { players : List Player
+  , timestamp : Int
   }
 
 type alias Player =
@@ -19,4 +20,5 @@ type alias PlayerState =
 initialModel : Model
 initialModel =
   { players = []
+  , timestamp = 0
   }

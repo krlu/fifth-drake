@@ -4,10 +4,10 @@ import Html exposing (..)
 import Html.App
 import Html.Attributes exposing (..)
 import Messages exposing (Msg(..))
-import Models exposing (Model)
-import Timeline.View as TView
 import Minimap.View as MView
+import Models exposing (Model)
 import Timeline.Models exposing (getCurrentValue)
+import Timeline.View as TView
 
 view : Model -> Html Msg
 view model =
@@ -20,4 +20,5 @@ view model =
         , div [ class "hdivider" ] []
         , timeline
         , p [] [ (Html.text << toString << getCurrentValue) model.timeline ]
+        , p [] [ (Html.text << toString) model.minimap.timestamp ]
         ]

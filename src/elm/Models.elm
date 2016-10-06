@@ -1,7 +1,7 @@
 module Models exposing (..)
 
-import Timeline.Models as TModel
 import Minimap.Models as MModel
+import Timeline.Models as TModel
 
 type alias Model =
   { timeline: TModel.Model

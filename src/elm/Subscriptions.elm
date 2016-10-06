@@ -1,7 +1,7 @@
 module Subscriptions exposing (..)
 
-import Models exposing (Model)
 import Messages exposing (Msg(..))
+import Models exposing (Model)
 import Timeline.Subscriptions as TSub
 
 subscriptions : Model -> Sub Msg

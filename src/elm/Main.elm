@@ -2,12 +2,12 @@ module Main exposing (..)
 
 import Html.App
 import Messages exposing (Msg(..))
+import Minimap.Populate as Populate
 import Models exposing (Model, initialModel)
 import Subscriptions
+import Task
 import Update
 import View
-import Task
-import Minimap.Populate as Populate
 
 init : (Model, Cmd Msg)
 init = ( initialModel

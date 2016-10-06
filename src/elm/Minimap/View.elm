@@ -15,7 +15,7 @@ view model =
     playerIcons =
       List.filterMap
         (\player ->
-          Array.get 0 player.state
+          Array.get model.timestamp player.state
             |> Maybe.map (\state ->
               div [ class "playerIcon"
                   , styles [ left (state.x |> px)

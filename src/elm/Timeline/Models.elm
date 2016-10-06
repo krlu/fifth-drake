@@ -52,7 +52,7 @@ getValueAt {width, maxVal} pos =
   let
     x = toFloat pos.x
     max = toFloat maxVal
-  in
+  in -- Subtract 1 pixel to make clicking feel right.
     truncate <| x * max / width - 1
 
 toggleStatus : Status -> Status
