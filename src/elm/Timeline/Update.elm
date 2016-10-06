@@ -19,9 +19,11 @@ update' msg ({value, mouse} as model) =
       { model | mouse = Just <| Drag pos pos, value = getValueAt model pos }
     PlayPause ->
       { model | status = toggleStatus model.status
-              , value = if model.value >= model.maxVal
-                        then 0
-                        else model.value + 1
+              , value =
+                  case (model.value >= model.maxVal, model.status) of
+                    (True, _) -> 0
+                    (False, Play) -> model.value
+                    (False, Pause) -> model.value + 1
       }
     TimerUpdate _ ->
       if model.value >= model.maxVal then
