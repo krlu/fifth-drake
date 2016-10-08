@@ -14,12 +14,5 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 POST    /assets/*file               controllers.Assets.versioned(path="/public", file)
 
 GET		/             				controllers.GameDataController.loadHomePage
-GET     /request                    controllers.GameDataController.showRequest
-GET     /lol/games/id/:id/:url      controllers.GameDataController.getGameData(id: Int, url: String)
+GET     /lol/games/id/:id/:url      controllers.GameDataController.getGameData(id: String, url: String)
 GET     /lol/games/                 controllers.GameDataController.allGames
-GET     /lol/games/team/:team       controllers.GameDataController.gamesByTeam(team: String)
-GET     /api/game/*id               controllers.Assets.versioned(path="/public", id)
-
-
-# Map resources for node_module
-GET     /node_modules/*file         controllers.NodeModulesController.at(file)
