@@ -12,8 +12,8 @@
 
     // The third value on embed are the initial values for incomming ports into Elm
 	var app = Elm.Main.embed(mountNode, {
-		minimapBackground: require("./img/map.jpg"),
-		playButton: require("./img/play1.svg"),
-		pauseButton: require("./img/pause.svg")
+		minimapBackground: require("map.jpg"),
+		playButton: require("play1.svg"),
+		pauseButton: require("pause.svg")
 	});
 })();

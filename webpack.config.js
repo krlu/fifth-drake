@@ -15,10 +15,9 @@ module.exports = {
 	},
 
 	resolve: {
-        root: srcPath,
 		modulesDirectories: [
 			'node_modules',
-			path.resolve(__dirname, './node_modules')
+            'public'
 		],
 		extensions: ['', '.js', '.elm']
 	},
