@@ -1,11 +1,6 @@
 package controllers
 
 import gg.climb.commons.dbhandling.MongoDBHandler
-import gg.climb.lolobjects.RiotId
-import gg.climb.lolobjects.esports.Player
-import gg.climb.lolobjects.game.state.{ChampionState, GameState, PlayerState}
-import gg.climb.lolobjects.game.{GameIdentifier, LocationData}
-import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc._
 
 class GameDataController extends Controller {
@@ -28,8 +23,6 @@ class GameDataController extends Controller {
       throw new IllegalArgumentException(s"Cannot have `$xp' xp")
     }
 
-  def loadHomePage = Action {
-                              Ok(views.html.index())
-                            }
+  def loadHomePage: Action[AnyContent] = Action {Ok(views.html.index()) }
 }
 

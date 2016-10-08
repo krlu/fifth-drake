@@ -2,7 +2,12 @@ name := """fifth-drake"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file("."))
+                .enablePlugins(PlayScala, BuildInfoPlugin)
+
+buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
+buildInfoPackage := "controllers"
+buildInfoOptions += BuildInfoOption.ToJson
 
 scalaVersion := "2.11.7"
 
