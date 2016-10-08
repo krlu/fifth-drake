@@ -1,23 +1,26 @@
 const path = require('path');
+const assetPath = 'app/assets';
+const srcPath = path.join(__dirname, assetPath);
 
 module.exports = {
 	entry: {
 		app: [
-			"./app/assets/index.js"
+			path.join(srcPath, "index.js")
 		]
 	},
 
 	output: {
 		path: path.resolve(__dirname, '/build'),
-		filename: '[name].js',
+		filename: '[name].js'
 	},
 
 	resolve: {
+        root: srcPath,
 		modulesDirectories: [
 			'node_modules',
 			path.resolve(__dirname, './node_modules')
 		],
-		extensions: ['', '.js', 'elm']
+		extensions: ['', '.js', '.elm']
 	},
 
 	devtool: "source-map",
@@ -59,4 +62,4 @@ module.exports = {
 		],
 		noParse: /\.elm$/
 	}
-}
+};
