@@ -13,3 +13,4 @@ target
 project/play-fork-run.sbt
 project/sbt-ui.sbt
 *.iml
+node_modules
