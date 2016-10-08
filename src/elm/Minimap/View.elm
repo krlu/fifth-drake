@@ -30,7 +30,7 @@ view model =
         ]
       (
         [ img [ class "background"
-              , src "src/img/map.jpg"
+              , src model.background
               , draggable "false"
               ]
             []

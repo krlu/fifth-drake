@@ -5,6 +5,7 @@ import Array exposing (..)
 type alias Model =
   { players : List Player
   , timestamp : Int
+  , background : String
   }
 
 type alias Player =
@@ -17,8 +18,9 @@ type alias PlayerState =
   , y: Float
   }
 
-initialModel : Model
-initialModel =
+initialModel : String -> Model
+initialModel background =
   { players = []
   , timestamp = 0
+  , background = background
   }

@@ -15,8 +15,8 @@ view model =
   let
     playImg = -- Yes this is intentional
       case model.status of
-        Play -> "src/img/pause.svg"
-        Pause -> "src/img/play1.svg"
+        Play -> model.pauseButton
+        Pause -> model.playButton
     pxs = getCurrentPx model
   in
     div [ class "controls" ]

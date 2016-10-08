@@ -11,6 +11,8 @@ type alias Model =
 
   , status: Status
   , width: Float
+  , pauseButton: String
+  , playButton: String
   }
 
 type alias Drag =
@@ -22,13 +24,15 @@ type Status
   = Play
   | Pause
 
-initialModel : Model
-initialModel =
+initialModel : {a | playButton: String, pauseButton: String} -> Model
+initialModel {playButton, pauseButton} =
   { value = 0
   , maxVal = 100
   , mouse = Nothing
   , status = Pause
-  , width = 462
+  , width = 462 -- Need to figure out how to do this better.
+  , pauseButton = pauseButton
+  , playButton = playButton
   }
 
 getCurrentValue : Model -> Value
