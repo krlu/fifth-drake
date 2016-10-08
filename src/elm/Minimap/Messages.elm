@@ -6,4 +6,4 @@ import Minimap.Models exposing (..)
 type Msg
   = SetPlayers (List Player)
   | PlayerFetchFailure Http.Error
-  | UpdateTimestamp
+  | UpdateTimestamp Int

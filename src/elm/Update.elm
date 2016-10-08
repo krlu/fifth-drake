@@ -40,20 +40,12 @@ update msg model =
               m
               model.timeline
           (model'', cmds') =
-            let
-                nestedModel : MModel.Model
-                nestedModel = model.minimap
-
-                mmodel : MModel.Model
-                mmodel =
-                  { nestedModel | timestamp = getCurrentValue model'.timeline }
-            in
             dispatch
               MinimapMsg
               (mModelMap model')
               MUpdate.update
-              MMsg.UpdateTimestamp
-              mmodel
+              (MMsg.UpdateTimestamp model'.timeline.value)
+              model.minimap
         in
             model'' ! [cmds, cmds']
       MinimapMsg m ->

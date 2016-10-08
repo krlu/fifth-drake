@@ -10,3 +10,5 @@ update msg model =
       ({ model | players = players }, Cmd.none)
     PlayerFetchFailure err ->
       (Debug.log "Player failed to fetch" model, Cmd.none)
+    UpdateTimestamp timestamp ->
+      ({model | timestamp = timestamp }, Cmd.none)
