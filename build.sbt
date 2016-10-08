@@ -12,8 +12,13 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
+  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
+	"gg.climb" % "climb-core" % "0.0.1"
 )
 
 classpathTypes += "maven-plugin"
-libraryDependencies += "gg.climb" % "climb-core" % "0.0.1"
+
+PlayKeys.playRunHooks <+= baseDirectory.map(Webpack.apply)
+
+
+fork in run := true

@@ -29,7 +29,7 @@ class GameDataController extends Controller {
     }
 
   def loadHomePage = Action {
-                              Ok(views.html.main())
+                              Ok(views.html.index())
                             }
 }
 
