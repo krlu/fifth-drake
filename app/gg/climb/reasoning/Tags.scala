@@ -5,7 +5,7 @@ import gg.climb.lolobjects.RiotId
 import gg.climb.lolobjects.esports.Player
 import gg.climb.lolobjects.game.Game
 import gg.climb.lolobjects.game.state.PlayerState
-import gg.climb.lolobjects.tagging.Tag
+import gg.climb.lolobjects.tagging.{Category, Tag}
 import gg.climb.ramenx.core.{Behavior, EventStream}
 
 import scala.concurrent.duration.Duration
@@ -14,12 +14,6 @@ import scala.concurrent.duration.Duration
   * Created by michael on 8/28/16.
   */
 object Tags {
-
-  def main(args: Array[String]): Unit = {
-    val game = new MongoDbHandler().getGIDsByTeamAcronym("TSM").head
-    print(game.metaData)
-    print(Tags.forGame(game.gameKey).head)
-  }
 
   def forGame(game: RiotId[Game]): List[Tag] = {
     val players = formPlayers(game)
@@ -30,22 +24,22 @@ object Tags {
 
     val roams = Events.roam(players).mapWithTime({
       case (t, g) =>
-        List(Tag(game, "Roam", "One or more players roaming the map", Category("Generated"), t, g))
+        List(new Tag(game, "Roam", "One or more players roaming the map", new Category("Generated"), t, g))
     })
 
     val skirmishes = Events.skirmish(players).mapWithTime({
       case (t, sg) =>
-        sg.map(g => Tag(game, "Skirmish", "A brawl with 2-7 players", Category("Generated"), t, g)).toList
+        sg.map(g => new Tag(game, "Skirmish", "A brawl with 2-7 players", new Category("Generated"), t, g)).toList
     })
 
     val teamfights = Events.teamfight(players).mapWithTime({
       case (t, sg) =>
-        sg.map(g => Tag(game, "Teamfight", "A brawl with 8-10 players", Category("Generated"), t, g)).toList
+        sg.map(g => new Tag(game, "Teamfight", "A brawl with 8-10 players", new Category("Generated"), t, g)).toList
     })
 
     val dragons = Events.dragon(dragonTakedowns, locations).mapWithTime({
       case (t, g) =>
-        List(Tag(game, "Dragon", "Players involved in a dragon takedown", Category("Generated"), t, g))
+        List(new Tag(game, "Dragon", "Players involved in a dragon takedown", new Category("Generated"), t, g))
     })
 
     roams.merge(skirmishes, combineLists)
