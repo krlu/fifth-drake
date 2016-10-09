@@ -11,7 +11,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 import scala.concurrent.duration.Duration
 
-class PostgresDBHandlerTest extends WordSpec with Matchers {
+class PostgresDbHandlerTest extends WordSpec with Matchers {
 
   val dbh = new PostgresDbHandler("localhost", 5432, "league_analytics", "kenneth", "asdfasdf")
 
@@ -42,7 +42,7 @@ class PostgresDBHandlerTest extends WordSpec with Matchers {
       assert(champion.name == "Azir")
     }
     "fail insert operations on tags with existing InternalIds" in {
-      val tagToInsert = new Tag(new InternalId[Tag]("123"), new RiotId[Game]("123"), "test tag",
+      val tagToInsert = new Tag(Some(new InternalId[Tag]("123")), new RiotId[Game]("123"), "test tag",
         "this is a test", new Category("test"), Duration(100, TimeUnit.MILLISECONDS), Set(player1, player2))
       assertThrows[IllegalArgumentException] {
         dbh.insertTag(tagToInsert)

@@ -119,7 +119,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
               tag
                 .timestamp.toMillis
             }" +
-          tag.id.map(iid => s"WHERE id=$iid").getOrElse(""))
+          tag.id.map(iid => s" WHERE id=${iid.id}").getOrElse(""))
         .updateAndReturnGeneratedKey().apply()
       updatePlayersForTag(tag)
     }
@@ -140,8 +140,8 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
       tag.players.foreach(player => {
         if (!playerIds.contains(player.id)) {
           DB localTx { implicit session => {
-            SQL(s"INSERT INTO league.player_to_tag (tag_id, player_id) " +
-                  s"values ($id, ${player.id.id})").update.apply()
+            sql"""INSERT INTO league.player_to_tag (tag_id, player_id)
+                  values (${id.id.toInt}, ${player.id.id.toInt})""".update.apply()
           }
           }
         }
@@ -177,7 +177,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     } yield {
       getPlayerIdsForTag(id).foreach(riotId => deletePlayerToTag(riotId))
       DB localTx { implicit session =>
-        SQL(s"DELETE FROM league.tag WHERE id=$id").update().apply()
+        SQL(s"DELETE FROM league.tag WHERE id=${id.id}").update().apply()
       }
     }
   }
