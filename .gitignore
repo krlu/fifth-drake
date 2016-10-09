@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 ## Ide things
 # Intellij
 .idea
 .idea_modules
 *.iml
+*.ipr
+*.iws
 
 # Eclipse
 .classpath
