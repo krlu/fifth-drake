@@ -1,11 +1,8 @@
 package controllers
 
-import gg.climb.commons.dbhandling.MongoDBHandler
 import play.api.mvc._
 
 class GameDataController extends Controller {
-  val dbHandler = MongoDBHandler()
-
   def xpRequiredForLevel(level: Int): Int =
     if (level > 0 && level <= 18) {
       10 * (level - 1) * (18 + 5 * level)
