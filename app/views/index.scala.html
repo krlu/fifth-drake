@@ -1,12 +1,11 @@
-@(messages: String)
-
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Welcome to eSportsCV") {
-  <div>
-      @messages
-  </div>
-}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Fifth-Drake</title>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script src="@routes.Assets.versioned("build/app.js")"></script>
+  </body>
+</html>

@@ -1,32 +1,49 @@
 name := """fifth-drake"""
 
-version := "1.0-SNAPSHOT"
+lazy val root = (project in file("."))
+                .enablePlugins(PlayScala, BuildInfoPlugin, GitVersioning, GitBranchPrompt)
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava)
+buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
+buildInfoPackage := "controllers"
+buildInfoOptions += BuildInfoOption.ToJson
+
+git.useGitDescribe := true
+
+flywayUrl := "jdbc:postgresql://localhost:5432/league_analytics"
+flywaySchemas := Seq("audit", "league")
+flywayLocations += "filesystem:postgres/"
+
+scalastyleConfig := new File("project/scalastyle-config.xml")
+scalastyleFailOnError := true
 
 scalaVersion := "2.11.7"
 
+resolvers += Resolver.mavenLocal
+
 libraryDependencies ++= Seq(
-  javaJdbc,
+  jdbc,
   cache,
-  javaWs
+  ws,
+
+  "ch.qos.logback" % "logback-classic" % "1.1.7",
+  "org.postgresql" % "postgresql" % "9.4.1208.jre7",
+  "org.slf4j" % "slf4j-api" % "1.7.21",
+
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0",
+  "org.mongodb.scala" %% "mongo-scala-driver" % "1.0.1",
+  "org.scalikejdbc" %% "scalikejdbc" % "2.4.2",
+  "org.scalikejdbc" %% "scalikejdbc-config" % "2.4.2",
+  "org.scalikejdbc" %% "scalikejdbc-interpolation" % "2.4.2",
+
+  "org.scalatest" %% "scalatest" % "3.0.0" % Test,
+  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
+
+	"gg.climb" % "ramenX" % "0.0.2"
 )
+
 classpathTypes += "maven-plugin"
-libraryDependencies += "org.bytedeco" % "javacpp" % "1.1"
-libraryDependencies += "org.bytedeco" % "javacv" % "1.1"
-libraryDependencies += "com.google.code.gson" % "gson" % "2.6.2"
-libraryDependencies += "com.github.mpkorstanje" % "simmetrics-core" % "3.0.1"
-libraryDependencies += "com.github.jai-imageio" % "jai-imageio-core" % "1.3.1"
-libraryDependencies += "org.mongodb" % "bson" % "3.2.2"
-libraryDependencies += "org.mongodb" % "mongodb-driver" % "3.2.2"
-libraryDependencies += "com.squareup.okio" % "okio-parent" % "1.7.0"
-libraryDependencies += "com.squareup.okhttp3" % "parent" % "3.2.0"
-libraryDependencies += "com.google.guava" % "guava" % "19.0"
-libraryDependencies += "com.typesafe" % "config" % "1.3.0"
 
-//javaOptions in run += "-Docr.tessdataPath=" + Option(System.getProperty("ocr.tessdataPath")).getOrElse("C:\\Users\\Kenneth\\Documents\\GitHub\\esportsAnalyticsWeb\\app\\")
+PlayKeys.playRunHooks <+= baseDirectory.map(Webpack.apply)
 
-lazy val myProject = (project in file("."))
-  .enablePlugins(PlayJava, PlayEbean)
 
 fork in run := true

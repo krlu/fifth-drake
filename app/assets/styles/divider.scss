@@ -1,0 +1,14 @@
+@import "./config";
+@import "./mixins";
+
+.vdivider {
+		height: 100%;
+		width: $divider-width;
+		@include user-select(none);
+}
+
+.hdivider {
+		height: $divider-width;
+		width: 100%;
+		@include user-select(none);
+}

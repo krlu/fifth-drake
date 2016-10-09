@@ -1,53 +1,63 @@
 Fifth-Drake
-===================
-web UI support  for all Climb projects
-
-This is your new Play application
-=================================
-
-This file will be packaged with your application when using `activator dist`.
-
-There are several demonstration files available in this template.
-
-Controllers
 ===========
+This is the core application that we are building.
 
-- HomeController.java:
+# Requirements
+ - PostgreSQL 9.4
+ - MongoDB 3.2.7
+ - Sbt 0.13.11
 
-  Shows how to handle simple HTTP requests.
+# Setup
+There's a few parts to setup when first initializing this project:
+ - Frontend package installation
+ - Database Migrations
 
-- AsyncController.java:
+## Frontend dependencies
+You will need to install a few components for the front end. You can do so via
+the following command:
 
-  Shows how to do asynchronous programming when handling a request.
+`npm install && elm package install`
 
-- CountController.java:
+## Database Initialization and Migrations
+You will also need to create a new database called league\_analytics in
+postgres. Flyway cannot create the database for you programmatically. However,
+after creating that database flyway will handle all other tasks for you. In
+order to create the database, you can use `createdb league_analytics` on the
+command line or `CREATE DATABASE league_analytics;` in psql.
 
-  Shows how to inject a component into a controller and use the component when
-  handling requests.
+After the database is created, you can simply use the following command to
+actually create the proper schema structure:
 
-Components
-==========
+`sbt -Dflyway.user=$postgresUser flywayMigrate`
 
-- Module.java:
+For development purposes, you may need to use the following, but NEVER run this
+in production. The command drops all you existing data and migrates reapplies
+the schemas from scratch.
 
-  Shows how to use Guice to bind all the components needed by your application.
+`sbt -Dflyway.user=$postgresUser flywayClean flywayMigrate`
 
-- Counter.java:
+# Running play server for both front and backend
+You can run the play server using activator. To do so, simply run:
+`./bin/activator ui`
 
-  An example of a component that contains state, in this case a simple counter.
+This will launch a server that will continuously build any changes in your code
+so that you may simply reload the webpage. You will first connect to
+`http://localhost:8888` and from there use the `run` tab to launch the
+application.
 
-- ApplicationTimer.java:
+# Run developement server
+It's possible that you'll want a lighter weight server to rapidly test front end
+changes. You will likely not need this, but as of now, it is supported via the
+following command.
 
-  An example of a component that starts when the application starts and stops
-  when the application stops.
+`npm run dev`
 
-Filters
-=======
-
-- Filters.java:
-
-  Creates the list of HTTP filters used by your application.
-
-- ExampleFilter.java
-
-  A simple filter that adds a header to every response.
+# Style
+Quick notes on style in this repo
+ - Style is enforced by scalastyle. You can find the rules in
+   `project/scalastyle-config.xml`
+ - Names should conform to [Google's style guide](https://google.github.io/style
+guide/javaguide.html#s5.1-identifier-names)
+ - Use 2 spaces for indentation
+ - As much as I wish to use tabs, it's difficult to enforce proper usage, so
+   we'll be indenting with spaces.

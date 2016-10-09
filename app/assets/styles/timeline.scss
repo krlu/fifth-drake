@@ -1,0 +1,40 @@
+@import "./config";
+@import "./mixins";
+
+.controls {
+	display: flex;
+	height: $timeline-height;
+	width: $minimap-width;
+	@include user-select(none);
+
+	.timeline {
+		position: relative;
+		height: $timeline-height;
+		width: $minimap-width - $timeline-height - $divider-width;
+
+		.bar {
+			position: relative;
+			height: 100%;
+			background: red;
+		}
+
+		.knob {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: $knob-width;
+			height: 100%;
+			background: blue;
+			transform: translateX(-50%);
+		}
+	}
+
+	.play-button {
+		height: 100%;
+		width: $timeline-height;
+		.play-pause-img {
+			height: 100%;
+			width: 100%;
+		}
+	}
+}
