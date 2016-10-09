@@ -1,12 +1,11 @@
 package gg.climb.reasoning
 
 import gg.climb.analytics.EventStreamFactory
-import gg.climb.commons.dbhandling.MongoDBHandler
 import gg.climb.lolobjects.RiotId
 import gg.climb.lolobjects.esports.Player
 import gg.climb.lolobjects.game.Game
 import gg.climb.lolobjects.game.state.PlayerState
-import gg.climb.lolobjects.tagging.{Category, Tag}
+import gg.climb.lolobjects.tagging.Tag
 import gg.climb.ramenx.core.{Behavior, EventStream}
 
 import scala.concurrent.duration.Duration
@@ -17,7 +16,7 @@ import scala.concurrent.duration.Duration
 object Tags {
 
   def main(args: Array[String]): Unit = {
-    val game = MongoDBHandler().getGIDsByTeamAcronym("TSM").head
+    val game = new MongoDbHandler().getGIDsByTeamAcronym("TSM").head
     print(game.metaData)
     print(Tags.forGame(game.gameKey).head)
   }

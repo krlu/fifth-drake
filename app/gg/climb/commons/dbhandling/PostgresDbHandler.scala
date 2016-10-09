@@ -13,7 +13,7 @@ import scalikejdbc._
 import scala.concurrent.duration.Duration
 
 
-class PostgresDBHandler(host: String, port: Int, db : String, user : String, password: String) {
+class PostgresDbHandler(host: String, port: Int, db : String, user : String, password: String) {
 
   GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(
     enabled = false,

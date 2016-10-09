@@ -13,9 +13,9 @@ import scala.concurrent.duration.Duration
 
 class PostgresDBHandlerTest extends WordSpec with Matchers {
 
-  val dbh = new PostgresDBHandler("localhost", 5432, "league_analytics", "kenneth", "asdfasdf")
+  val dbh = new PostgresDbHandler("localhost", 5432, "league_analytics", "kenneth", "asdfasdf")
 
-  "A PostgresDBHandler" should{
+  "A PostgresDbHandler" should{
     val player1: Player = dbh.getPlayerByRiotId(new RiotId[Player]("44"))
     val player2: Player = dbh.getPlayerByRiotId(new RiotId[Player]("45"))
     "provide CRUD operations on custom tags" in {
