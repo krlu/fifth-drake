@@ -3,6 +3,7 @@ package controllers
 import play.api.mvc._
 
 class GameDataController extends Controller {
+
   def xpRequiredForLevel(level: Int): Int =
     if (level > 0 && level <= 18) {
       10 * (level - 1) * (18 + 5 * level)
