@@ -40,7 +40,7 @@ the schemas from scratch.
 You can run the play server using activator. To do so, simply run:
 `./bin/activator ui`
 
-This will lauch a server that will continuously build any changes in your code
+This will launch a server that will continuously build any changes in your code
 so that you may simply reload the webpage. You will first connect to
 `http://localhost:8888` and from there use the `run` tab to launch the
 application.
@@ -51,3 +51,13 @@ changes. You will likely not need this, but as of now, it is supported via the
 following command.
 
 `npm run dev`
+
+# Style
+Quick notes on style in this repo
+ - Style is enforced by scalastyle. You can find the rules in
+   `project/scalastyle-config.xml`
+ - Names should conform to [Google's style guide](https://google.github.io/style
+guide/javaguide.html#s5.1-identifier-names)
+ - Use 2 spaces for indentation
+ - As much as I wish to use tabs, it's difficult to enforce proper usage, so
+   we'll be indenting with spaces.
