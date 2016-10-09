@@ -45,6 +45,10 @@ so that you may simply reload the webpage. You will first connect to
 `http://localhost:8888` and from there use the `run` tab to launch the
 application.
 
+Use the following command to bundle and build your front end packages using
+webpack:
+`webpack`
+
 # Run developement server
 It's possible that you'll want a lighter weight server to rapidly test front end
 changes. You will likely not need this, but as of now, it is supported via the

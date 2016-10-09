@@ -5,7 +5,7 @@
   "main": "webpack.config.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:climb-gg/fifth-drake.git"
+    "url": "https://github.com/climb-gg/fifth-drake.git"
   },
   "devDependencies": {
     "css-loader": "^0.25.0",

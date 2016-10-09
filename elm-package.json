@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "helpful summary of your project, less than 80 characters",
-    "repository": "git@github.com:climb-gg/fifth-drake.git",
+    "repository": "https://github.com/climb-gg/fifth-drake.git",
     "license": "BSD3",
     "source-directories": [
         "app/assets/elm"
