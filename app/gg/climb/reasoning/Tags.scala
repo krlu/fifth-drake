@@ -1,4 +1,4 @@
-package gg.climb
+package gg.climb.reasoning
 
 import gg.climb.analytics.EventStreamFactory
 import gg.climb.commons.dbhandling.MongoDBHandler

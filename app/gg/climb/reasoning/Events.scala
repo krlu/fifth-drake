@@ -1,4 +1,4 @@
-package gg.climb
+package gg.climb.reasoning
 
 import gg.climb.lolobjects.esports.Player
 import gg.climb.lolobjects.game.LocationData
