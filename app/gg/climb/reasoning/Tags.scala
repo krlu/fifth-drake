@@ -22,37 +22,61 @@ object Tags {
 
     def combineLists: (List[Tag], List[Tag]) => List[Tag] = (a, b) => a ++ b
 
-    val roams = Events.roam(players).mapWithTime({
-      case (t, g) =>
-        List(new Tag(game, "Roam", "One or more players roaming the map", new Category("Generated"), t, g))
-    })
+    val roams =
+      Events.roam(players)
+        .mapWithTime({ case (t, g) =>
+          List(new Tag(game,
+                       "Roam",
+                       "One or more players roaming the map",
+                       new Category("Generated"),
+                       t,
+                       g))
+                     })
 
-    val skirmishes = Events.skirmish(players).mapWithTime({
-      case (t, sg) =>
-        sg.map(g => new Tag(game, "Skirmish", "A brawl with 2-7 players", new Category("Generated"), t, g)).toList
-    })
+    val skirmishes =
+      Events.skirmish(players)
+        .mapWithTime({ case (t, sg) =>
+          sg.map(g => new Tag(game,
+                              "Skirmish",
+                              "A brawl with 2-7 players",
+                              new Category("Generated"),
+                              t,
+                              g)).toList
+                     })
 
-    val teamfights = Events.teamfight(players).mapWithTime({
-      case (t, sg) =>
-        sg.map(g => new Tag(game, "Teamfight", "A brawl with 8-10 players", new Category("Generated"), t, g)).toList
-    })
+    val teamfights =
+      Events.teamfight(players)
+        .mapWithTime({ case (t, sg) =>
+          sg.map(g => new Tag(game,
+                              "Teamfight",
+                              "A brawl with 8-10 players",
+                              new Category("Generated"),
+                              t,
+                              g)).toList
+                     })
 
-    val dragons = Events.dragon(dragonTakedowns, locations).mapWithTime({
-      case (t, g) =>
-        List(new Tag(game, "Dragon", "Players involved in a dragon takedown", new Category("Generated"), t, g))
-    })
+    val dragons =
+      Events.dragon(dragonTakedowns, locations)
+        .mapWithTime({ case (t, g) =>
+          List(new Tag(game,
+                       "Dragon",
+                       "Players involved in a dragon takedown",
+                       new Category("Generated"),
+                       t,
+                       g))
+                     })
 
     roams.merge(skirmishes, combineLists)
-         .merge(teamfights, combineLists)
-         .merge(dragons, combineLists)
-         .getAll
-         .flatMap(_._2)
+    .merge(teamfights, combineLists)
+    .merge(dragons, combineLists)
+    .getAll
+    .flatMap(_._2)
   }
 
   private def formPlayers(game: RiotId[Game]): Behavior[Duration, Map[Player, PlayerState]] = {
     val states = EventStreamFactory.gameStateStream(game)
     states.stepper(states.first, states.last)
-          .map(gs => gs.players.map(ps => ps.player -> ps)(collection.breakOut))
+    .map(gs => gs.players.map(ps => ps.player -> ps)(collection.breakOut))
   }
 
   private def formDragonTakedowns(game: RiotId[Game]): EventStream[Duration, Unit] = {
@@ -80,6 +104,6 @@ object Tags {
       }
     }).map(gs => ())
 
-    blueDragons.merge(redDragons, (_,_) => ())
+    blueDragons.merge(redDragons, (_, _) => ())
   }
 }

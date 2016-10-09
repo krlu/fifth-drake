@@ -1,8 +1,8 @@
 package gg.climb.lolobjects.game
 
 /**
- * Champion stats as recorded by riot.
- */
+  * Champion stats as recorded by riot.
+  */
 class ChampionStats(attackRange: Double,
                     moveSpeed: Double,
                     attackSpeedOffset: Double,
@@ -22,12 +22,27 @@ class ChampionStats(attackRange: Double,
                     spellBlock: Double,
                     spellBlockPerLevel: Double,
                     crit: Double,
-                    critPerLevel: Double){
+                    critPerLevel: Double) {
 
-  override def toString = s"ChampionStats(attackRange=$attackRange, moveSpeed=$moveSpeed," +
-    s"attackSpeedOffset=$attackSpeedOffset, attackSpeedPerLevel=$attackSpeedPerLevel, attackDamage=$attackDamage, " +
-    s"attackDamagePerLevel=$attackDamagePerLevel, hp=$hp, hpPerLevel=$hpPerLevel, hpRegen=$hpRegen, " +
-    s"hpRegenPerLevel=$hpRegenPerLevel, mp=$mp, mpPerLevel=$mpPerLevel, mpRegen=$mpRegen, " +
-    s"mpRegenPerLevel=$mpRegenPerLevel, armor=$armor, armorPerLevel=$armorPerLevel, spellBlock=$spellBlock, " +
-    s"spellBlockPerLevel=$spellBlockPerLevel, crit=$crit, critPerLevel=$critPerLevel)"
+  override def toString: String =
+    s"ChampionStats(attackRange=$attackRange, " +
+      s"moveSpeed=$moveSpeed," +
+      s"attackSpeedOffset=$attackSpeedOffset," +
+      s"attackSpeedPerLevel=$attackSpeedPerLevel," +
+      s"attackDamage=$attackDamage," +
+      s"attackDamagePerLevel=$attackDamagePerLevel," +
+      s"hp=$hp," +
+      s"hpPerLevel=$hpPerLevel," +
+      s"hpRegen=$hpRegen," +
+      s"hpRegenPerLevel=$hpRegenPerLevel," +
+      s"mp=$mp," +
+      s"mpPerLevel=$mpPerLevel," +
+      s"mpRegen=$mpRegen," +
+      s"mpRegenPerLevel=$mpRegenPerLevel," +
+      s"armor=$armor," +
+      s"armorPerLevel=$armorPerLevel," +
+      s"spellBlock=$spellBlock," +
+      s"spellBlockPerLevel=$spellBlockPerLevel," +
+      s"crit=$crit," +
+      s"critPerLevel=$critPerLevel)"
 }

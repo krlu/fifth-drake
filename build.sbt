@@ -13,6 +13,9 @@ flywayUrl := "jdbc:postgresql://localhost:5432/league_analytics"
 flywaySchemas := Seq("audit", "league")
 flywayLocations += "filesystem:postgres/"
 
+scalastyleConfig := new File("project/scalastyle-config.xml")
+scalastyleFailOnError := true
+
 scalaVersion := "2.11.7"
 
 resolvers += Resolver.mavenLocal

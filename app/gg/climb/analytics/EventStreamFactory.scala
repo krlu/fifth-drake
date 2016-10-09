@@ -15,13 +15,16 @@ import scala.concurrent.duration.Duration
 /**
   * Created by michael on 8/4/16.
   */
-object EventStreamFactory{
+object EventStreamFactory {
   val pdbh = new PostgresDbHandler("localhost", 5432, "league_analytics", "kenneth", "asdfasdf")
   val mongoClient: MongoClient = MongoClient("mongodb://localhost")
   private val mongoHandler = new MongoDbHandler(pdbh, mongoClient)
 
   def gameStateStream(game: RiotId[Game]): EventStream[Duration, GameState] = {
-    val gameStates = Await.result(mongoHandler.getCompleteGame(game), Duration(5, TimeUnit.SECONDS)).map(gs => (gs.timestamp, gs)).toList
+    val gameStates = Await.result(mongoHandler.getCompleteGame(game),
+                                  Duration(5, TimeUnit.SECONDS))
+      .map(gs => (gs.timestamp, gs))
+      .toList
     new ListEventStream[Duration, GameState](gameStates)
   }
 }

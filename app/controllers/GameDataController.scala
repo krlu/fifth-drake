@@ -21,6 +21,6 @@ class GameDataController extends Controller {
       throw new IllegalArgumentException(s"Cannot have `$xp' xp")
     }
 
-  def loadHomePage: Action[AnyContent] = Action {Ok(views.html.index()) }
+  def loadHomePage: Action[AnyContent] = Action {Ok(views.html.index())}
 }
 

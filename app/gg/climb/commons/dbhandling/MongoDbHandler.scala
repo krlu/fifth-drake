@@ -20,37 +20,10 @@ import scala.concurrent.{Await, Future}
 class MongoDbHandler(dbh: PostgresDbHandler, mongoClient: MongoClient) {
 
   val TIMEOUT = Duration(5, TimeUnit.SECONDS)
-//  val mongoClient: MongoClient = MongoClient("mongodb://localhost")
   val names: Observable[String] = mongoClient.listDatabaseNames()
   val database = mongoClient.getDatabase("league_analytics")
-//  val dbh = new PostgresDbHandler("localhost", 5432, "league_analytics", user, password)
-
-  def getFilteredCollection(collName: String, filter: Option[Bson]) = {
-    val collection = database.getCollection(collName)
-    filter match {
-      case None => collection.find()
-      case Some(f) => collection.find(f)
-    }
-  }
-
-  def getSeq[A](collection: String,
-                filter: Option[Bson],
-                transform: Document => Option[A]): Future[Seq[A]] = {
-    getFilteredCollection(collection, filter).toFuture().map(_.flatMap(transform(_)))
-  }
-
-  def getOne[A](collection: String,
-                filter: Option[Bson],
-                transform: Document => Option[A]): Future[Option[A]] = {
-    getFilteredCollection(collection, filter).first()
-                                             .toFuture()
-                                             .map(_.headOption.flatMap(transform(_)))
-  }
 
   def getAllMetaData: Future[Seq[MetaData]] = getSeq("metadata", None, parseMetaData)
-
-  def getMetaDataForGame(gameKey: RiotId[Game]): Future[Option[MetaData]] =
-    getOne("metadata", Some(equal("gameId", gameKey.id.toInt)), parseMetaData)
 
   def getAllGames: Future[Seq[GameIdentifier]] = getSeq("lcs_game_identifiers", None, buildGID)
 
@@ -61,7 +34,7 @@ class MongoDbHandler(dbh: PostgresDbHandler, mongoClient: MongoClient) {
     getSeq("lcs_game_identifiers", Some(filter), buildGID)
   }
 
-  def getGIDByRiotId(riotId: RiotId[Game]):  Future[Option[GameIdentifier]] = {
+  def getGIDByRiotId(riotId: RiotId[Game]): Future[Option[GameIdentifier]] = {
     val filter: Bson = equal("gameKey", riotId.id.toInt)
     getOne("lcs_game_identifiers", Some(filter), buildGID)
   }
@@ -94,12 +67,18 @@ class MongoDbHandler(dbh: PostgresDbHandler, mongoClient: MongoClient) {
     getSeq("game_" + gameKey.id, Some(filter), parseGameState)
   }
 
-  private def parseMetaData(data: Document): Option[MetaData] = {
-    for {
-      url <- data.get("youtubeURL").map(_.asString().getValue).map(new URL(_))
-      patch <- data.get("gameVersion").map(_.asString().getValue)
-      seasonId <- data.get("seasonId").map(_.asInt32().getValue)
-    } yield new MetaData(patch, url, seasonId)
+  private def getSeq[A](collection: String,
+                filter: Option[Bson],
+                transform: Document => Option[A]): Future[Seq[A]] = {
+    getFilteredCollection(collection, filter).toFuture().map(_.flatMap(transform(_)))
+  }
+
+  private def getFilteredCollection(collName: String, filter: Option[Bson]) = {
+    val collection = database.getCollection(collName)
+    filter match {
+      case None => collection.find()
+      case Some(f) => collection.find(f)
+    }
   }
 
   private def buildGID(data: Document): Option[GameIdentifier] = {
@@ -107,7 +86,7 @@ class MongoDbHandler(dbh: PostgresDbHandler, mongoClient: MongoClient) {
       team1 <- data.get("team1").map(_.asString().getValue)
       team2 <- data.get("team2").map(_.asString().getValue)
       time <- data.get("gameDate").map(_.asInt64().getValue).map(new DateTime(_))
-      id <- data.get("gameKey").map(_.asInt32().getValue).map(x=> new RiotId[Game](x.toString))
+      id <- data.get("gameKey").map(_.asInt32().getValue).map(x => new RiotId[Game](x.toString))
       metadata <- Await.result(getMetaDataForGame(id), TIMEOUT)
     } yield {
       new GameIdentifier(team1,
@@ -118,11 +97,30 @@ class MongoDbHandler(dbh: PostgresDbHandler, mongoClient: MongoClient) {
     }
   }
 
-  def parseGameState(doc: Document): Option[GameState] = {
+  private def getMetaDataForGame(gameKey: RiotId[Game]): Future[Option[MetaData]] =
+    getOne("metadata", Some(equal("gameId", gameKey.id.toInt)), parseMetaData)
+
+  private def getOne[A](collection: String,
+                filter: Option[Bson],
+                transform: Document => Option[A]): Future[Option[A]] = {
+    getFilteredCollection(collection, filter).first()
+    .toFuture()
+    .map(_.headOption.flatMap(transform(_)))
+  }
+
+  private def parseMetaData(data: Document): Option[MetaData] = {
+    for {
+      url <- data.get("youtubeURL").map(_.asString().getValue).map(new URL(_))
+      patch <- data.get("gameVersion").map(_.asString().getValue)
+      seasonId <- data.get("seasonId").map(_.asInt32().getValue)
+    } yield new MetaData(patch, url, seasonId)
+  }
+
+  private def parseGameState(doc: Document): Option[GameState] = {
     for {
       time <- doc.get("t")
-                 .map(_.asInt32().getValue)
-                 .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
+              .map(_.asInt32().getValue)
+              .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
       teamStats <- doc.get("teamStats").map(x => Document(x.asDocument()))
       redTeamStats <- teamStats.get(Red.riotId.id).map(x => Document(x.asDocument()))
       blueTeamStats <- teamStats.get(Blue.riotId.id).map(x => Document(x.asDocument()))
@@ -140,9 +138,10 @@ class MongoDbHandler(dbh: PostgresDbHandler, mongoClient: MongoClient) {
       dragons <- teamStats.get("dragonsKilled").map(_.asInt32().getValue)
       turrets <- teamStats.get("towersKilled").map(_.asInt32().getValue)
       states = playerStats.filter(_._2.asDocument().getInt32("teamId").getValue.toString == side.riotId.id)
-                          .flatMap({case (key, value) =>
-                            parsePlayerState(Document(value.asDocument()), side)})
-                          .toList
+               .flatMap({ case (key, value) =>
+                 parsePlayerState(Document(value.asDocument()), side)
+                        })
+               .toList
     } yield new TeamState(states, barons, dragons, turrets)
   }
 

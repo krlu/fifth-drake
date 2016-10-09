@@ -31,7 +31,8 @@ object Events {
     * 3) less than 3 turrets taken by either team
     */
   def gank(players: Behavior[Duration, Map[Player, PlayerState]],
-           turrets: EventStream[Duration, (Int, Int)]): EventStream[Duration, Map[Group, Group]] = ???
+           turrets: EventStream[Duration, (Int, Int)]): EventStream[Duration, Map[Group, Group]] =
+  ???
 
   /**
     * A teamfight has occurred if:
@@ -40,22 +41,10 @@ object Events {
     * 3) hp loss above 100 per second
     * 4) mp usage above 100 per second
     */
-  def teamfight(players: Behavior[Duration, Map[Player, PlayerState]]): EventStream[Duration, Set[Group]] = {
+  def teamfight(players: Behavior[Duration,
+                Map[Player, PlayerState]]): EventStream[Duration, Set[Group]] = {
     fight(players, 100, 100, 2000, 8, 10)
   }
-
-  /**
-    * A skirmish has occurred if:
-    * 1) 2 - 7 participants
-    * 2) pairwise distance less than 1500
-    * 3) hp loss above 100 per second
-    * 4) mp usage above 100 per second
-    */
-  def skirmish(players: Behavior[Duration, Map[Player, PlayerState]]): EventStream[Duration, Set[Group]] = {
-    fight(players, 100, 100, 1500, 2, 7)
-  }
-
-  def prevDuration(d: Duration, interval: Duration): Duration = d - interval
 
   private def fight(players: Behavior[Duration, Map[Player, PlayerState]],
                     hpLossThreshold: Double,
@@ -64,21 +53,25 @@ object Events {
                     minPlayers: Int,
                     maxPlayers: Int): EventStream[Duration, Set[Group]] = {
 
-    def hpLoss: Behavior[Duration, Map[Player, Double]] = players.withPrev(Duration(5, SECONDS), (t1, t2) => t1 - t2)
-      .map({
-        case (Some(x), y) => y.map({
-          case (player, state) => player -> (x(player).championState.hp - state.championState.hp)
-        })
-        case (None, y) => y.map(_._1 -> 0.0)
-      })
+    def hpLoss: Behavior[Duration, Map[Player, Double]] =
+      players.withPrev(Duration(5, SECONDS), (t1, t2) => t1 - t2)
+        .map({
+               case (Some(x), y) =>
+                 y.map({ case (player, state) =>
+                   player -> (x(player).championState.hp - state.championState.hp)
+                       })
+               case (None, y) => y.map(_._1 -> 0.0)
+             })
 
-    def mpLoss = players.withPrev(Duration(5, SECONDS), (t1, t2) => t1 - t2)
-      .map({
-        case (Some(x), y) => y.map({
-          case (player, state) => player -> (x(player).championState.mp - state.championState.mp)
-        })
-        case (None, y) => y.map(_._1 -> 0.0)
-      })
+    def mpLoss =
+      players.withPrev(Duration(5, SECONDS), (t1, t2) => t1 - t2)
+        .map({
+               case (Some(x), y) =>
+                 y.map({ case (player, state) =>
+                   player -> (x(player).championState.mp - state.championState.mp)
+                       })
+               case (None, y) => y.map(_._1 -> 0.0)
+             })
 
     def partition(states: Map[Player, PlayerState]): Set[Group] = {
 
@@ -89,18 +82,22 @@ object Events {
       var groups: Map[Player, Set[PlayerState]] = states.mapValues(ps => Set(ps))
 
       groups.foreach({
-        case (p1, g1) => groups.foreach({
-          case (p2, g2) =>
-            if (!p1.equals(p2)) {
-              if (g1.exists(ps1 => g2.exists(ps2 => inFightRange(ps1.location, ps2.location, maxDist)))) {
-                groups += p1 -> (g1 union g2)
-                groups -= p2
-              }
-            }
-        })
-      })
+                       case (p1, g1) =>
+                         groups.foreach(
+                           { case (p2, g2) =>
+                             if (!p1.equals(p2)) {
+                               if (g1.exists(ps1 => g2.exists(ps2 => inFightRange(ps1.location,
+                                                                                  ps2.location,
+                                                                                  maxDist)))) {
+                                 groups += p1 -> (g1 union g2)
+                                 groups -= p2
+                               }
+                             }
+                           })
+                     })
 
-      val x: ((Player, Set[PlayerState])) => Group = {case (player, group) => group.map(ps => ps.player)}
+      val x: ((Player, Set[PlayerState])) => Group =
+        {case (player, group) => group.map(ps => ps.player)}
       groups.toSet.map(x)
     }
 
@@ -109,18 +106,32 @@ object Events {
     def filterGroups: (((Map[Player, Double], Map[Player, Double]), Set[Group])) => Set[Group] = {
       case ((hpLoss, mpLoss), groups) =>
         groups.filter(g =>
-          g.size >= minPlayers &&
-          g.size <= maxPlayers &&
-          g.exists(p => hpLoss(p) >= hpLossThreshold) &&
-          g.exists(p => mpLoss(p) >=  mpLossThreshold))
+                        g.size >= minPlayers &&
+                          g.size <= maxPlayers &&
+                          g.exists(p => hpLoss(p) >= hpLossThreshold) &&
+                          g.exists(p => mpLoss(p) >= mpLossThreshold))
     }
 
     hpLoss.zip(mpLoss)
-          .zip(groups)
-          .sampledBy(Duration.Zero, Duration(1, SECONDS), Duration.Inf)
-          .map(filterGroups)
-          .filter(_.nonEmpty)
+    .zip(groups)
+    .sampledBy(Duration.Zero, Duration(1, SECONDS), Duration.Inf)
+    .map(filterGroups)
+    .filter(_.nonEmpty)
   }
+
+  /**
+    * A skirmish has occurred if:
+    * 1) 2 - 7 participants
+    * 2) pairwise distance less than 1500
+    * 3) hp loss above 100 per second
+    * 4) mp usage above 100 per second
+    */
+  def skirmish(players: Behavior[Duration, Map[Player, PlayerState]])
+              : EventStream[Duration, Set[Group]] = {
+    fight(players, 100, 100, 1500, 2, 7)
+  }
+
+  def prevDuration(d: Duration, interval: Duration): Duration = d - interval
 
   /**
     * A player is roaming if:
@@ -133,28 +144,30 @@ object Events {
     }
 
     def findRoamingPlayers: Map[Player, PlayerState] => Group = {
-      (states: Map[Player, PlayerState]) => states.filter(p => isRoaming(p._1, p._2))
-                      .toSet
-                      .map((x: (Player, PlayerState)) => x match {case (p, ps) => ps.player})
+      (states: Map[Player, PlayerState]) =>
+        states.filter(p => isRoaming(p._1, p._2))
+              .toSet
+              .map((x: (Player, PlayerState)) => x match {case (p, ps) => ps.player})
     }
 
     players.sampledBy(Duration.Zero, Duration(1, SECONDS), Duration.Inf)
-           .map(findRoamingPlayers)
+    .map(findRoamingPlayers)
   }
 
   /**
     * Players associated with a dragon takedown
     *
-    * @param takedown Stream of dragon takedown events
+    * @param takedown  Stream of dragon takedown events
     * @param locations Behavior of all players during a game
     * @return
     */
   def dragon(takedown: EventStream[Duration, Unit],
-             locations: Behavior[Duration, Map[Player, LocationData]]): EventStream[Duration, Group] = {
+             locations: Behavior[Duration, Map[Player, LocationData]])
+            : EventStream[Duration, Group] = {
     def nearDragon(location: LocationData): Boolean = ???
     Behavior.Whenever(locations)
-            .<@(takedown)
-            .map((players: Map[Player, LocationData]) => players.filter(x => nearDragon(x._2)).keySet)
+    .<@(takedown)
+    .map((players: Map[Player, LocationData]) => players.filter(x => nearDragon(x._2)).keySet)
   }
 
   /**
