@@ -33,3 +33,4 @@ target
 *.lock
 project/play-fork-run.sbt
 project/sbt-ui.sbt
+npm-debug.log

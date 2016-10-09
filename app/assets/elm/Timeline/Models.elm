@@ -3,6 +3,7 @@ module Timeline.Models exposing (..)
 import Mouse
 
 type alias Value = Int
+type alias File = String
 
 type alias Model =
   { value: Value
@@ -11,8 +12,9 @@ type alias Model =
 
   , status: Status
   , width: Float
-  , pauseButton: String
-  , playButton: String
+
+  , pauseButton: File
+  , playButton: File
   }
 
 type alias Drag =

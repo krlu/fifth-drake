@@ -22,3 +22,4 @@ view model =
         , p [] [ (Html.text << toString << getCurrentValue) model.timeline ]
         , p [] [ (Html.text << toString) model.minimap.timestamp ]
         ]
+
