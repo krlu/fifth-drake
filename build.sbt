@@ -3,11 +3,13 @@ name := """fifth-drake"""
 version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file("."))
-                .enablePlugins(PlayScala, BuildInfoPlugin)
+                .enablePlugins(PlayScala, BuildInfoPlugin, GitVersioning, GitBranchPrompt)
 
 buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
 buildInfoPackage := "controllers"
 buildInfoOptions += BuildInfoOption.ToJson
+
+git.useGitDescribe := true
 
 scalaVersion := "2.11.7"
 
