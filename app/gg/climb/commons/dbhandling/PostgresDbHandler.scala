@@ -32,10 +32,10 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   ConnectionPool.singleton(url, user, password)
 
   def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
-    val query = s"WHERE game_key = '${gameKey.id}'"
+    val query = sqls"WHERE game_key = ${gameKey.id}"
     val tagData: List[(Int, String, String, String, String, Long)] =
       DB readOnly { implicit session =>
-        SQL(s"SELECT * FROM league.tag $query").map(rs => {
+        sql"SELECT * FROM league.tag $query".map(rs => {
           (rs.int("id"), rs.string("game_key"), rs.string("title"),
             rs.string("description"), rs.string("category"), rs.long("timestamp"))
         }).list.apply()
@@ -70,21 +70,21 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   def getPlayer(playerId: InternalId[Player], teamId: Option[String] = None): Player = {
     val id = playerId.id
     val ign = DB readOnly { implicit session =>
-      SQL(s"SELECT ign FROM league.player_ign WHERE player_id = '$id'")
+      sql"SELECT ign FROM league.player_ign WHERE player_id = ${id.toInt}"
         .map(rs => rs.string("ign"))
         .single()
         .apply()
         .getOrElse("")
     }
     val role: String = DB readOnly { implicit session =>
-      SQL(s"SELECT role FROM league.player_role WHERE player_id = '$id'")
+      sql"SELECT role FROM league.player_role WHERE player_id = ${id.toInt}"
         .map(rs => rs.string("role")
             ).single().apply().getOrElse("")
     }
     val team_id: String = teamId match {
       case None => DB readOnly { implicit session =>
-        SQL(s"SELECT team_id FROM league.player_team " +
-            s"WHERE player_id = '$id' order by end_date desc")
+        sql"""SELECT team_id FROM league.player_team
+             WHERE player_id = ${id.toInt} order by end_date desc"""
           .map(rs => rs.string("team_id")
               ).list().apply().head
       }
@@ -96,30 +96,27 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   def insertTag(tag: Tag): Unit = {
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
-    val query = s"'${tag.gameKey.id}','${tag.title}','${tag.description}'," +
-      s"'${tag.category.name}','${tag.timestamp.toMillis}'"
+    val query = sqls"""values (${tag.gameKey.id},${tag.title},${tag.description},
+                   ${tag.category.name},${tag.timestamp.toMillis})"""
     DB localTx { implicit session => {
       val tag_id: Long =
-        SQL(s"insert into league.tag (game_key, title, description, category, timestamp) " +
-            s"values ($query)").updateAndReturnGeneratedKey().apply()
+        sql"""insert into league.tag (game_key, title, description, category, timestamp)
+             $query""".updateAndReturnGeneratedKey().apply()
       tag.players.foreach((id: Player) => {
-        SQL(s"INSERT INTO league.player_to_tag (tag_id, player_id) " +
-              s"values ($tag_id, ${id.id.id})").update.apply()
+        sql"""INSERT INTO league.player_to_tag (tag_id, player_id)
+             values ($tag_id, ${id.id.id.toInt})""".update.apply()
       })
     }
     }
   }
 
   def updateTag(tag: Tag): Unit = {
-    require(tag.hasInternalId,
-            s"Tag '${tag.title}' is missing InternalId, check if Tag exists in DB!")
+    require(tag.hasInternalId, s"Tag '${tag.title}' is missing InternalId, check if Tag exists in DB!")
     DB localTx { implicit session => {
-      SQL(s"UPDATE league.tag SET game_key=${tag.gameKey.id}, title='${tag.title}', " +
-            s"description='${tag.description}', category='${tag.category.name}', timestamp=${
-              tag
-                .timestamp.toMillis
-            }" +
-          tag.id.map(iid => s" WHERE id=${iid.id}").getOrElse(""))
+      val where = tag.id.map(iid => sqls"WHERE id=${iid.id.toInt}").getOrElse("")
+      sql"""UPDATE league.tag SET game_key=${tag.gameKey.id}, title=${tag.title},
+          description=${tag.description}, category=${tag.category.name},
+          timestamp=${tag.timestamp.toMillis} $where"""
         .updateAndReturnGeneratedKey().apply()
       updatePlayersForTag(tag)
     }
@@ -156,9 +153,9 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   }
 
   private def getPlayerIdsForTag(tagId: InternalId[Tag]): Set[InternalId[Player]] = {
-    val query = s"WHERE tag_id=${tagId.id}"
+    val query = sqls"WHERE tag_id=${tagId.id.toInt}"
     val tagIds: List[Int] = DB readOnly { implicit session =>
-      SQL(s"SELECT player_id FROM league.player_to_tag $query").map(rs => rs.int("player_id")).list
+      sql"SELECT player_id FROM league.player_to_tag $query".map(rs => rs.int("player_id")).list
         .apply()
     }
     tagIds.map(id => new InternalId[Player](id.toString)).toSet
@@ -166,7 +163,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   private def deletePlayerToTag(id: InternalId[Player]): Unit = {
     DB localTx { implicit session => {
-      SQL(s"DELETE FROM league.player_to_tag WHERE player_id=${id.id}").update().apply()
+      sql"DELETE FROM league.player_to_tag WHERE player_id=${id.id.toInt}".update().apply()
     }
     }
   }
@@ -177,16 +174,15 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     } yield {
       getPlayerIdsForTag(id).foreach(riotId => deletePlayerToTag(riotId))
       DB localTx { implicit session =>
-        SQL(s"DELETE FROM league.tag WHERE id=${id.id}").update().apply()
+        sql"DELETE FROM league.tag WHERE id=${id.id.toInt}".update().apply()
       }
     }
   }
 
   def getChampion(championName: String): Option[Champion] = {
     val champId = DB readOnly { implicit session =>
-      SQL(s"SELECT * FROM league.champion Where name='$championName'").map(rs =>
-                                                                             constructChampion(rs)
-                                                                          ).single().apply()
+      sql"SELECT * FROM league.champion Where name=$championName"
+        .map(rs => constructChampion(rs)).single().apply()
     }
     champId
   }
@@ -199,7 +195,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   private def getChampionStats(championId: InternalId[Champion]): ChampionStats = {
     val x: Option[ChampionStats] = DB readOnly { implicit session => {
-      SQL(s"SELECT * FROM league.champion_stats WHERE champion_id=${championId.id}").map(rs => {
+      sql"SELECT * FROM league.champion_stats WHERE champion_id=${championId.id.toInt}".map(rs => {
         constructChampionStats(rs)
       })
     }.single.apply()
@@ -232,7 +228,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   private def getChampionImage(championId: InternalId[Champion]): ChampionImage = {
     val x: Option[ChampionImage] = DB readOnly { implicit session => {
-      SQL(s"SELECT * FROM league.champion_image WHERE champion_id=${championId.id}").map(rs => {
+      sql"SELECT * FROM league.champion_image WHERE champion_id=${championId.id.toInt}".map(rs => {
         constructChampionImage(rs)
       })
     }.single.apply()
@@ -265,9 +261,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   def getPlayerId(riotId: RiotId[Player]): String = {
     val id = DB readOnly { implicit session =>
-      SQL(s"SELECT id FROM league.player WHERE riot_id = '${riotId.id}'").map(rs =>
-                                                                                rs.string("id")
-                                                                             ).single().apply()
+      sql"SELECT id FROM league.player WHERE riot_id = ${riotId.id}".map(rs => rs.string("id")).single().apply()
     }
     id.orNull
   }
@@ -280,37 +274,30 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   def getTeam(teamId: InternalId[Team], time: Option[DateTime] = None): Team = {
     val id: String = teamId.id
     val (name, acronym) = DB readOnly { implicit session =>
-      SQL(s"SELECT name,acronym FROM league.team WHERE id = '$id'").map(rs =>
-                                                                          (rs.string("name"), rs
-                                                                            .string("acronym"))
-                                                                       ).single().apply()
-        .getOrElse("",
-                   "")
+      sql"SELECT name,acronym FROM league.team WHERE id = ${id.toInt}"
+        .map(rs => (rs.string("name"), rs.string("acronym"))).single().apply().getOrElse("", "")
     }
     val players: Seq[Player] = DB readOnly { implicit session =>
-      SQL(s"SELECT player_id FROM league.player_team WHERE team_id = '$id' AND is_starter AND " +
-            s"start_date <= '${time.get}' AND end_date > '${time.get}'")
+      sql"""SELECT player_id FROM league.player_team WHERE team_id = ${id.toInt} AND is_starter
+           AND start_date <= ${time.get} AND end_date > ${time.get}"""
         .map(rs => rs.string("player_id")).list().apply()
-        .map(p => getPlayer(new InternalId[Player](p),
-                            Some(id)))
+        .map(p => getPlayer(new InternalId[Player](p), Some(id)))
     }
     new Team(teamId, name, acronym, players)
   }
 
   def getTeamIdByAcronym(acronym: String): String = {
     val id = DB readOnly { implicit session =>
-      SQL(s"SELECT id FROM league.team WHERE acronym = '$acronym'").map(rs =>
-                                                                          rs.string("id")
-                                                                       ).single().apply()
+      sql"SELECT id FROM league.team WHERE acronym = $acronym"
+        .map(rs => rs.string("id")).single().apply()
     }
     id.orNull
   }
 
   def getTeamId(riotId: RiotId[Team]): String = {
     val id = DB readOnly { implicit session =>
-      SQL(s"SELECT id FROM league.team WHERE riot_id = '${riotId.id}'").map(rs =>
-                                                                              rs.string("id")
-                                                                           ).single().apply()
+      sql"SELECT id FROM league.team WHERE riot_id = ${riotId.id.toInt}"
+        .map(rs => rs.string("id")).single().apply()
     }
     id.orNull
   }
