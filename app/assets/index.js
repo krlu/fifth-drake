@@ -7,11 +7,10 @@
 	require('./styles/timeline.scss');
 	require('./styles/divider.scss');
 
-	var Elm = require('./elm/Main.elm');
-	var mountNode = document.getElementById('main');
+	const Elm = require('./elm/Main.elm');
+	const mountNode = document.getElementById('main');
 
-    // The third value on embed are the initial values for incoming ports into Elm
-	var app = Elm.Main.embed(mountNode, {
+	Elm.Main.embed(mountNode, {
 		minimapBackground: require("map.jpg"),
 		playButton: require("play1.svg"),
 		pauseButton: require("pause.svg")
