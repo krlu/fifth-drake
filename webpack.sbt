@@ -1,7 +1,14 @@
+import scala.util.matching.Regex
+
 lazy val webpack = TaskKey[Unit]("Run webpack when packaging the application")
 
-def runWebpack(file: File) = {
-  Process("webpack", file) !
+def runWebpack(file: File): Int = {
+  val p: Regex = "(?i)windows".r
+  val proc = sys.props("os.name") match {
+    case p(x) => Process("cmd /c \"webpack " + file + "\"")
+    case _ => Process("webpack", file)
+  }
+  proc.!
 }
 
 webpack := {
