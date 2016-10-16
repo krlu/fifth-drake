@@ -2,7 +2,8 @@ module Main exposing (..)
 
 import Html.App
 import Messages exposing (Msg(..))
-import Minimap.Populate as Populate
+import Minimap.Populate as MPopulate
+import TagScroller.Populate as TagPopulate
 import Models exposing (Model, Flags, initialModel)
 import Subscriptions
 import Task
@@ -12,7 +13,10 @@ import View
 init : Flags -> (Model, Cmd Msg)
 init flags =
   ( initialModel flags
-  , Cmd.map MinimapMsg Populate.populate
+  , Cmd.batch
+      [ Cmd.map MinimapMsg MPopulate.populate
+      , Cmd.map TagScrollerMsg TagPopulate.populate
+      ]
   )
 
 main : Program Flags

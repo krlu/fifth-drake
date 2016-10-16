@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Messages exposing (Msg(..))
 import Minimap.View as MView
 import Models exposing (Model)
+import TagScroller.View as TagView
 import Timeline.Models exposing (getCurrentValue)
 import Timeline.View as TView
 
@@ -14,12 +15,15 @@ view model =
   let
       timeline = Html.App.map TimelineMsg <| TView.view model.timeline
       minimap = Html.App.map MinimapMsg <| MView.view model.minimap
+      tagScroller = Html.App.map TagScrollerMsg <| TagView.view model.tagScroller
   in
       div []
-        [ minimap
+        [ div [ class "content" ]
+            [ minimap
+            , div [ class "vdivider" ] []
+            , tagScroller
+            ]
         , div [ class "hdivider" ] []
         , timeline
-        , p [] [ (Html.text << toString << getCurrentValue) model.timeline ]
-        , p [] [ (Html.text << toString) model.minimap.timestamp ]
         ]
 

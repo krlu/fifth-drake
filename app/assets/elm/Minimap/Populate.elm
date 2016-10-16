@@ -1,9 +1,9 @@
 module Minimap.Populate exposing (..)
 
+import Http
 import Json.Decode exposing (Decoder, list, array, object2, (:=), int, float)
 import Minimap.Messages exposing (Msg(..))
 import Minimap.Models exposing (Player, PlayerState)
-import Http
 import StyleUtils exposing (..)
 import Task exposing (Task)
 

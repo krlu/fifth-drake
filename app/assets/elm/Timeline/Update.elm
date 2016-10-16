@@ -30,3 +30,5 @@ update' msg ({value, mouse} as model) =
         { model | status = Pause }
       else
         { model | value = model.value + 1 }
+    SetValue v ->
+      { model | value = v }

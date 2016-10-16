@@ -2,6 +2,7 @@ module Timeline.Messages exposing (..)
 
 import Mouse
 import Time
+import Timeline.Models exposing (Value)
 
 type Msg
   = KnobGrab Mouse.Position
@@ -10,3 +11,4 @@ type Msg
   | BarClick Mouse.Position
   | PlayPause
   | TimerUpdate Time.Time
+  | SetValue Value

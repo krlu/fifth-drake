@@ -5,6 +5,9 @@ import Minimap.Messages as MMsg
 import Minimap.Models as MModel
 import Minimap.Update as MUpdate
 import Models exposing (Model)
+import TagScroller.Messages as TagMsg
+import TagScroller.Update as TagUpdate
+import Timeline.Messages as TMsg
 import Timeline.Models as TModel exposing (getCurrentValue)
 import Timeline.Update as TUpdate
 
@@ -28,25 +31,22 @@ update msg model =
 
     tModelMap origModel subModel = { origModel | timeline = subModel }
     mModelMap origModel subModel = { origModel | minimap = subModel }
+    tagModelMap origModel subModel = { origModel | tagScroller = subModel }
   in
     case msg of
       TimelineMsg m ->
         let
-          (model', cmds) =
-            dispatch
-              TimelineMsg
-              (tModelMap model)
-              TUpdate.update
-              m
-              model.timeline
-          (model'', cmds') =
-            dispatch
-              MinimapMsg
-              (mModelMap model')
-              MUpdate.update
-              (MMsg.UpdateTimestamp model'.timeline.value)
-              model.minimap
+          (model', cmds) = dispatch TimelineMsg (tModelMap model) TUpdate.update m model.timeline
+          (model'', cmds') = update (MinimapMsg << MMsg.UpdateTimestamp <| model'.timeline.value) model'
         in
-            model'' ! [cmds, cmds']
+          model'' ! [cmds, cmds']
       MinimapMsg m ->
         dispatch MinimapMsg (mModelMap model) MUpdate.update m model.minimap
+      TagScrollerMsg (TagMsg.TagClick value as m) ->
+        let
+          (model', cmds) = dispatch TagScrollerMsg (tagModelMap model) TagUpdate.update m model.tagScroller
+          (model'', cmds') = update (TimelineMsg << TMsg.SetValue <| value) model'
+        in
+          model'' ! [cmds, cmds']
+      TagScrollerMsg m ->
+        dispatch TagScrollerMsg (tagModelMap model) TagUpdate.update m model.tagScroller
