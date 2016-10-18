@@ -7,11 +7,9 @@ def runWebpack(file: File): Int = {
   println(sys.props("os.name"))
   val proc = p.findFirstMatchIn(sys.props("os.name")) match {
     case Some(_) => {
-    	println("attempting windows cmd...")
     	Process("cmd /c \"webpack " + file + "\"")
     }
     case None => {
-    	println("not windows...")
     	Process("webpack", file)
     }
   }
