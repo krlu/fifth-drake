@@ -1,9 +1,10 @@
-package gg.climb.lolobjects.game
+package gg.climb.lolobjects.game.state
 
 /**
   * Locational information for an object in a game of League.
   */
 class LocationData(val x: Double, val y: Double, val confidence: Double) {
+
   /**
     * Assuming length of one side of SR is 15,000 units
     * and length of one side of the base is 5,000 units
@@ -58,4 +59,6 @@ class LocationData(val x: Double, val y: Double, val confidence: Double) {
     (x >= 0 && x <= 1000 && y >= 5000 && y <= 15000) ||
       (x >= 0 && x <= 10000 && y >= 14000 && y <= 15000)
   }
+
+  override def toString : String = s"LocationData($x, $y)"
 }

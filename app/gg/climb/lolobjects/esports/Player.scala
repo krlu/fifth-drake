@@ -1,13 +1,13 @@
 package gg.climb.lolobjects.esports
 
-import gg.climb.lolobjects.InternalId
+import gg.climb.lolobjects.{InternalId, RiotId}
 
 class Player(val id: InternalId[Player],
              val ign: String,
              val role: Role,
-             val team: String) {
+             val riotId: RiotId[Player]) {
 
-  override def toString: String = s"Player(riotId=$id, ign=$ign, role=$role, team=$team)"
+  override def toString: String = s"Player(id=$id, ign=$ign, role=$role, riotId=$riotId)"
 
   override def equals(other: Any): Boolean = other match {
     case that: Player =>

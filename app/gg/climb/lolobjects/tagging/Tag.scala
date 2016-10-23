@@ -1,21 +1,21 @@
 package gg.climb.lolobjects.tagging
 
 import gg.climb.lolobjects.esports.Player
-import gg.climb.lolobjects.game.Game
+import gg.climb.lolobjects.game.GameData
 import gg.climb.lolobjects.{InternalId, RiotId}
 
 import scala.concurrent.duration.Duration
 
 
 class Tag(val id: Option[InternalId[Tag]],
-          val gameKey: RiotId[Game],
+          val gameKey: RiotId[GameData],
           val title: String,
           val description: String,
           val category: Category,
           val timestamp: Duration,
           val players: Set[Player]) {
 
-  def this(gameKey: RiotId[Game],
+  def this(gameKey: RiotId[GameData],
            title: String,
            description: String,
            category: Category,

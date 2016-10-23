@@ -31,7 +31,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   ConnectionPool.singleton(url, user, password)
 
-  def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
+  def getTagsForGame(gameKey: RiotId[GameData]): Seq[Tag] = {
     val query = sqls"WHERE game_key = ${gameKey.id}"
     val tagData: List[(Int, String, String, String, String, Long)] =
       DB readOnly { implicit session =>
@@ -50,7 +50,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   private def buildTag(data: (Int, String, String, String, String, Long)): Tag = data match {
     case data: (Int, String, String, String, String, Long) =>
       val tagId = new InternalId[Tag](data._1.toString)
-      new Tag(Some(tagId), new RiotId[Game](data._2), data._3, data._4, new Category(data._5),
+      new Tag(Some(tagId), new RiotId[GameData](data._2), data._3, data._4, new Category(data._5),
               Duration(data._6, TimeUnit.MILLISECONDS), getPlayersForTag(tagId))
     case _ => throw new IllegalArgumentException("")
   }
@@ -64,10 +64,9 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     * Helper method for parsing player data
     *
     * @param playerId - InternalId[Player]
-    * @param teamId   - optional parameter, depends on whether the team id is known from a calling method
     * @return
     */
-  def getPlayer(playerId: InternalId[Player], teamId: Option[String] = None): Player = {
+  def getPlayer(playerId: InternalId[Player]): Player = {
     val id = playerId.id
     val ign = DB readOnly { implicit session =>
       sql"SELECT ign FROM league.player_ign WHERE player_id = ${id.toInt}"
@@ -81,16 +80,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
         .map(rs => rs.string("role")
             ).single().apply().getOrElse("")
     }
-    val team_id: String = teamId match {
-      case None => DB readOnly { implicit session =>
-        sql"""SELECT team_id FROM league.player_team
-             WHERE player_id = ${id.toInt} order by end_date desc"""
-          .map(rs => rs.string("team_id")
-              ).list().apply().head
-      }
-      case _ => teamId.get
-    }
-    new Player(playerId, ign, Role.interpret(role), team_id)
+    new Player(playerId, ign, Role.interpret(role), getPlayerRiotId(playerId))
   }
 
   def insertTag(tag: Tag): Unit = {
@@ -254,16 +244,24 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   }
 
   def getPlayerByRiotId(riotId: RiotId[Player]): Player = {
-    val id: String = getPlayerId(riotId)
-    val playerId = new InternalId[Player](id)
-    getPlayer(playerId)
+    val id = getPlayerId(riotId)
+    getPlayer(id)
   }
 
-  def getPlayerId(riotId: RiotId[Player]): String = {
+  def getPlayerId(riotId: RiotId[Player]): InternalId[Player] = {
     val id = DB readOnly { implicit session =>
-      sql"SELECT id FROM league.player WHERE riot_id = ${riotId.id}".map(rs => rs.string("id")).single().apply()
+      sql"SELECT id FROM league.player WHERE riot_id = ${riotId.id}".map(rs => rs.string("id"))
+        .single().apply().getOrElse("")
     }
-    id.orNull
+    new InternalId[Player](id)
+  }
+
+  def getPlayerRiotId(id : InternalId[Player]) : RiotId[Player] = {
+    val query = sqls"WHERE id=${id.id.toInt}"
+    val riotIdVal = DB readOnly { implicit session =>
+      sql"SELECT riot_id FROM league.player $query".map(rs => rs.int("riot_id")).single().apply().getOrElse(-1)
+    }
+    new RiotId[Player](riotIdVal.toString)
   }
 
   def getTeamByAcronym(acronym: String, time: Option[DateTime] = None): Team = {
@@ -281,7 +279,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
       sql"""SELECT player_id FROM league.player_team WHERE team_id = ${id.toInt} AND is_starter
            AND start_date <= ${time.get} AND end_date > ${time.get}"""
         .map(rs => rs.string("player_id")).list().apply()
-        .map(p => getPlayer(new InternalId[Player](p), Some(id)))
+        .map(p => getPlayer(new InternalId[Player](p)))
     }
     new Team(teamId, name, acronym, players)
   }
