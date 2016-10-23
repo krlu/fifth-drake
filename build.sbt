@@ -11,7 +11,7 @@ git.useGitDescribe := true
 
 flywayUrl := "jdbc:postgresql://localhost:5432/league_analytics"
 flywaySchemas := Seq("audit", "league")
-flywayLocations += "filesystem:postgres/"
+flywayLocations := Seq("filesystem:postgres/")
 
 scalastyleConfig := new File("project/scalastyle-config.xml")
 scalastyleFailOnError := true
