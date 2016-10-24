@@ -36,8 +36,6 @@ libraryDependencies ++= Seq(
 
   "org.scalatest" %% "scalatest" % "3.0.0" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
-
-	"gg.climb" % "ramenX" % "0.0.2"
 )
 
 classpathTypes += "maven-plugin"
