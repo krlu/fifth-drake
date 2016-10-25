@@ -1,4 +1,4 @@
-import controllers.{GameDataController, Health}
+import controllers.{GameDataController, HealthController}
 import play.api.ApplicationLoader.Context
 import play.api.routing.Router
 import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}
@@ -14,7 +14,7 @@ class FifthDrakeLoader extends ApplicationLoader {
 
 class FifthDrakeApp(context: Context) extends BuiltInComponentsFromContext(context) {
   lazy val gameDataController = new GameDataController()
-  lazy val healthController = new Health()
+  lazy val healthController = new HealthController()
   lazy val assets = new controllers.Assets(httpErrorHandler)
   lazy val router: Router = new Routes(httpErrorHandler,
                                        assets,
