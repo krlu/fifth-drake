@@ -1,3 +1,7 @@
+import java.io.FileInputStream
+import java.util.Properties
+import collection.JavaConversions._
+
 name := """fifth-drake"""
 
 lazy val root = (project in file("."))
@@ -43,5 +47,14 @@ classpathTypes += "maven-plugin"
 
 PlayKeys.playRunHooks <+= baseDirectory.map(Webpack.apply)
 
-
 fork in run := true
+
+javaOptions in Test ++= sys.props.get("fifth-drake.properties").map { propsPath =>
+  val fifthDrakeProps: Properties = new Properties()
+  var opts: List[String] = List()
+  fifthDrakeProps.load(new FileInputStream(propsPath))
+  for ((k, v) <- fifthDrakeProps) {
+    opts = s"-D$k=$v" :: opts
+  }
+  opts
+}.getOrElse(List())

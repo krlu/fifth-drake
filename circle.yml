@@ -1,0 +1,25 @@
+machine:
+  timezone:
+    America/Los_Angeles
+  node:
+    version: 6.1.0
+  java:
+    version: openjdk8
+  services:
+    - postgres
+    - mongodb
+
+dependencies:
+  cache_directories:
+    - node_modules
+    - elm_stuff
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - ./scripts/deploy_prod.sh
+  staging:
+    branch: develop
+    commands:
+      - ./scripts/deploy_staging.sh
