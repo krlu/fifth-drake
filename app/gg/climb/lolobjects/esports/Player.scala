@@ -10,13 +10,8 @@ class Player(val id: InternalId[Player],
   override def toString: String = s"Player(id=$id, ign=$ign, role=$role, riotId=$riotId)"
 
   override def equals(other: Any): Boolean = other match {
-    case that: Player =>
-      (that canEqual this) &&
-        id == that.id
+    case that: Player => id == that.id
     case _ => false
   }
-
   override def hashCode: Int = id.hashCode
-
-  def canEqual(other: Any): Boolean = other.isInstanceOf[Player]
 }

@@ -37,7 +37,8 @@ class MongoDbHandlerTest extends WordSpec with Matchers {
     }
 
     "query gameIds" in {
-      assert(Await.result(dbh.getAllGames, TIMEOUT).size == 9)
+      val allGames = Await.result(dbh.getAllGames, TIMEOUT)
+      assert(allGames.size == 9)
     }
   }
 

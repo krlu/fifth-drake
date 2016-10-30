@@ -23,8 +23,6 @@ class MongoDbHandler(mongoClient: MongoClient) {
   val names: Observable[String] = mongoClient.listDatabaseNames()
   val database = mongoClient.getDatabase("league_analytics")
 
-//  def getAllMetaData: Future[Seq[MetaData]] = getSeq("metadata", None, parseMetaData)
-
   def getAllGames: Future[Seq[MetaData]] = getSeq("lcs_game_identifiers", None, buildMetadata)
 
   def getGIDsByMatchup(team1: Team, team2: Team): Future[Seq[MetaData]] = {
@@ -87,13 +85,13 @@ class MongoDbHandler(mongoClient: MongoClient) {
       team2 <- data.get("team2").map(_.asString().getValue)
       time <- data.get("gameDate").map(_.asInt64().getValue).map(new DateTime(_))
       id <- data.get("gameKey").map(_.asInt32().getValue).map(x => new RiotId[GameData](x.toString))
-      (patch, url, season) <- Await.result(getMetaDataForGame(id), TIMEOUT)
+      (patch, url, season, duration) <- Await.result(getMetaDataForGame(id), TIMEOUT)
     } yield {
-      new MetaData(team1, team2, time, id, patch, url, season)
+      new MetaData(team1, team2, time, id, patch, url, season, duration)
     }
   }
 
-  private def getMetaDataForGame(gameKey: RiotId[GameData]): Future[Option[(String, URL, Int)]] =
+  private def getMetaDataForGame(gameKey: RiotId[GameData]): Future[Option[(String, URL, Int, Duration)]] =
     getOne("metadata", Some(equal("gameId", gameKey.id.toInt)), parseMetaData)
 
   private def getOne[A](collection: String,
@@ -104,12 +102,15 @@ class MongoDbHandler(mongoClient: MongoClient) {
     .map(_.headOption.flatMap(transform(_)))
   }
 
-  private def parseMetaData(data: Document): Option[(String, URL, Int)] = {
+  private def parseMetaData(data: Document): Option[(String, URL, Int, Duration)] = {
     for {
       url <- data.get("youtubeURL").map(_.asString().getValue).map(new URL(_))
       patch <- data.get("gameVersion").map(_.asString().getValue)
       seasonId <- data.get("seasonId").map(_.asInt32().getValue)
-    } yield (patch, url, seasonId)
+      duration <- data.get("gameDuration").map(_.asInt32().getValue)
+    } yield {
+      (patch, url, seasonId, Duration(duration * 1000, TimeUnit.MILLISECONDS))
+    }
   }
 
   private def parseGameState(doc: Document): Option[GameState] = {
