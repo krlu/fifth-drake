@@ -1,7 +1,7 @@
-module Timeline.Update exposing (update)
+module Timeline.Internal.Update exposing (update)
 
-import Timeline.Messages exposing (Msg(..))
-import Timeline.Models exposing (..)
+import Timeline.Internal.ModelUtils exposing(getCurrentValue, getValueAt, toggleStatus)
+import Timeline.Types exposing (Msg(..), Model, Drag, Status(..))
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = (update' msg model, Cmd.none)

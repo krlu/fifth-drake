@@ -1,4 +1,4 @@
-module Timeline.View exposing (view)
+module Timeline.Internal.View exposing (view)
 
 import Css exposing (left, px)
 import Html exposing (..)
@@ -7,8 +7,8 @@ import Html.Events exposing (on, onClick)
 import Json.Decode as Json
 import Mouse
 import StyleUtils exposing (..)
-import Timeline.Messages exposing (Msg(KnobGrab, BarClick, PlayPause))
-import Timeline.Models exposing (..)
+import Timeline.Internal.ModelUtils exposing(getCurrentPx)
+import Timeline.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
 
 view : Model -> Html Msg
 view model =
