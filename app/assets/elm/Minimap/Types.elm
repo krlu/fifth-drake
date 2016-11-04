@@ -1,6 +1,12 @@
-module Minimap.Models exposing (..)
+module Minimap.Types exposing (..)
 
 import Array exposing (..)
+import Http
+
+type Msg
+  = SetPlayers (List Player)
+  | PlayerFetchFailure Http.Error
+  | UpdateTimestamp Int
 
 type alias Model =
   { players : List Player
@@ -16,11 +22,4 @@ type alias Player =
 type alias PlayerState =
   { x: Float
   , y: Float
-  }
-
-initialModel : String -> Model
-initialModel background =
-  { players = []
-  , timestamp = 0
-  , background = background
   }

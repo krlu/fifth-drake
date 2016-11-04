@@ -1,9 +1,8 @@
-module Timeline.Subscriptions exposing (subscriptions)
+module Timeline.Internal.Subscriptions exposing (subscriptions)
 
 import Mouse
 import Time
-import Timeline.Messages exposing (Msg(..))
-import Timeline.Models exposing (Model, Status(..))
+import Timeline.Types exposing (Msg(..), Model, Status(..))
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

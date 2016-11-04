@@ -1,30 +1,7 @@
-module Timeline.Models exposing (..)
+module Timeline.Internal.ModelUtils exposing (..)
 
 import Mouse
-
-type alias Value = Int
-type alias File = String
-
-type alias Model =
-  { value: Value
-  , maxVal: Value
-  , mouse: Maybe Drag
-
-  , status: Status
-  , width: Float
-
-  , pauseButton: File
-  , playButton: File
-  }
-
-type alias Drag =
-  { start: Mouse.Position
-  , current: Mouse.Position
-  }
-
-type Status
-  = Play
-  | Pause
+import Timeline.Types exposing (Model, Status(..), Value)
 
 initialModel : {a | playButton: String, pauseButton: String} -> Model
 initialModel {playButton, pauseButton} =

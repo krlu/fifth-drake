@@ -1,7 +1,6 @@
-module TagScroller.Update exposing (..)
+module TagScroller.Internal.Update exposing (..)
 
-import TagScroller.Models exposing (Model)
-import TagScroller.Messages exposing (Msg(..))
+import TagScroller.Types exposing (Model, Msg(..))
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =

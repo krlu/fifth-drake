@@ -1,9 +1,8 @@
-module TagScroller.Populate exposing (..)
+module TagScroller.Internal.Populate exposing (..)
 
 import Http
 import Json.Decode exposing (..)
-import TagScroller.Messages exposing (Msg(..))
-import TagScroller.Models exposing (Tag, TagType(..))
+import TagScroller.Types exposing (Msg(..), Tag, TagType(..))
 import Task exposing (Task)
 
 tagUrl : String

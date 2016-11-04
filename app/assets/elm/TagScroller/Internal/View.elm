@@ -1,10 +1,9 @@
-module TagScroller.View exposing (..)
+module TagScroller.Internal.View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import TagScroller.Models exposing (Model)
-import TagScroller.Messages exposing (Msg(..))
+import TagScroller.Types exposing (Msg(..), Model)
 
 view : Model -> Html Msg
 view model =

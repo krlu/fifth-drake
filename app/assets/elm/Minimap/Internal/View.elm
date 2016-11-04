@@ -1,12 +1,11 @@
-module Minimap.View exposing (..)
+module Minimap.Internal.View exposing (..)
 
 import Array
 import Css exposing (left, bottom, px)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Maybe exposing (andThen)
-import Minimap.Messages exposing (Msg)
-import Minimap.Models exposing (Model)
+import Minimap.Types exposing (Msg, Model)
 import StyleUtils exposing (..)
 
 view : Model -> Html Msg

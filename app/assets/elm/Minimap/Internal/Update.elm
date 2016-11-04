@@ -1,7 +1,6 @@
-module Minimap.Update exposing (..)
+module Minimap.Internal.Update exposing (..)
 
-import Minimap.Messages exposing (Msg(..))
-import Minimap.Models exposing (Model)
+import Minimap.Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
