@@ -1,2 +1,36 @@
+## Ide things
+# Intellij
+.idea
+.idea_modules
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# Vim Stuff
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+Session.vim
+.netrwhist
+*~
+tags
+
+## Modules Stuff
+node_modules/
+elm-stuff/
 build/
 .gradle
+
+## Generated things
+logs
+target
+/RUNNING_PID
+*.sbtserver
+*.lock
+project/play-fork-run.sbt
+project/sbt-ui.sbt
+npm-debug.log
