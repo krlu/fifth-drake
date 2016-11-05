@@ -2,6 +2,7 @@ package gg.climb.analytics
 
 import java.util.concurrent.TimeUnit
 
+import gg.climb.Time
 import gg.climb.commons.dbhandling.{MongoDbHandler, PostgresDbHandler}
 import gg.climb.lolobjects.RiotId
 import gg.climb.lolobjects.game.GameData
@@ -20,11 +21,11 @@ object EventStreamFactory {
   val mongoClient: MongoClient = MongoClient("mongodb://localhost")
   private val mongoHandler = new MongoDbHandler(mongoClient)
 
-  def gameStateStream(game: RiotId[GameData]): EventStream[Duration, GameState] = {
+  def gameStateStream(game: RiotId[GameData]): EventStream[Time, GameState] = {
     val gameStates = Await.result(mongoHandler.getCompleteGame(game),
                                   Duration(5, TimeUnit.SECONDS))
       .map(gs => (gs.timestamp, gs))
       .toList
-    new ListEventStream[Duration, GameState](gameStates)
+    new ListEventStream[Time, GameState](gameStates)
   }
 }

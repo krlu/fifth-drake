@@ -1,11 +1,11 @@
 package gg.climb.lolobjects.game.state
 
-import scala.concurrent.duration.Duration
+import gg.climb.Time
 
 /**
   * Encapsulates time-slice of in-game data at a timestamp t
   */
-class GameState(val timestamp: Duration,
+class GameState(val timestamp: Time,
                 val red: (TeamState, Set[PlayerState]),
                 val blue: (TeamState, Set[PlayerState])) {
 

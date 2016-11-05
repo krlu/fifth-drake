@@ -3,6 +3,7 @@ package gg.climb.commons.dbhandling
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
+import gg.climb.Time
 import gg.climb.lolobjects.RiotId
 import gg.climb.lolobjects.esports.{Player, Team}
 import gg.climb.lolobjects.game.state._
@@ -59,8 +60,8 @@ class MongoDbHandler(mongoClient: MongoClient) {
     * @return List[GameState]
     */
   def getGameWindow(gameKey: RiotId[GameData],
-                    begin: Duration,
-                    end: Duration): Future[Seq[GameState]] = {
+                    begin: Time,
+                    end: Time): Future[Seq[GameState]] = {
     val filter = and(gte("t", begin.toMillis), lte("t", end.toMillis))
     getSeq("game_" + gameKey.id, Some(filter), parseGameState)
   }
@@ -91,7 +92,8 @@ class MongoDbHandler(mongoClient: MongoClient) {
     }
   }
 
-  private def getMetaDataForGame(gameKey: RiotId[GameData]): Future[Option[(String, URL, Int, Duration)]] =
+  private def getMetaDataForGame(gameKey: RiotId[GameData])
+  : Future[Option[(String, URL, Int, Time)]] =
     getOne("metadata", Some(equal("gameId", gameKey.id.toInt)), parseMetaData)
 
   private def getOne[A](collection: String,
@@ -99,10 +101,10 @@ class MongoDbHandler(mongoClient: MongoClient) {
                 transform: Document => Option[A]): Future[Option[A]] = {
     getFilteredCollection(collection, filter).first()
     .toFuture()
-    .map(_.headOption.flatMap(transform(_)))
+    .map(_.headOption.flatMap(transform))
   }
 
-  private def parseMetaData(data: Document): Option[(String, URL, Int, Duration)] = {
+  private def parseMetaData(data: Document): Option[(String, URL, Int, Time)] = {
     for {
       url <- data.get("youtubeURL").map(_.asString().getValue).map(new URL(_))
       patch <- data.get("gameVersion").map(_.asString().getValue)

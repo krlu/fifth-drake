@@ -2,11 +2,9 @@ package gg.climb.lolobjects.game
 
 import java.net.URL
 
+import gg.climb.Time
 import gg.climb.lolobjects.RiotId
 import org.joda.time.DateTime
-
-import scala.concurrent.duration.Duration
-
 
 class MetaData(val teamName1: String,
                val teamName2: String,
@@ -15,7 +13,7 @@ class MetaData(val teamName1: String,
                val patch: String,
                val vodURL: URL,
                val seasonId: Int,
-               val gameDuration: Duration) {
+               val gameDuration: Time) {
   override def toString: String = s"MetaData(team1=$teamName1,team2=$teamName2, date=$gameDate," +
     s" gameKey=$gameKey, patch=$patch, vodURL=$vodURL, seasonId=$seasonId, gameDuration=$gameDuration)"
 }

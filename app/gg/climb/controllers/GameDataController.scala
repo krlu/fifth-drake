@@ -1,6 +1,10 @@
-package controllers
+package gg.climb.controllers
 
 import gg.climb.commons.dbhandling.{DataAccessHandler, MongoDbHandler, PostgresDbHandler}
+import gg.climb.lolobjects.RiotId
+import gg.climb.lolobjects.tagging.Tag
+import gg.climb.ramenx.core.EventStream
+import gg.climb.{Game, Time}
 import org.mongodb.scala.MongoClient
 import play.api.mvc._
 
@@ -32,8 +36,9 @@ class GameDataController extends Controller {
     Ok(views.html.index())
   }
 
-  def getTag: Action[AnyContent] = Action {
-    Ok()
+  def getTag(gameId: Int) : Action[AnyContent] = Action {
+    val tags : EventStream[Time, Tag] = dbh.getTags(new RiotId[Game](gameId.toString))
+    Ok("")
   }
 }
 

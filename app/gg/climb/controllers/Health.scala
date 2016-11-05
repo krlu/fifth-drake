@@ -1,5 +1,6 @@
-package controllers
+package gg.climb.controllers
 
+import controllers.BuildInfo
 import play.api.mvc.{Action, AnyContent, Controller}
 
 /**
