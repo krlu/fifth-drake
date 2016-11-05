@@ -11,6 +11,7 @@ This is the core application that we are building.
 There's a few parts to setup when first initializing this project:
  - Frontend package installation
  - Database Migrations
+ - Local Configuration (Optional)
 
 ## Frontend dependencies
 You will need to install a few components for the front end. You can do so via
@@ -35,6 +36,16 @@ in production. The command drops all you existing data and migrates reapplies
 the schemas from scratch.
 
 `sbt -Dflyway.user=$postgresUser flywayClean flywayMigrate`
+
+## Local Configuration
+If you wish to test locally, you will also want to run a local configuration. 
+The configuration is fairly simple. You should simply make a copy of properties 
+file and modify the entries as necessary. 
+
+`cp conf/fifth-drake{,.local}.properties`
+
+The new file should be named `fifth-drake.local.properties` and should not be 
+checked into the repo. The git ignore settings currently ignore this file.
 
 # Running play server for both front and backend
 You can run the play server using activator. To do so, simply run:

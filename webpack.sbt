@@ -5,12 +5,10 @@ lazy val webpack = TaskKey[Unit]("Run webpack when packaging the application")
 def runWebpack(file: File): Int = {
   val p: Regex = "(?i)windows.*".r
   val proc = p.findFirstMatchIn(sys.props("os.name")) match {
-    case Some(_) => {
-    	Process("cmd /c \"webpack " + file + "\"")
-    }
-    case None => {
-    	Process("webpack", file)
-    }
+    case Some(_) =>
+      Process("cmd /c \"webpack " + file + "\"")
+    case None =>
+      Process("webpack", file)
   }
   proc.!
 }

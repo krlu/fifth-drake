@@ -6,7 +6,7 @@ machine:
   java:
     version: openjdk8
   services:
-    - postgres
+    - postgresql
     - mongodb
 
 dependencies:

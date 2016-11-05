@@ -47,12 +47,27 @@ PlayKeys.playRunHooks <+= baseDirectory.map(Webpack.apply)
 
 fork in run := true
 
-javaOptions in Test ++= sys.props.get("fifth-drake.properties").map { propsPath =>
-  val fifthDrakeProps: Properties = new Properties()
-  var opts: List[String] = List()
-  fifthDrakeProps.load(new FileInputStream(propsPath))
-  for ((k, v) <- fifthDrakeProps) {
-    opts = s"-D$k=$v" :: opts
+def fileToOption (f : File) : Option[String] =
+  if (f.exists) {
+    Some(f.getAbsolutePath)
   }
-  opts
-}.getOrElse(List())
+  else {
+    None
+  }
+
+javaOptions in Test ++=
+  List( sys.props.get("fifth-drake.properties")
+      , fileToOption(baseDirectory(_ / "conf" / "fifth-drake.local.properties").value)
+      , fileToOption(baseDirectory(_ / "conf" / "fifth-drake.properties").value)
+      )
+    .find(_.isDefined)
+    .flatten
+    .map { propsPath =>
+      val fifthDrakeProps: Properties = new Properties()
+      var opts: List[String] = List()
+      fifthDrakeProps.load(new FileInputStream(propsPath))
+      for ((k, v) <- fifthDrakeProps) {
+        opts = s"-D$k=$v" :: opts
+      }
+      opts
+    }.getOrElse(List())
