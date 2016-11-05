@@ -12,7 +12,7 @@ import scalikejdbc._
 
 import scala.concurrent.duration.Duration
 
-
+//noinspection RedundantBlock
 class PostgresDbHandler(host: String, port: Int, db: String, user: String, password: String) {
 
   val loggingStackTraceDepth = 15
@@ -32,10 +32,9 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   ConnectionPool.singleton(url, user, password)
 
   def getTagsForGame(gameKey: RiotId[GameData]): Seq[Tag] = {
-    val query = sqls"WHERE game_key = ${gameKey.id}"
     val tagData: List[(Int, String, String, String, String, Long)] =
       DB readOnly { implicit session =>
-        sql"SELECT * FROM league.tag $query".map(rs => {
+        sql"SELECT * FROM league.tag WHERE game_key = ${gameKey.id}".map(rs => {
           (rs.int("id"), rs.string("game_key"), rs.string("title"),
             rs.string("description"), rs.string("category"), rs.long("timestamp"))
         }).list.apply()
@@ -86,27 +85,31 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   def insertTag(tag: Tag): Unit = {
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
-    val query = sqls"""values (${tag.gameKey.id},${tag.title},${tag.description},
-                   ${tag.category.name},${tag.timestamp.toMillis})"""
     DB localTx { implicit session => {
       val tag_id: Long =
         sql"""insert into league.tag (game_key, title, description, category, timestamp)
-             $query""".updateAndReturnGeneratedKey().apply()
+              values (${tag.gameKey.id},
+                      ${tag.title},
+                      ${tag.description},
+                      ${tag.category.name},
+                      ${tag.timestamp.toMillis})
+             """.updateAndReturnGeneratedKey().apply()
       tag.players.foreach((id: Player) => {
         sql"""INSERT INTO league.player_to_tag (tag_id, player_id)
-             values ($tag_id, ${id.id.id.toInt})""".update.apply()
+             values (${tag_id}, ${id.id.id.toInt})""".update.apply()
       })
     }
     }
   }
 
   def updateTag(tag: Tag): Unit = {
-    require(tag.hasInternalId, s"Tag '${tag.title}' is missing InternalId, check if Tag exists in DB!")
+    require(tag.hasInternalId,
+            s"Tag '${tag.title}' is missing InternalId, check if Tag exists in DB!")
     DB localTx { implicit session => {
       val where = tag.id.map(iid => sqls"WHERE id=${iid.id.toInt}").getOrElse("")
       sql"""UPDATE league.tag SET game_key=${tag.gameKey.id}, title=${tag.title},
           description=${tag.description}, category=${tag.category.name},
-          timestamp=${tag.timestamp.toMillis} $where"""
+          timestamp=${tag.timestamp.toMillis} ${where}"""
         .updateAndReturnGeneratedKey().apply()
       updatePlayersForTag(tag)
     }
@@ -143,9 +146,10 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   }
 
   private def getPlayerIdsForTag(tagId: InternalId[Tag]): Set[InternalId[Player]] = {
-    val query = sqls"WHERE tag_id=${tagId.id.toInt}"
     val tagIds: List[Int] = DB readOnly { implicit session =>
-      sql"SELECT player_id FROM league.player_to_tag $query".map(rs => rs.int("player_id")).list
+      sql"""SELECT player_id
+            FROM league.player_to_tag
+            WHERE tag_id=${tagId.id.toInt}""".map(rs => rs.int("player_id")).list
         .apply()
     }
     tagIds.map(id => new InternalId[Player](id.toString)).toSet
@@ -171,7 +175,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   def getChampion(championName: String): Option[Champion] = {
     val champId = DB readOnly { implicit session =>
-      sql"SELECT * FROM league.champion Where name=$championName"
+      sql"SELECT * FROM league.champion where name=${championName}"
         .map(rs => constructChampion(rs)).single().apply()
     }
     champId
@@ -257,9 +261,11 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   }
 
   def getPlayerRiotId(id : InternalId[Player]) : RiotId[Player] = {
-    val query = sqls"WHERE id=${id.id.toInt}"
     val riotIdVal = DB readOnly { implicit session =>
-      sql"SELECT riot_id FROM league.player $query".map(rs => rs.int("riot_id")).single().apply().getOrElse(-1)
+      sql"""
+           SELECT riot_id
+           FROM league.player
+           WHERE id=${id.id.toInt}""".map(rs => rs.int("riot_id")).single().apply().getOrElse(-1)
     }
     new RiotId[Player](riotIdVal.toString)
   }
@@ -286,7 +292,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   def getTeamIdByAcronym(acronym: String): String = {
     val id = DB readOnly { implicit session =>
-      sql"SELECT id FROM league.team WHERE acronym = $acronym"
+      sql"SELECT id FROM league.team WHERE acronym = ${acronym}"
         .map(rs => rs.string("id")).single().apply()
     }
     id.orNull
