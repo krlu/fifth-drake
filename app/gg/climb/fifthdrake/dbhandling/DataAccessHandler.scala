@@ -8,7 +8,7 @@ import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
 import gg.climb.fifthdrake.{Game, Time}
-import gg.climb.ramenx.{Behavior, EventStream, ListBehavior}
+import gg.climb.ramenx.{Behavior, ListBehavior}
 
 import scala.collection.mutable
 import scala.concurrent.Await
@@ -25,12 +25,12 @@ import scala.concurrent.duration.Duration
 class DataAccessHandler(pdbh: PostgresDbHandler, mdbh: MongoDbHandler){
   def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
 
-  def createGame(gameKey: RiotId[GameData]): Game ={
+  def createGame(gameKey: RiotId[Game]): Game ={
 
     val TIMEOUT = Duration(30, TimeUnit.SECONDS)
 
     val gameStates: Seq[GameState] = Await.result(mdbh.getCompleteGame(gameKey), TIMEOUT)
-    val metaData: MetaData = Await.result(mdbh.getGIDByRiotId(gameKey), TIMEOUT).get
+    val metaData: MetaData = Await.result(mdbh.getGidByRiotId(gameKey), TIMEOUT).get
 
     val blueTeamStates = gameStates.map(state => (state.timestamp, state.blue._1))
     val bluePlayerStates = gameStates.map(state => (state.timestamp, state.blue._2))

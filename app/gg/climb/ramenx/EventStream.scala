@@ -19,4 +19,5 @@ trait EventStream[Time, A] {
                 (convert: ((Time, A), (Time, A)) => Time => A): Behavior[Time, A]
   def stepper(initial: (Time, A), last: (Time, A)) =
     toBehavior(initial, last)({case ((_, v), _) => Function.const(v)})
+  def foldLeft[B](initial: B)(op: (B, (Time,A)) => B): B
 }

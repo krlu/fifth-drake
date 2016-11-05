@@ -1,11 +1,9 @@
 package gg.climb.fifthdrake.reasoning
-
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.{Time, TimeMonoid}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
-import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
+import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.{EventStream, ListEventStream}
 
 import scala.collection.mutable.ListBuffer
@@ -30,11 +28,11 @@ class EventFinder{
   /**
     * Calculates all events over the course of an entire game
     * Currently each events trigger is rule based
-    * @param gameData - all in game data as behaviors
-    * @param metadata - metaData for given game
+    * @param game - A game
     * @return ListEventStream[Duration,  Events at timeStamp]
     */
-  def getAllEventsForGame(gameData: GameData, metadata: MetaData): EventStream[Time, Set[GameEvent]] ={
+  def getAllEventsForGame(game: Game): EventStream[Time, Set[GameEvent]] ={
+    val (metadata, gameData) = game
 
     val redPlayersOverTime = gameData.teams(Red).playerStates.map{
       case(p , ps) => p -> ps.withPrev(windowSize * samplingRate, _-_)

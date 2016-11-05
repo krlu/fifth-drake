@@ -3,7 +3,7 @@ package gg.climb.fifthdrake.dbhandling
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.Time
+import gg.climb.fifthdrake.{Game, Time}
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Team}
 import gg.climb.fifthdrake.lolobjects.game.state._
@@ -26,14 +26,14 @@ class MongoDbHandler(mongoClient: MongoClient) {
 
   def getAllGames: Future[Seq[MetaData]] = getSeq("lcs_game_identifiers", None, buildMetadata)
 
-  def getGIDsByMatchup(team1: Team, team2: Team): Future[Seq[MetaData]] = {
+  def getGidsByMatchup(team1: Team, team2: Team): Future[Seq[MetaData]] = {
     val condition1: Bson = and(equal("team1", team1.acronym), equal("team2", team2.acronym))
     val condition2: Bson = and(equal("team1", team2.acronym), equal("team2", team1.acronym))
     val filter = or(condition1, condition2)
     getSeq("lcs_game_identifiers", Some(filter), buildMetadata)
   }
 
-  def getGIDByRiotId(riotId: RiotId[GameData]): Future[Option[MetaData]] = {
+  def getGidByRiotId(riotId: RiotId[Game]): Future[Option[MetaData]] = {
     val filter: Bson = equal("gameKey", riotId.id.toInt)
     getOne("lcs_game_identifiers", Some(filter), buildMetadata)
   }
@@ -50,7 +50,7 @@ class MongoDbHandler(mongoClient: MongoClient) {
     getSeq("lcs_game_identifiers", Some(filter), buildMetadata)
   }
 
-  def getCompleteGame(gameKey: RiotId[GameData]): Future[Seq[GameState]] =
+  def getCompleteGame(gameKey: RiotId[Game]): Future[Seq[GameState]] =
     getSeq("game_" + gameKey.id, None, parseGameState)
 
   /**
@@ -59,7 +59,7 @@ class MongoDbHandler(mongoClient: MongoClient) {
     * @param end     - end of time window
     * @return List[GameState]
     */
-  def getGameWindow(gameKey: RiotId[GameData],
+  def getGameWindow(gameKey: RiotId[Game],
                     begin: Time,
                     end: Time): Future[Seq[GameState]] = {
     val filter = and(gte("t", begin.toMillis), lte("t", end.toMillis))

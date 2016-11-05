@@ -2,10 +2,10 @@ package gg.climb.fifthdrake.dbhandling
 
 import java.util.concurrent.TimeUnit
 
+import gg.climb.fifthdrake.Game
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state.{Blue, Red}
-import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
 import org.mongodb.scala.MongoClient
 import org.scalatest.{Matchers, WordSpec}
 
@@ -13,22 +13,19 @@ import scala.concurrent.duration.Duration
 
 class DataAccessHandlerTest extends WordSpec with Matchers {
 
-  type Game = (GameData, MetaData)
-
   val TIMEOUT = Duration(30, TimeUnit.SECONDS)
   val mongoClient: MongoClient = MongoClient("mongodb://localhost")
   val mdbh = new MongoDbHandler(mongoClient)
 
   // TODO: hardcoded
-  val pdbh = new PostgresDbHandler("localhost", 5432, "league_analytics", "kenneth", "asdfasdf")
+  val pdbh = new PostgresDbHandler("localhost", 5432, "league_analytics", "prasanth", "")
 
   val dah = new DataAccessHandler(pdbh, mdbh)
 
   "A DataAccessHandler" should {
     "Create Game " in {
-      val gameKey = new RiotId[GameData]("1001750032")
-      val game: Game = dah.createGame(gameKey)
-      val gameData = game._1
+      val gameKey = new RiotId[Game]("1001750032")
+      val (_, gameData) = dah.createGame(gameKey)
       assert(gameData.teams(Blue).playerStates.keys.size == 5)
       assert(gameData.teams(Red).playerStates.keys.size == 5)
       gameData.teams(Blue).playerStates.filter{case (p,b) => p.riotId.equals(new RiotId[Player]("483"))}

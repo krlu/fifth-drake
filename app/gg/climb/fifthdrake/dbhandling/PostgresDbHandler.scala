@@ -50,7 +50,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   private def buildTag(data: (Int, String, String, String, String, Long)): Tag = data match {
     case data: (Int, String, String, String, String, Long) =>
       val tagId = new InternalId[Tag](data._1.toString)
-      new Tag(Some(tagId), new RiotId[GameData](data._2), data._3, data._4, new Category(data._5),
+      new Tag(Some(tagId), new RiotId[Game](data._2), data._3, data._4, new Category(data._5),
               Duration(data._6, TimeUnit.MILLISECONDS), getPlayersForTag(tagId))
     case _ => throw new IllegalArgumentException("")
   }

@@ -1,20 +1,19 @@
 package gg.climb.fifthdrake.lolobjects.tagging
 
-import gg.climb.fifthdrake.Time
 import gg.climb.fifthdrake.lolobjects.esports.Player
-import gg.climb.fifthdrake.lolobjects.game.GameData
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
+import gg.climb.fifthdrake.{Game, Time}
 
 
 class Tag(val id: Option[InternalId[Tag]],
-          val gameKey: RiotId[GameData],
+          val gameKey: RiotId[Game],
           val title: String,
           val description: String,
           val category: Category,
           val timestamp: Time,
           val players: Set[Player]) {
 
-  def this(gameKey: RiotId[GameData],
+  def this(gameKey: RiotId[Game],
            title: String,
            description: String,
            category: Category,

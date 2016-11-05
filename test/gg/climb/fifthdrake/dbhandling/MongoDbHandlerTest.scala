@@ -2,8 +2,8 @@ package gg.climb.fifthdrake.dbhandling
 
 import java.util.concurrent.TimeUnit
 
+import gg.climb.fifthdrake.Game
 import gg.climb.fifthdrake.lolobjects.RiotId
-import gg.climb.fifthdrake.lolobjects.game.GameData
 import gg.climb.fifthdrake.lolobjects.game.state.GameState
 import org.mongodb.scala.MongoClient
 import org.scalatest.{Matchers, WordSpec}
@@ -19,7 +19,7 @@ class MongoDbHandlerTest extends WordSpec with Matchers {
   "A MongoDbHandler " should {
 
     "query states of a game" in {
-      val gameKey = new RiotId[GameData]("1001710092")
+      val gameKey = new RiotId[Game]("1001710092")
       val gameStates = Await.result(dbh.getCompleteGame(gameKey), TIMEOUT)
       assert(gameStates.size == 394)
       gameStates.foreach(gameState => {
