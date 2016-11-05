@@ -1,10 +1,9 @@
 package gg.climb.fifthdrake.lolobjects.tagging
 
+import gg.climb.fifthdrake.Time
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.GameData
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
-
-import scala.concurrent.duration.Duration
 
 
 class Tag(val id: Option[InternalId[Tag]],
@@ -12,14 +11,14 @@ class Tag(val id: Option[InternalId[Tag]],
           val title: String,
           val description: String,
           val category: Category,
-          val timestamp: Duration,
+          val timestamp: Time,
           val players: Set[Player]) {
 
   def this(gameKey: RiotId[GameData],
            title: String,
            description: String,
            category: Category,
-           timestamp: Duration,
+           timestamp: Time,
            players: Set[Player]) {
     this(Option.empty,
          gameKey,
