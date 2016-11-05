@@ -5,9 +5,6 @@ machine:
     version: 6.1.0
   java:
     version: openjdk8
-  services:
-    - postgresql
-    - mongodb
 
 dependencies:
   cache_directories:
