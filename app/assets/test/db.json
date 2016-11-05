@@ -31,8 +31,41 @@
       }
     ]
 , "tags":
-    [ {"tagType": "TeamFight", "timestamp": 10 }
-    , {"tagType": "TeamFight", "timestamp": 22 }
-    , {"tagType": "UserDefined", "timestamp": 50 }
+    [ { "title": "Fight 1"
+      , "description": "Doublelift dies"
+      , "category": "TeamFight"
+      , "timestamp": 10
+      , "players":
+        [ "Doublelift"
+        , "Bjergsen"
+        , "Svenskeren"
+        , "Biofrost"
+        , "Hauntzer"
+        ]
+      }
+    , { "title": "Fight 2"
+      , "description": "Bang dies"
+      , "category": "TeamFight"
+      , "timestamp": 30
+      , "players":
+        [ "Faker"
+        , "Bang"
+        , "Wolf"
+        , "Bengi"
+        , "Duke"
+        ]
+      }
+    , { "title": "Objective 3"
+      , "description": "APHROOOOOOOOO"
+      , "category": "Objective"
+      , "timestamp": 50
+      , "players":
+        [ "ZionSpartan"
+        , "XMithie"
+        , "Huhi"
+        , "Stixxay"
+        , "Aphromoo"
+        ]
+      }
     ]
 }

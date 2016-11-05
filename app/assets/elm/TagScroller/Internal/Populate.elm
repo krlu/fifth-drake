@@ -2,7 +2,7 @@ module TagScroller.Internal.Populate exposing (..)
 
 import Http
 import Json.Decode exposing (..)
-import TagScroller.Types exposing (Msg(..), Tag, TagType(..))
+import TagScroller.Types exposing (Msg(..), Tag, TagCategory(..))
 import Task exposing (Task)
 
 tagUrl : String
@@ -16,13 +16,16 @@ populate = Task.perform TagFetchFailure UpdateTags getTags
 
 tag : Decoder Tag
 tag =
-  object2 Tag
-    ("tagType" := tagType)
+  object5 Tag
+    ("title" := string)
+    ("description" := string)
+    ("category" := tagCategory)
     ("timestamp" := int)
+    ("players" := list string)
 
-tagType : Decoder TagType
-tagType = customDecoder string <| \s ->
+tagCategory : Decoder TagCategory
+tagCategory = customDecoder string <| \s ->
   case s of
     "TeamFight" -> Ok TeamFight
-    "UserDefined" -> Ok UserDefined
+    "Objective" -> Ok Objective
     _ -> Err <| s ++ " is not a proper tag type"

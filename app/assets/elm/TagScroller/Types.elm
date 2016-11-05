@@ -13,10 +13,13 @@ type alias Model =
   }
 
 type alias Tag =
-  { tagType: TagType
-  , timestamp: Int
+  { title : String
+  , description : String
+  , category: TagCategory
+  , timestamp: Timeline.Value
+  , players: List String
   }
 
-type TagType
+type TagCategory
   = TeamFight
-  | UserDefined
+  | Objective
