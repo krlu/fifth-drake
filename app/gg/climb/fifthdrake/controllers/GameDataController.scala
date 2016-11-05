@@ -11,7 +11,7 @@ import play.api.mvc._
 class GameDataController extends Controller {
 
   val dbh = new DataAccessHandler(
-    new PostgresDbHandler("localhost", 5432, "league_analytics", "", ""),
+    new PostgresDbHandler("localhost", 5432, "league_analytics", "prasanth", ""),
     new MongoDbHandler(MongoClient("mongodb://localhost"))
   )
 
@@ -43,7 +43,7 @@ class GameDataController extends Controller {
         "title" -> tag.title,
         "description" -> tag.description,
         "category" -> tag.category.name,
-        "timestamp" -> tag.timestamp.toMillis,
+        "timestamp" -> tag.timestamp.toSeconds,
         "players" -> Json.toJson(tag.players.map(_.ign))
       )
     }

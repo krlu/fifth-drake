@@ -13,7 +13,8 @@ view model =
            div [ class "tag"
                , onClick <| TagClick tag.timestamp
                ]
-             [ text << toString <| tag.tagType
+             [ p [] [text tag.title]
+             , p [] [text << toString <| tag.category]
              ]
          )
   in
