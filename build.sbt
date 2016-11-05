@@ -27,10 +27,16 @@ buildInfoOptions += BuildInfoOption.ToJson
 
 git.useGitDescribe := true
 
-flywayUrl := "jdbc:postgresql://localhost:5432/" +
-  props.value.getOrElse("climb.pgDbName", "league_analytics")
+flywayUrl := {
+  val host = props.value.getOrElse("climb.pgHost", "localhost")
+  val port = props.value.getOrElse("climb.pgPort", "5432")
+  val dbName = props.value.getOrElse("climb.pgDbName", "league_analytics")
+  s"jdbc:postgresql://$host:$port/$dbName"
+}
 flywaySchemas := Seq("audit", "league")
 flywayLocations := Seq("filesystem:postgres/")
+flywayUser := props.value.getProperty("climb.pgUserName")
+flywayPassword := props.value.getProperty("climb.pgPassword")
 
 scalastyleConfig := new File("project/scalastyle-config.xml")
 scalastyleFailOnError := true
