@@ -4,6 +4,20 @@ import collection.JavaConversions._
 
 name := """fifth-drake"""
 
+lazy val props = SettingKey[Properties]("builds properties")
+props :=
+  List( sys.props.get("fifth-drake.properties")
+    , fileToOption(baseDirectory(_ / "conf" / "fifth-drake.local.properties").value)
+    , fileToOption(baseDirectory(_ / "conf" / "fifth-drake.properties").value)
+  )
+    .find(_.isDefined)
+    .flatten
+    .map { propsPath =>
+      val fifthDrakeProps: Properties = new Properties()
+      fifthDrakeProps.load(new FileInputStream(propsPath))
+      fifthDrakeProps
+    }.getOrElse(new Properties())
+
 lazy val root = (project in file("."))
                 .enablePlugins(PlayScala, BuildInfoPlugin, GitVersioning, GitBranchPrompt)
 
@@ -13,7 +27,8 @@ buildInfoOptions += BuildInfoOption.ToJson
 
 git.useGitDescribe := true
 
-flywayUrl := "jdbc:postgresql://localhost:5432/league_analytics"
+flywayUrl := "jdbc:postgresql://localhost:5432/" +
+  props.value.getOrElse("climb.pgDbName", "league_analytics")
 flywaySchemas := Seq("audit", "league")
 flywayLocations := Seq("filesystem:postgres/")
 
@@ -55,19 +70,10 @@ def fileToOption (f : File) : Option[String] =
     None
   }
 
-javaOptions ++=
-  List( sys.props.get("fifth-drake.properties")
-      , fileToOption(baseDirectory(_ / "conf" / "fifth-drake.local.properties").value)
-      , fileToOption(baseDirectory(_ / "conf" / "fifth-drake.properties").value)
-      )
-    .find(_.isDefined)
-    .flatten
-    .map { propsPath =>
-      val fifthDrakeProps: Properties = new Properties()
-      var opts: List[String] = List()
-      fifthDrakeProps.load(new FileInputStream(propsPath))
-      for ((k, v) <- fifthDrakeProps) {
-        opts = s"-D$k=$v" :: opts
-      }
-      opts
-    }.getOrElse(List())
+javaOptions ++= {
+  var opts: List[String] = List()
+  for ((k, v) <- props.value) {
+    opts = s"-D$k=$v" :: opts
+  }
+  opts
+}

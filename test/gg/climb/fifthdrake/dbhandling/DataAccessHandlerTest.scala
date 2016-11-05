@@ -18,11 +18,11 @@ class DataAccessHandlerTest extends WordSpec with Matchers {
   val mdbh = new MongoDbHandler(mongoClient)
 
   val pdbh = new PostgresDbHandler (
-    sys.props("climb.test.pgHost"),
-    sys.props("climb.test.pgPort").toInt,
-    sys.props("climb.test.pgDbName"),
-    sys.props("climb.test.pgUserName"),
-    sys.props("climb.test.pgPassword")
+    sys.props("climb.pgHost"),
+    sys.props("climb.pgPort").toInt,
+    sys.props("climb.pgDbName"),
+    sys.props("climb.pgUserName"),
+    sys.props("climb.pgPassword")
   )
 
   val dah = new DataAccessHandler(pdbh, mdbh)
