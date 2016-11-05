@@ -22,8 +22,6 @@ scalastyleFailOnError := true
 
 scalaVersion := "2.11.7"
 
-resolvers += Resolver.mavenLocal
-
 libraryDependencies ++= Seq(
   jdbc,
   cache,

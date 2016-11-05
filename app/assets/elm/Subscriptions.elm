@@ -1,9 +1,14 @@
 module Subscriptions exposing (..)
 
-import Messages exposing (Msg(..))
-import Models exposing (Model)
-import Timeline.Subscriptions as TSub
+import Minimap.Minimap as Minimap
+import TagScroller.TagScroller as TagScroller
+import Timeline.Timeline as Timeline
+import Types exposing (..)
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.map TimelineMsg <| TSub.subscriptions model.timeline
+  Sub.batch
+    [ Sub.map MinimapMsg <| Minimap.subscriptions model.minimap
+    , Sub.map TagScrollerMsg <| TagScroller.subscriptions model.tagScroller
+    , Sub.map TimelineMsg <| Timeline.subscriptions model.timeline
+    ]

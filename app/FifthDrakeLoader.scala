@@ -1,4 +1,4 @@
-import controllers.{GameDataController, HealthController}
+import gg.climb.fifthdrake.controllers.{GameDataController, HealthController}
 import play.api.ApplicationLoader.Context
 import play.api.routing.Router
 import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}

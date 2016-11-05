@@ -1,15 +1,12 @@
 module Update exposing (..)
 
-import Messages exposing (Msg(..))
-import Minimap.Messages as MMsg
-import Minimap.Models as MModel
-import Minimap.Update as MUpdate
-import Models exposing (Model)
-import TagScroller.Messages as TagMsg
-import TagScroller.Update as TagUpdate
-import Timeline.Messages as TMsg
-import Timeline.Models as TModel exposing (getCurrentValue)
-import Timeline.Update as TUpdate
+import Minimap.Minimap as Minimap
+import Minimap.Types as MinimapT
+import TagScroller.TagScroller as TagScroller
+import TagScroller.Types as TagScrollerT
+import Timeline.Timeline as Timeline
+import Timeline.Types as TimelineT
+import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -36,17 +33,17 @@ update msg model =
     case msg of
       TimelineMsg m ->
         let
-          (model', cmds) = dispatch TimelineMsg (tModelMap model) TUpdate.update m model.timeline
-          (model'', cmds') = update (MinimapMsg << MMsg.UpdateTimestamp <| model'.timeline.value) model'
+          (model', cmds) = dispatch TimelineMsg (tModelMap model) Timeline.update m model.timeline
+          (model'', cmds') = update (MinimapMsg << MinimapT.UpdateTimestamp <| model'.timeline.value) model'
         in
           model'' ! [cmds, cmds']
       MinimapMsg m ->
-        dispatch MinimapMsg (mModelMap model) MUpdate.update m model.minimap
-      TagScrollerMsg (TagMsg.TagClick value as m) ->
+        dispatch MinimapMsg (mModelMap model) Minimap.update m model.minimap
+      TagScrollerMsg (TagScrollerT.TagClick value as m) ->
         let
-          (model', cmds) = dispatch TagScrollerMsg (tagModelMap model) TagUpdate.update m model.tagScroller
-          (model'', cmds') = update (TimelineMsg << TMsg.SetValue <| value) model'
+          (model', cmds) = dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller
+          (model'', cmds') = update (TimelineMsg << TimelineT.SetValue <| value) model'
         in
           model'' ! [cmds, cmds']
       TagScrollerMsg m ->
-        dispatch TagScrollerMsg (tagModelMap model) TagUpdate.update m model.tagScroller
+        dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller

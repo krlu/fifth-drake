@@ -1,23 +1,29 @@
 module Main exposing (..)
 
 import Html.App
-import Messages exposing (Msg(..))
-import Minimap.Populate as MPopulate
-import TagScroller.Populate as TagPopulate
-import Models exposing (Model, Flags, initialModel)
 import Subscriptions
-import Task
+import Types exposing (..)
 import Update
 import View
+import Timeline.Timeline as Timeline
+import Minimap.Minimap as Minimap
+import TagScroller.TagScroller as TagScroller
 
 init : Flags -> (Model, Cmd Msg)
 init flags =
-  ( initialModel flags
-  , Cmd.batch
-      [ Cmd.map MinimapMsg MPopulate.populate
-      , Cmd.map TagScrollerMsg TagPopulate.populate
-      ]
-  )
+  let
+    (minimapModel, minimapCmd) = Minimap.init flags.minimapBackground
+    (tagScrollerModel, tagScrollerCmd) = TagScroller.init
+    (timelineModel, timelineCmd) = Timeline.init flags
+  in
+    { minimap = minimapModel
+    , tagScroller = tagScrollerModel
+    , timeline = timelineModel
+    } !
+    [ Cmd.map MinimapMsg minimapCmd
+    , Cmd.map TagScrollerMsg tagScrollerCmd
+    , Cmd.map TimelineMsg timelineCmd
+    ]
 
 main : Program Flags
 main =
