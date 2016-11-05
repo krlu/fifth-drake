@@ -3,6 +3,7 @@ package gg.climb.fifthdrake.dbhandling
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+import gg.climb.fifthdrake.Game
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
 import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
@@ -31,7 +32,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   ConnectionPool.singleton(url, user, password)
 
-  def getTagsForGame(gameKey: RiotId[GameData]): Seq[Tag] = {
+  def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
     val tagData: List[(Int, String, String, String, String, Long)] =
       DB readOnly { implicit session =>
         sql"SELECT * FROM league.tag WHERE game_key = ${gameKey.id}".map(rs => {

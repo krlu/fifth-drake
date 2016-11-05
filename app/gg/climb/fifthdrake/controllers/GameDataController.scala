@@ -1,11 +1,11 @@
 package gg.climb.fifthdrake.controllers
 
+import gg.climb.fifthdrake.Game
 import gg.climb.fifthdrake.dbhandling.{DataAccessHandler, MongoDbHandler, PostgresDbHandler}
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
-import gg.climb.fifthdrake.{Game, Time}
-import gg.climb.ramenx.EventStream
 import org.mongodb.scala.MongoClient
+import play.api.libs.json.{Json, Writes}
 import play.api.mvc._
 
 class GameDataController extends Controller {
@@ -37,8 +37,17 @@ class GameDataController extends Controller {
   }
 
   def getTag(gameId: Int) : Action[AnyContent] = Action {
-    val tags : EventStream[Time, Tag] = dbh.getTags(new RiotId[Game](gameId.toString))
-    Ok("")
+    val tags = dbh.getTags(new RiotId[Game](gameId.toString))
+    implicit val tagWrites = new Writes[Tag] {
+      def writes(tag: Tag) = Json.obj(
+        "title" -> tag.title,
+        "description" -> tag.description,
+        "category" -> tag.category.name,
+        "timestamp" -> tag.timestamp.toMillis,
+        "players" -> Json.toJson(tag.players.map(_.ign))
+      )
+    }
+    Ok(Json.toJson(tags))
   }
 }
 

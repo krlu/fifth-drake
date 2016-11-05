@@ -23,7 +23,7 @@ import scala.concurrent.duration.Duration
   * @param mdbh - MongoDbHandler
   */
 class DataAccessHandler(pdbh: PostgresDbHandler, mdbh: MongoDbHandler){
-  def getTags(id: RiotId[Game]): EventStream[Time, Tag] = ???
+  def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
 
   def createGame(gameKey: RiotId[GameData]): Game ={
 

@@ -7,3 +7,5 @@ GET   /public/*file               controllers.Assets.versioned(path="/public", f
 
 GET   /                           gg.climb.fifthdrake.controllers.GameDataController.loadHomePage
 GET   /health                     gg.climb.fifthdrake.controllers.Health.check
+
+GET   /game/tags/:id              gg.climb.fifthdrake.controllers.GameDataController.getTag(id: Int)
