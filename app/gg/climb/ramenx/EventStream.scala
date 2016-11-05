@@ -2,7 +2,6 @@ package gg.climb.ramenx
 
 import scalaz.Monoid
 
-// TODO: Swap implicit monoid to proper type
 trait EventStream[Time, A] {
   def size: Int
   def apply(at: Time): Option[(Time, A)]
@@ -17,7 +16,7 @@ trait EventStream[Time, A] {
   def mapWithTime[B](f: (Time, A) => B): EventStream[Time, B]
   def toBehavior(initial: (Time, A), last: (Time, A))
                 (convert: ((Time, A), (Time, A)) => Time => A): Behavior[Time, A]
-  def stepper(initial: (Time, A), last: (Time, A)) =
+  def stepper(initial: (Time, A), last: (Time, A)): Behavior[Time, A] =
     toBehavior(initial, last)({case ((_, v), _) => Function.const(v)})
   def foldLeft[B](initial: B)(op: (B, (Time,A)) => B): B
 }

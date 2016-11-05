@@ -55,7 +55,7 @@ def fileToOption (f : File) : Option[String] =
     None
   }
 
-javaOptions in Test ++=
+javaOptions ++=
   List( sys.props.get("fifth-drake.properties")
       , fileToOption(baseDirectory(_ / "conf" / "fifth-drake.local.properties").value)
       , fileToOption(baseDirectory(_ / "conf" / "fifth-drake.properties").value)

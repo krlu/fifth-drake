@@ -7,7 +7,7 @@ class GameDataControllerTest extends WordSpec with Matchers{
 
   "A GameDataController" should{
 
-    val ctrl = new GameDataController
+    val ctrl = new GameDataController(???)
 
     "Return JSON of player states" in {
       val data: JsObject = ctrl.getGameData("1001750032")

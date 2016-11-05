@@ -14,16 +14,7 @@ import play.api.mvc._
 
 import scala.concurrent.duration.Duration
 
-class GameDataController extends Controller {
-
-  val dbh = new DataAccessHandler(
-    new PostgresDbHandler("localhost",
-      5432,
-      "league_analytics",
-      "prasanth",
-      ""),
-    new MongoDbHandler(MongoClient("mongodb://localhost"))
-  )
+class GameDataController(dbh : DataAccessHandler) extends Controller {
 
   def xpRequiredForLevel(level: Int): Int =
     if (level > 0 && level <= 18) {
