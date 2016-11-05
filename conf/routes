@@ -5,5 +5,5 @@
 # Map static resources from the /public folder to the /assets URL path
 GET   /public/*file               controllers.Assets.versioned(path="/public", file)
 
-GET   /                           gg.climb.controllers.GameDataController.loadHomePage
-GET   /health                     gg.climb.controllers.Health.check
+GET   /                           gg.climb.fifthdrake.controllers.GameDataController.loadHomePage
+GET   /health                     gg.climb.fifthdrake.controllers.Health.check
