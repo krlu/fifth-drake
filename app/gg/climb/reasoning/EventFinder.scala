@@ -146,7 +146,3 @@ class EventFinder{
     Math.sqrt(Math.pow(loc1.x - loc2.x, 2) + Math.pow(loc1.y - loc2.y, 2))
 }
 
-private object EventMonoid extends Monoid[Duration] {
-  override def zero: Duration = Duration(0, TimeUnit.MILLISECONDS)
-  override def append(f1: Duration, f2: => Duration): Duration = f1 + f2
-}

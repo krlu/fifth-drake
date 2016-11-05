@@ -68,5 +68,5 @@ class ListEventStream[Time, A](stream: List[(Time, A)])(implicit order: Ordering
       case x :: xs => new ListBehavior(x._2, xs)
     }
   }
-
+  override def foldLeft[B](initial: B)(op: (B, (Time,A)) => B): B = events.foldLeft(initial)(op)
 }
