@@ -7,9 +7,20 @@ machine:
     version: openjdk8
 
 dependencies:
+  override:
+    - npm install
+    - ./node_modules/elm/binwrappers/elm package install
   cache_directories:
     - node_modules
     - elm_stuff
+
+database:
+  override:
+    - ./bin/activator flywayMigrate
+
+test:
+  override:
+    - ./bin/activator test
 
 deployment:
   production:
