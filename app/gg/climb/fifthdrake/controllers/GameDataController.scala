@@ -2,13 +2,12 @@ package gg.climb.fifthdrake.controllers
 
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.dbhandling.{DataAccessHandler, MongoDbHandler, PostgresDbHandler}
+import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.game.InGameTeam
 import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red}
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
-import org.mongodb.scala.MongoClient
 import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.mvc._
 
