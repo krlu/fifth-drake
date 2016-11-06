@@ -42,11 +42,11 @@ class GameDataController extends Controller {
       throw new IllegalArgumentException(s"Cannot have `$xp' xp")
     }
 
-  def loadHomePage: Action[AnyContent] = Action {
-    Ok(views.html.index())
+  def loadDashboard(gameKey: String): Action[AnyContent] = Action {
+    Ok(views.html.gameDashboard())
   }
 
-  def getGameData(gameKey: String): JsObject = {
+  def getGameData(gameKey: String): Action[AnyContent] = Action {
     def getPlayerStates(igt: InGameTeam, gameLength: Time,
       samplingRate: Int = 1000): JsObject = {
       val rate = Duration(samplingRate, TimeUnit.MILLISECONDS)
@@ -83,18 +83,14 @@ class GameDataController extends Controller {
     )
 
     val (metaData, gameData) = dbh.createGame(new RiotId[Game](gameKey))
-    val blueData = Json
-      .obj("playerStats" -> getPlayerStates(gameData.teams(Blue), metaData.gameDuration))
-    val redData = Json
-      .obj("playerStats" -> getPlayerStates(gameData.teams(Red), metaData.gameDuration))
-    Json.obj("blueTeam" -> blueData, "redTeam" -> redData)
+    val blueData = Json.obj("playerStats" -> getPlayerStates(gameData.teams(Blue), metaData.gameDuration))
+    val redData = Json.obj("playerStats" -> getPlayerStates(gameData.teams(Red), metaData.gameDuration))
+    Ok(Json.obj("blueTeam" -> blueData, "redTeam" -> redData))
   }
 
 
-  def getTag(gameId: Int): Action[AnyContent] = Action {
-    val tags = dbh
-      .getTags(new RiotId[Game](gameId
-        .toString))
+  def getTags(gameKey: String): Action[AnyContent] = Action {
+    val tags = dbh.getTags(new RiotId[Game](gameKey))
     implicit val tagWrites = new Writes[Tag] {
       def writes(tag: Tag) = Json.obj(
         "title" -> tag.title,

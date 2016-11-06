@@ -4,15 +4,19 @@ import Http
 import Json.Decode exposing (..)
 import TagScroller.Types exposing (Msg(..), Tag, TagCategory(..))
 import Task exposing (Task)
+import Types exposing (Location)
 
-tagUrl : String
-tagUrl = Http.url "http://localhost:4000/tags" []
+(=>) = (,)
 
-getTags : Task Http.Error (List Tag)
-getTags = Http.get (list tag) tagUrl
+tagUrl : Location -> String
+tagUrl loc =
+  Http.url ("http://" ++ loc.host ++ "/game/" ++ loc.gameId ++ "/tags") []
 
-populate : Cmd Msg
-populate = Task.perform TagFetchFailure UpdateTags getTags
+getTags : Location -> Task Http.Error (List Tag)
+getTags loc = Http.get (list tag) <| tagUrl loc
+
+populate : Location -> Cmd Msg
+populate loc = Task.perform TagFetchFailure UpdateTags <| getTags loc
 
 tag : Decoder Tag
 tag =

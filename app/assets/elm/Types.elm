@@ -18,9 +18,7 @@ type alias Model =
 
 type alias Location =
   { host: String
-  , queryParams:
-    { gameId: String
-    }
+  , gameId: String
   }
 
 type alias Flags =

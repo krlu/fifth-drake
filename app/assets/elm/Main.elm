@@ -13,7 +13,7 @@ init : Flags -> (Model, Cmd Msg)
 init flags =
   let
     (minimapModel, minimapCmd) = Minimap.init flags.minimapBackground flags.location
-    (tagScrollerModel, tagScrollerCmd) = TagScroller.init
+    (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.location
     (timelineModel, timelineCmd) = Timeline.init flags
   in
     { minimap = minimapModel

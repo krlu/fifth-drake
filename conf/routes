@@ -5,8 +5,8 @@
 # Map static resources from the /public folder to the /assets URL path
 GET   /public/*file               controllers.Assets.versioned(path="/public", file)
 
-GET   /                           gg.climb.fifthdrake.controllers.GameDataController.loadHomePage
 GET   /health                     gg.climb.fifthdrake.controllers.Health.check
 
-GET   /game/tags/:id              gg.climb.fifthdrake.controllers.GameDataController.getTag(id: Int)
-GET   /game/:gameKey              gg.climb.fifthdrake.controllers.GameDataController.getGameData(gameKey: String)
+GET   /game/:gameKey              gg.climb.fifthdrake.controllers.GameDataController.loadDashboard(gameKey: String)
+GET   /game/:gameKey/data         gg.climb.fifthdrake.controllers.GameDataController.getGameData(gameKey: String)
+GET   /game/:gameKey/tags/        gg.climb.fifthdrake.controllers.GameDataController.getTags(gameKey: String)

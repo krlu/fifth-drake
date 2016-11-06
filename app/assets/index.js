@@ -18,9 +18,7 @@
 		pauseButton: require("pause.svg"),
 		location: {
 		  host: window.location.host,
-		  queryParams: {
-		    gameId: _.find(window.location.search.substring(1).split('&'), (x) => x.match(/gameId/)).split("=")[1]
-		  }
+		  gameId: window.location.pathname.split("/")[2]
 		}
 	});
 })();

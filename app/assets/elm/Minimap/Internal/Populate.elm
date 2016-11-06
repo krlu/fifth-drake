@@ -12,8 +12,7 @@ import Types exposing (Location)
 
 playerUrl : Location -> String
 playerUrl loc =
-  Http.url ("http://" ++ loc.host ++ "/game/")
-    ["gameId" => loc.queryParams.gameId]
+  Http.url ("http://" ++ loc.host ++ "/game/" ++ loc.gameId ++ "/data") []
 
 getPlayers : Location -> Task Http.Error (List Player)
 getPlayers loc = Http.get (list player) <| playerUrl loc
