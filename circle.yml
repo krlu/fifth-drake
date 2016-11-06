@@ -1,4 +1,6 @@
 machine:
+  environment:
+    PATH: ${PATH}:${HOME}/${CIRCLE_PROJET_REPONAME}/node_modules/.bin
   timezone:
     America/Los_Angeles
   node:
@@ -9,7 +11,7 @@ machine:
 dependencies:
   override:
     - npm install
-    - ./node_modules/elm/binwrappers/elm package install
+    - elm package install
   cache_directories:
     - node_modules
     - elm_stuff
