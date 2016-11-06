@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
-
-    // Require index.html so it gets copied to dist
+   _ = require("lodash");
+  // Require index.html so it gets copied to dist
 	require('./index.html');
 	require('./styles/content.scss');
 	require('./styles/minimap.scss');
@@ -15,6 +15,12 @@
 	Elm.Main.embed(mountNode, {
 		minimapBackground: require("map.jpg"),
 		playButton: require("play1.svg"),
-		pauseButton: require("pause.svg")
+		pauseButton: require("pause.svg"),
+		location: {
+		  host: window.location.host,
+		  queryParams: {
+		    gameId: _.find(window.location.search.substring(1).split('&'), (x) => x.match(/gameId/)).split("=")[1]
+		  }
+		}
 	});
 })();

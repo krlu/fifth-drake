@@ -9,3 +9,4 @@ GET   /                           gg.climb.fifthdrake.controllers.GameDataContro
 GET   /health                     gg.climb.fifthdrake.controllers.Health.check
 
 GET   /game/tags/:id              gg.climb.fifthdrake.controllers.GameDataController.getTag(id: Int)
+GET   /game/:gameKey              gg.climb.fifthdrake.controllers.GameDataController.getGameData(gameKey: String)

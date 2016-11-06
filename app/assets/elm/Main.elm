@@ -12,7 +12,7 @@ import TagScroller.TagScroller as TagScroller
 init : Flags -> (Model, Cmd Msg)
 init flags =
   let
-    (minimapModel, minimapCmd) = Minimap.init flags.minimapBackground
+    (minimapModel, minimapCmd) = Minimap.init flags.minimapBackground flags.location
     (tagScrollerModel, tagScrollerCmd) = TagScroller.init
     (timelineModel, timelineCmd) = Timeline.init flags
   in

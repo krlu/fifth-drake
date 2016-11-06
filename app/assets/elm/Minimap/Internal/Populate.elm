@@ -1,19 +1,25 @@
 module Minimap.Internal.Populate exposing (..)
 
+import Dict
 import Http
 import Json.Decode exposing (Decoder, list, array, object2, (:=), int, float)
+import Maybe exposing (withDefault)
 import Minimap.Types exposing (Player, PlayerState, Msg(..))
-import StyleUtils exposing (..)
 import Task exposing (Task)
+import Types exposing (Location)
 
-playerUrl : String
-playerUrl = Http.url "http://localhost:4000/players" []
+(=>) = (,)
 
-getPlayers : Task Http.Error (List Player)
-getPlayers = Http.get (list player) playerUrl
+playerUrl : Location -> String
+playerUrl loc =
+  Http.url ("http://" ++ loc.host ++ "/game/")
+    ["gameId" => loc.queryParams.gameId]
 
-populate : Cmd Msg
-populate = Task.perform PlayerFetchFailure SetPlayers getPlayers
+getPlayers : Location -> Task Http.Error (List Player)
+getPlayers loc = Http.get (list player) <| playerUrl loc
+
+populate : Location -> Cmd Msg
+populate loc = Task.perform PlayerFetchFailure SetPlayers <| getPlayers loc
 
 player : Decoder Player
 player =
