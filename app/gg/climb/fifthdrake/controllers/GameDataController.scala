@@ -20,7 +20,7 @@ class GameDataController extends Controller {
     new PostgresDbHandler("localhost",
       5432,
       "league_analytics",
-      "prasanth",
+      "kenneth",
       ""),
     new MongoDbHandler(MongoClient("mongodb://localhost"))
   )

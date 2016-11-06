@@ -1,8 +1,6 @@
 (function () {
 	'use strict';
-   _ = require("lodash");
   // Require index.html so it gets copied to dist
-	require('./index.html');
 	require('./styles/content.scss');
 	require('./styles/minimap.scss');
 	require('./styles/timeline.scss');

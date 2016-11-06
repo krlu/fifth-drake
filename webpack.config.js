@@ -56,7 +56,7 @@ module.exports = {
 			},
 			{
 				test: /\.(jpe?g|png|gif|eot|woff|ttf|svg|woff2)$/,
-				loader: "file?name=public/[name].[ext]"
+				loader: "file?name=/[path][name].[ext]"
 			}
 		],
 		noParse: /\.elm$/
