@@ -1,6 +1,6 @@
 machine:
   environment:
-    PATH: ${PATH}:${HOME}/${CIRCLE_PROJET_REPONAME}/node_modules/.bin
+    PATH: ${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin
   timezone:
     America/Los_Angeles
   node:
