@@ -14,7 +14,8 @@ dependencies:
     - elm package install -y
   cache_directories:
     - node_modules
-    - elm_stuff
+    - elm-stuff"
+    - "~/.sbt/"
 
 database:
   override:
@@ -22,7 +23,8 @@ database:
 
 test:
   override:
-    - ./bin/activator test
+    - ./bin/activator test:compile
+    - ./bin/activator test:test
 
 deployment:
   production:
