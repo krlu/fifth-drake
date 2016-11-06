@@ -54,21 +54,18 @@ class GameDataController extends Controller {
       igt.playerStates.map { case (p, behavior) =>
         p -> behavior.sampledBy(start, rate, gameLength)
       }.map { case (p, eventStream) =>
-        p.role.name -> eventStream.getAll.map { case (t, ps) =>
+        p.role.name -> (p.ign, eventStream.getAll.map { case (t, ps) =>
           getJsonForPlayerState(p.ign, ps, t)
-        }
+        })
       }.foldLeft(Json.obj()) {
-        case (json: JsObject, (roleName, playerData)) => json ++ Json
-          .obj(roleName -> playerData)
+        case (json: JsObject, (roleName, (ign, playerData))) => json ++ Json.obj(
+          roleName -> Json.obj("ign"-> ign, "playerData" -> playerData)
+        )
       }
     }
-
     def getJsonForPlayerState(ign: String,
       playerState: PlayerState,
-      timeStamp: Duration): JsObject =
-    Json.obj(
-      "t" -> timeStamp.toMillis,
-      "ign" -> ign,
+      timeStamp: Duration): JsObject = Json.obj(
       "side" -> playerState.sideColor.name,
       "location" -> Json.obj(
         "x" -> playerState.location.x,
