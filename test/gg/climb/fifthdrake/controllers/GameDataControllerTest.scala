@@ -15,17 +15,20 @@ class GameDataControllerTest extends WordSpec with Matchers{
       for{
         team: JsValue <- data.values
         teamData = team.as[JsObject]
-        player <- teamData.values
+        roles <- teamData.values
+        rolesData = roles.as[JsObject]
+        player <- rolesData.values
         playerData = player.as[JsObject]
-        playerStates <- playerData.values
+        playerStates = playerData.value("playerStates")
         playerStatesData = playerStates.as[JsArray]
         playerStateAtTime <- playerStatesData.value
         stateAtTimeData = playerStateAtTime.as[JsObject]
         championStateJson = stateAtTimeData.value("championState").as[JsObject]
       }{
         assert(teamData.keys == Set("playerStats"))
-        assert(playerData.keys == Set("top", "jungle", "mid", "bot", "support"))
-        assert(stateAtTimeData.keys == Set("t", "ign", "side", "location", "championState"))
+        assert(rolesData.keys == Set("top", "jungle", "mid", "bot", "support"))
+        assert(playerData.keys == Set("ign", "playerStates"))
+        assert(stateAtTimeData.keys == Set("side", "location", "championState"))
         assert(championStateJson.keys == Set("championName", "hp", "mp", "xp"))
       }
     }

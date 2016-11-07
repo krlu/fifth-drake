@@ -46,7 +46,8 @@ class GameDataController extends Controller {
     Ok(views.html.gameDashboard())
   }
 
-  def getGameData(gameKey: String): Action[AnyContent] = Action {
+  def loadGameData(gameKey: String): Action[AnyContent] = Action { Ok(getGameData(gameKey))}
+  def getGameData(gameKey: String): JsObject = {
     def getPlayerStates(igt: InGameTeam, gameLength: Time,
       samplingRate: Int = 1000): JsObject = {
       val rate = Duration(samplingRate, TimeUnit.MILLISECONDS)
@@ -59,7 +60,7 @@ class GameDataController extends Controller {
         })
       }.foldLeft(Json.obj()) {
         case (json: JsObject, (roleName, (ign, playerData))) => json ++ Json.obj(
-          roleName -> Json.obj("ign"-> ign, "playerData" -> playerData)
+          roleName -> Json.obj("ign"-> ign, "playerStates" -> playerData)
         )
       }
     }
@@ -82,7 +83,7 @@ class GameDataController extends Controller {
     val (metaData, gameData) = dbh.createGame(new RiotId[Game](gameKey))
     val blueData = Json.obj("playerStats" -> getPlayerStates(gameData.teams(Blue), metaData.gameDuration))
     val redData = Json.obj("playerStats" -> getPlayerStates(gameData.teams(Red), metaData.gameDuration))
-    Ok(Json.obj("blueTeam" -> blueData, "redTeam" -> redData))
+    Json.obj("blueTeam" -> blueData, "redTeam" -> redData)
   }
 
 
