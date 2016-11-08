@@ -18,8 +18,13 @@ class EventFinderTest extends WordSpec with Matchers {
   val mongoClient: MongoClient = MongoClient("mongodb://localhost")
   val mdbh = new MongoDbHandler(mongoClient)
 
-  // TODO: hardcoded
-  val pdbh = new PostgresDbHandler("localhost", 5432, "league_analytics", "prasanth", "")
+  val pdbh = new PostgresDbHandler(
+    sys.props("climb.pgHost"),
+    sys.props("climb.pgPort").toInt,
+    sys.props("climb.pgDbName"),
+    sys.props("climb.pgUserName"),
+    sys.props("climb.pgPassword")
+  )
 
   val dah = new DataAccessHandler(pdbh, mdbh)
 
