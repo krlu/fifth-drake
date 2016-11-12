@@ -56,6 +56,13 @@ following command.
 
 `npm run dev`
 
+## Running fake backend
+Apart from running the frontend alone, you will likely want to test its
+interactions with the backend. To do this, you can run the following to create a
+fake test database to work with.
+
+`npm run test-db`
+
 # Style
 Quick notes on style in this repo
  - Style is enforced by scalastyle. You can find the rules in
