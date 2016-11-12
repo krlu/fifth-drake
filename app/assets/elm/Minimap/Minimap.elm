@@ -1,5 +1,6 @@
 module Minimap.Minimap exposing (init, update, view, subscriptions)
 
+import Array
 import Html exposing (Html)
 import Minimap.Internal.Populate as Populate
 import Minimap.Internal.Update as Update
@@ -9,7 +10,10 @@ import Types exposing (WindowLocation)
 
 initialModel : String -> Model
 initialModel background =
-  { players = []
+  { gameData =
+    { blueTeam = Array.empty
+    , redTeam = Array.empty
+    }
   , timestamp = 0
   , background = background
   }

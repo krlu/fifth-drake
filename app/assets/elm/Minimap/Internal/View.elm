@@ -11,19 +11,29 @@ import StyleUtils exposing (..)
 view : Model -> Html Msg
 view model =
   let
+    playerIcons : List(Html Msg)
     playerIcons =
-      List.filterMap
-        (\player ->
-          Array.get model.timestamp player.state
-            |> Maybe.map (\state ->
-              div [ class "playerIcon"
-                  , styles [ left (state.x |> px)
-                           , bottom (state.y |> px)
-                           ]
+      model.gameData
+      |> \{blueTeam, redTeam} ->
+        let
+          teamToPlayerIcons arr =
+            arr
+            |> Array.toList
+            |> List.filterMap (\player ->
+              player.state)
+              |> Array.get model.timestamp
+              |> Maybe.map (\state ->
+                div
+                  [ class "playerIcon"
+                  , styles
+                    [ left (state.location.x |> px)
+                    , bottom (state.location.y |> px)
+                    ]
                   ]
-               [])
-        )
-        model.players
+                  [])
+        in
+          (teamToPlayerIcons blueTeam) ++
+          (teamToPlayerIcons redTeam)
   in
     div [ class "minimap"
         ]
