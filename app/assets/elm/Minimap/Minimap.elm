@@ -5,7 +5,7 @@ import Minimap.Internal.Populate as Populate
 import Minimap.Internal.Update as Update
 import Minimap.Internal.View as View
 import Minimap.Types exposing (..)
-import Types exposing (Location)
+import Types exposing (WindowLocation)
 
 initialModel : String -> Model
 initialModel background =
@@ -14,7 +14,7 @@ initialModel background =
   , background = background
   }
 
-init : String -> Location -> (Model, Cmd Msg)
+init : String -> WindowLocation -> (Model, Cmd Msg)
 init background loc = (initialModel background, Populate.populate loc)
 
 update : Msg -> Model -> (Model, Cmd Msg)
