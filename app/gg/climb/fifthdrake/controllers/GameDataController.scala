@@ -42,8 +42,8 @@ class GameDataController extends Controller {
       throw new IllegalArgumentException(s"Cannot have `$xp' xp")
     }
 
-  def loadDashboard(gameKey: String): Action[AnyContent] = Action {
-    Ok(views.html.gameDashboard())
+  def loadDashboard(gameKey: String): Action[AnyContent] = Action { request =>
+    Ok(views.html.gameDashboard(request.host, gameKey))
   }
 
   def loadGameData(gameKey: String): Action[AnyContent] = Action { Ok(getGameData(gameKey))}

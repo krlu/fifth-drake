@@ -2,8 +2,8 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Map static resources from the /public folder to the /assets URL path
-GET   /public/*file               controllers.Assets.versioned(path="/public", file)
+# Map static resources from the /public folder to the /static URL path
+GET   /static/*file               controllers.Assets.versioned(path="/public", file)
 
 GET   /health                     gg.climb.fifthdrake.controllers.Health.check
 

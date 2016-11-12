@@ -11,13 +11,14 @@ module.exports = {
 
 	output: {
 		path: path.resolve(__dirname, assetPath, 'build'),
+		publicPath: '/static',
 		filename: '[name].js'
 	},
 
 	resolve: {
 		modulesDirectories: [
 			'node_modules',
-            'public'
+			'public'
 		],
 		extensions: ['', '.js', '.elm']
 	},

@@ -6,18 +6,16 @@ import Json.Decode exposing (Decoder, list, array, object2, (:=), int, float)
 import Maybe exposing (withDefault)
 import Minimap.Types exposing (Player, PlayerState, Msg(..))
 import Task exposing (Task)
-import Types exposing (Location)
+import Types exposing (WindowLocation)
 
-(=>) = (,)
-
-playerUrl : Location -> String
+playerUrl : WindowLocation -> String
 playerUrl loc =
   Http.url ("http://" ++ loc.host ++ "/game/" ++ loc.gameId ++ "/data") []
 
-getPlayers : Location -> Task Http.Error (List Player)
+getPlayers : WindowLocation -> Task Http.Error (List Player)
 getPlayers loc = Http.get (list player) <| playerUrl loc
 
-populate : Location -> Cmd Msg
+populate : WindowLocation -> Cmd Msg
 populate loc = Task.perform PlayerFetchFailure SetPlayers <| getPlayers loc
 
 player : Decoder Player

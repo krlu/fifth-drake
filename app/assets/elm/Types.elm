@@ -16,7 +16,7 @@ type alias Model =
   , tagScroller: TagScroller.Model
   }
 
-type alias Location =
+type alias WindowLocation =
   { host: String
   , gameId: String
   }
@@ -25,6 +25,6 @@ type alias Flags =
   { minimapBackground: String
   , playButton: String
   , pauseButton: String
-  , location: Location
+  , location: WindowLocation
   }
 

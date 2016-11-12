@@ -1,6 +1,6 @@
 (function () {
 	'use strict';
-  // Require index.html so it gets copied to dist
+
 	require('./styles/content.scss');
 	require('./styles/minimap.scss');
 	require('./styles/timeline.scss');
@@ -10,13 +10,15 @@
 	const Elm = require('./elm/Main.elm');
 	const mountNode = document.getElementById('main');
 
+	let script = document.currentScript;
+
 	Elm.Main.embed(mountNode, {
 		minimapBackground: require("map.jpg"),
 		playButton: require("play1.svg"),
 		pauseButton: require("pause.svg"),
 		location: {
-		  host: window.location.host,
-		  gameId: window.location.pathname.split("/")[2]
+		  host: script.getAttribute("data-host"),
+		  gameId: script.getAttribute("data-game-id")
 		}
 	});
 })();
