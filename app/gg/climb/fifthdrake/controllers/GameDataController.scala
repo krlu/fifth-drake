@@ -20,8 +20,8 @@ class GameDataController extends Controller {
     new PostgresDbHandler("localhost",
       5432,
       "league_analytics",
-      "kenneth",
-      ""),
+      "postgres",
+      "password"),
     new MongoDbHandler(MongoClient("mongodb://localhost"))
   )
 
@@ -46,7 +46,9 @@ class GameDataController extends Controller {
     Ok(views.html.gameDashboard(request.host, gameKey))
   }
 
-  def loadGameData(gameKey: String): Action[AnyContent] = Action { Ok(getGameData(gameKey))}
+  def loadGameData(gameKey: String): Action[AnyContent] = Action {
+    Ok(getGameData(gameKey))
+  }
   def getGameData(gameKey: String): JsObject = {
     def getPlayerStates(igt: InGameTeam, gameLength: Time,
       samplingRate: Int = 1000): Seq[JsObject] = {
@@ -75,8 +77,7 @@ class GameDataController extends Controller {
     def getJsonForPlayerState(ign: String,
       playerState: PlayerState,
       timeStamp: Duration): JsObject = Json.obj(
-      "side" -> playerState.sideColor.name,
-      "location" -> Json.obj(
+      "position" -> Json.obj(
         "x" -> playerState.location.x,
         "y" -> playerState.location.y
       ),
@@ -88,8 +89,8 @@ class GameDataController extends Controller {
     )
 
     val (metaData, gameData) = dbh.createGame(new RiotId[Game](gameKey))
-    val blueData = Json.obj("playerStats" -> getPlayerStates(gameData.teams(Blue), metaData.gameDuration))
-    val redData = Json.obj("playerStats" -> getPlayerStates(gameData.teams(Red), metaData.gameDuration))
+    val blueData = getPlayerStates(gameData.teams(Blue), metaData.gameDuration)
+    val redData = getPlayerStates(gameData.teams(Red), metaData.gameDuration)
     Json.obj("blueTeam" -> blueData, "redTeam" -> redData)
   }
 

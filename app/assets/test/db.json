@@ -1,49 +1,81 @@
 { "data":
 
-      {
-        "blueTeam":  [
-          {
-            "ign": "Big",
-            "championName": "Karma",
-            "side": "blue",
-            "role": "support",
-            "playerState": [
-              {
-                "position": {
-                  "x": 0,
-                  "y": 0
-                },
-                "championState": {
-                  "hp": 0,
-                  "mp": 0,
-                  "xp": 0
-                }
-              }
-            ]
-          }
-        ]
-      , "redTeam":  [
-        {
-          "ign": "Big",
-          "championName": "Karma",
-          "side": "blue",
-          "role": "support",
-          "playerState": [
-            {
-              "position": {
-                "x": 0,
-                "y": 0
-              },
-              "championState": {
-                "hp": 0,
-                "mp": 0,
-                "xp": 0
-              }
-            }
-          ]
-        }
-        ]
-      }
+{
+  "blueTeam": [
+    {
+      "side": "blue",
+      "role": "mid",
+      "ign": "Froggen",
+      "championName": "Cassiopeia",
+      "playerStates": []
+    },
+    {
+      "side": "blue",
+      "role": "support",
+      "ign": "Big",
+      "championName": "Karma",
+      "playerStates": []
+    },
+    {
+      "side": "blue",
+      "role": "jungle",
+      "ign": "Hard",
+      "championName": "Olaf",
+      "playerStates": []
+    },
+    {
+      "side": "blue",
+      "role": "bot",
+      "ign": "Keith",
+      "championName": "Jhin",
+      "playerStates": []
+    },
+    {
+      "side": "blue",
+      "role": "top",
+      "ign": "kfo",
+      "championName": "Shen",
+      "playerStates": []
+    }
+  ],
+  "redTeam": [
+    {
+      "side": "red",
+      "role": "mid",
+      "ign": "Bjergsen",
+      "championName": "Azir",
+      "playerStates": []
+    },
+    {
+      "side": "red",
+      "role": "top",
+      "ign": "Hauntzer",
+      "championName": "Irelia",
+      "playerStates": []
+    },
+    {
+      "side": "red",
+      "role": "jungle",
+      "ign": "Svenskeren",
+      "championName": "RekSai",
+      "playerStates": []
+    },
+    {
+      "side": "red",
+      "role": "support",
+      "ign": "Biofrost",
+      "championName": "Nami",
+      "playerStates": []
+    },
+    {
+      "side": "red",
+      "role": "bot",
+      "ign": "Doublelift",
+      "championName": "Lucian",
+      "playerStates": []
+    }
+  ]
+}
 
 , "tags":
     [ { "title": "Fight 1"

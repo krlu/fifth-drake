@@ -27,10 +27,10 @@ game =
 player : Decoder Player
 player =
   object5 Player
-    ("role" := string)
-    ("championName" := string)
-    ("ign" := string)
     ("side" := string)
+    ("role" := string)
+    ("ign" := string)
+    ("championName" := string)
     ("playerStates" := array playerState)
 
 playerState : Decoder PlayerState

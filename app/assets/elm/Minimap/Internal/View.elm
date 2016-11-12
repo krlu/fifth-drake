@@ -26,8 +26,8 @@ view model =
                   div
                     [ class "playerIcon"
                     , styles
-                      [ left (state.position.x |> px)
-                      , bottom (state.position.y |> px)
+                      [ left (model.width * (state.position.x / model.mapWidth)|> px)
+                      , bottom (model.height * (state.position.y / model.mapHeight)|> px)
                       ]
                     ]
                     []
