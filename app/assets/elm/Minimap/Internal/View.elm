@@ -14,26 +14,29 @@ view model =
     playerIcons : List(Html Msg)
     playerIcons =
       model.gameData
-      |> \{blueTeam, redTeam} ->
-        let
-          teamToPlayerIcons arr =
-            arr
-            |> Array.toList
-            |> List.filterMap (\player ->
-              player.state)
-              |> Array.get model.timestamp
-              |> Maybe.map (\state ->
-                div
-                  [ class "playerIcon"
-                  , styles
-                    [ left (state.location.x |> px)
-                    , bottom (state.location.y |> px)
+      |> (\{blueTeam, redTeam} ->
+          let
+            teamToPlayerIcons arr =
+              arr
+              |> Array.toList
+              |> List.filterMap (\player ->
+                player.state
+                |> Array.get model.timestamp
+                |> Maybe.map (\state ->
+                  div
+                    [ class "playerIcon"
+                    , styles
+                      [ left (state.position.x |> px)
+                      , bottom (state.position.y |> px)
+                      ]
                     ]
-                  ]
-                  [])
-        in
-          (teamToPlayerIcons blueTeam) ++
-          (teamToPlayerIcons redTeam)
+                    []
+                  )
+                )
+          in
+            (teamToPlayerIcons blueTeam) ++
+            (teamToPlayerIcons redTeam)
+          )
   in
     div [ class "minimap"
         ]

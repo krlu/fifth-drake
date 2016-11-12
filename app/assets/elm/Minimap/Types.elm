@@ -4,7 +4,7 @@ import Array exposing (..)
 import Http
 
 type Msg
-  = SetData (Game)
+  = SetData Game
   | PlayerFetchFailure Http.Error
   | UpdateTimestamp Int
 
