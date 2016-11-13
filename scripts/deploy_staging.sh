@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-CLIMB_USER=CLIMB
+CLIMB_USER=climb
 CLIMB_SERVER=climb.gg
 
 LOCAL_PATH=$CIRCLE_ARTIFACTS
@@ -16,15 +16,22 @@ ARTIFACT_REMOTE="$REMOTE_PATH/$ARTIFACT_NAME"
 EXECUTABLE_REMOTE="${ARTIFACT_REMOTE/.zip/}/bin/fifth-drake"
 
 scp $ARTIFACT_LOCAL $CLIMB_USER@$CLIMB_SERVER:$ARTIFACT_REMOTE
-ssh $CLIMB_USER@$CLIMB_SERVER unzip -d $REMOTE_PATH $ARTIFACT_REMOTE
+ssh $CLIMB_USER@$CLIMB_SERVER unzip -fd $REMOTE_PATH $ARTIFACT_REMOTE
 
 # Kill any previous running servers
 ssh $CLIMB_USER@$CLIMB_SERVER \
 	find $REMOTE_PATH -name RUNNING_PID \| \
 	xargs cat \| \
-	kill
+	xargs -r kill
 
-# run the new server
-ssh $CLIMB_USER@$CLIMB_SERVER nohup EXECUTABLE_REMOTE \
-	-Dplay.cryto.secret="thisissimplystaging" \
-	\> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.log
+# Ensure log path exists
+ssh $CLIMB_USER@$CLIMB_SERVER \
+	mkdir -p $REMOTE_PATH/logs
+
+# Run the new server
+ssh $CLIMB_USER@$CLIMB_SERVER nohup $EXECUTABLE_REMOTE \
+	-Dplay.crypto.secret="thisissimplystaging" \
+	 \> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.log \
+	2\> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.err \
+	1\< /dev/null \&
+
