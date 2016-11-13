@@ -5,9 +5,10 @@ import TagScroller.Types exposing (..)
 import TagScroller.Internal.Populate as Populate
 import TagScroller.Internal.Update as Update
 import TagScroller.Internal.View as View
+import Types exposing (WindowLocation)
 
-init : (Model, Cmd Msg)
-init = ({ tags = [] }, Populate.populate)
+init : WindowLocation -> (Model, Cmd Msg)
+init loc = ({ tags = [] }, Populate.populate loc)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update = Update.update

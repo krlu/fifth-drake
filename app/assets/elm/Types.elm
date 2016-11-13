@@ -1,5 +1,6 @@
 module Types exposing (..)
 
+import Dict exposing (Dict)
 import Minimap.Types as Minimap
 import Timeline.Types as Timeline
 import TagScroller.Types as TagScroller
@@ -9,14 +10,21 @@ type Msg
   | MinimapMsg Minimap.Msg
   | TagScrollerMsg TagScroller.Msg
 
-type alias Flags =
-  { minimapBackground: String
-  , playButton: String
-  , pauseButton: String
-  }
-
 type alias Model =
   { timeline: Timeline.Model
   , minimap: Minimap.Model
   , tagScroller: TagScroller.Model
   }
+
+type alias WindowLocation =
+  { host: String
+  , gameId: String
+  }
+
+type alias Flags =
+  { minimapBackground: String
+  , playButton: String
+  , pauseButton: String
+  , location: WindowLocation
+  }
+

@@ -11,13 +11,14 @@ module.exports = {
 
 	output: {
 		path: path.resolve(__dirname, assetPath, 'build'),
+		publicPath: '/static',
 		filename: '[name].js'
 	},
 
 	resolve: {
 		modulesDirectories: [
 			'node_modules',
-            'public'
+			'public'
 		],
 		extensions: ['', '.js', '.elm']
 	},
@@ -56,7 +57,7 @@ module.exports = {
 			},
 			{
 				test: /\.(jpe?g|png|gif|eot|woff|ttf|svg|woff2)$/,
-				loader: "file?name=[path][name].[ext]"
+				loader: "file?name=/[path][name].[ext]"
 			}
 		],
 		noParse: /\.elm$/

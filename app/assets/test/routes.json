@@ -1,0 +1,4 @@
+{
+	"/game/:resource/data": "/data",
+	"/game/:resource/tags": "/tags"
+}
