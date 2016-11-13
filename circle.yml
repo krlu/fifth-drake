@@ -25,6 +25,9 @@ test:
   override:
     - ./bin/activator test:compile
     - ./bin/activator test:test
+  post:
+    - ./bin/activator dist
+    - cp ./target/universal/*.zip ${CIRCLE_ARTIFACTS}
 
 deployment:
   production:
