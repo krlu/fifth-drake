@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -euo pipefail
 
 CLIMB_USER=CLIMB

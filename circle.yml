@@ -10,12 +10,13 @@ machine:
 
 dependencies:
   override:
-    - npm install
-    - elm package install -y
+    - ./scripts/install_libsysconfcpus.sh
+    - ./scripts/install_front_end_dependencies.sh
   cache_directories:
     - node_modules
-    - elm-stuff"
+    - elm-stuff
     - "~/.sbt/"
+    - "~/libsysconfcpus"
 
 database:
   override:
@@ -26,8 +27,7 @@ test:
     - ./bin/activator test:compile
     - ./bin/activator test:test
   post:
-    - echo $PATH
-    - ./bin/activator dist
+    - sysconfcpus -n 2 ./bin/activator dist
     - cp ./target/universal/*.zip ${CIRCLE_ARTIFACTS}
 
 deployment:
