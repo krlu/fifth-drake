@@ -7,7 +7,8 @@ import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}
 import router.Routes
 
 /**
-  * Created by prasanth on 10/25/16.
+  * This loader actually loads and runs the application. By explicitly loading
+  * the application, we gain compile time dependency injection.
   */
 class FifthDrakeLoader extends ApplicationLoader {
   override def load(context: Context): Application =
@@ -16,16 +17,20 @@ class FifthDrakeLoader extends ApplicationLoader {
 
 class FifthDrakeApp(context: Context) extends BuiltInComponentsFromContext(context) {
 
-  lazy val dbh = new DataAccessHandler(
-    new PostgresDbHandler(
-      sys.props("climb.pgHost"),
-      sys.props("climb.pgPort").toInt,
-      sys.props("climb.pgDbName"),
-      sys.props("climb.pgUserName"),
-      sys.props("climb.pgPassword")
-    ),
-    new MongoDbHandler(MongoClient("mongodb://localhost"))
-  )
+  lazy val dbh = {
+    /* These must all exist in order to actually build the datahandler so we
+     * use get to force an error as necessary. */
+    val host = context.initialConfiguration.getString("climb.pgHost").get
+    val port = context.initialConfiguration.getInt("climb.pgPort").get
+    val dbName = context.initialConfiguration.getString("climb.pgDbName").get
+    val username = context.initialConfiguration.getString("climb.pgUserName").get
+    val password = context.initialConfiguration.getString("climb.pgPassword").get
+
+    new DataAccessHandler(
+      new PostgresDbHandler(host, port, dbName, username, password),
+      new MongoDbHandler(MongoClient("mongodb://localhost"))
+    )
+  }
 
   lazy val gameDataController = new GameDataController(dbh)
   lazy val healthController = new HealthController()
