@@ -1,0 +1,37 @@
+machine:
+  environment:
+    PATH: ${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin
+  timezone:
+    America/Los_Angeles
+  node:
+    version: 6.1.0
+  java:
+    version: openjdk8
+
+dependencies:
+  override:
+    - npm install
+    - elm package install -y
+  cache_directories:
+    - node_modules
+    - elm-stuff"
+    - "~/.sbt/"
+
+database:
+  override:
+    - ./bin/activator flywayMigrate
+
+test:
+  override:
+    - ./bin/activator test:compile
+    - ./bin/activator test:test
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - ./scripts/deploy_prod.sh
+  staging:
+    branch: develop
+    commands:
+      - ./scripts/deploy_staging.sh

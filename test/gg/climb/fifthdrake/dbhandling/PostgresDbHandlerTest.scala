@@ -13,14 +13,13 @@ import scala.concurrent.duration.Duration
 
 class PostgresDbHandlerTest extends WordSpec with Matchers {
 
-  val dbh = new PostgresDbHandler("localhost", 5432, "league_analytics", "prasanth", "")
-//
-//  (sys.props("climb.test.pgHost"),
-//    sys.props("climb.test.pgPort").toInt,
-//    sys.props("climb.test.pgDbName"),
-//    sys.props("climb.test.pgUserName"),
-//    sys.props("climb.test.pgPassword")
-//  )
+  val dbh = new PostgresDbHandler (
+    sys.props("climb.pgHost"),
+    sys.props("climb.pgPort").toInt,
+    sys.props("climb.pgDbName"),
+    sys.props("climb.pgUserName"),
+    sys.props("climb.pgPassword")
+  )
 
   "A PostgresDbHandler" should {
     val player1: Player = dbh.getPlayerByRiotId(new RiotId[Player]("44"))

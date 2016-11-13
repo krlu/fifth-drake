@@ -10,6 +10,7 @@ This is the core application that we are building.
 # Setup
 There's a few parts to setup when first initializing this project:
  - Frontend package installation
+ - Local Configuration
  - Database Migrations
 
 ## Frontend dependencies
@@ -17,6 +18,16 @@ You will need to install a few components for the front end. You can do so via
 the following command:
 
 `npm install && elm package install`
+
+## Local Configuration
+If you wish to test locally, you will also want to run a local configuration.
+The configuration is fairly simple. You should simply make a copy of properties
+file and modify the entries as necessary.
+
+`cp conf/fifth-drake{,.local}.properties`
+
+The new file should be named `fifth-drake.local.properties` and should not be
+checked into the repo. The git ignore settings currently ignore this file.
 
 ## Database Initialization and Migrations
 You will also need to create a new database called league\_analytics in
@@ -28,13 +39,13 @@ command line or `CREATE DATABASE league_analytics;` in psql.
 After the database is created, you can simply use the following command to
 actually create the proper schema structure:
 
-`sbt -Dflyway.user=$postgresUser flywayMigrate`
+`sbt flywayMigrate`
 
 For development purposes, you may need to use the following, but NEVER run this
 in production. The command drops all you existing data and migrates reapplies
 the schemas from scratch.
 
-`sbt -Dflyway.user=$postgresUser flywayClean flywayMigrate`
+`sbt flywayClean flywayMigrate`
 
 # Running play server for both front and backend
 You can run the play server using activator. To do so, simply run:
