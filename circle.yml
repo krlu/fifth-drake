@@ -26,6 +26,7 @@ test:
     - ./bin/activator test:compile
     - ./bin/activator test:test
   post:
+    - echo $PATH
     - ./bin/activator dist
     - cp ./target/universal/*.zip ${CIRCLE_ARTIFACTS}
 
