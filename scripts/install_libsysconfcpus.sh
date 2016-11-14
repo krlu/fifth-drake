@@ -2,11 +2,8 @@
 set -euo pipefail
 
 PREFIX="$HOME/libsysconfcpus"
-INSTALLED="Installed"
-NOT_INSTALLED="Not Installed"
-STATUS=$(type syconfcpus > /dev/null 2>&1 && echo $INSTALLED || echo $NOT_INSTALLED)
 
-if [ "$STATUS" == "$INSTALLED" ]; then
+if [ -d $PREFIX ]; then
 	echo "libsysconfcpus already installed. Skipping..."
 else
 	git clone https://github.com/obmarg/libsysconfcpus.git $PREFIX
