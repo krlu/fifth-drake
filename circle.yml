@@ -1,6 +1,6 @@
 machine:
   environment:
-    PATH: ${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin
+    PATH: ${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin:${HOME}/libsysconfcpus/bin
   timezone:
     America/Los_Angeles
   node:
@@ -10,12 +10,13 @@ machine:
 
 dependencies:
   override:
-    - npm install
-    - elm package install -y
+    - ./scripts/install_libsysconfcpus.sh
+    - ./scripts/install_front_end_dependencies.sh
   cache_directories:
     - node_modules
-    - elm-stuff"
+    - elm-stuff
     - "~/.sbt/"
+    - "~/libsysconfcpus"
 
 database:
   override:
@@ -25,6 +26,9 @@ test:
   override:
     - ./bin/activator test:compile
     - ./bin/activator test:test
+  post:
+    - sysconfcpus -n 2 ./bin/activator dist
+    - cp ./target/universal/*.zip ${CIRCLE_ARTIFACTS}
 
 deployment:
   production:
