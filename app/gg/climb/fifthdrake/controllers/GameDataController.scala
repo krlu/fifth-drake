@@ -32,40 +32,46 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
       throw new IllegalArgumentException(s"Cannot have `$xp' xp")
     }
 
-  def loadHomePage: Action[AnyContent] = Action {
-    Ok(views.html.index())
+  def loadDashboard(gameKey: String): Action[AnyContent] = Action { request =>
+    Ok(views.html.gameDashboard(request.host, gameKey))
   }
 
+  def loadGameData(gameKey: String): Action[AnyContent] = Action {
+    Ok(getGameData(gameKey))
+  }
   def getGameData(gameKey: String): JsObject = {
     def getPlayerStates(igt: InGameTeam, gameLength: Time,
-      samplingRate: Int = 1000): JsObject = {
+      samplingRate: Int = 1000): Seq[JsObject] = {
       val rate = Duration(samplingRate, TimeUnit.MILLISECONDS)
       val start = Duration(0, TimeUnit.MILLISECONDS)
-      igt.playerStates.map { case (p, behavior) =>
+      val playersList = igt.playerStates.map { case (p, behavior) =>
         p -> behavior.sampledBy(start, rate, gameLength)
       }.map { case (p, eventStream) =>
-        p.role.name -> eventStream.getAll.map { case (t, ps) =>
+          val champName = eventStream.getAll.head._2.championState.name
+          val side = eventStream.getAll.head._2.sideColor.name
+          (side, p.role.name, p.ign, champName, eventStream.getAll.map { case (t, ps) =>
           getJsonForPlayerState(p.ign, ps, t)
-        }
-      }.foldLeft(Json.obj()) {
-        case (json: JsObject, (roleName, playerData)) => json ++ Json
-          .obj(roleName -> playerData)
+        })
+      }.toSeq.map{
+        case (side, roleName, ign, champName, playerData) =>
+          Json.obj(
+          "side" -> side,
+          "role" -> roleName,
+          "ign"-> ign,
+          "championName" -> champName,
+          "playerStates" -> playerData
+        )
       }
+      playersList
     }
-
     def getJsonForPlayerState(ign: String,
       playerState: PlayerState,
-      timeStamp: Duration): JsObject =
-    Json.obj(
-      "t" -> timeStamp.toMillis,
-      "ign" -> ign,
-      "side" -> playerState.sideColor.name,
-      "location" -> Json.obj(
+      timeStamp: Duration): JsObject = Json.obj(
+      "position" -> Json.obj(
         "x" -> playerState.location.x,
         "y" -> playerState.location.y
       ),
       "championState" -> Json.obj(
-        "championName" -> playerState.championState.name,
         "hp" -> playerState.championState.hp,
         "mp" -> playerState.championState.mp,
         "xp" -> playerState.championState.xp
@@ -73,18 +79,14 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     )
 
     val (metaData, gameData) = dbh.createGame(new RiotId[Game](gameKey))
-    val blueData = Json
-      .obj("playerStats" -> getPlayerStates(gameData.teams(Blue), metaData.gameDuration))
-    val redData = Json
-      .obj("playerStats" -> getPlayerStates(gameData.teams(Red), metaData.gameDuration))
+    val blueData = getPlayerStates(gameData.teams(Blue), metaData.gameDuration)
+    val redData = getPlayerStates(gameData.teams(Red), metaData.gameDuration)
     Json.obj("blueTeam" -> blueData, "redTeam" -> redData)
   }
 
 
-  def getTag(gameId: Int): Action[AnyContent] = Action {
-    val tags = dbh
-      .getTags(new RiotId[Game](gameId
-        .toString))
+  def getTags(gameKey: String): Action[AnyContent] = Action {
+    val tags = dbh.getTags(new RiotId[Game](gameKey))
     implicit val tagWrites = new Writes[Tag] {
       def writes(tag: Tag) = Json.obj(
         "title" -> tag.title,

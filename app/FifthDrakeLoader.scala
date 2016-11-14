@@ -37,6 +37,6 @@ class FifthDrakeApp(context: Context) extends BuiltInComponentsFromContext(conte
   lazy val assets = new controllers.Assets(httpErrorHandler)
   lazy val router: Router = new Routes(httpErrorHandler,
                                        assets,
-                                       gameDataController,
-                                       healthController)
+                                       healthController,
+                                       gameDataController)
 }

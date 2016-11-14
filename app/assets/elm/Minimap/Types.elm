@@ -4,22 +4,47 @@ import Array exposing (..)
 import Http
 
 type Msg
-  = SetPlayers (List Player)
+  = SetData Game
   | PlayerFetchFailure Http.Error
   | UpdateTimestamp Int
 
 type alias Model =
-  { players : List Player
+  { gameData : Game
   , timestamp : Int
   , background : String
+  -- the width and height are in pixels
+  , width : Float
+  , height : Float
+  -- the width and height of the map of the in game coordinates
+  , mapWidth : Float
+  , mapHeight : Float
+  }
+
+type alias Game =
+  { blueTeam : Array Player
+  , redTeam : Array Player
   }
 
 type alias Player =
-  { id: Int
+  { role: String
+  , championName: String
+  , ign: String
+  , side: String
   , state: Array PlayerState
   }
 
 type alias PlayerState =
+  { position: Position
+  , championState: ChampionState
+  }
+
+type alias Position =
   { x: Float
   , y: Float
+  }
+
+type alias ChampionState =
+  { hp: Float
+  , mp: Float
+  , xp: Float
   }
