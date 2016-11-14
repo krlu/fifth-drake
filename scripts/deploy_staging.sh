@@ -19,7 +19,7 @@ echo "Copying artifact to server"
 scp $ARTIFACT_LOCAL $CLIMB_USER@$CLIMB_SERVER:$ARTIFACT_REMOTE
 
 echo "Unziping artifact"
-ssh $CLIMB_USER@$CLIMB_SERVER unzip -fd $REMOTE_PATH $ARTIFACT_REMOTE
+ssh $CLIMB_USER@$CLIMB_SERVER unzip -ud $REMOTE_PATH $ARTIFACT_REMOTE
 
 echo "Killing any previous running servers"
 ssh $CLIMB_USER@$CLIMB_SERVER \
