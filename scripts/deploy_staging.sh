@@ -15,21 +15,25 @@ ARTIFACT_REMOTE="$REMOTE_PATH/$ARTIFACT_NAME"
 
 EXECUTABLE_REMOTE="${ARTIFACT_REMOTE/.zip/}/bin/fifth-drake"
 
+echo "Copying artifact to server"
 scp $ARTIFACT_LOCAL $CLIMB_USER@$CLIMB_SERVER:$ARTIFACT_REMOTE
+
+echo "Unziping artifact"
 ssh $CLIMB_USER@$CLIMB_SERVER unzip -fd $REMOTE_PATH $ARTIFACT_REMOTE
 
-# Kill any previous running servers
+echo "Killing any previous running servers"
 ssh $CLIMB_USER@$CLIMB_SERVER \
 	find $REMOTE_PATH -name RUNNING_PID \| \
 	xargs cat \| \
 	xargs -r kill
 
-# Ensure log path exists
+echo "Ensuring log path exists"
 ssh $CLIMB_USER@$CLIMB_SERVER \
 	mkdir -p $REMOTE_PATH/logs
 
-# Run the new server
+echo "Running the new server"
 ssh $CLIMB_USER@$CLIMB_SERVER nohup $EXECUTABLE_REMOTE \
+	-Dclimb.pgUserName="climb" \
 	-Dplay.crypto.secret="thisissimplystaging" \
 	 \> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.log \
 	2\> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.err \
