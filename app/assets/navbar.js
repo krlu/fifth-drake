@@ -1,12 +1,10 @@
 (function () {
 	'use strict';
 
-    // Require index.html so it gets copied to dist
-	require('./index.html');
-	require('./styles/navbar.scss')
+	require('./styles/Navbar/navbar.scss')
 
-	const Elm = require('./elm/Navbar.elm');
-	const mountNode = document.getElementById('main');
+	const Elm = require('./Navbar/Navbar.elm');
+	const mountNode = document.getElementById('navbar');
 
 	Elm.Navbar.embed(mountNode);
 })();

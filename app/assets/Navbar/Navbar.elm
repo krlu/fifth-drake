@@ -81,19 +81,16 @@ view model =
       |> List.map (\x -> link clazz ( GoTo x ) ( pageToUrl x ) )
   in
     div
-      [ class "navbar" ]
+      [ class ( "navbar-left " ++ clazz ) ]
       [ div
-          [ class ( "navbar-left " ++ clazz ) ]
-          [ div
-              [ id "collapsible" ]
-              [ collapsibleLink model clazz ]
-          , div
-              [ id "navbar-left-logo" ]
-              [ link clazz ( GoTo Home ) ( pageToUrl Home ) ]
-          , div
-              [ id "navbar-links" ]
-              links
-          ]
+         [ id "collapsible" ]
+         [ collapsibleLink model clazz ]
+      , div
+         [ id "navbar-left-logo" ]
+         [ link clazz ( GoTo Home ) ( pageToUrl Home ) ]
+      , div
+         [ id "navbar-links" ]
+         links
       ]
 
 

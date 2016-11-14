@@ -1,60 +1,58 @@
+@import "../mixins";
+
 $font-stack: Calibri, "Calibri", sans serif;
 $primary-color: #b59fe8;
 $secondary-color: #2883ff;
 
 
-$collapsed-width: 4rem;
-$expanded-width: 20rem;
+$collapsed-width: 3vw;
+$expanded-width: 15vw;
 
-body {
-  margin: 0;
-  padding: 0;
-}
 
-.navbar {
+.navbar-left {
+  font-size: 24px;
   background: $primary-color;
   color: white;
   position: fixed;
   height: 100%;
   padding: 5px;
   overflow: hidden;
-  user-select: none;
+  @include user-select(none);
 
   & .collapsed {
     width: $collapsed-width;
-    transition: width 0.5s ease;
+    transition: width 0.5s ease-in-out;
   }
 
   & .expanded {
     width: $expanded-width;
-    transition: width 0.5s ease;
+    transition: width 0.5s ease-in-out;
   }
 
   #navbar-left-logo {
     text-align: center;
-    font-size: 36px;
-    margin: 10px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 
-    &:hover {
+    & :hover {
       cursor: pointer;
       cursor: hand;
     }
   }
 
   #navbar-links {
-    margin-top: 5rem;
     text-align: center;
 
     a {
-      margin: 15px;
+      padding: 5px;
       display: table;
-      font-size: 28px;
 
       span {
         display: table-cell
       }
 
-      &:hover {
+      & :hover {
         color: $secondary-color;
         cursor: pointer;
         cursor: hand;
@@ -64,12 +62,13 @@ body {
 }
 
 #collapsible {
-  font-size: 28px;
   text-align: right;
   padding: 5px;
   color: $secondary-color;
 
-  &:hover {
+  & a:hover {
     color: white;
+    cursor: pointer;
+    cursor: hand;
   }
 }
