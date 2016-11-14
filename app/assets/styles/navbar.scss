@@ -1,0 +1,75 @@
+$font-stack: Calibri, "Calibri", sans serif;
+$primary-color: #b59fe8;
+$secondary-color: #2883ff;
+
+
+$collapsed-width: 4rem;
+$expanded-width: 20rem;
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background: $primary-color;
+  color: white;
+  position: fixed;
+  height: 100%;
+  padding: 5px;
+  overflow: hidden;
+  user-select: none;
+
+  & .collapsed {
+    width: $collapsed-width;
+    transition: width 0.5s ease;
+  }
+
+  & .expanded {
+    width: $expanded-width;
+    transition: width 0.5s ease;
+  }
+
+  #navbar-left-logo {
+    text-align: center;
+    font-size: 36px;
+    margin: 10px;
+
+    &:hover {
+      cursor: pointer;
+      cursor: hand;
+    }
+  }
+
+  #navbar-links {
+    margin-top: 5rem;
+    text-align: center;
+
+    a {
+      margin: 15px;
+      display: table;
+      font-size: 28px;
+
+      span {
+        display: table-cell
+      }
+
+      &:hover {
+        color: $secondary-color;
+        cursor: pointer;
+        cursor: hand;
+      }
+    }
+  }
+}
+
+#collapsible {
+  font-size: 28px;
+  text-align: right;
+  padding: 5px;
+  color: $secondary-color;
+
+  &:hover {
+    color: white;
+  }
+}
