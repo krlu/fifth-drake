@@ -41,9 +41,14 @@ css =
       [ (.) Timeline
         [ position relative
         , height (100 |> pct)
-        , backgroundColor (hex "#FF0000")
+        , width (100 |> pct)
         , children
-          [ (.) Knob
+          [ (.) Bar
+            [ position relative
+            , height (100 |> pct)
+            , backgroundColor (hex "#FF0000")
+            ]
+          , (.) Knob
             [ position absolute
             , top zero
             , left zero
