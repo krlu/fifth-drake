@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (src, draggable)
 import Html.CssHelpers exposing (withNamespace)
 import Maybe exposing (andThen)
-import Minimap.Css exposing (CssClass(..), namespace)
+import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespace)
 import Minimap.Types exposing (Msg, Model)
 import StyleUtils exposing (styles)
 
@@ -30,8 +30,8 @@ view model =
                   div
                     [ class [PlayerIcon]
                     , styles
-                      [ left (model.width * (state.position.x / model.mapWidth)|> px)
-                      , bottom (model.height * (state.position.y / model.mapHeight)|> px)
+                      [ left (minimapWidth * (state.position.x / model.mapWidth)|> px)
+                      , bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
                       ]
                     ]
                     []
