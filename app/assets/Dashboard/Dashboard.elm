@@ -1,4 +1,4 @@
-module Main exposing (..)
+module Dashboard exposing (..)
 
 import Html.App
 import Subscriptions
