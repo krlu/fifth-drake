@@ -29,7 +29,8 @@
     "build": "webpack",
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 3000 --content-base public/",
-    "test-db": "json-server -p 4000 --routes app/assets/test/routes.json app/assets/test/db.json"
+    "test-db": "json-server -p 4000 --routes app/assets/test/routes.json app/assets/test/db.json",
+	"compile-css": "elm-css -o public/elm-css app/assets/styles/Stylesheets.elm"
   },
   "author": "",
   "license": "ISC"
