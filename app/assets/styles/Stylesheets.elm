@@ -7,6 +7,7 @@ import DashboardCss
 import Minimap.Css
 import Timeline.Css
 import TagScroller.Css
+import NavbarCss
 
 port files : CssFileStructure -> Cmd msg
 
@@ -20,6 +21,9 @@ cssFiles =
         , Minimap.Css.css
         , Timeline.Css.css
         , TagScroller.Css.css
+        ]
+      , "navbar.css" => compile
+        [ NavbarCss.css
         ]
       ]
 

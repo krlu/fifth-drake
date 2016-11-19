@@ -5,7 +5,8 @@
     "license": "BSD3",
     "source-directories": [
         "app/assets/Dashboard",
-        "app/assets/Navbar"
+        "app/assets/Navbar",
+        "app/assets/styles"
     ],
     "exposed-modules": [],
     "dependencies": {
