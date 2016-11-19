@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (src, draggable)
 import Html.CssHelpers exposing (withNamespace)
 import Maybe exposing (andThen)
-import Minimap.Css exposing (CssClasses(..), namespace)
+import Minimap.Css exposing (CssClass(..), namespace)
 import Minimap.Types exposing (Msg, Model)
 import StyleUtils exposing (styles)
 

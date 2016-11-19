@@ -20,7 +20,7 @@ knobWidth = 10
 buttonWidth : Float
 buttonWidth = timelineHeight
 
-type CssClasses
+type CssClass
   = Controls
   | Timeline
   | Bar

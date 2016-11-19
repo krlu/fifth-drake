@@ -17,7 +17,7 @@ tagScrollerHeight = Minimap.Css.minimapHeight
 tagHeight : Float
 tagHeight = 100
 
-type CssClasses
+type CssClass
   = TagScroller
   | Tag
 

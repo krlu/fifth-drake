@@ -9,7 +9,7 @@ import Html.Events exposing (on, onClick)
 import Json.Decode as Json
 import Mouse
 import StyleUtils exposing (..)
-import Timeline.Css exposing (CssClasses(..), namespace)
+import Timeline.Css exposing (CssClass(..), namespace)
 import Timeline.Internal.ModelUtils exposing(getCurrentPx)
 import Timeline.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
 

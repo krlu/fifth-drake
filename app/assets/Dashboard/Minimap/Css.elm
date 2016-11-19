@@ -16,7 +16,7 @@ minimapWidth = 512
 playerIconSize : Float
 playerIconSize = 30
 
-type CssClasses
+type CssClass
   = Minimap
   | PlayerIcon
   | Background

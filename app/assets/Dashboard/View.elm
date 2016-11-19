@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import DashboardCss exposing (CssClasses(Content, Hdivider, Vdivider), namespace)
+import DashboardCss exposing (CssClass(Content, Hdivider, Vdivider), namespace)
 import Html exposing (..)
 import Html.App
 import Html.CssHelpers exposing (withNamespace)

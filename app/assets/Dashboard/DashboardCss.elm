@@ -12,7 +12,7 @@ namespace = "content"
 dividerWidth : Float
 dividerWidth = 10
 
-type CssClasses
+type CssClass
   = Content
   | Vdivider
   | Hdivider
