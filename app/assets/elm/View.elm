@@ -1,12 +1,15 @@
 module View exposing (..)
 
+import DashboardCss exposing (CssClasses(Content, Hdivider, Vdivider), namespace)
 import Html exposing (..)
 import Html.App
-import Html.Attributes exposing (..)
+import Html.CssHelpers exposing (withNamespace)
 import Minimap.Minimap as Minimap
 import TagScroller.TagScroller as TagScroller
 import Timeline.Timeline as Timeline
 import Types exposing (..)
+
+{id, class, classList} = withNamespace namespace
 
 view : Model -> Html Msg
 view model =
@@ -16,12 +19,12 @@ view model =
       tagScroller = Html.App.map TagScrollerMsg <| TagScroller.view model.tagScroller
   in
       div []
-        [ div [ class "content" ]
+        [ div [ class [Content] ]
             [ minimap
-            , div [ class "vdivider" ] []
+            , div [ class [Vdivider] ] []
             , tagScroller
             ]
-        , div [ class "hdivider" ] []
+        , div [ class [Hdivider] ] []
         , timeline
         ]
 

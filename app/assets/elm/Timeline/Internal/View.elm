@@ -1,14 +1,19 @@
 module Timeline.Internal.View exposing (view)
 
 import Css exposing (left, px)
+import DashboardCss
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (src)
+import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (on, onClick)
 import Json.Decode as Json
 import Mouse
 import StyleUtils exposing (..)
+import Timeline.Css exposing (CssClasses(..), namespace)
 import Timeline.Internal.ModelUtils exposing(getCurrentPx)
 import Timeline.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
+
+{id, class, classList} = withNamespace namespace
 
 view : Model -> Html Msg
 view model =
@@ -19,27 +24,27 @@ view model =
         Pause -> model.playButton
     pxs = getCurrentPx model
   in
-    div [ class "controls" ]
-      [ div [ class "timeline"
+    div [ class [Controls] ]
+      [ div [ class [Timeline]
             ]
-          [ div [ class "bar"
+          [ div [ class [Bar]
                 , styles [ Css.width (model.width |> px)
                          ]
                 , on "mousedown" (Json.map BarClick Mouse.position)
                 ]
                 []
           , div [ on "mousedown" (Json.map KnobGrab Mouse.position)
-                , class "knob"
+                , class [Knob]
                 , styles [ left (pxs |> px)
                          ]
                 ]
                 []
           ]
-      , div [ class "vdivider" ] []
-      , button [ class "play-button"
+      , div [ (withNamespace DashboardCss.namespace).class [DashboardCss.Vdivider] ] []
+      , button [ class [PlayButton]
                , onClick PlayPause
                ]
-          [ img [ class "play-pause-img"
+          [ img [ class [PlayPauseImg]
                 , src playImg
                 ]
               []

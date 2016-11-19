@@ -1,11 +1,7 @@
 (function () {
 	'use strict';
 
-	require('./styles/content.scss');
-	require('./styles/minimap.scss');
-	require('./styles/timeline.scss');
-	require('./styles/tag-scroller.scss');
-	require('./styles/divider.scss');
+	require("elm-css/dashboard.css");
 
 	const Elm = require('./elm/Main.elm');
 	const mountNode = document.getElementById('main');

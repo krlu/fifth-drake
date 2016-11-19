@@ -3,10 +3,14 @@ module Minimap.Internal.View exposing (..)
 import Array
 import Css exposing (left, bottom, px)
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (src, draggable)
+import Html.CssHelpers exposing (withNamespace)
 import Maybe exposing (andThen)
+import Minimap.Css exposing (CssClasses(..), namespace)
 import Minimap.Types exposing (Msg, Model)
-import StyleUtils exposing (..)
+import StyleUtils exposing (styles)
+
+{id, class, classList} = withNamespace namespace
 
 view : Model -> Html Msg
 view model =
@@ -24,7 +28,7 @@ view model =
                 |> Array.get model.timestamp
                 |> Maybe.map (\state ->
                   div
-                    [ class "playerIcon"
+                    [ class [PlayerIcon]
                     , styles
                       [ left (model.width * (state.position.x / model.mapWidth)|> px)
                       , bottom (model.height * (state.position.y / model.mapHeight)|> px)
@@ -38,10 +42,10 @@ view model =
             (teamToPlayerIcons redTeam)
           )
   in
-    div [ class "minimap"
+    div [ class [Minimap]
         ]
       (
-        [ img [ class "background"
+        [ img [ class [Background]
               , src model.background
               , draggable "false"
               ]
