@@ -16,7 +16,7 @@ getGameLength : WindowLocation -> Task Http.Error GameLength
 getGameLength loc = Http.get gameLength <| url loc
 
 populate : WindowLocation -> Cmd Msg
-populate loc = Task.perform PlayerFetchFailure SetTimelineLength <| getGameLength loc
+populate loc = Task.perform GameLengthFetchFailure SetTimelineLength <| getGameLength loc
 
 gameLength : Decoder GameLength
 gameLength = ("gameLength" := int)

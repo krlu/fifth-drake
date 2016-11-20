@@ -34,6 +34,6 @@ update' msg ({value, mouse} as model) =
       { model | value = v }
     SetTimelineLength length ->
       { model | maxVal = length }
-    PlayerFetchFailure err ->
+    GameLengthFetchFailure err ->
       (Debug.log "Timeline failed to fetch" model)
 
