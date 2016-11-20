@@ -36,9 +36,15 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     Ok(views.html.gameDashboard(request.host, gameKey))
   }
 
+  def loadGameLength(gameKey: String): Action[AnyContent] = Action {
+    val (metaData, _) = dbh.getGame(new RiotId[Game](gameKey))
+    Ok(Json.obj("gameLength" -> metaData.gameDuration.toSeconds))
+  }
+
   def loadGameData(gameKey: String): Action[AnyContent] = Action {
     Ok(getGameData(gameKey))
   }
+
   def getGameData(gameKey: String): JsObject = {
     def getPlayerStates(igt: InGameTeam, gameLength: Time,
       samplingRate: Int = 1000): Seq[JsObject] = {
@@ -78,7 +84,7 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
       )
     )
 
-    val (metaData, gameData) = dbh.createGame(new RiotId[Game](gameKey))
+    val (metaData, gameData) = dbh.getGame(new RiotId[Game](gameKey))
     val blueData = getPlayerStates(gameData.teams(Blue), metaData.gameDuration)
     val redData = getPlayerStates(gameData.teams(Red), metaData.gameDuration)
     Json.obj("blueTeam" -> blueData, "redTeam" -> redData)
