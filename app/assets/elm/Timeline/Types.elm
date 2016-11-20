@@ -2,6 +2,8 @@ module Timeline.Types exposing (..)
 
 import Mouse
 import Time
+import Http
+
 
 type Msg
   = KnobGrab Mouse.Position
@@ -11,9 +13,12 @@ type Msg
   | PlayPause
   | TimerUpdate Time.Time
   | SetValue Value
+  | PlayerFetchFailure Http.Error
+  | SetTimelineLength Int
 
 type alias Value = Int
 type alias File = String
+type alias GameLength = Int
 
 type alias Model =
   { value: Value
