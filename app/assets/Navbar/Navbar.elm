@@ -2,8 +2,9 @@ module Navbar exposing (..)
 
 import Html.App
 import Html exposing (..)
+import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (..)
-import Html.Attributes exposing (..)
+import NavbarCss exposing (CssClass, namespace)
 import String exposing (toLower)
 
 
@@ -67,29 +68,30 @@ type Msg
 
 -- VIEW
 
+{id, class, classList} = withNamespace namespace
 
 view : Model -> Html Msg
 view model =
   let
     clazz =
       case model.collapsed of
-        Expanded -> "expanded"
-        Collapsed -> "collapsed"
+        Expanded -> NavbarCss.Expanded
+        Collapsed -> NavbarCss.Collapsed
 
     links =
       [ Games, Link ]
       |> List.map (\x -> link clazz ( GoTo x ) ( pageToUrl x ) )
   in
     div
-      [ class ( "navbar-left " ++ clazz ) ]
+      [ class [NavbarCss.NavbarLeft, clazz] ]
       [ div
-         [ id "collapsible" ]
+         [ class [ NavbarCss.Collapsible ] ]
          [ collapsibleLink model clazz ]
       , div
-         [ id "navbar-left-logo" ]
+         [ id NavbarCss.NavbarLeftLogo ]
          [ link clazz ( GoTo Home ) ( pageToUrl Home ) ]
       , div
-         [ id "navbar-links" ]
+         [ id NavbarCss.NavbarLinks ]
          links
       ]
 
@@ -108,7 +110,7 @@ flipCollapseState state =
     Collapsed -> Expanded
 
 
-collapsibleLink : Model -> String -> Html Msg
+collapsibleLink : Model -> CssClass -> Html Msg
 collapsibleLink model clazz =
   let
     action = ( ChangeState << flipCollapseState ) model.collapsed
@@ -117,10 +119,10 @@ collapsibleLink model clazz =
       link clazz action arrow
 
 
-link : String -> Msg -> String -> Html Msg
+link : CssClass -> Msg -> String -> Html Msg
 link clazz msg txt =
     a
-      [ class clazz
+      [ class [clazz]
       , onClick msg
       ]
       [ span

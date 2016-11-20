@@ -8,7 +8,8 @@
     "url": "https://github.com/climb-gg/fifth-drake.git"
   },
   "dependencies": {
-    "elm": "~0.17.1",
+    "elm": "0.17.1",
+    "elm-css": "^0.6.0",
     "lodash": "^4.16.6"
   },
   "devDependencies": {
@@ -29,7 +30,8 @@
     "build": "webpack",
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 3000 --content-base public/",
-    "test-db": "json-server -p 4000 --routes app/assets/test/routes.json app/assets/test/db.json"
+    "test-db": "json-server -p 4000 --routes app/assets/test/routes.json app/assets/test/db.json",
+    "compile-css": "mkdir -p public/elm-css && elm-css -o public/elm-css app/assets/styles/Stylesheets.elm"
   },
   "author": "",
   "license": "ISC"

@@ -1,14 +1,10 @@
 (function () {
 	'use strict';
 
-	require('./styles/Dashboard/content.scss');
-	require('./styles/Dashboard/minimap.scss');
-	require('./styles/Dashboard/timeline.scss');
-	require('./styles/Dashboard/tag-scroller.scss');
-	require('./styles/Dashboard/divider.scss');
+	require('elm-css/dashboard.css');
 
 	const Elm = require('./Dashboard/Dashboard.elm');
-	const mountNode = document.getElementById('dashboard');
+	const mountNode = document.getElementById('Content');
 
 	let script = document.currentScript;
 

@@ -16,8 +16,6 @@ initialModel background =
     }
   , timestamp = 0
   , background = background
-  , width = 512
-  , height = 512
   , mapWidth = 15000
   , mapHeight = 15000
   }
