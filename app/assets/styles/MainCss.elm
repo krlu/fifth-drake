@@ -11,7 +11,7 @@ namespace = "main"
 type CssId
   = Container
   | Navbar
-  | Dashboard
+  | Content
 
 css =
   (stylesheet << Css.Namespace.namespace namespace)
@@ -33,7 +33,7 @@ css =
         , flexGrow (0 |> int)
         , height (100 |> vh)
         ]
-      , (#) Dashboard
+      , (#) Content
         [ order (2 |> int)
         , flexGrow (1 |> int)
         , height (100 |> vh)

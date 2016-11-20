@@ -18,7 +18,7 @@ view model =
       minimap = Html.App.map MinimapMsg <| Minimap.view model.minimap
       tagScroller = Html.App.map TagScrollerMsg <| TagScroller.view model.tagScroller
   in
-      div [ class [Content] ]
+      div [ class [Dashboard] ]
         [ div [ class [MapAndTags] ]
             [ minimap
             , div [ (withNamespace DashboardCss.namespace).class [Vdivider] ] []

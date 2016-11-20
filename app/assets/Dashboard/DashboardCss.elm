@@ -16,12 +16,12 @@ type CssClass
   = MapAndTags
   | Vdivider
   | Hdivider
-  | Content
+  | Dashboard
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) Content
+  [ (.) Dashboard
     [ width (minimapWidth + dividerWidth + tagScrollerWidth |> px)
     , margin2 (30 |> px) auto
     , children

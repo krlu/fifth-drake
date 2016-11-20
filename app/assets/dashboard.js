@@ -4,7 +4,7 @@
 	require('elm-css/dashboard.css');
 
 	const Elm = require('./Dashboard/Dashboard.elm');
-	const mountNode = document.getElementById('Dashboard');
+	const mountNode = document.getElementById('Content');
 
 	let script = document.currentScript;
 
