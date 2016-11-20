@@ -25,7 +25,7 @@ import scala.concurrent.duration.Duration
 class DataAccessHandler(pdbh: PostgresDbHandler, mdbh: MongoDbHandler){
   def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
 
-  def createGame(gameKey: RiotId[Game]): Game ={
+  def getGame(gameKey: RiotId[Game]): Game ={
 
     val TIMEOUT = Duration(30, TimeUnit.SECONDS)
 
