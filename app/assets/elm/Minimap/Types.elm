@@ -8,6 +8,7 @@ type Msg
   | PlayerFetchFailure Http.Error
   | UpdateTimestamp Int
 
+
 type alias Model =
   { gameData : Game
   , timestamp : Int
@@ -26,10 +27,10 @@ type alias Game =
   }
 
 type alias Player =
-  { role: String
-  , championName: String
+  { side: Side
+  , role: Role
   , ign: String
-  , side: String
+  , championName: String
   , state: Array PlayerState
   }
 
@@ -48,3 +49,7 @@ type alias ChampionState =
   , mp: Float
   , xp: Float
   }
+
+type Role = Top | Jungle | Mid | Bot | Support
+type Side = Red | Blue
+
