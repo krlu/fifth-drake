@@ -7,25 +7,33 @@ import StyleUtils
 import TagScroller.Css exposing (tagScrollerWidth)
 
 namespace : String
-namespace = "content"
+namespace = "dashboard"
 
 dividerWidth : Float
 dividerWidth = 10
 
 type CssClass
-  = Content
+  = MapAndTags
   | Vdivider
   | Hdivider
+  | Content
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) Content (
+  [ (.) Content
     [ width (minimapWidth + dividerWidth + tagScrollerWidth |> px)
-    , height (minimapHeight |> px)
-    , displayFlex
-    ] ++
-    StyleUtils.flexDirection "row")
+    , margin2 (30 |> px) auto
+    , children
+      [ (.) MapAndTags (
+        [ width auto
+        , height (minimapHeight |> px)
+        , displayFlex
+        , textAlign center
+        ] ++
+        StyleUtils.flexDirection "row")
+      ]
+    ]
   , (.) Vdivider (
     [ height (100 |> pct)
     , width (dividerWidth |> px)

@@ -36,9 +36,7 @@ css =
     [ fontSize (24 |> px)
     , backgroundColor primaryColor
     , color (hex "#FFFFFF")
-    , position fixed
     , height (100 |> pct)
-    , padding (5 |> px)
     , overflow hidden
     , property "-webkit-user-select" "none"
     , property "user-select" "none"

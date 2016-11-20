@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import DashboardCss exposing (CssClass(Content, Hdivider, Vdivider), namespace)
+import DashboardCss exposing (CssClass(..), namespace)
 import Html exposing (..)
 import Html.App
 import Html.CssHelpers exposing (withNamespace)
@@ -18,10 +18,10 @@ view model =
       minimap = Html.App.map MinimapMsg <| Minimap.view model.minimap
       tagScroller = Html.App.map TagScrollerMsg <| TagScroller.view model.tagScroller
   in
-      div []
-        [ div [ class [Content] ]
+      div [ class [Content] ]
+        [ div [ class [MapAndTags] ]
             [ minimap
-            , div [ class [Vdivider] ] []
+            , div [ (withNamespace DashboardCss.namespace).class [Vdivider] ] []
             , tagScroller
             ]
         , div [ class [Hdivider] ] []

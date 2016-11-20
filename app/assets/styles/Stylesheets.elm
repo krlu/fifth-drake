@@ -1,13 +1,14 @@
 port module Stylesheets exposing (..)
 
 import Css.File exposing (..)
+import DashboardCss
 import Html exposing (div)
 import Html.App
-import DashboardCss
+import MainCss
 import Minimap.Css
-import Timeline.Css
-import TagScroller.Css
 import NavbarCss
+import TagScroller.Css
+import Timeline.Css
 
 port files : CssFileStructure -> Cmd msg
 
@@ -24,6 +25,9 @@ cssFiles =
         ]
       , "navbar.css" => compile
         [ NavbarCss.css
+        ]
+      , "index.css" => compile
+        [ MainCss.css
         ]
       ]
 

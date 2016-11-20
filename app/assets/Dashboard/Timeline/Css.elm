@@ -2,23 +2,27 @@ module Timeline.Css exposing (..)
 
 import Css exposing (..)
 import Css.Namespace
+import DashboardCss
 import StyleUtils
 
 -- Variables for Timeline appearance
 -- All of these values are pixel equivalents
 namespace = "timeline"
 
-timelineWidth : Float
-timelineWidth = 512
+controlsWidth : Float
+controlsWidth = 512
 
-timelineHeight : Float
-timelineHeight = 40
+controlsHeight : Float
+controlsHeight = 40
 
 knobWidth : Float
 knobWidth = 10
 
 buttonWidth : Float
-buttonWidth = timelineHeight
+buttonWidth = controlsHeight
+
+timelineWidth : Float
+timelineWidth = controlsWidth - DashboardCss.dividerWidth - buttonWidth
 
 type CssClass
   = Controls
@@ -33,15 +37,15 @@ css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) Controls (
     [ displayFlex
-    , height (timelineHeight |> px)
-    , width (timelineWidth |> px)
+    , height (controlsHeight |> px)
+    , width (controlsWidth |> px)
     ] ++
     StyleUtils.userSelect "none" ++
     [ children
       [ (.) Timeline
         [ position relative
         , height (100 |> pct)
-        , width (100 |> pct)
+        , width (timelineWidth |> px)
         , children
           [ (.) Bar
             [ position relative
