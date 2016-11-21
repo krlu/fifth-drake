@@ -1,35 +1,38 @@
 {
-	"name": "fifth-drake",
-	"version": "1.0.0",
-	"description": "",
-	"main": "webpack.config.js",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/climb-gg/fifth-drake.git"
-	},
-	"dependencies": {
-		"elm": "~0.17.1",
-		"lodash": "^4.16.6"
-	},
-	"devDependencies": {
-		"css-loader": "^0.25.0",
-		"elm-webpack-loader": "^3.0.6",
-		"file-loader": "^0.9.0",
-		"node-sass": "^3.10.0",
-		"sass-loader": "^4.0.2",
-		"source-map-loader": "^0.1.5",
-		"style-loader": "^0.13.1",
-		"url-loader": "^0.5.7",
-		"webpack": "^1.13.2",
-		"json-server": "^0.8.21",
-		"webpack-dev-server": "^1.16.1"
-	},
-	"scripts": {
-		"build": "webpack",
-		"watch": "webpack --watch",
-		"dev": "webpack-dev-server --port 3000 --content-base public/",
-		"test-db": "json-server -p 4000 --routes app/assets/test/routes.json app/assets/test/db.json"
-	},
-	"author": "",
-	"license": "ISC"
+  "name": "fifth-drake",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/climb-gg/fifth-drake.git"
+  },
+  "dependencies": {
+    "elm": "0.17.1",
+    "elm-css": "^0.6.0",
+    "lodash": "^4.16.6"
+  },
+  "devDependencies": {
+    "css-loader": "^0.25.0",
+    "elm-webpack-loader": "^3.0.6",
+    "file-loader": "^0.9.0",
+    "html-loader": "^0.4.4",
+    "json-server": "^0.8.21",
+    "node-sass": "^3.10.0",
+    "sass-loader": "^4.0.2",
+    "source-map-loader": "^0.1.5",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.1"
+  },
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "dev": "webpack-dev-server --port 3000 --content-base public/",
+    "test-db": "json-server -p 4000 --routes app/assets/test/routes.json app/assets/test/db.json",
+    "compile-css": "mkdir -p public/elm-css && elm-css -o public/elm-css app/assets/styles/Stylesheets.elm"
+  },
+  "author": "",
+  "license": "ISC"
 }
