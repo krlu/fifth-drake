@@ -1,11 +1,15 @@
 const path = require('path');
 const assetPath = 'app/assets';
 const srcPath = path.join(__dirname, assetPath);
+const elmStylePaths = /Stylesheets.elm/;
 
 module.exports = {
 	entry: {
-		app: [
-			path.join(srcPath, "index.js")
+		dashboard: [
+			path.join(srcPath, "dashboard.js")
+		],
+		navbar: [
+		path.join(srcPath, "navbar.js")
 		]
 	},
 
@@ -16,6 +20,7 @@ module.exports = {
 	},
 
 	resolve: {
+		root: srcPath,
 		modulesDirectories: [
 			'node_modules',
 			'public'
@@ -24,6 +29,8 @@ module.exports = {
 	},
 
 	devtool: "source-map",
+
+	noParse: /.elm$/,
 
 	module: {
 		preLoaders: [
@@ -44,14 +51,14 @@ module.exports = {
 			{
 				test: /\.html$/,
 				exclude: /node_modules/,
-				loader: 'file?name=[name].[ext]'
+				loader: 'html'
 			},
 			{
 				test: /\.elm$/,
 				exclude: [
 					/node_modules/,
 					/elm_stuff/,
-					/src\/elm\/Stylesheets.elm/
+					elmStylePaths
 				],
 				loader: 'elm-webpack'
 			},

@@ -13,9 +13,6 @@ type alias Model =
   { gameData : Game
   , timestamp : Int
   , background : String
-  -- the width and height are in pixels
-  , width : Float
-  , height : Float
   -- the width and height of the map of the in game coordinates
   , mapWidth : Float
   , mapHeight : Float

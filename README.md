@@ -60,6 +60,10 @@ Use the following command to bundle and build your front end packages using
 webpack:
 `webpack`
 
+# Building CSS files
+In order to build the css for the front end, you'll need to use:
+`npm run compile-css`
+
 # Run developement server
 It's possible that you'll want a lighter weight server to rapidly test front end
 changes. You will likely not need this, but as of now, it is supported via the
