@@ -173,12 +173,10 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def getChampion(championName: String): Option[Champion] = {
-    val champ = DB readOnly { implicit session =>
+  def getChampion(championName: String): Option[Champion] = DB readOnly {
+    implicit session =>
       sql"SELECT * FROM league.champion where name=${championName}"
         .map(rs => constructChampion(rs)).single().apply()
-    }
-    champ
   }
 
   private def constructChampion(rs: WrappedResultSet): Champion = {
