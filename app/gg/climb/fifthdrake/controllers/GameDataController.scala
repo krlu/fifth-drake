@@ -36,6 +36,16 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     Ok(views.html.gameDashboard(request.host, gameKey))
   }
 
+  def loadChampion(name: String): Action[AnyContent] = Action {
+    val json = for{
+      champ <- dbh.pdbh.getChampion(name)
+    }
+    yield {
+      Json.obj("championName" -> champ.name, "championKey" -> champ.key, "championImage" -> champ.image.full)
+    }
+    Ok(json.get)
+  }
+
   def loadGameLength(gameKey: String): Action[AnyContent] = Action {
     val (metaData, _) = dbh.getGame(new RiotId[Game](gameKey))
     Ok(Json.obj("gameLength" -> metaData.gameDuration.toSeconds))
@@ -45,7 +55,7 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     Ok(getGameData(gameKey))
   }
 
-  def getGameData(gameKey: String): JsObject = {
+  private def getGameData(gameKey: String): JsObject = {
     def getPlayerStates(igt: InGameTeam, gameLength: Time,
       samplingRate: Int = 1000): Seq[JsObject] = {
       val rate = Duration(samplingRate, TimeUnit.MILLISECONDS)
