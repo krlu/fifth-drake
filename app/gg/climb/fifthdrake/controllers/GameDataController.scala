@@ -4,11 +4,13 @@ import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.RiotId
+import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.InGameTeam
 import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red}
-import gg.climb.fifthdrake.lolobjects.tagging.Tag
+import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
-import play.api.libs.json.{JsObject, Json, Writes}
+import play.api.libs.json.{JsObject, JsValue, Json, Writes}
+import play.api.libs.ws.WSClient
 import play.api.mvc._
 
 import scala.concurrent.duration.Duration
@@ -99,7 +101,6 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     Ok(getGameData(gameKey))
   }
 
-
   def getTags(gameKey: String): Action[AnyContent] = Action {
     val tags = dbh.getTags(new RiotId[Game](gameKey))
     implicit val tagWrites = new Writes[Tag] {
@@ -112,6 +113,26 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
       )
     }
     Ok(Json.toJson(tags))
+  }
+
+  def saveTag(ws: WSClient): Action[AnyContent] = Action { request =>
+    val body: AnyContent = request.body
+    val jsonBody: Option[JsValue] = body.asJson
+
+    // Expecting json body
+    jsonBody.map { json =>
+      val tagFields = json.as[JsObject].value
+      val id = tagFields.get("riotId").get.toString
+      val title = tagFields.get("title").get.toString
+      val description = tagFields.get("description").get.toString
+      val category = tagFields.get("category").get.toString
+      val timeStamp = tagFields.get("timeStamp").get.toString.toInt
+      dbh.insertTag(new Tag(new RiotId[Game](id), title, description,
+        new Category(category), Duration(timeStamp, TimeUnit.SECONDS), Set.empty[Player]))
+      Ok()
+    }.getOrElse {
+      BadRequest("Failed to insert tag")
+    }
   }
 }
 
