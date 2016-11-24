@@ -10,7 +10,6 @@ import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import play.api.libs.json.{JsObject, JsValue, Json, Writes}
-import play.api.libs.ws.WSClient
 import play.api.mvc._
 
 import scala.concurrent.duration.Duration
@@ -115,7 +114,7 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     Ok(Json.toJson(tags))
   }
 
-  def saveTag(ws: WSClient): Action[AnyContent] = Action { request =>
+  def saveTag(): Action[AnyContent] = Action { request =>
     val body: AnyContent = request.body
     val jsonBody: Option[JsValue] = body.asJson
 
@@ -129,7 +128,7 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
       val timeStamp = tagFields.get("timeStamp").get.toString.toInt
       dbh.insertTag(new Tag(new RiotId[Game](id), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), Set.empty[Player]))
-      Ok()
+      Ok("Tag saved!")
     }.getOrElse {
       BadRequest("Failed to insert tag")
     }
