@@ -9,7 +9,7 @@ import Html.Events exposing (on, onClick)
 import Json.Decode as Json
 import Mouse
 import StyleUtils exposing (..)
-import Timeline.Css exposing (CssClass(..), namespace)
+import Timeline.Css exposing (CssClass(..), namespace, timelineWidth)
 import Timeline.Internal.ModelUtils exposing(getCurrentPx)
 import Timeline.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
 
@@ -28,7 +28,7 @@ view model =
       [ div [ class [Timeline]
             ]
           [ div [ class [Bar]
-                , styles [ Css.width (model.width |> px)
+                , styles [ Css.width (timelineWidth |> px)
                          ]
                 , on "mousedown" (Json.map BarClick Mouse.position)
                 ]

@@ -26,8 +26,6 @@ type alias Model =
   , mouse: Maybe Drag
 
   , status: Status
-  -- this is the width of the timeline
-  , width: Float
 
   , pauseButton: File
   , playButton: File
