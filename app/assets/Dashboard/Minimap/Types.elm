@@ -19,8 +19,19 @@ type alias Model =
   }
 
 type alias Game =
-  { blueTeam : Array Player
-  , redTeam : Array Player
+  { blueTeam : Team
+  , redTeam : Team
+  }
+
+type alias Team =
+  { teamStates : Array TeamState
+  , playerStates : Array Player
+  }
+
+type alias TeamState =
+  { dragons : Int
+  , barons : Int
+  , turrets : Int
   }
 
 type alias Player =

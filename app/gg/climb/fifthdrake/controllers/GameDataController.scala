@@ -98,7 +98,7 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     implicit val inGameTeamWrites = new Writes[InGameTeam] {
       override def writes(o: InGameTeam): JsValue = Json.obj(
         "teamStates" -> Json.toJson(o.teamStates),
-        "playerStates" -> Json.toJson(o.playerStates.toList.map(playerStateToJson))
+        "players" -> Json.toJson(o.playerStates.toList.map(playerStateToJson))
       )
     }
 

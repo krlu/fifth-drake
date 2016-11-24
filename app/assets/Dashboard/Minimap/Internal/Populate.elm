@@ -2,9 +2,9 @@ module Minimap.Internal.Populate exposing (..)
 
 import Dict
 import Http
-import Json.Decode exposing (Decoder, list, array, object2, object3, object5, (:=), int, float, string, customDecoder)
+import Json.Decode exposing (..)
 import Maybe exposing (withDefault)
-import Minimap.Types exposing (Game, Player, PlayerState, Position, Role(..), Side(..), ChampionState, Msg(..))
+import Minimap.Types exposing (..)
 import Task exposing (Task)
 import Types exposing (WindowLocation)
 
@@ -38,8 +38,21 @@ populate loc = Task.perform PlayerFetchFailure SetData <| getGameData loc
 game : Decoder Game
 game =
   object2 Game
-    ("blueTeam" := array player)
-    ("redTeam" := array player)
+    ("blueTeam" := team)
+    ("redTeam" := team)
+
+team : Decoder Team
+team =
+  object2 Team
+    ("teamStates" := array teamState)
+    ("players" := array player)
+
+teamState : Decoder TeamState
+teamState =
+  object3 TeamState
+    ("dragons" := int)
+    ("barons" := int)
+    ("turrets" := int)
 
 player : Decoder Player
 player =
