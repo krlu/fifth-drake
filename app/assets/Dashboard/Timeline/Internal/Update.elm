@@ -15,8 +15,8 @@ update' msg ({value, mouse} as model) =
       { model | mouse = Maybe.map (\{start} -> Drag start pos) mouse }
     KnobRelease pos ->
       { model | mouse = Nothing, value = getCurrentValue model }
-    BarClick pos ->
-      { model | mouse = Just <| Drag pos pos, value = getValueAt model pos }
+    BarClick (pos, rel) ->
+      { model | mouse = Just <| Drag pos pos, value = getValueAt model rel }
     PlayPause ->
       { model | status = toggleStatus model.status
               , value =

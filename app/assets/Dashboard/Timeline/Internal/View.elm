@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (src)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (on, onClick)
-import Json.Decode as Json
+import Json.Decode as Json exposing ((:=), Decoder, andThen, int, object2)
 import Mouse
 import StyleUtils exposing (..)
 import Timeline.Css exposing (CssClass(..), namespace, timelineWidth)
@@ -14,6 +14,19 @@ import Timeline.Internal.ModelUtils exposing(getCurrentPx)
 import Timeline.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
 
 {id, class, classList} = withNamespace namespace
+
+join : Decoder a -> Decoder b -> Decoder (a,b)
+join da db =
+  da
+  |> flip Json.andThen (\x -> Json.map (\y -> (x, y)) db)
+
+relativePosition : Decoder (Mouse.Position, Mouse.Position)
+relativePosition =
+  join
+    Mouse.position <|
+    object2 Mouse.Position
+      ("offsetX" := int)
+      ("offsetY" := int)
 
 view : Model -> Html Msg
 view model =
@@ -30,7 +43,7 @@ view model =
           [ div [ class [Bar]
                 , styles [ Css.width (timelineWidth |> px)
                          ]
-                , on "mousedown" (Json.map BarClick Mouse.position)
+                , on "mousedown" (Json.map BarClick relativePosition)
                 ]
                 []
           , div [ on "mousedown" (Json.map KnobGrab Mouse.position)
