@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
-import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
+import gg.climb.fifthdrake.lolobjects.game.{Champion, GameData, InGameTeam, MetaData}
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
 import gg.climb.fifthdrake.{Game, Time}
 import gg.climb.ramenx.{Behavior, ListBehavior}
@@ -22,8 +22,10 @@ import scala.concurrent.duration.Duration
   * @param pdbh - PostgresDbHandler
   * @param mdbh - MongoDbHandler
   */
-class DataAccessHandler(pdbh: PostgresDbHandler, mdbh: MongoDbHandler){
+class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
+
+  def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
 
   def getGame(gameKey: RiotId[Game]): Game ={
 

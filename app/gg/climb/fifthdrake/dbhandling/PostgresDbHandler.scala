@@ -1,6 +1,5 @@
 package gg.climb.fifthdrake.dbhandling
 
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
@@ -174,18 +173,16 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def getChampion(championName: String): Option[Champion] = {
-    val champId = DB readOnly { implicit session =>
+  def getChampion(championName: String): Option[Champion] = DB readOnly {
+    implicit session =>
       sql"SELECT * FROM league.champion where name=${championName}"
         .map(rs => constructChampion(rs)).single().apply()
-    }
-    champId
   }
 
   private def constructChampion(rs: WrappedResultSet): Champion = {
     val champId = new InternalId[Champion](rs.string("id"))
-    new Champion(champId, new RiotId[Champion](rs.int("riot_id").toString),
-                 rs.string("name"), getChampionStats(champId), getChampionImage(champId))
+    new Champion(champId, new RiotId[Champion](rs.int("riot_id").toString), rs.string("name"),
+      rs.string("key_name"), getChampionStats(champId), getChampionImage(champId))
   }
 
   private def getChampionStats(championId: InternalId[Champion]): ChampionStats = {
@@ -232,20 +229,13 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   }
 
   private def constructChampionImage(rs: WrappedResultSet): ChampionImage = {
-    val file = getChampionFile(rs.string("image_full"))
-    new ChampionImage(file,
-                      rs.int("x_position"),
+    new ChampionImage(rs.int("x_position"),
                       rs.int("y_position"),
                       rs.int("width"),
                       rs.int("height"),
                       rs.string("sprite"),
                       rs.string("image_full"),
                       rs.string("image_group"))
-  }
-
-  private def getChampionFile(imageFull: String): File = {
-    val filePath = "/"
-    new File(filePath + imageFull)
   }
 
   def getPlayerByRiotId(riotId: RiotId[Player]): Player = {

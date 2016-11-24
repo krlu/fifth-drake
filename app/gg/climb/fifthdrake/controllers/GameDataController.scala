@@ -36,58 +36,67 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     Ok(views.html.gameDashboard(request.host, gameKey))
   }
 
+  def loadChampion(name: String): Action[AnyContent] = Action {
+    val result = for{
+      champ <- dbh.getChampion(name)
+    }
+    yield {
+      Ok(Json.obj("championName" -> champ.name, "championKey" -> champ.key, "championImage" -> champ.image.full))
+    }
+    result.getOrElse(InternalServerError(s"Could not find champion $name"))
+  }
+
   def loadGameLength(gameKey: String): Action[AnyContent] = Action {
     val (metaData, _) = dbh.getGame(new RiotId[Game](gameKey))
     Ok(Json.obj("gameLength" -> metaData.gameDuration.toSeconds))
   }
 
   def loadGameData(gameKey: String): Action[AnyContent] = Action {
-    Ok(getGameData(gameKey))
-  }
-
-  def getGameData(gameKey: String): JsObject = {
-    def getPlayerStates(igt: InGameTeam, gameLength: Time,
-      samplingRate: Int = 1000): Seq[JsObject] = {
-      val rate = Duration(samplingRate, TimeUnit.MILLISECONDS)
-      val start = Duration(0, TimeUnit.MILLISECONDS)
-      val playersList = igt.playerStates.map { case (p, behavior) =>
-        p -> behavior.sampledBy(start, rate, gameLength)
-      }.map { case (p, eventStream) =>
+    def getGameData(gameKey: String): JsObject = {
+      def getPlayerStates(igt: InGameTeam, gameLength: Time,
+                          samplingRate: Int = 1000): Seq[JsObject] = {
+        val rate = Duration(samplingRate, TimeUnit.MILLISECONDS)
+        val start = Duration(0, TimeUnit.MILLISECONDS)
+        val playersList = igt.playerStates.map { case (p, behavior) =>
+          p -> behavior.sampledBy(start, rate, gameLength)
+        }.map { case (p, eventStream) =>
           val champName = eventStream.getAll.head._2.championState.name
           val side = eventStream.getAll.head._2.sideColor.name
           (side, p.role.name, p.ign, champName, eventStream.getAll.map { case (t, ps) =>
-          getJsonForPlayerState(p.ign, ps, t)
-        })
-      }.toSeq.map{
-        case (side, roleName, ign, champName, playerData) =>
-          Json.obj(
-          "side" -> side,
-          "role" -> roleName,
-          "ign"-> ign,
-          "championName" -> champName,
-          "playerStates" -> playerData
-        )
+            getJsonForPlayerState(p.ign, ps, t)
+          })
+        }.toSeq.map {
+          case (side, roleName, ign, champName, playerData) =>
+            Json.obj(
+              "side" -> side,
+              "role" -> roleName,
+              "ign" -> ign,
+              "championName" -> champName,
+              "playerStates" -> playerData
+            )
+        }
+        playersList
       }
-      playersList
-    }
-    def getJsonForPlayerState(ign: String,
-      playerState: PlayerState,
-      timeStamp: Duration): JsObject = Json.obj(
-      "position" -> Json.obj(
-        "x" -> playerState.location.x,
-        "y" -> playerState.location.y
-      ),
-      "championState" -> Json.obj(
-        "hp" -> playerState.championState.hp,
-        "mp" -> playerState.championState.mp,
-        "xp" -> playerState.championState.xp
+      def getJsonForPlayerState(ign: String,
+                                playerState: PlayerState,
+                                timeStamp: Duration): JsObject = Json.obj(
+        "position" -> Json.obj(
+          "x" -> playerState.location.x,
+          "y" -> playerState.location.y
+        ),
+        "championState" -> Json.obj(
+          "hp" -> playerState.championState.hp,
+          "mp" -> playerState.championState.mp,
+          "xp" -> playerState.championState.xp
+        )
       )
-    )
 
-    val (metaData, gameData) = dbh.getGame(new RiotId[Game](gameKey))
-    val blueData = getPlayerStates(gameData.teams(Blue), metaData.gameDuration)
-    val redData = getPlayerStates(gameData.teams(Red), metaData.gameDuration)
-    Json.obj("blueTeam" -> blueData, "redTeam" -> redData)
+      val (metaData, gameData) = dbh.getGame(new RiotId[Game](gameKey))
+      val blueData = getPlayerStates(gameData.teams(Blue), metaData.gameDuration)
+      val redData = getPlayerStates(gameData.teams(Red), metaData.gameDuration)
+      Json.obj("blueTeam" -> blueData, "redTeam" -> redData)
+    }
+    Ok(getGameData(gameKey))
   }
 
 
