@@ -37,18 +37,13 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
   }
 
   def loadChampion(name: String): Action[AnyContent] = Action {
-    val json = for{
+    val result = for{
       champ <- dbh.getChampion(name)
     }
     yield {
-      Json.obj("championName" -> champ.name, "championKey" -> champ.key, "championImage" -> champ.image.full)
+      Ok(Json.obj("championName" -> champ.name, "championKey" -> champ.key, "championImage" -> champ.image.full))
     }
-    if(json.nonEmpty) {
-      Ok(json.get)
-    }
-    else{
-      InternalServerError(s"Could not find champion $name")
-    }
+    result.getOrElse(InternalServerError(s"Could not find champion $name"))
   }
 
   def loadGameLength(gameKey: String): Action[AnyContent] = Action {
