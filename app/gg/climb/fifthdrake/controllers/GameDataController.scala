@@ -75,23 +75,26 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
       )
     }
 
+    implicit val playerStateWrite = new Writes[PlayerState] {
+      override def writes(playerState: PlayerState): JsValue = Json.obj(
+        "position" -> Json.obj(
+          "x" -> playerState.location.x,
+          "y" -> playerState.location.y
+        ),
+        "championState" -> Json.obj(
+          "hp" -> playerState.championState.hp,
+          "mp" -> playerState.championState.mp,
+          "xp" -> playerState.championState.xp
+        ))
+    }
+
     def playerStateToJson (p : (Player, Behavior[Time, PlayerState])) : JsValue = p match {
       case (player, states) => Json.obj(
         "side" -> states(Duration.Zero).sideColor.name,
         "role" -> player.role.name,
         "ign" -> player.ign,
         "championName" -> states(Duration.Zero).championState.name,
-        "playerStates" -> Json.toJson(states.map(state => Json.obj(
-          "position" -> Json.obj(
-            "x" -> state.location.x,
-            "y" -> state.location.y
-          ),
-          "championState" -> Json.obj(
-            "hp" -> state.championState.hp,
-            "mp" -> state.championState.mp,
-            "xp" -> state.championState.xp
-          )
-        )))
+        "playerStates" -> Json.toJson(states)
       )
     }
 
