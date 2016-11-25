@@ -21,7 +21,6 @@ expandedWidth = 15
 
 type CssClass
   = NavbarLeft
-  | Collapsible
 
 type CssIds
   = NavbarLinks
@@ -66,15 +65,6 @@ css =
             ]
           ]
         ]
-      ]
-    ]
-  , (.) Collapsible
-    [ textAlign right
-    , padding (5 |> px)
-    , color secondaryColor
-    , hover
-      [ color (hex "#FFFFFF")
-      , cursor pointer
       ]
     ]
   ]
