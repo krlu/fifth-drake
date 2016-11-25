@@ -3,21 +3,14 @@ module NavbarCss exposing(..)
 import Css exposing (..)
 import Css.Elements exposing (a, span)
 import Css.Namespace
+import CssColors as Color
+import StyleUtils
 
 namespace : String
 namespace = "navbar"
 
-primaryColor : Color
-primaryColor = hex "#B59FE8"
-
-secondaryColor : Color
-secondaryColor = hex "#2883FF"
-
-collapsedWidth : Float
-collapsedWidth = 3
-
-expandedWidth : Float
-expandedWidth = 15
+navbarWidth : Float
+navbarWidth = 50
 
 type CssClass
   = NavbarLeft
@@ -29,32 +22,32 @@ type CssIds
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) NavbarLeft
-    [ fontSize (24 |> px)
-    , backgroundColor primaryColor
-    , color (hex "#FFFFFF")
+  [ (.) NavbarLeft (
+    [ backgroundColor Color.c_navBar
+    , color Color.c_gold
     , height (100 |> pct)
-    , overflow hidden
-    , property "-webkit-user-select" "none"
-    , property "user-select" "none"
-    , children
+    , width (navbarWidth |> px)
+    ] ++ StyleUtils.userSelect "none" ++
+    [ children
       [ (#) NavbarLeftLogo
         [ textAlign center
-        , padding (10 |> px)
-        , marginTop (20 |> px)
-        , marginBottom (20 |> px)
         , hover
           [ cursor pointer
           ]
         ]
-      , (#) NavbarLinks
-        [ textAlign center
+      , (#) NavbarLinks (
+        [ displayFlex
+        ] ++ StyleUtils.flexDirection "column" ++
+        [ property "justify-content" "center"
+        , width (navbarWidth |> px)
+        , height (100 |> pct)
         , children
           [ a
             [ padding (5 |> px)
+            , margin2 zero auto
             , property "display" "table"
             , hover
-              [ color secondaryColor
+              [ color Color.c_navBarSelected
               , cursor pointer
               ]
             , children
@@ -64,7 +57,7 @@ css =
               ]
             ]
           ]
-        ]
+        ])
       ]
-    ]
+    ])
   ]

@@ -93,13 +93,15 @@ view model =
   in
     div
       [ class [NavbarCss.NavbarLeft] ]
-      [ a
+      [ div
         [ id NavbarCss.NavbarLeftLogo
-        , href <| pageUrl Home
         ]
-        [ img
-          [src <| pageToIcon model Home]
-          []
+        [ a
+          [ href <| pageUrl Home ]
+          [ img
+            [src <| pageToIcon model Home]
+            []
+          ]
         ]
       , div
         [ id NavbarCss.NavbarLinks ]
