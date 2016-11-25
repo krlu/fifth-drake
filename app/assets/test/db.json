@@ -787,4 +787,7 @@
         ]
       }
     ]
+, "gameLength":
+  { "gameLength" : 3000
+  }
 }

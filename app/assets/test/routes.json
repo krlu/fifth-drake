@@ -1,4 +1,5 @@
 {
 	"/game/:resource/data": "/data",
-	"/game/:resource/tags": "/tags"
+	"/game/:resource/tags": "/tags",
+	"/game/:resource/gameLength": "/gameLength"
 }
