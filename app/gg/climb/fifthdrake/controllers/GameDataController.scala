@@ -141,8 +141,10 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
       val description = tagFields.get("description").get.toString
       val category = tagFields.get("category").get.toString
       val timeStamp = tagFields.get("timeStamp").get.toString.toInt
+      val playerIgns = tagFields.get("igns").get.as[JsArray]
+      val players = playerIgns.value.map(ign => dbh.getPlayerByIgn(ign.toString)).toSet
       dbh.insertTag(new Tag(new RiotId[Game](id), title, description,
-        new Category(category), Duration(timeStamp, TimeUnit.SECONDS), Set.empty[Player]))
+        new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
       Ok("Tag saved!")
     }.getOrElse {
       BadRequest("Failed to insert tag")
