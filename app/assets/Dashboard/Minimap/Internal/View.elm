@@ -7,7 +7,7 @@ import Html.Attributes exposing (src, draggable)
 import Html.CssHelpers exposing (withNamespace)
 import Maybe exposing (andThen)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespace)
-import Minimap.Types exposing (Msg, Model)
+import Minimap.Types exposing (Model, Msg, Team)
 import StyleUtils exposing (styles)
 
 {id, class, classList} = withNamespace namespace
@@ -15,13 +15,14 @@ import StyleUtils exposing (styles)
 view : Model -> Html Msg
 view model =
   let
-    playerIcons : List(Html Msg)
+    playerIcons : List (Html Msg)
     playerIcons =
       model.gameData
       |> (\{blueTeam, redTeam} ->
           let
-            teamToPlayerIcons arr =
-              arr
+            teamToPlayerIcons : Team -> List (Html Msg)
+            teamToPlayerIcons team =
+              team.playerStates
               |> Array.toList
               |> List.filterMap (\player ->
                 player.state

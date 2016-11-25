@@ -4,9 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <title>Fifth-Drake</title>
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("elm-css/index.css")">
   </head>
   <body>
-    <div id="main"></div>
-    <script src="@routes.Assets.versioned("build/app.js")" data-host="@host" data-game-id="@gameKey"></script>
+    <div id="Container">
+      <div id="Navbar"></div>
+      <div id="Content"></div>
+    </div>
+    <script src="@routes.Assets.versioned("build/navbar.js")"></script>
+    <script src="@routes.Assets.versioned("build/dashboard.js")" data-host="@host" data-game-id="@gameKey"></script>
   </body>
 </html>

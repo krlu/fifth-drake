@@ -19,16 +19,6 @@ the following command:
 
 `npm install && elm package install`
 
-## Local Configuration
-If you wish to test locally, you will also want to run a local configuration.
-The configuration is fairly simple. You should simply make a copy of properties
-file and modify the entries as necessary.
-
-`cp conf/fifth-drake{,.local}.properties`
-
-The new file should be named `fifth-drake.local.properties` and should not be
-checked into the repo. The git ignore settings currently ignore this file.
-
 ## Database Initialization and Migrations
 You will also need to create a new database called league\_analytics in
 postgres. Flyway cannot create the database for you programmatically. However,
