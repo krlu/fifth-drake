@@ -11,8 +11,14 @@ import Types exposing (WindowLocation)
 initialModel : String -> Model
 initialModel background =
   { gameData =
-    { blueTeam = Array.empty
-    , redTeam = Array.empty
+    { blueTeam =
+      { teamStates = Array.empty
+      , playerStates = Array.empty
+      }
+    , redTeam =
+      { teamStates = Array.empty
+      , playerStates = Array.empty
+      }
     }
   , timestamp = 0
   , background = background

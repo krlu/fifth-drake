@@ -3,31 +3,13 @@ package gg.climb.fifthdrake.lolobjects.esports
 /**
   * Represents the various positions that can be held in League.
   */
-sealed trait Role {
-  val name: String
+sealed class Role(val name: String)
 
-  override def toString: String = name
-}
-
-case object Top extends Role {
-  override val name: String = "top"
-}
-
-case object Jungle extends Role {
-  override val name: String = "jungle"
-}
-
-case object Mid extends Role {
-  override val name: String = "mid"
-}
-
-case object Bot extends Role {
-  override val name: String = "bot"
-}
-
-case object Support extends Role {
-  override val name: String = "support"
-}
+case object Top extends Role("top")
+case object Jungle extends Role("jungle")
+case object Mid extends Role("mid")
+case object Bot extends Role("bot")
+case object Support extends Role("support")
 
 object Role {
   /**

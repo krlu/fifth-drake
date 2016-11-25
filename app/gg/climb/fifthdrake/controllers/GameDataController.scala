@@ -4,11 +4,13 @@ import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.RiotId
-import gg.climb.fifthdrake.lolobjects.game.InGameTeam
-import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red}
+import gg.climb.fifthdrake.lolobjects.esports.Player
+import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
+import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam}
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
-import play.api.libs.json.{JsObject, Json, Writes}
+import gg.climb.ramenx.Behavior
+import play.api.libs.json._
 import play.api.mvc._
 
 import scala.concurrent.duration.Duration
@@ -52,34 +54,29 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
   }
 
   def loadGameData(gameKey: String): Action[AnyContent] = Action {
-    def getGameData(gameKey: String): JsObject = {
-      def getPlayerStates(igt: InGameTeam, gameLength: Time,
-                          samplingRate: Int = 1000): Seq[JsObject] = {
-        val rate = Duration(samplingRate, TimeUnit.MILLISECONDS)
-        val start = Duration(0, TimeUnit.MILLISECONDS)
-        val playersList = igt.playerStates.map { case (p, behavior) =>
-          p -> behavior.sampledBy(start, rate, gameLength)
-        }.map { case (p, eventStream) =>
-          val champName = eventStream.getAll.head._2.championState.name
-          val side = eventStream.getAll.head._2.sideColor.name
-          (side, p.role.name, p.ign, champName, eventStream.getAll.map { case (t, ps) =>
-            getJsonForPlayerState(p.ign, ps, t)
-          })
-        }.toSeq.map {
-          case (side, roleName, ign, champName, playerData) =>
-            Json.obj(
-              "side" -> side,
-              "role" -> roleName,
-              "ign" -> ign,
-              "championName" -> champName,
-              "playerStates" -> playerData
-            )
-        }
-        playersList
+    val (metaData, gameData) = dbh.getGame(new RiotId[Game](gameKey))
+
+    implicit def behaviorWrites[A](implicit writer : Writes[A]) : Writes[Behavior[Time, A]] =
+      new Writes[Behavior[Time, A]] {
+        override def writes(behavior: Behavior[Time, A]): JsValue = JsArray(
+          behavior
+            .sampledBy(Duration.Zero, Duration(1, TimeUnit.SECONDS), metaData.gameDuration)
+            .map(writer.writes)
+            .getAll
+            .map(_._2)
+        )
       }
-      def getJsonForPlayerState(ign: String,
-                                playerState: PlayerState,
-                                timeStamp: Duration): JsObject = Json.obj(
+
+    implicit val teamStateWrite = new Writes[TeamState] {
+      override def writes(teamState: TeamState): JsValue = Json.obj(
+        "barons" -> teamState.barons,
+        "dragons" -> teamState.dragons,
+        "turrets" -> teamState.turrets
+      )
+    }
+
+    implicit val playerStateWrite = new Writes[PlayerState] {
+      override def writes(playerState: PlayerState): JsValue = Json.obj(
         "position" -> Json.obj(
           "x" -> playerState.location.x,
           "y" -> playerState.location.y
@@ -88,22 +85,40 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
           "hp" -> playerState.championState.hp,
           "mp" -> playerState.championState.mp,
           "xp" -> playerState.championState.xp
-        )
-      )
-
-      val (metaData, gameData) = dbh.getGame(new RiotId[Game](gameKey))
-      val blueData = getPlayerStates(gameData.teams(Blue), metaData.gameDuration)
-      val redData = getPlayerStates(gameData.teams(Red), metaData.gameDuration)
-      Json.obj("blueTeam" -> blueData, "redTeam" -> redData)
+        ))
     }
-    Ok(getGameData(gameKey))
-  }
 
+    def playerStateToJson (p : (Player, Behavior[Time, PlayerState])) : JsValue = p match {
+      case (player, states) => Json.obj(
+        "side" -> states(Duration.Zero).sideColor.name,
+        "role" -> player.role.name,
+        "ign" -> player.ign,
+        "championName" -> states(Duration.Zero).championState.name,
+        "playerStates" -> Json.toJson(states)
+      )
+    }
+
+    implicit val inGameTeamWrites = new Writes[InGameTeam] {
+      override def writes(o: InGameTeam): JsValue = Json.obj(
+        "teamStates" -> Json.toJson(o.teamStates),
+        "players" -> Json.toJson(o.playerStates.toList.map(playerStateToJson))
+      )
+    }
+
+    implicit val gameDataWrites = new Writes[GameData] {
+      override def writes(o: GameData): JsValue = Json.obj(
+        "blueTeam" -> Json.toJson(o.teams(Blue)),
+        "redTeam" -> Json.toJson(o.teams(Red))
+      )
+    }
+
+    Ok(Json.toJson(gameData))
+  }
 
   def getTags(gameKey: String): Action[AnyContent] = Action {
     val tags = dbh.getTags(new RiotId[Game](gameKey))
     implicit val tagWrites = new Writes[Tag] {
-      def writes(tag: Tag) = Json.obj(
+      def writes(tag: Tag): JsObject = Json.obj(
         "title" -> tag.title,
         "description" -> tag.description,
         "category" -> tag.category.name,
