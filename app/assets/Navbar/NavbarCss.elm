@@ -21,8 +21,6 @@ expandedWidth = 15
 
 type CssClass
   = NavbarLeft
-  | Collapsed
-  | Expanded
   | Collapsible
 
 type CssIds
@@ -40,14 +38,6 @@ css =
     , overflow hidden
     , property "-webkit-user-select" "none"
     , property "user-select" "none"
-    , withClass Collapsed
-      [ width (collapsedWidth |> vw)
-      , property "transition" "width 0.5s ease-in-out"
-      ]
-    , withClass Expanded
-      [ width (expandedWidth |> vw)
-      , property "transition" "width 0.5s ease-in-out"
-      ]
     , children
       [ (#) NavbarLeftLogo
         [ textAlign center
