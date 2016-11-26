@@ -1,35 +1,15 @@
-module Dashboard exposing (..)
+module TagForm.TagForm exposing (..)
 
-import Html.App
-import Subscriptions
-import Types exposing (..)
+import Html exposing (Html)
 import Update
-import View
-import Timeline.Timeline as Timeline
-import Minimap.Minimap as Minimap
-import TagScroller.TagScroller as TagScroller
+import TagForm.Types exposing(..)
+import TagForm.Internal.View as View
 
-init : Flags -> (Model, Cmd Msg)
-init flags =
-  let
-    (minimapModel, minimapCmd) = Minimap.init flags.minimapBackground flags.location
-    (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.location
-    (timelineModel, timelineCmd) = Timeline.init flags
-  in
-    { minimap = minimapModel
-    , tagScroller = tagScrollerModel
-    , timeline = timelineModel
-    } !
-    [ Cmd.map MinimapMsg minimapCmd
-    , Cmd.map TagScrollerMsg tagScrollerCmd
-    , Cmd.map TimelineMsg timelineCmd
-    ]
+--update : Msg -> Model -> (Model, Cmd Msg)
+--update = Update.update
 
-main : Program Flags
-main =
-  Html.App.programWithFlags
-    { init = init
-    , view = View.view
-    , update = Update.update
-    , subscriptions = Subscriptions.subscriptions
-    }
+view : Model -> Html Msg
+view = View.view
+
+subscriptions : Model -> Sub Msg
+subscriptions _ = Sub.none

@@ -8,6 +8,7 @@ import View
 import Timeline.Timeline as Timeline
 import Minimap.Minimap as Minimap
 import TagScroller.TagScroller as TagScroller
+import TagForm.TagForm as TagForm
 
 init : Flags -> (Model, Cmd Msg)
 init flags =

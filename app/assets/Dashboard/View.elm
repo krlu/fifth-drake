@@ -7,6 +7,7 @@ import Html.CssHelpers exposing (withNamespace)
 import Minimap.Minimap as Minimap
 import TagScroller.TagScroller as TagScroller
 import Timeline.Timeline as Timeline
+import TagForm.TagForm as TagForm
 import Types exposing (..)
 
 {id, class, classList} = withNamespace namespace

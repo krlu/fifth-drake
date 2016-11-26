@@ -47,3 +47,4 @@ update msg model =
           model'' ! [cmds, cmds']
       TagScrollerMsg m ->
         dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller
+      TagFormMsg m -> (model, Cmd.none)
