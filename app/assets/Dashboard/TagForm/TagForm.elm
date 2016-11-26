@@ -1,12 +1,15 @@
 module TagForm.TagForm exposing (..)
 
 import Html exposing (Html)
-import Update
 import TagForm.Types exposing(..)
 import TagForm.Internal.View as View
+import TagForm.Internal.Update as Update
 
---update : Msg -> Model -> (Model, Cmd Msg)
---update = Update.update
+init: Model -> (Model, Cmd Msg)
+init form = (form, Cmd.none)
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update = Update.update
 
 view : Model -> Html Msg
 view = View.view
