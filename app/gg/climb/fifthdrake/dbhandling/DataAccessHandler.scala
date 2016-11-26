@@ -27,7 +27,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
   def insertTag(tag: Tag): Unit = pdbh.insertTag(tag)
 
-  def getPlayerByIgn(ign: String) = pdbh.getPlayerByIgn(ign)
+  def getPlayerByIgn(ign: String): Player = pdbh.getPlayerByIgn(ign)
 
   def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
 

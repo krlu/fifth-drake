@@ -129,6 +129,18 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     Ok(Json.toJson(tags))
   }
 
+  /**
+    * Request body should resemble this:
+    * Json(
+    *  "gameKey" -> "10"
+    *  "title" -> "gank occurred top lane"
+    *  "description" -> "Top laner ganked by roaming support and jungler"
+    *  "category" -> "gank"
+    *  "timestamp" -> 1234 (measured in seconds)
+    *  "igns" -> JsArray("Hauntzer", "Meteos", "Impact")
+    * )
+    * @return
+    */
   def saveTag(): Action[AnyContent] = Action { request =>
     val body: AnyContent = request.body
     val jsonBody: Option[JsValue] = body.asJson
@@ -136,14 +148,14 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     // Expecting json body
     jsonBody.map { json =>
       val tagFields = json.as[JsObject].value
-      val id = tagFields.get("riotId").get.toString
+      val gameKey = tagFields.get("gameKey").get.toString
       val title = tagFields.get("title").get.toString
       val description = tagFields.get("description").get.toString
       val category = tagFields.get("category").get.toString
       val timeStamp = tagFields.get("timeStamp").get.toString.toInt
       val playerIgns = tagFields.get("igns").get.as[JsArray]
       val players = playerIgns.value.map(ign => dbh.getPlayerByIgn(ign.toString)).toSet
-      dbh.insertTag(new Tag(new RiotId[Game](id), title, description,
+      dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
       Ok("Tag saved!")
     }.getOrElse {
