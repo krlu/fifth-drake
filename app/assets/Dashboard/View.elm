@@ -18,7 +18,7 @@ view model =
       timeline = Html.App.map TimelineMsg <| Timeline.view model.timeline
       minimap = Html.App.map MinimapMsg <| Minimap.view model.minimap
       tagScroller = Html.App.map TagScrollerMsg <| TagScroller.view model.tagScroller
-      tagForm = Html.App.map TagFormMsg <| TagForm.view
+      tagForm = Html.App.map TagFormMsg <| TagForm.view model.tagForm
   in
       div [ class [Dashboard] ]
         [ div [ class [MapAndTags] ]

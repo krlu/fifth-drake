@@ -50,4 +50,7 @@ update msg model =
       TagScrollerMsg m ->
         dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller
       TagFormMsg m ->
-        dispatch TagFormMsg (tagFormMap model) TagForm.update m model.tagForm
+        let
+          tagModel = model.tagForm
+        in
+          dispatch TagFormMsg (tagFormMap model) TagForm.update m {tagModel | timestamp =  model.timeline.value}
