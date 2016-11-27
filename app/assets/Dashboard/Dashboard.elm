@@ -15,12 +15,17 @@ init flags =
     (minimapModel, minimapCmd) = Minimap.init flags.minimapBackground flags.location
     (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.location
     (timelineModel, timelineCmd) = Timeline.init flags
+    --added setGameData
+    (gameDataModel, setGameDataCmd) = GameData
   in
     { minimap = minimapModel
+    , gameData = gameDataModel
     , tagScroller = tagScrollerModel
     , timeline = timelineModel
     } !
     [ Cmd.map MinimapMsg minimapCmd
+    --added setGameData
+    , Cmd.map SetGameData setGameDataCmd
     , Cmd.map TagScrollerMsg tagScrollerCmd
     , Cmd.map TimelineMsg timelineCmd
     ]

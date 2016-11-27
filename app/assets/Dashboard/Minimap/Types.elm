@@ -1,3 +1,4 @@
+--moved to dashboard
 module Minimap.Types exposing (..)
 
 import Array exposing (..)

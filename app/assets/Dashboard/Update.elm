@@ -26,19 +26,21 @@ update msg model =
         , Cmd.map msgMap subCmds
         )
 
-    tModelMap origModel subModel = { origModel | timeline = subModel }
-    mModelMap origModel subModel = { origModel | minimap = subModel }
+    timelineModelMap origModel subModel = { origModel | timeline = subModel }
+    minimapModelMap origModel subModel = { origModel | minimap = subModel }
     tagModelMap origModel subModel = { origModel | tagScroller = subModel }
+    --added this too
+    gameData origModel subModel = { origModel | gameData = subModel }
   in
     case msg of
       TimelineMsg m ->
         let
-          (model', cmds) = dispatch TimelineMsg (tModelMap model) Timeline.update m model.timeline
+          (model', cmds) = dispatch TimelineMsg (timelineModelMap model) Timeline.update m model.timeline
           (model'', cmds') = update (MinimapMsg << MinimapT.UpdateTimestamp <| model'.timeline.value) model'
         in
           model'' ! [cmds, cmds']
       MinimapMsg m ->
-        dispatch MinimapMsg (mModelMap model) Minimap.update m model.minimap
+        dispatch MinimapMsg (minimapModelMap model) Minimap.update m model.minimap
       TagScrollerMsg (TagScrollerT.TagClick value as m) ->
         let
           (model', cmds) = dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller
@@ -47,3 +49,6 @@ update msg model =
           model'' ! [cmds, cmds']
       TagScrollerMsg m ->
         dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller
+    --added SetGameData
+      SetGameData m ->
+        dispatch SetGameData (gameData model) update m model.gameData
