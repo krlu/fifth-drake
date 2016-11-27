@@ -39,7 +39,16 @@ view timestamp gameLength model =
     pxs = getPixelForTimestamp model timestamp gameLength
   in
     div [ class [Controls] ]
-      [ div [ class [Timeline]
+      [ button [ class [PlayButton]
+               , onClick PlayPause
+               ]
+          [ img [ class [PlayPauseImg]
+                , src playImg
+                ]
+              []
+          ]
+      , div [ (withNamespace DashboardCss.namespace).class [DashboardCss.Vdivider] ] []
+      , div [ class [Timeline]
             ]
           [ div [ class [Bar]
                 , styles [ Css.width (timelineWidth |> px)
@@ -53,14 +62,5 @@ view timestamp gameLength model =
                          ]
                 ]
                 []
-          ]
-      , div [ (withNamespace DashboardCss.namespace).class [DashboardCss.Vdivider] ] []
-      , button [ class [PlayButton]
-               , onClick PlayPause
-               ]
-          [ img [ class [PlayPauseImg]
-                , src playImg
-                ]
-              []
           ]
       ]

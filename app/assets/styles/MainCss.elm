@@ -3,6 +3,7 @@ module MainCss exposing (..)
 import Css exposing (..)
 import Css.Elements exposing (..)
 import Css.Namespace
+import CssColors as Color
 import StyleUtils
 
 namespace : String
@@ -21,9 +22,11 @@ css =
     ]
   , body
     [ fontSize Css.small
+    , overflow hidden
     ]
   , (#) Container (
     [ displayFlex
+    , backgroundColor Color.c_backgroundDark
     ] ++ StyleUtils.flexDirection "row" ++
     [ alignItems stretch
     , flexWrap noWrap

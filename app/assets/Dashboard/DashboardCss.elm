@@ -2,6 +2,7 @@ module DashboardCss exposing (..)
 
 import Css exposing (..)
 import Css.Namespace
+import CssColors as Color
 import Minimap.Css exposing (minimapHeight, minimapWidth)
 import StyleUtils
 import TagScroller.Css exposing (tagScrollerWidth)
@@ -13,8 +14,7 @@ dividerWidth : Float
 dividerWidth = 10
 
 type CssClass
-  = MapAndTags
-  | Vdivider
+  = Vdivider
   | Hdivider
   | Dashboard
 
@@ -22,17 +22,8 @@ css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) Dashboard
-    [ width (minimapWidth + dividerWidth + tagScrollerWidth |> px)
+    [ width (minimapWidth |> px)
     , margin2 (30 |> px) auto
-    , children
-      [ (.) MapAndTags (
-        [ width auto
-        , height (minimapHeight |> px)
-        , displayFlex
-        , textAlign center
-        ] ++
-        StyleUtils.flexDirection "row")
-      ]
     ]
   , (.) Vdivider (
     [ height (100 |> pct)

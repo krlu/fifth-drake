@@ -19,14 +19,9 @@ view model =
         Timeline.view model.timestamp model.game.metadata.gameLength model.timeline
         |> Html.App.map TimelineMsg
       minimap = Minimap.view model.minimap model.game.data model.timestamp
-      tagScroller = Html.App.map TagScrollerMsg <| TagScroller.view model.tagScroller
   in
       div [ class [Dashboard] ]
-        [ div [ class [MapAndTags] ]
-            [ minimap
-            , div [ (withNamespace DashboardCss.namespace).class [Vdivider] ] []
-            , tagScroller
-            ]
+        [ minimap
         , div [ class [Hdivider] ] []
         , timeline
         ]

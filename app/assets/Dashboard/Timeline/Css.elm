@@ -2,6 +2,7 @@ module Timeline.Css exposing (..)
 
 import Css exposing (..)
 import Css.Namespace
+import CssColors as Color
 import DashboardCss
 import StyleUtils
 
@@ -16,10 +17,13 @@ controlsHeight : Float
 controlsHeight = 40
 
 knobWidth : Float
-knobWidth = 10
+knobWidth = 3
 
 buttonWidth : Float
 buttonWidth = controlsHeight
+
+timelineHeight : Float
+timelineHeight = 10
 
 timelineWidth : Float
 timelineWidth = controlsWidth - DashboardCss.dividerWidth - buttonWidth
@@ -40,17 +44,19 @@ css =
     , height (controlsHeight |> px)
     , width (controlsWidth |> px)
     ] ++
+    StyleUtils.flexDirection "row" ++
     StyleUtils.userSelect "none" ++
-    [ children
+    [ alignItems center
+    , children
       [ (.) Timeline
         [ position relative
-        , height (100 |> pct)
+        , height (timelineHeight |> px)
         , width (timelineWidth |> px)
         , children
           [ (.) Bar
             [ position relative
             , height (100 |> pct)
-            , backgroundColor (hex "#FF0000")
+            , backgroundColor Color.c_lighterGray
             ]
           , (.) Knob
             [ position absolute
@@ -58,7 +64,7 @@ css =
             , left zero
             , width (knobWidth |> px)
             , height (100 |> pct)
-            , backgroundColor (hex "#0000FF")
+            , backgroundColor Color.c_darkGray
             , transform << translateX << pct <| -50
             ]
           ]
@@ -67,6 +73,9 @@ css =
     ])
   , (.) PlayButton
     [ height (100 |> pct)
+    , property "border" "none"
+    , property "background" "none"
+    , padding zero
     , width (buttonWidth |> px)
     , children
       [ (.) PlayPauseImg
