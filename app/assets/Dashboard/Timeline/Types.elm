@@ -9,7 +9,7 @@ type Msg
   = KnobGrab Mouse.Position
   | KnobMove Mouse.Position
   | KnobRelease Mouse.Position
-  | BarClick Mouse.Position
+  | BarClick (Mouse.Position, Mouse.Position)
   | PlayPause
   | TimerUpdate Time.Time
   | SetValue Value
@@ -26,8 +26,6 @@ type alias Model =
   , mouse: Maybe Drag
 
   , status: Status
-  -- this is the width of the timeline
-  , width: Float
 
   , pauseButton: File
   , playButton: File
