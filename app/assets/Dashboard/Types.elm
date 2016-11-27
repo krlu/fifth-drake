@@ -16,6 +16,7 @@ type alias Model =
   { timeline: Timeline.Model
   , minimap: Minimap.Model
   , tagScroller: TagScroller.Model
+  , tagForm: TagForm.Model
   }
 
 type alias WindowLocation =

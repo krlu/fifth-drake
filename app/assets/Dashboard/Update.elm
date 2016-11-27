@@ -6,6 +6,7 @@ import TagScroller.TagScroller as TagScroller
 import TagScroller.Types as TagScrollerT
 import Timeline.Timeline as Timeline
 import Timeline.Types as TimelineT
+import TagForm.TagForm as TagForm
 import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -29,6 +30,7 @@ update msg model =
     tModelMap origModel subModel = { origModel | timeline = subModel }
     mModelMap origModel subModel = { origModel | minimap = subModel }
     tagModelMap origModel subModel = { origModel | tagScroller = subModel }
+    tagFormMap origModel subModel = {origModel | tagForm = subModel}
   in
     case msg of
       TimelineMsg m ->
@@ -47,4 +49,5 @@ update msg model =
           model'' ! [cmds, cmds']
       TagScrollerMsg m ->
         dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller
-      TagFormMsg m -> (model, Cmd.none)
+      TagFormMsg m ->
+        dispatch TagFormMsg (tagFormMap model) TagForm.update m model.tagForm

@@ -15,8 +15,9 @@ view =
                 , p [] [ input [ placeholder "Description", onInput CreateDescription ] [] ]
                 , p [] [ input [ placeholder "TimeStamp", onInput CreateTimeStamp ] [] ]
                 , p [] [ input [ placeholder "Players", onInput AddPlayers ] [] ]
-                , p [] [ button [ onClick (CancelForm)] [ text "cancel" ],
-                         button [ onClick (CreateTitle "")] [ text "save" ] ]
+                , p [] [ button [ onClick CancelForm ] [ text "cancel" ],
+                         button [ onClick SaveTag ] [ text "save" ]
+                       ]
                 ]
   in
     tagForm
