@@ -14,7 +14,7 @@ controlsWidth : Float
 controlsWidth = 512
 
 controlsHeight : Float
-controlsHeight = 40
+controlsHeight = 60
 
 knobWidth : Float
 knobWidth = 3
