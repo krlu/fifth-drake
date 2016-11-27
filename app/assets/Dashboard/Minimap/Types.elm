@@ -58,6 +58,8 @@ type alias ChampionState =
   , xp: Float
   }
 
+
+
 type Role = Top | Jungle | Mid | Bot | Support
 type Side = Red | Blue
 
