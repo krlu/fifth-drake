@@ -38,29 +38,36 @@ view timestamp gameLength model =
         Pause -> model.playButton
     pxs = getPixelForTimestamp model timestamp gameLength
   in
-    div [ class [Controls] ]
-      [ button [ class [PlayButton]
-               , onClick PlayPause
-               ]
-          [ img [ class [PlayPauseImg]
-                , src playImg
-                ]
-              []
+    div
+      [ class [Controls] ]
+      [ button
+        [ class [PlayButton]
+        , onClick PlayPause
+        ]
+        [ img
+          [ class [PlayPauseImg]
+          , src playImg
           ]
-      , div [ (withNamespace DashboardCss.namespace).class [DashboardCss.Vdivider] ] []
-      , div [ class [Timeline]
+          []
+        ]
+      , div
+        [ class [Timeline]
+        ]
+        [ div
+          [ class [Bar]
+          , styles
+            [ Css.width (timelineWidth |> px)
             ]
-          [ div [ class [Bar]
-                , styles [ Css.width (timelineWidth |> px)
-                         ]
-                , on "mousedown" (Json.map BarClick relativePosition)
-                ]
-                []
-          , div [ on "mousedown" (Json.map KnobGrab Mouse.position)
-                , class [Knob]
-                , styles [ left (pxs |> px)
-                         ]
-                ]
-                []
+          , on "mousedown" (Json.map BarClick relativePosition)
           ]
+          []
+        , div
+          [ on "mousedown" (Json.map KnobGrab Mouse.position)
+          , class [Knob]
+          , styles
+            [ left (pxs |> px)
+            ]
+          ]
+          []
+        ]
       ]

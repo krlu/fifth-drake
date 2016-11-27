@@ -2,6 +2,7 @@ module View exposing (..)
 
 import DashboardCss exposing (CssClass(..), namespace)
 import GameModel exposing (GameLength, Timestamp)
+import Divider
 import Html exposing (..)
 import Html.App
 import Html.CssHelpers exposing (withNamespace)
@@ -20,9 +21,10 @@ view model =
         |> Html.App.map TimelineMsg
       minimap = Minimap.view model.minimap model.game.data model.timestamp
   in
-      div [ class [Dashboard] ]
-        [ minimap
-        , div [ class [Hdivider] ] []
-        , timeline
-        ]
+    div
+      [ class [Dashboard] ]
+      [ minimap
+      , Divider.horizontal
+      , timeline
+      ]
 
