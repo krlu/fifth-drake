@@ -1,30 +1,35 @@
 module Types exposing (..)
 
-import Dict exposing (Dict)
+import GameModel exposing (GameData, GameLength, Timestamp)
+import Http
 import Minimap.Types as Minimap
 import Timeline.Types as Timeline
 import TagScroller.Types as TagScroller
 
 type Msg
-  = TimelineMsg Timeline.Msg
-  | MinimapMsg Minimap.Msg
-  | TagScrollerMsg TagScroller.Msg
+  = TagScrollerMsg TagScroller.Msg
+  | TimelineMsg Timeline.Msg
+  | SetGameData GameData
+  | GameDataFetchFailure Http.Error
+  | UpdateTimestamp Timestamp
 
 type alias Model =
   { timeline: Timeline.Model
   , minimap: Minimap.Model
   , tagScroller: TagScroller.Model
+  , gameData          : GameData
+  , timestamp         : Timestamp
+  , gameLength        : GameLength
   }
 
 type alias WindowLocation =
-  { host: String
-  , gameId: String
+  { host              : String
+  , gameId            : String
   }
 
 type alias Flags =
-  { minimapBackground: String
-  , playButton: String
-  , pauseButton: String
-  , location: WindowLocation
+  { minimapBackground : String
+  , playButton        : String
+  , pauseButton       : String
+  , location          : WindowLocation
   }
-

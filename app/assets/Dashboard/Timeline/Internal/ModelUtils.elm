@@ -1,30 +1,31 @@
 module Timeline.Internal.ModelUtils exposing (..)
 
+import GameModel exposing (..)
 import Mouse
 import Timeline.Css exposing (timelineWidth)
-import Timeline.Types exposing (Model, Status(..), Value)
+import Timeline.Types exposing (Model, Status(..))
 
-getCurrentValue : Model -> Value
-getCurrentValue {value, maxVal, mouse} =
+getTimestampAtMouse : Model -> Timestamp -> GameLength -> Timestamp
+getTimestampAtMouse {mouse} timestamp gameLength =
   case mouse of
-    Nothing -> value
+    Nothing -> timestamp
     Just {start, current} ->
       let
         delta = current.x - start.x |> toFloat
       in
-        max 0 << min maxVal <| value + truncate (delta / timelineWidth * maxVal)
+        max 0 << min gameLength <| timestamp + truncate (delta / timelineWidth * gameLength)
 
-getCurrentPx : Model -> Float
-getCurrentPx ({maxVal} as model) =
-  getCurrentValue model
+getPixelForTimestamp : Model -> Timestamp -> GameLength -> Float
+getPixelForTimestamp model timestamp gameLength =
+  getTimestampAtMouse model timestamp gameLength
     |> toFloat
-    |> \val -> val / (toFloat maxVal) * timelineWidth
+    |> \val -> val / (toFloat gameLength) * timelineWidth
 
-getValueAt : Model -> Mouse.Position -> Value
-getValueAt {maxVal} pos =
+getTimestampAtPixel : GameLength -> Mouse.Position -> Timestamp
+getTimestampAtPixel gameLength pos =
   let
     x = toFloat pos.x
-    max = toFloat maxVal
+    max = toFloat gameLength
   in -- Subtract 1 pixel to make clicking feel right.
     truncate <| x * max / timelineWidth - 1
 

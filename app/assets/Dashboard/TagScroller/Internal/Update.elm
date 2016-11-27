@@ -1,10 +1,11 @@
 module TagScroller.Internal.Update exposing (..)
 
+import GameModel exposing (Timestamp)
 import TagScroller.Types exposing (Model, Msg(..))
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Maybe Timestamp, Model)
 update msg model =
   case msg of
-    TagClick _ -> (model, Cmd.none)
-    UpdateTags tags -> ( { model | tags = tags }, Cmd.none)
-    TagFetchFailure err -> (Debug.log "Tags failed to fetch" model, Cmd.none)
+    TagClick val -> (Just val, model)
+    UpdateTags tags -> (Nothing, { model | tags = tags })
+    TagFetchFailure err -> (Nothing, Debug.log "Tags failed to fetch" model)
