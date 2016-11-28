@@ -43,3 +43,6 @@ c_lighterGray = hex "#E2E2E2"
 
 c_offWhite : Color
 c_offWhite = hex "#F5F5F5"
+
+c_white : Color
+c_white = hex "#FFFFFF"

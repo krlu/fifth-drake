@@ -52,6 +52,8 @@ css =
         [ position relative
         , height (timelineHeight |> px)
         , width (timelineWidth |> px)
+        , color Color.c_white
+        , textAlign right
         , children
           [ (.) Bar
             [ position relative

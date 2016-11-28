@@ -69,5 +69,6 @@ view timestamp gameLength model =
             ]
           ]
           []
+        , text <| toTimeString timestamp ++ "/" ++ toTimeString gameLength
         ]
       ]

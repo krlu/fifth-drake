@@ -2,6 +2,7 @@ module Timeline.Internal.ModelUtils exposing (..)
 
 import GameModel exposing (..)
 import Mouse
+import String
 import Timeline.Css exposing (timelineWidth)
 import Timeline.Types exposing (Model, Status(..))
 
@@ -34,3 +35,25 @@ toggleStatus x =
   case x of
     Play -> Pause
     Pause -> Play
+
+toTimeString : Timestamp -> String
+toTimeString val =
+  let
+    removeHour : Int -> Maybe Int
+    removeHour i =
+      case i of
+        0 -> Nothing
+        _ -> Just i
+  in
+    [ flip (//) 3600 -- Hours
+      >> removeHour
+    , flip (//) 60
+      >> flip (%) 60 -- Minutes
+      >> Just
+    , flip (%) 60 -- Seconds
+      >> Just
+    ]
+    |> List.filterMap (\x -> x val)
+    |> List.map toString
+    |> List.map (String.padLeft 2 '0')
+    |> String.join ":"
