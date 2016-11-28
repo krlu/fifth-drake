@@ -8,7 +8,6 @@ type Msg
  = CreateTitle String 
  | CreateDescription String
  | CreateCategory String 
- | CreateTimeStamp
  | AddPlayers String
  | CancelForm
  | SaveTag
