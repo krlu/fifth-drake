@@ -1,5 +1,6 @@
 module Dashboard exposing (..)
 
+import GameModel exposing (GameData)
 import Html.App
 import Subscriptions
 import Types exposing (..)
@@ -12,22 +13,28 @@ import TagScroller.TagScroller as TagScroller
 init : Flags -> (Model, Cmd Msg)
 init flags =
   let
-    (minimapModel, minimapCmd) = Minimap.init flags.minimapBackground flags.location
+    minimapModel = Minimap.init flags.minimapBackground
     (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.location
-    (timelineModel, timelineCmd) = Timeline.init flags
-    --added setGameData
-    (gameDataModel, setGameDataCmd) = GameData
+    timelineModel = Timeline.init flags
+    gameDataModel : GameData
+    gameDataModel =
+      { blueTeam =
+        { teamStates = Array.empty
+        , playerStates = Array.empty
+        }
+      , redTeam =
+        { teamStates = Array.empty
+        , playerStates = Array.empty
+        }
+      }
   in
     { minimap = minimapModel
-    , gameData = gameDataModel
     , tagScroller = tagScrollerModel
     , timeline = timelineModel
+    , gameData = gameDataModel
     } !
-    [ Cmd.map MinimapMsg minimapCmd
-    --added setGameData
-    , Cmd.map SetGameData setGameDataCmd
-    , Cmd.map TagScrollerMsg tagScrollerCmd
-    , Cmd.map TimelineMsg timelineCmd
+    [ Cmd.map TagScrollerMsg tagScrollerCmd
+    , Populate.populate flags.location
     ]
 
 main : Program Flags

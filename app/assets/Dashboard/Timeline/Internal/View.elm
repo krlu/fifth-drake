@@ -2,6 +2,7 @@ module Timeline.Internal.View exposing (view)
 
 import Css exposing (left, px)
 import DashboardCss
+import GameModel exposing (GameLength, Timestamp)
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Html.CssHelpers exposing (withNamespace)
@@ -10,7 +11,7 @@ import Json.Decode as Json exposing ((:=), Decoder, andThen, int, object2)
 import Mouse
 import StyleUtils exposing (..)
 import Timeline.Css exposing (CssClass(..), namespace, timelineWidth)
-import Timeline.Internal.ModelUtils exposing(getCurrentPx)
+import Timeline.Internal.ModelUtils exposing(..)
 import Timeline.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
 
 {id, class, classList} = withNamespace namespace
@@ -28,14 +29,14 @@ relativePosition =
       ("offsetX" := int)
       ("offsetY" := int)
 
-view : Model -> Html Msg
-view model =
+view : Model -> Timestamp -> GameLength -> Html Msg
+view model timestamp gameLength =
   let
     playImg = -- Yes this is intentional
       case model.status of
         Play -> model.pauseButton
         Pause -> model.playButton
-    pxs = getCurrentPx model
+    pxs = getPixelForTimestamp model timestamp gameLength
   in
     div [ class [Controls] ]
       [ div [ class [Timeline]

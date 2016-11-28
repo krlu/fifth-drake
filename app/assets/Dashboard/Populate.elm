@@ -2,6 +2,7 @@
 module Populate exposing (..)
 
 import Dict
+import GameModel exposing (..)
 import Http
 import Json.Decode exposing (..)
 import Maybe exposing (withDefault)
@@ -82,3 +83,6 @@ championState =
     ("hp" := float)
     ("mp" := float)
     ("xp" := float)
+
+gameLength : Decoder GameLength
+gameLength = ("gameLength" := int)
