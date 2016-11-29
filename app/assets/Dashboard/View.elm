@@ -1,6 +1,7 @@
 module View exposing (..)
 
 import DashboardCss exposing (CssClass(..), namespace)
+import GameModel exposing (GameLength, Timestamp)
 import Html exposing (..)
 import Html.App
 import Html.CssHelpers exposing (withNamespace)
@@ -14,7 +15,9 @@ import Types exposing (..)
 view : Model -> Html Msg
 view model =
   let
-      timeline = Html.App.map TimelineMsg <| Timeline.view model.timeline
+      timeline =
+        Timeline.view model.timestamp model.gameLength model.timeline
+        |> Html.App.map TimelineMsg
       minimap = Minimap.view model.minimap model.gameData model.timestamp
       tagScroller = Html.App.map TagScrollerMsg <| TagScroller.view model.tagScroller
   in

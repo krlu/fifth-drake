@@ -29,8 +29,8 @@ relativePosition =
       ("offsetX" := int)
       ("offsetY" := int)
 
-view : Model -> Timestamp -> GameLength -> Html Msg
-view model timestamp gameLength =
+view : Timestamp -> GameLength -> Model -> Html Msg
+view timestamp gameLength model =
   let
     playImg = -- Yes this is intentional
       case model.status of

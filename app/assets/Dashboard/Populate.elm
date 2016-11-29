@@ -79,10 +79,13 @@ position =
 
 championState : Decoder ChampionState
 championState =
-  object3 ChampionState
+  object6 ChampionState
     ("hp" := float)
     ("mp" := float)
     ("xp" := float)
+    ("hpMax" := float)
+    ("mpMax" := float)
+    ("xpNextLevel" := float)
 
 gameLength : Decoder GameLength
 gameLength = ("gameLength" := int)

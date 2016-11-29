@@ -7,12 +7,11 @@ import Timeline.Types as Timeline
 import TagScroller.Types as TagScroller
 
 type Msg
-  = TimelineMsg Timeline.Msg
-  | TagScrollerMsg TagScroller.Msg
-  -- added the following three msg types
+  = TagScrollerMsg TagScroller.Msg
+  | TimelineMsg Timeline.Msg
   | SetGameData GameData
   | GameDataFetchFailure Http.Error
-  | UpdateTimestamp Int
+  | UpdateTimestamp Timestamp
 
 type alias Model =
   { timeline          : Timeline.Model

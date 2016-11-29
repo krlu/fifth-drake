@@ -1,14 +1,16 @@
 module Dashboard exposing (..)
 
+import Array
 import GameModel exposing (GameData)
 import Html.App
+import Minimap.Minimap as Minimap
 import Subscriptions
+import Populate
+import TagScroller.TagScroller as TagScroller
+import Timeline.Timeline as Timeline
 import Types exposing (..)
 import Update
 import View
-import Timeline.Timeline as Timeline
-import Minimap.Minimap as Minimap
-import TagScroller.TagScroller as TagScroller
 
 init : Flags -> (Model, Cmd Msg)
 init flags =
@@ -32,6 +34,8 @@ init flags =
     , tagScroller = tagScrollerModel
     , timeline = timelineModel
     , gameData = gameDataModel
+    , gameLength = 100
+    , timestamp = 0
     } !
     [ Cmd.map TagScrollerMsg tagScrollerCmd
     , Populate.populate flags.location
