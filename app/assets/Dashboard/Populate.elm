@@ -1,10 +1,12 @@
-module Minimap.Internal.Populate exposing (..)
+--created entire file
+module Populate exposing (..)
 
 import Dict
+import GameModel exposing (..)
 import Http
 import Json.Decode exposing (..)
 import Maybe exposing (withDefault)
-import Minimap.Types exposing (..)
+import Types exposing (..)
 import Task exposing (Task)
 import Types exposing (WindowLocation)
 
@@ -12,32 +14,32 @@ playerUrl : WindowLocation -> String
 playerUrl loc =
   Http.url ("http://" ++ loc.host ++ "/game/" ++ loc.gameId ++ "/data") []
 
-getGameData : WindowLocation -> Task Http.Error Game
+getGameData : WindowLocation -> Task Http.Error GameData
 getGameData loc = Http.get game <| playerUrl loc
 
 role : Decoder Role
 role = customDecoder string <| \s ->
   case s of
-    "top" -> Ok Top
-    "jungle" -> Ok Jungle
-    "mid" -> Ok Mid
-    "bot" -> Ok Bot
-    "support" -> Ok Support
+    "top" ->      Ok Top
+    "jungle" ->   Ok Jungle
+    "mid" ->      Ok Mid
+    "bot" ->      Ok Bot
+    "support" ->  Ok Support
     _ -> Err <| s ++ " is not a proper role type"
 
 side : Decoder Side
 side = customDecoder string <| \s ->
   case s of
-   "red" -> Ok Red
-   "blue" -> Ok Blue
+   "red" ->    Ok Red
+   "blue" ->   Ok Blue
    _ -> Err <| s ++ " is not a proper side type"
 
 populate : WindowLocation -> Cmd Msg
-populate loc = Task.perform PlayerFetchFailure SetData <| getGameData loc
+populate loc = Task.perform GameDataFetchFailure SetGameData <| getGameData loc
 
-game : Decoder Game
+game : Decoder GameData
 game =
-  object2 Game
+  object2 GameData
     ("blueTeam" := team)
     ("redTeam" := team)
 
@@ -77,8 +79,13 @@ position =
 
 championState : Decoder ChampionState
 championState =
-  object3 ChampionState
+  object6 ChampionState
     ("hp" := float)
     ("mp" := float)
     ("xp" := float)
+    ("hpMax" := float)
+    ("mpMax" := float)
+    ("xpNextLevel" := float)
 
+gameLength : Decoder GameLength
+gameLength = ("gameLength" := int)

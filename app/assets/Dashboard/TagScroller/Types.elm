@@ -1,10 +1,10 @@
 module TagScroller.Types exposing (..)
 
+import GameModel exposing (Timestamp)
 import Http
-import Timeline.Types as Timeline
 
 type Msg
-  = TagClick Timeline.Value
+  = TagClick Timestamp
   | UpdateTags (List Tag)
   | TagFetchFailure Http.Error
 
@@ -16,7 +16,7 @@ type alias Tag =
   { title : String
   , description : String
   , category: TagCategory
-  , timestamp: Timeline.Value
+  , timestamp: Timestamp
   , players: List String
   }
 

@@ -1,40 +1,21 @@
-module Minimap.Minimap exposing (init, update, view, subscriptions)
+module Minimap.Minimap exposing (init, view)
 
 import Array
+import GameModel exposing (..)
 import Html exposing (Html)
-import Minimap.Internal.Populate as Populate
-import Minimap.Internal.Update as Update
 import Minimap.Internal.View as View
 import Minimap.Types exposing (..)
 import Types exposing (WindowLocation)
 
 initialModel : String -> Model
 initialModel background =
-  { gameData =
-    { blueTeam =
-      { teamStates = Array.empty
-      , playerStates = Array.empty
-      }
-    , redTeam =
-      { teamStates = Array.empty
-      , playerStates = Array.empty
-      }
-    }
-  , timestamp = 0
-  , background = background
+  { background = background
   , mapWidth = 15000
   , mapHeight = 15000
   }
 
-init : String -> WindowLocation -> (Model, Cmd Msg)
-init background loc = (initialModel background, Populate.populate loc)
+init : String -> Model
+init = initialModel
 
-update : Msg -> Model -> (Model, Cmd Msg)
-update = Update.update
-
-view : Model -> Html Msg
+view : Model -> GameData -> Timestamp -> Html a
 view = View.view
-
-subscriptions : Model -> Sub Msg
-subscriptions _ = Sub.none
-
