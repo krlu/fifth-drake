@@ -6,22 +6,22 @@ type alias GameLength = Timestamp
 type alias Timestamp = Int
 
 type alias Game =
-  { gameData : GameData
-  , metaData : MetaData
+  { metadata : Metadata
+  , data : Data
   }
 
-type alias MetaData =
+type alias Metadata =
   { gameLength : GameLength
   }
 
-type alias GameData =
+type alias Data =
   { blueTeam          : Team
   , redTeam           : Team
   }
 
 type alias Team =
   { teamStates        : Array TeamState
-  , playerStates      : Array Player
+  , players           : Array Player
   }
 
 type alias TeamState =

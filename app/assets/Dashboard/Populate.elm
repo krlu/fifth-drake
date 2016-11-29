@@ -1,6 +1,7 @@
 --created entire file
 module Populate exposing (..)
 
+import Array
 import Dict
 import GameModel exposing (..)
 import Http
@@ -10,36 +11,33 @@ import Types exposing (..)
 import Task exposing (Task)
 import Types exposing (WindowLocation)
 
+populate : WindowLocation -> Cmd Msg
+populate loc = Task.perform GameDataFetchFailure SetGame <| getGame loc
+
+getGame : WindowLocation -> Task Http.Error Game
+getGame loc = Http.get game <| playerUrl loc
+
 playerUrl : WindowLocation -> String
 playerUrl loc =
   Http.url ("http://" ++ loc.host ++ "/game/" ++ loc.gameId ++ "/data") []
 
-getGameData : WindowLocation -> Task Http.Error GameData
-getGameData loc = Http.get game <| playerUrl loc
-
-role : Decoder Role
-role = customDecoder string <| \s ->
-  case s of
-    "top" ->      Ok Top
-    "jungle" ->   Ok Jungle
-    "mid" ->      Ok Mid
-    "bot" ->      Ok Bot
-    "support" ->  Ok Support
-    _ -> Err <| s ++ " is not a proper role type"
-
-side : Decoder Side
-side = customDecoder string <| \s ->
-  case s of
-   "red" ->    Ok Red
-   "blue" ->   Ok Blue
-   _ -> Err <| s ++ " is not a proper side type"
-
-populate : WindowLocation -> Cmd Msg
-populate loc = Task.perform GameDataFetchFailure SetGameData <| getGameData loc
-
-game : Decoder GameData
+game : Decoder Game
 game =
-  object2 GameData
+  object2 Game
+    ("metadata" := metadata)
+    ("data" := data)
+
+metadata : Decoder Metadata
+metadata =
+  object1 Metadata
+    ("gameLength" := gameLength)
+
+gameLength : Decoder GameLength
+gameLength = ("gameLength" := int)
+
+data : Decoder Data
+data =
+  object2 Data
     ("blueTeam" := team)
     ("redTeam" := team)
 
@@ -65,6 +63,23 @@ player =
     ("championName" := string)
     ("playerStates" := array playerState)
 
+side : Decoder Side
+side = customDecoder string <| \s ->
+  case s of
+   "red" ->    Ok Red
+   "blue" ->   Ok Blue
+   _ -> Err <| s ++ " is not a proper side type"
+
+role : Decoder Role
+role = customDecoder string <| \s ->
+  case s of
+    "top" ->      Ok Top
+    "jungle" ->   Ok Jungle
+    "mid" ->      Ok Mid
+    "bot" ->      Ok Bot
+    "support" ->  Ok Support
+    _ -> Err <| s ++ " is not a proper role type"
+
 playerState : Decoder PlayerState
 playerState =
   object2 PlayerState
@@ -86,6 +101,3 @@ championState =
     ("hpMax" := float)
     ("mpMax" := float)
     ("xpNextLevel" := float)
-
-gameLength : Decoder GameLength
-gameLength = ("gameLength" := int)

@@ -17,5 +17,5 @@ initialModel background =
 init : String -> Model
 init = initialModel
 
-view : Model -> GameData -> Timestamp -> Html a
+view : Model -> Data -> Timestamp -> Html a
 view = View.view

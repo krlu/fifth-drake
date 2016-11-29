@@ -1,7 +1,7 @@
 module Dashboard exposing (..)
 
 import Array
-import GameModel exposing (GameData)
+import GameModel exposing (Data, Metadata)
 import Html.App
 import Minimap.Minimap as Minimap
 import Subscriptions
@@ -18,23 +18,29 @@ init flags =
     minimapModel = Minimap.init flags.minimapBackground
     (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.location
     timelineModel = Timeline.init flags
-    gameDataModel : GameData
-    gameDataModel =
+    metadata : Metadata
+    metadata =
+      { gameLength = 100
+      }
+    data : Data
+    data =
       { blueTeam =
         { teamStates = Array.empty
-        , playerStates = Array.empty
+        , players = Array.empty
         }
       , redTeam =
         { teamStates = Array.empty
-        , playerStates = Array.empty
+        , players = Array.empty
         }
       }
   in
     { minimap = minimapModel
     , tagScroller = tagScrollerModel
     , timeline = timelineModel
-    , gameData = gameDataModel
-    , gameLength = 100
+    , game =
+      { metadata = metadata
+      , data = data
+      }
     , timestamp = 0
     } !
     [ Cmd.map TagScrollerMsg tagScrollerCmd

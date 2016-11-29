@@ -16,9 +16,9 @@ view : Model -> Html Msg
 view model =
   let
       timeline =
-        Timeline.view model.timestamp model.gameLength model.timeline
+        Timeline.view model.timestamp model.game.metadata.gameLength model.timeline
         |> Html.App.map TimelineMsg
-      minimap = Minimap.view model.minimap model.gameData model.timestamp
+      minimap = Minimap.view model.minimap model.game.data model.timestamp
       tagScroller = Html.App.map TagScrollerMsg <| TagScroller.view model.tagScroller
   in
       div [ class [Dashboard] ]

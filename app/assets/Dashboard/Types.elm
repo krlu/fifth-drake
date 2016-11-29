@@ -1,6 +1,6 @@
 module Types exposing (..)
 
-import GameModel exposing (GameData, GameLength, Timestamp)
+import GameModel exposing (Game, GameLength, Timestamp)
 import Http
 import Minimap.Types as Minimap
 import Timeline.Types as Timeline
@@ -9,17 +9,16 @@ import TagScroller.Types as TagScroller
 type Msg
   = TagScrollerMsg TagScroller.Msg
   | TimelineMsg Timeline.Msg
-  | SetGameData GameData
+  | SetGame Game
   | GameDataFetchFailure Http.Error
   | UpdateTimestamp Timestamp
 
 type alias Model =
-  { timeline: Timeline.Model
-  , minimap: Minimap.Model
-  , tagScroller: TagScroller.Model
-  , gameData          : GameData
-  , timestamp         : Timestamp
-  , gameLength        : GameLength
+  { timeline : Timeline.Model
+  , minimap : Minimap.Model
+  , tagScroller : TagScroller.Model
+  , game : Game
+  , timestamp : Timestamp
   }
 
 type alias WindowLocation =

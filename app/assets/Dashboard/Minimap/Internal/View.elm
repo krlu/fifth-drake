@@ -9,21 +9,21 @@ import Maybe exposing (andThen)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespace)
 import Minimap.Types exposing (Model)
 import StyleUtils exposing (styles)
-import GameModel exposing (GameData, Team, Timestamp)
+import GameModel exposing (Data, Team, Timestamp)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> GameData -> Timestamp -> Html a
-view model gameData timestamp =
+view : Model -> Data -> Timestamp -> Html a
+view model data timestamp =
   let
     playerIcons : List (Html a)
     playerIcons =
-      gameData
+      data
       |> (\{blueTeam, redTeam} ->
           let
             teamToPlayerIcons : Team -> List (Html a)
             teamToPlayerIcons team =
-              team.playerStates
+              team.players
               |> Array.toList
               |> List.filterMap (\player ->
                 player.state

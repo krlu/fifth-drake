@@ -23,15 +23,16 @@ update msg model =
     TimelineMsg tmsg ->
       let
         (timestamp, tmodel) =
-          Timeline.update model.timestamp model.gameLength tmsg model.timeline
+          Timeline.update model.timestamp model.game.metadata.gameLength tmsg model.timeline
       in
         ( { model | timestamp = timestamp
                   , timeline = tmodel
           }
         , Cmd.none
         )
-    SetGameData gameData ->
-      ({ model | gameData = gameData }, Cmd.none)
+    SetGame game ->
+      Debug.log "Game Data set"
+      ({ model | game = game }, Cmd.none)
     GameDataFetchFailure err ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
     UpdateTimestamp timestamp ->
