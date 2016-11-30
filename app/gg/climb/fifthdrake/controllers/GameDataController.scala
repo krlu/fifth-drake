@@ -10,6 +10,7 @@ import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
+import play.api.libs.Files.TemporaryFile
 import play.api.libs.json._
 import play.api.mvc._
 
@@ -143,22 +144,19 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
     */
   def saveTag(): Action[AnyContent] = Action { request =>
     val body: AnyContent = request.body
-    val jsonBody: Option[JsValue] = body.asJson
-
-    // Expecting json body
-    jsonBody.map { json =>
-      val tagFields = json.as[JsObject].value
-      val gameKey = tagFields.get("gameKey").get.toString
-      val title = tagFields.get("title").get.toString
-      val description = tagFields.get("description").get.toString
-      val category = tagFields.get("category").get.toString
-      val timeStamp = tagFields.get("timestamp").get.toString.toInt
-      val playerIgns = tagFields.get("igns").get.as[JsArray]
-      val players = playerIgns.value.map(ign => dbh.getPlayerByIgn(ign.toString)).toSet
+    body.asMultipartFormData.map{ (formData: MultipartFormData[TemporaryFile]) =>
+      val data: Map[String, Seq[String]] = formData.dataParts
+      val gameKey = data("gameKey").head
+      val title = data("title").head
+      val description = data("description").head
+      val category = data("category").head
+      val timeStamp = data("timestamp").head.toInt
+      val playerIgns = data("player")
+      val players = playerIgns.map(ign => dbh.getPlayerByIgn(ign.toString)).toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
       Ok("Tag saved!")
-    }.getOrElse {
+    }.getOrElse{
       BadRequest("Failed to insert tag")
     }
   }

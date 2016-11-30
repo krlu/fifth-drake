@@ -15,6 +15,7 @@ sendRequest model = Task.perform TagSaveFailure TagSaved
 createRequest: Model -> Request
 createRequest model =
   let
+    gameId = stringData "gameKey" model.gameId
     titleData = stringData "title" model.title
     descriptionData = stringData "description" model.description
     categoryData = stringData "category" model.category
@@ -24,5 +25,5 @@ createRequest model =
    {  verb = "PUT"
     , headers = []
     , url = url model.host
-    , body = multipart [titleData, descriptionData, categoryData, timestampData, playerData]
+    , body = multipart [gameId, titleData, descriptionData, categoryData, timestampData, playerData]
    }
