@@ -17,7 +17,7 @@ init flags =
     (minimapModel, minimapCmd) = Minimap.init flags.minimapBackground flags.location
     (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.location
     (timelineModel, timelineCmd) = Timeline.init flags
-    (tagFormModel,tagFormCmd) = TagForm.init
+    (tagFormModel,tagFormCmd) = TagForm.init flags.location
   in
     { minimap = minimapModel
     , tagScroller = tagScrollerModel

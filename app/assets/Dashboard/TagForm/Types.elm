@@ -18,4 +18,6 @@ type alias Model =
   , category: String
   , timestamp: TimelineT.Value
   , players: String
+  , gameId: String
+  , host: String
   }

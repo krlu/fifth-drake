@@ -5,9 +5,10 @@ import TagForm.Types exposing(..)
 import TagForm.Internal.View as View
 import TagForm.Internal.Update as Update
 import Timeline.Types as Types
+import Types exposing (WindowLocation)
 
-init : (Model, Cmd Msg)
-init = (Model "" "" "" 0 "", Cmd.none)
+init : WindowLocation -> (Model, Cmd Msg)
+init loc = (Model "" "" "" 0 "" loc.gameId loc.host, Cmd.none)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update = Update.update
