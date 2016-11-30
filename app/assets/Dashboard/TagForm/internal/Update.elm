@@ -1,15 +1,11 @@
 module TagForm.Internal.Update exposing (..)
 
-import Http exposing (Body, RawError, Request, Response, defaultSettings, empty, multipart, stringData)
-import String exposing (toInt)
+import Http exposing (RawError,Response)
 import TagForm.Internal.Save exposing (sendRequest)
-import TagForm.Types exposing (..)
-import TagForm.Types exposing(Model)
-import Task
-import Timeline.Types as TimelineT
-import Types exposing (WindowLocation)
+import TagForm.Internal.SaveTypes exposing (Msg(TagSaveFailure, TagSaved))
+import TagForm.Types as Types exposing (..)
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Types.Msg -> Model -> (Model, Cmd Types.Msg)
 update msg model =
   case msg of
    CreateTitle title ->
@@ -23,5 +19,9 @@ update msg model =
    CancelForm ->  -- TODO: should hide the form
     (model, Cmd.none)
    SaveTag ->
+    (model, Cmd.map SuccessOrFail (sendRequest model))
+   SuccessOrFail (TagSaved res) ->
+    (model, Cmd.none)
+   SuccessOrFail (TagSaveFailure err) ->
     (model, Cmd.none)
 

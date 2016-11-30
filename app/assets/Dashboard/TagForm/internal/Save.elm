@@ -1,32 +1,28 @@
 module TagForm.Internal.Save exposing (..)
 
-import Http exposing (Body, RawError, Request, Response, defaultSettings, empty, multipart, stringData)
-import String exposing (toInt)
+import Http exposing (Request, defaultSettings, multipart, stringData)
+import TagForm.Internal.SaveTypes exposing (Msg(TagSaveFailure, TagSaved))
 import TagForm.Types exposing(Model)
 import Task
-import Types exposing (WindowLocation)
 
-type Msg
- = TagSaved RawError
- | TagSaveFailure Response
+url : String -> String
+url host =  Http.url ("http://" ++ host ++ "/saveTag") []
 
-url : WindowLocation -> String
-url loc =  Http.url ("http://" ++ loc.host ++ "/saveTag") []
+sendRequest: Model -> Cmd Msg
+sendRequest model = Task.perform TagSaveFailure TagSaved
+  <| Http.send defaultSettings (createRequest model)
 
-sendRequest: Model -> WindowLocation -> Cmd Msg
-sendRequest model loc = Task.perform TagSaved TagSaveFailure <| Http.send defaultSettings (createRequest model loc)
-
-createRequest: Model -> WindowLocation -> Request
-createRequest model loc =
+createRequest: Model -> Request
+createRequest model =
   let
     titleData = stringData "title" model.title
     descriptionData = stringData "description" model.description
     categoryData = stringData "category" model.category
     timestampData = stringData "timestamp" (toString model.timestamp)
-    playerData = stringData "player" model.players
+    playerData = stringData "player" model.players --TODO: add JSON encoder
   in
    {  verb = "PUT"
     , headers = []
-    , url = url loc
+    , url = url model.host
     , body = multipart [titleData, descriptionData, categoryData, timestampData, playerData]
    }
