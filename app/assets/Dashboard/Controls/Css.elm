@@ -1,4 +1,4 @@
-module Timeline.Css exposing (..)
+module Controls.Css exposing (..)
 
 import Css exposing (..)
 import Css.Namespace
@@ -8,7 +8,7 @@ import StyleUtils
 
 -- Variables for Timeline appearance
 -- All of these values are pixel equivalents
-namespace = "timeline"
+namespace = "controls"
 
 controlsWidth : Float
 controlsWidth = 512

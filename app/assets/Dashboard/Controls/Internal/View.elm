@@ -1,5 +1,8 @@
-module Timeline.Internal.View exposing (view)
+module Controls.Internal.View exposing (view)
 
+import Controls.Css exposing (CssClass(..), namespace, timelineWidth)
+import Controls.Internal.ModelUtils exposing(..)
+import Controls.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
 import Css exposing (left, px)
 import DashboardCss
 import GameModel exposing (GameLength, Timestamp)
@@ -10,9 +13,6 @@ import Html.Events exposing (on, onClick)
 import Json.Decode as Json exposing ((:=), Decoder, andThen, int, object2)
 import Mouse
 import StyleUtils exposing (..)
-import Timeline.Css exposing (CssClass(..), namespace, timelineWidth)
-import Timeline.Internal.ModelUtils exposing(..)
-import Timeline.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
 
 {id, class, classList} = withNamespace namespace
 

@@ -1,10 +1,10 @@
-module Timeline.Internal.ModelUtils exposing (..)
+module Controls.Internal.ModelUtils exposing (..)
 
+import Controls.Css exposing (timelineWidth)
+import Controls.Types exposing (Model, Status(..))
 import GameModel exposing (..)
 import Mouse
 import String
-import Timeline.Css exposing (timelineWidth)
-import Timeline.Types exposing (Model, Status(..))
 
 getTimestampAtMouse : Model -> Timestamp -> GameLength -> Timestamp
 getTimestampAtMouse {mouse} timestamp gameLength =

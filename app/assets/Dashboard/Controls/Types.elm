@@ -1,4 +1,4 @@
-module Timeline.Types exposing (..)
+module Controls.Types exposing (..)
 
 import Mouse
 import Time
