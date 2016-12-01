@@ -63,11 +63,12 @@ teamState =
 
 player : Decoder Player
 player =
-  object5 Player
+  object6 Player
     ("side" ::= side)
     ("role" ::= role)
     ("ign" ::= string)
     ("championName" ::= string)
+    ("championImage" ::= string)
     ("playerStates" ::= array playerState)
 
 side : Decoder Side

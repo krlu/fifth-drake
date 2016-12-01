@@ -2,6 +2,7 @@ package gg.climb.fifthdrake.controllers
 
 import java.util.concurrent.TimeUnit
 
+import controllers.Assets
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.Player
@@ -90,12 +91,18 @@ class GameDataController(dbh : DataAccessHandler) extends Controller {
 
     def playerStateToJson (p : (Player, Behavior[Time, PlayerState])) : JsValue = p match {
       case (player, states) => Json.obj(
-        "side" -> states(Duration.Zero).sideColor.name,
-        "role" -> player.role.name,
-        "ign" -> player.ign,
-        "championName" -> states(Duration.Zero).championState.name,
-        "playerStates" -> Json.toJson(states)
-      )
+          "side" -> states(Duration.Zero).sideColor.name,
+          "role" -> player.role.name,
+          "ign" -> player.ign,
+          "championName" -> states(Duration.Zero).championState.name,
+          "championImage" -> {
+            val champImg = for {
+              champion <- dbh.getChampion(states(Duration.Zero).championState.name)
+            } yield controllers.Assets.at("/public", s"champion/${champion.image.full}").toString
+            champImg.getOrElse(controllers.Assets.at("/public", "champion/unknown.png")).toString
+          },
+          "playerStates" -> Json.toJson(states)
+        )
     }
 
     implicit val inGameTeamWrites = new Writes[InGameTeam] {

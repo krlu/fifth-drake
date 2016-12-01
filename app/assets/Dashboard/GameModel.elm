@@ -35,6 +35,7 @@ type alias Player =
   , role              : Role
   , ign               : String
   , championName      : String
+  , championImage     : String
   , state             : Array PlayerState
   }
 

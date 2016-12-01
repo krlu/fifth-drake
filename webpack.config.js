@@ -1,7 +1,9 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const assetPath = 'app/assets';
 const srcPath = path.join(__dirname, assetPath);
 const elmStylePaths = /Stylesheets.elm/;
+const buildPath = path.resolve(__dirname, assetPath, 'build');
 
 module.exports = {
 	entry: {
@@ -14,10 +16,14 @@ module.exports = {
 	},
 
 	output: {
-		path: path.resolve(__dirname, assetPath, 'build'),
+		path: buildPath,
 		publicPath: '/static',
 		filename: '[name].js'
 	},
+
+    devServer: {
+        outputPath: buildPath
+    },
 
 	resolve: {
 		root: srcPath,
@@ -68,5 +74,11 @@ module.exports = {
 			}
 		],
 		noParse: /\.elm$/
-	}
+	},
+
+	plugins: [
+	    new CopyWebpackPlugin([
+            { from: "public/champion/*", to: buildPath }
+        ])
+    ]
 };

@@ -39,4 +39,4 @@ project/sbt-ui.sbt
 npm-debug.log
 project/project/
 public/elm-css
-public/champions/
+public/champion/

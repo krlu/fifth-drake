@@ -1,498 +1,509 @@
-{ "data":
-  { "metadata":
-    { "gameLength": 3000
-    }
-  , "data":
-    { "blueTeam":
-      { "teamStates":
-        [
-        ]
-      , "players":
-      [ { "side": "blue"
-        , "role": "mid"
-        , "ign": "Froggen"
-        , "championName": "Cassiopeia"
-        , "playerStates":
-          [ { "position":
-              { "x": 0
-              , "y": 0
+{
+  "data": {
+    "metadata": {
+      "gameLength": 3000
+    },
+    "data": {
+      "blueTeam": {
+        "teamStates": [
+        ],
+        "players": [
+          {
+            "side": "blue",
+            "role": "mid",
+            "ign": "Froggen",
+            "championName": "Cassiopeia",
+            "championImage": "/static/public/champion/Cassiopeia.png",
+            "playerStates": [
+              {
+                "position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 1000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 2000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 3000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 4000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 5000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 6000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 7000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 8000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 9000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
               }
-            , "championState":
-              { "hp": 0
-              , "mp": 0
-              , "xp": 0
+            ]
+          },
+          {
+            "side": "blue",
+            "role": "support",
+            "ign": "Big",
+            "championName": "Karma",
+            "championImage": "/static/public/champion/Karma.png",
+            "playerStates": [
+              {
+                "position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 1000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 2000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 3000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 4000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 5000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 6000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 7000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 8000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 9000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
               }
-            }
-          , { "position": {
-              "x": 1000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
+            ]
           },
           {
-            "position": {
-              "x": 2000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
+            "side": "blue",
+            "role": "jungle",
+            "ign": "Hard",
+            "championName": "Olaf",
+            "championImage": "/static/public/champion/Olaf.png",
+            "playerStates": [
+              {
+                "position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 1000,
+                  "y": 1000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 2000,
+                  "y": 2000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 3000,
+                  "y": 3000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 4000,
+                  "y": 4000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 5000,
+                  "y": 5000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 6000,
+                  "y": 6000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 7000,
+                  "y": 7000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 8000,
+                  "y": 8000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 9000,
+                  "y": 9000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              }
+            ]
           },
           {
-            "position": {
-              "x": 3000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
+            "side": "blue",
+            "role": "bot",
+            "ign": "Keith",
+            "championName": "Jhin",
+            "championImage": "/static/public/champion/Jhin.png",
+            "playerStates": []
           },
           {
-            "position": {
-              "x": 4000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 5000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 6000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 7000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 8000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 9000,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
+            "side": "blue",
+            "role": "top",
+            "ign": "kfo",
+            "championName": "Shen",
+            "championImage": "/static/public/champion/Shen.png",
+            "playerStates": []
           }
         ]
       },
-      {
-        "side": "blue",
-        "role": "support",
-        "ign": "Big",
-        "championName": "Karma",
-        "playerStates": [
+      "redTeam": {
+        "teamStates": [
+        ],
+        "players": [
           {
-            "position": {
-              "x": 0,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 1000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 2000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 3000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 4000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 5000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 6000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 7000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 8000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 0,
-              "y": 9000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          }
-        ]
-      },
-      {
-        "side": "blue",
-        "role": "jungle",
-        "ign": "Hard",
-        "championName": "Olaf",
-        "playerStates": [
-          {
-            "position": {
-              "x": 0,
-              "y": 0
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 1000,
-              "y": 1000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 2000,
-              "y": 2000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 3000,
-              "y": 3000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 4000,
-              "y": 4000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 5000,
-              "y": 5000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 6000,
-              "y": 6000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 7000,
-              "y": 7000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 8000,
-              "y": 8000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 9000,
-              "y": 9000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          }
-        ]
-      },
-      {
-        "side": "blue",
-        "role": "bot",
-        "ign": "Keith",
-        "championName": "Jhin",
-        "playerStates": []
-      },
-      {
-        "side": "blue",
-        "role": "top",
-        "ign": "kfo",
-        "championName": "Shen",
-        "playerStates": []
-      }
-    ]
-      }
-    , "redTeam":
-      { "teamStates":
-        [
-        ]
-      , "players":
-        [ { "side": "red"
-          , "role": "mid"
-          , "ign": "Bjergsen"
-          , "championName": "Azir"
-          , "playerStates":
-            [ { "position":
-                { "x": 15000
-                , "y": 15000
+            "side": "red",
+            "role": "mid",
+            "ign": "Bjergsen",
+            "championName": "Azir",
+            "championImage": "/static/public/champion/Azir.png",
+            "playerStates": [
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
                 }
-              , "championState":
-                { "hp": 0
-                , "mp": 0
-                , "xp": 0
+              },
+              {
+                "position": {
+                  "x": 14000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 13000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 12000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 11000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 10000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 9000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 8000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 7000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 6000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
                 }
               }
-            , { "position":
-                { "x": 14000
-                , "y": 15000
-                }
-              , "championState":
-                { "hp": 0
-                , "mp": 0
-                , "xp": 0
-                }
-              }
-            , {
-            "position": {
-              "x": 13000,
-              "y": 15000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 12000,
-              "y": 15000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 11000,
-              "y": 15000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 10000,
-              "y": 15000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 9000,
-              "y": 15000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 8000,
-              "y": 15000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 7000,
-              "y": 15000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          },
-          {
-            "position": {
-              "x": 6000,
-              "y": 15000
-            },
-            "championState": {
-              "hp": 0,
-              "mp": 0,
-              "xp": 0
-            }
-          }
             ]
           },
           {
@@ -500,6 +511,7 @@
             "role": "top",
             "ign": "Hauntzer",
             "championName": "Irelia",
+            "championImage": "/static/public/champion/Irelia.png",
             "playerStates": [
               {
                 "position": {
@@ -618,173 +630,179 @@
             "role": "jungle",
             "ign": "Svenskeren",
             "championName": "RekSai",
+            "championImage": "/static/public/champion/RekSai.png",
             "playerStates": [
-            {
-            "position": {
-            "x": 15000,
-            "y": 15000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 14000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 13000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 12000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 11000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 10000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 9000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 8000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 7000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            },
-            {
-            "position": {
-            "x": 15000,
-            "y": 6000
-            },
-            "championState": {
-            "hp": 0,
-            "mp": 0,
-            "xp": 0
-            }
-            }
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 14000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 13000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 12000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 11000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 10000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 9000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 8000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 7000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              },
+              {
+                "position": {
+                  "x": 15000,
+                  "y": 6000
+                },
+                "championState": {
+                  "hp": 0,
+                  "mp": 0,
+                  "xp": 0
+                }
+              }
             ]
-            },
+          },
           {
             "side": "red",
             "role": "support",
             "ign": "Biofrost",
             "championName": "Nami",
+            "championImage": "/static/public/champion/Nami.png",
             "playerStates": []
           },
-          { "side": "red"
-          , "role": "bot"
-          , "ign": "Doublelift"
-          , "championName": "Lucian"
-          , "playerStates": []
+          {
+            "side": "red",
+            "role": "bot",
+            "ign": "Doublelift",
+            "championName": "Lucian",
+            "championImage": "/static/public/champion/Lucian.png",
+            "playerStates": []
           }
         ]
       }
     }
-  }
-
-, "tags":
-    [ { "title": "Fight 1"
-      , "description": "Doublelift dies"
-      , "category": "TeamFight"
-      , "timestamp": 10
-      , "players":
-        [ "Doublelift"
-        , "Bjergsen"
-        , "Svenskeren"
-        , "Biofrost"
-        , "Hauntzer"
-        ]
-      }
-    , { "title": "Fight 2"
-      , "description": "Bang dies"
-      , "category": "TeamFight"
-      , "timestamp": 30
-      , "players":
-        [ "Faker"
-        , "Bang"
-        , "Wolf"
-        , "Bengi"
-        , "Duke"
-        ]
-      }
-    , { "title": "Objective 3"
-      , "description": "APHROOOOOOOOO"
-      , "category": "Objective"
-      , "timestamp": 50
-      , "players":
-        [ "ZionSpartan"
-        , "XMithie"
-        , "Huhi"
-        , "Stixxay"
-        , "Aphromoo"
-        ]
-      }
-    ]
+  },
+  "tags": [
+    {
+      "title": "Fight 1",
+      "description": "Doublelift dies",
+      "category": "TeamFight",
+      "timestamp": 10,
+      "players": [
+        "Doublelift",
+        "Bjergsen",
+        "Svenskeren",
+        "Biofrost",
+        "Hauntzer"
+      ]
+    },
+    {
+      "title": "Fight 2",
+      "description": "Bang dies",
+      "category": "TeamFight",
+      "timestamp": 30,
+      "players": [
+        "Faker",
+        "Bang",
+        "Wolf",
+        "Bengi",
+        "Duke"
+      ]
+    },
+    {
+      "title": "Objective 3",
+      "description": "APHROOOOOOOOO",
+      "category": "Objective",
+      "timestamp": 50,
+      "players": [
+        "ZionSpartan",
+        "XMithie",
+        "Huhi",
+        "Stixxay",
+        "Aphromoo"
+      ]
+    }
+  ]
 }

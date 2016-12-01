@@ -12,7 +12,7 @@ fi
 
 DDRAGON_VERSION_BASE_URL="https://global.api.pvp.net/api/lol/static-data/na/v1.2/versions"
 CHAMPIONS_BASE_URL="https://global.api.pvp.net/api/lol/static-data/na/v1.2/champion"
-DEST_PATH="../public/champions/"
+DEST_PATH="../public/champion/"
 
 if [ ! -d ${DEST_PATH} ]; then
     mkdir ${DEST_PATH}
