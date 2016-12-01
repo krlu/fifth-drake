@@ -27,8 +27,8 @@ getTimestampAtPixel gameLength pos =
   let
     x = toFloat pos.x
     max = toFloat gameLength
-  in -- Subtract 1 pixel to make clicking feel right.
-    truncate <| x * max / timelineWidth - 1
+  in
+    round <| x * max / timelineWidth
 
 toggleStatus : Status -> Status
 toggleStatus x =
