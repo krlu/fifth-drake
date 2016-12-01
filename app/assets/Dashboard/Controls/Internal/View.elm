@@ -51,16 +51,27 @@ view timestamp gameLength model =
           []
         ]
       , div
-        [ class [Timeline]
-        ]
-        [ div
-          [ class [Bar]
-          , styles
-            [ Css.width (timelineWidth |> px)
-            ]
-          , on "mousedown" (Json.map BarClick relativePosition)
+        [ class [TimelineAndDisplay] ]
+        [ p
+          [ class [TimeDisplay, Hidden] ]
+          [ text <| toTimeString timestamp ++ "/" ++ toTimeString gameLength
           ]
-          []
+        , div
+          [ class [Timeline]
+            , on "mousedown" (Json.map BarClick relativePosition)
+          ]
+          [ div
+            [ class [BarSeen]
+            , styles
+              [ Css.width (pxs |> px)
+              ]
+            ]
+            []
+          ]
+        , p
+          [ class [TimeDisplay] ]
+          [ text <| toTimeString timestamp ++ "/" ++ toTimeString gameLength
+          ]
         , div
           [ on "mousedown" (Json.map KnobGrab Mouse.position)
           , class [Knob]
@@ -69,6 +80,5 @@ view timestamp gameLength model =
             ]
           ]
           []
-        , text <| toTimeString timestamp ++ "/" ++ toTimeString gameLength
         ]
       ]
