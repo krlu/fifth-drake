@@ -11,6 +11,13 @@ import Types exposing (..)
 import Task exposing (Task)
 import Types exposing (WindowLocation)
 
+(::=) : String -> Decoder a -> Decoder a
+(::=) key decoder =
+  customDecoder value <| \v ->
+    case decodeValue (key := decoder) v of
+      Ok val -> Ok val
+      Err e -> Debug.log (key ++ " failed to parse") (Err e)
+
 populate : WindowLocation -> Cmd Msg
 populate loc = Task.perform GameDataFetchFailure SetGame <| getGame loc
 
@@ -24,44 +31,44 @@ playerUrl loc =
 game : Decoder Game
 game =
   object2 Game
-    ("metadata" := metadata)
-    ("data" := data)
+    ("metadata" ::= metadata)
+    ("data" ::= data)
 
 metadata : Decoder Metadata
 metadata =
   object1 Metadata
-    ("gameLength" := gameLength)
+    ("gameLength" ::= gameLength)
 
 gameLength : Decoder GameLength
-gameLength = ("gameLength" := int)
+gameLength = int
 
 data : Decoder Data
 data =
   object2 Data
-    ("blueTeam" := team)
-    ("redTeam" := team)
+    ("blueTeam" ::= team)
+    ("redTeam" ::= team)
 
 team : Decoder Team
 team =
   object2 Team
-    ("teamStates" := array teamState)
-    ("players" := array player)
+    ("teamStates" ::= array teamState)
+    ("players" ::= array player)
 
 teamState : Decoder TeamState
 teamState =
   object3 TeamState
-    ("dragons" := int)
-    ("barons" := int)
-    ("turrets" := int)
+    ("dragons" ::= int)
+    ("barons" ::= int)
+    ("turrets" ::= int)
 
 player : Decoder Player
 player =
   object5 Player
-    ("side" := side)
-    ("role" := role)
-    ("ign" := string)
-    ("championName" := string)
-    ("playerStates" := array playerState)
+    ("side" ::= side)
+    ("role" ::= role)
+    ("ign" ::= string)
+    ("championName" ::= string)
+    ("playerStates" ::= array playerState)
 
 side : Decoder Side
 side = customDecoder string <| \s ->
@@ -83,21 +90,18 @@ role = customDecoder string <| \s ->
 playerState : Decoder PlayerState
 playerState =
   object2 PlayerState
-    ("position" := position)
-    ("championState" := championState)
+    ("position" ::= position)
+    ("championState" ::= championState)
 
 position : Decoder Position
 position =
   object2 Position
-    ("x" := float)
-    ("y" := float)
+    ("x" ::= float)
+    ("y" ::= float)
 
 championState : Decoder ChampionState
 championState =
-  object6 ChampionState
-    ("hp" := float)
-    ("mp" := float)
-    ("xp" := float)
-    ("hpMax" := float)
-    ("mpMax" := float)
-    ("xpNextLevel" := float)
+  object3 ChampionState
+    ("hp" ::= float)
+    ("mp" ::= float)
+    ("xp" ::= float)

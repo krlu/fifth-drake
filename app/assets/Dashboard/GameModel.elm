@@ -52,9 +52,6 @@ type alias ChampionState =
   { hp                : Float
   , mp                : Float
   , xp                : Float
-  , hpMax             : Float
-  , mpMax             : Float
-  , xpNextLevel       : Float
   }
 
 type Role = Top | Jungle | Mid | Bot | Support

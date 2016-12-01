@@ -31,7 +31,6 @@ update msg model =
         , Cmd.none
         )
     SetGame game ->
-      Debug.log "Game Data set"
       ({ model | game = game }, Cmd.none)
     GameDataFetchFailure err ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
