@@ -20,7 +20,7 @@ createRequest model =
     descriptionData = stringData "description" model.description
     categoryData = stringData "category" model.category
     timestampData = stringData "timestamp" (toString model.timestamp)
-    playerData = stringData "player" model.players --TODO: add JSON encoder
+    playerData = stringData "playerIgns" model.players --TODO: add JSON encoder
   in
    {  verb = "PUT"
     , headers = []
