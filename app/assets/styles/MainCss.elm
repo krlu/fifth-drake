@@ -40,6 +40,8 @@ css =
         [ order (2 |> int)
         , flexGrow (1 |> int)
         , height (100 |> vh)
+        , displayFlex
+        , property "justify-content" "center"
         ]
       ]
     ])

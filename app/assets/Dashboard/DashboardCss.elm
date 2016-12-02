@@ -22,9 +22,7 @@ css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) Dashboard
-    [ width (minimapWidth |> px)
-    , margin2 (30 |> px) auto
-    ]
+    []
   , (.) Vdivider (
     [ height (100 |> pct)
     , width (dividerWidth |> px)
