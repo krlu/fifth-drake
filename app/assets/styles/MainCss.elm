@@ -19,6 +19,8 @@ css =
   [ everything
     [ margin zero
     , padding zero
+    , fontFamilies ["Rubik", "sans-serif"]
+    , fontWeight (300 |> int)
     ]
   , body
     [ fontSize Css.small

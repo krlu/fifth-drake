@@ -13,6 +13,9 @@ namespace = "team-display"
 teamNameSize : Float
 teamNameSize = 48
 
+statsFontSize : Float
+statsFontSize = 14
+
 teamDisplayWidth : Float
 teamDisplayWidth = 300
 
@@ -55,9 +58,11 @@ css =
             [ color Color.c_offWhite
             , flex (int 1)
             , textAlign center
+            , fontSize (statsFontSize |> px)
             , children
               [ span
                 [ color Color.c_teamStatLabels
+                , textTransform uppercase
                 ]
               ]
             ]
