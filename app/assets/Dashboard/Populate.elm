@@ -36,7 +36,9 @@ game =
 
 metadata : Decoder Metadata
 metadata =
-  object1 Metadata
+  object3 Metadata
+    ("blueTeamName" ::= string)
+    ("redTeamName" ::= string)
     ("gameLength" ::= gameLength)
 
 gameLength : Decoder GameLength

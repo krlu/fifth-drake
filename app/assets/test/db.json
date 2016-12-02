@@ -1,6 +1,8 @@
 {
   "data": {
     "metadata": {
+      "blueTeamName": "Echo Fox",
+      "redTeamName": "Team Solo Mid",
       "gameLength": 3000
     },
     "data": {

@@ -35,8 +35,8 @@ c_lightGray = hex "#D8D8D8"
 c_darkGray : Color
 c_darkGray = hex "#858585"
 
-c_teamStats : Color
-c_teamStats = hex "#808CA2"
+c_teamStatLabels : Color
+c_teamStatLabels = hex "#808CA2"
 
 c_lighterGray : Color
 c_lighterGray = hex "#E2E2E2"

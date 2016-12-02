@@ -17,12 +17,21 @@ type CssClass
   = Vdivider
   | Hdivider
   | Dashboard
+  | TeamDisplays
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) Dashboard
-    []
+  [ (.) Dashboard (
+    [ displayFlex
+    , property "align-items" "center"
+    ] ++ StyleUtils.flexDirection "column" ++
+    [ children
+      [ (.) TeamDisplays (
+        [ displayFlex
+        ] ++ StyleUtils.flexDirection "row")
+      ]
+    ])
   , (.) Vdivider (
     [ height (100 |> pct)
     , width (dividerWidth |> px)

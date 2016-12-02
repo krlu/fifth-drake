@@ -20,7 +20,9 @@ init flags =
     controlsModel = Controls.init flags
     metadata : Metadata
     metadata =
-      { gameLength = 100
+      { blueTeamName = ""
+      , redTeamName = ""
+      , gameLength = 100
       }
     data : Data
     data =

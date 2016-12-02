@@ -9,6 +9,7 @@ import MainCss
 import Minimap.Css
 import NavbarCss
 import TagScroller.Css
+import TeamDisplay.Css
 
 port files : CssFileStructure -> Cmd msg
 
@@ -18,10 +19,11 @@ cssFiles : CssFileStructure
 cssFiles =
     toFileStructure
       [ "dashboard.css" => compile
-        [ DashboardCss.css
+        [ Controls.Css.css
+        , DashboardCss.css
         , Minimap.Css.css
-        , Controls.Css.css
         , TagScroller.Css.css
+        , TeamDisplay.Css.css
         ]
       , "navbar.css" => compile
         [ NavbarCss.css
