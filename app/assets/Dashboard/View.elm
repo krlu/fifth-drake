@@ -43,7 +43,6 @@ view model =
       [ div
         [ class [TeamDisplays] ]
         [ blueTeamDisplay
-        , Divider.vertical
         , redTeamDisplay
         ]
       , Divider.horizontal

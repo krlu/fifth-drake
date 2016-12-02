@@ -6,12 +6,19 @@ import CssColors as Color
 import Minimap.Css exposing (minimapHeight, minimapWidth)
 import StyleUtils
 import TagScroller.Css exposing (tagScrollerWidth)
+import TeamDisplay.Css exposing (teamDisplayWidth)
 
 namespace : String
 namespace = "dashboard"
 
 dividerWidth : Float
 dividerWidth = 10
+
+teamDisplaysGap : Float
+teamDisplaysGap = 50
+
+teamDisplaysWidth : Float
+teamDisplaysWidth = teamDisplayWidth * 2 + teamDisplaysGap
 
 type CssClass
   = Vdivider
@@ -24,11 +31,13 @@ css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) Dashboard (
     [ displayFlex
-    , property "align-items" "center"
+    , alignItems center
     ] ++ StyleUtils.flexDirection "column" ++
     [ children
       [ (.) TeamDisplays (
         [ displayFlex
+        , width (teamDisplaysWidth |> px)
+        , property "justify-content" "space-between"
         ] ++ StyleUtils.flexDirection "row")
       ]
     ])

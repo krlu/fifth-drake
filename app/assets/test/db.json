@@ -8,6 +8,56 @@
     "data": {
       "blueTeam": {
         "teamStates": [
+          {
+            "dragons": 0,
+            "barons": 0,
+            "turrets": 0
+          },
+          {
+            "dragons": 1,
+            "barons": 0,
+            "turrets": 0
+          },
+          {
+            "dragons": 1,
+            "barons": 0,
+            "turrets": 2
+          },
+          {
+            "dragons": 1,
+            "barons": 1,
+            "turrets": 2
+          },
+          {
+            "dragons": 1,
+            "barons": 1,
+            "turrets": 2
+          },
+          {
+            "dragons": 2,
+            "barons": 1,
+            "turrets": 6
+          },
+          {
+            "dragons": 2,
+            "barons": 1,
+            "turrets": 9
+          },
+          {
+            "dragons": 3,
+            "barons": 2,
+            "turrets": 10
+          },
+          {
+            "dragons": 3,
+            "barons": 2,
+            "turrets": 11
+          },
+          {
+            "dragons": 5,
+            "barons": 3,
+            "turrets": 11
+          }
         ],
         "players": [
           {
@@ -382,6 +432,56 @@
       },
       "redTeam": {
         "teamStates": [
+          {
+            "dragons": 0,
+            "barons": 0,
+            "turrets": 0
+          },
+          {
+            "dragons": 1,
+            "barons": 0,
+            "turrets": 0
+          },
+          {
+            "dragons": 1,
+            "barons": 0,
+            "turrets": 2
+          },
+          {
+            "dragons": 1,
+            "barons": 1,
+            "turrets": 2
+          },
+          {
+            "dragons": 1,
+            "barons": 1,
+            "turrets": 2
+          },
+          {
+            "dragons": 2,
+            "barons": 1,
+            "turrets": 6
+          },
+          {
+            "dragons": 2,
+            "barons": 1,
+            "turrets": 9
+          },
+          {
+            "dragons": 3,
+            "barons": 2,
+            "turrets": 10
+          },
+          {
+            "dragons": 3,
+            "barons": 2,
+            "turrets": 11
+          },
+          {
+            "dragons": 5,
+            "barons": 3,
+            "turrets": 11
+          }
         ],
         "players": [
           {

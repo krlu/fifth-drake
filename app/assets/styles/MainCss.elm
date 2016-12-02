@@ -33,12 +33,12 @@ css =
     , children
       [ (#) Navbar
         [ order (1 |> int)
-        , flexGrow (0 |> int)
+        , flex (0 |> int)
         , height (100 |> vh)
         ]
       , (#) Content
         [ order (2 |> int)
-        , flexGrow (1 |> int)
+        , flex (1 |> int)
         , height (100 |> vh)
         , displayFlex
         , property "justify-content" "center"
