@@ -20,7 +20,7 @@ buttonWidth : Float
 buttonWidth = controlsHeight
 
 timelineWidth : Float
-timelineWidth = controlsWidth - DashboardCss.dividerWidth - buttonWidth
+timelineWidth = controlsWidth - buttonWidth
 
 barHeight : Float
 barHeight = 7
