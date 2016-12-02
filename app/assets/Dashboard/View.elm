@@ -1,8 +1,7 @@
 module View exposing (..)
 
 import Controls.Controls as Controls
-import DashboardCss exposing (CssClass(..), namespace)
-import Divider
+import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider), namespace)
 import GameModel exposing (GameLength, Side(..), Timestamp)
 import Html exposing (..)
 import Html.App
@@ -45,9 +44,9 @@ view model =
         [ blueTeamDisplay
         , redTeamDisplay
         ]
-      , Divider.horizontal
+      , div [ id [TeamDisplayDivider] ] []
       , minimap
-      , Divider.horizontal
+      , div [ id [ControlsDivider] ] []
       , controls
       ]
 

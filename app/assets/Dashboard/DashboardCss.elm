@@ -20,10 +20,12 @@ teamDisplaysGap = 50
 teamDisplaysWidth : Float
 teamDisplaysWidth = teamDisplayWidth * 2 + teamDisplaysGap
 
+type CssId
+  = TeamDisplayDivider
+  | ControlsDivider
+
 type CssClass
-  = Vdivider
-  | Hdivider
-  | Dashboard
+  = Dashboard
   | TeamDisplays
 
 css : Stylesheet
@@ -41,14 +43,12 @@ css =
         ] ++ StyleUtils.flexDirection "row")
       ]
     ])
-  , (.) Vdivider (
-    [ height (100 |> pct)
-    , width (dividerWidth |> px)
-    ] ++
-    StyleUtils.userSelect "none")
-  , (.) Hdivider (
-    [ height (dividerWidth |> px)
-    , width (100 |> pct)
-    ] ++
-    StyleUtils.userSelect "none")
+  , (#) TeamDisplayDivider
+    [ width auto
+    , height (30 |> px)
+    ]
+  , (#) ControlsDivider
+    [ width auto
+    , height (50 |> px)
+    ]
   ]
