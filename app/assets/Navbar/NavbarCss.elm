@@ -12,8 +12,12 @@ namespace = "navbar"
 navbarWidth : Float
 navbarWidth = 50
 
+buttonHeight : Float
+buttonHeight = 50
+
 type CssClass
   = NavbarLeft
+  | Selected
 
 type CssIds
   = NavbarLinks
@@ -24,15 +28,24 @@ css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) NavbarLeft (
     [ backgroundColor Color.c_navBar
-    , color Color.c_gold
     , height (100 |> pct)
     , width (navbarWidth |> px)
     ] ++ StyleUtils.userSelect "none" ++
     [ children
       [ (#) NavbarLeftLogo
-        [ textAlign center
+        [ displayFlex
+        , alignItems center
+        , property "justify-content" "center"
+        , height (buttonHeight |> px)
         , hover
           [ cursor pointer
+          ]
+        , children
+          [ a
+            [ textDecoration none
+            , fontSize (30 |> px)
+            , color Color.c_gold
+            ]
           ]
         ]
       , (#) NavbarLinks (
@@ -43,9 +56,10 @@ css =
         , height (100 |> pct)
         , children
           [ a
-            [ padding (5 |> px)
-            , margin2 zero auto
-            , property "display" "table"
+            [ displayFlex
+            , alignItems center
+            , property "justify-content" "center"
+            , height (buttonHeight |> px)
             , hover
               [ color Color.c_navBarSelected
               , cursor pointer
@@ -55,6 +69,9 @@ css =
                 [ property "display" "table-cell"
                 ]
               ]
+            ]
+          , (.) Selected
+            [ backgroundColor Color.c_navBarSelected
             ]
           ]
         ])

@@ -5,7 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (href, src)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (..)
-import NavbarCss exposing (CssClass, namespace)
+import NavbarCss exposing (CssClass(..), namespace)
 import String exposing (toLower)
 
 -- MODEL
@@ -39,7 +39,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-  ( { active = Home
+  ( { active = Games
     , user = Nothing
 
     , homeIcon = flags.homeIcon
@@ -77,11 +77,17 @@ type Msg = Unit
 view : Model -> Html Msg
 view model =
   let
+    selected : Page -> List (Html.Attribute a)
+    selected page =
+      if model.active == page
+      then [ class [Selected] ]
+      else []
+
     link : Page -> Html Msg
     link page =
         a
-          [ href <| pageUrl page
-          ]
+          ([ href <| pageUrl page
+           ] ++ selected page)
           [ img
             [src <| pageToIcon model page ]
             []
@@ -98,9 +104,7 @@ view model =
         ]
         [ a
           [ href <| pageUrl Home ]
-          [ img
-            [src <| pageToIcon model Home]
-            []
+          [ text "C"
           ]
         ]
       , div
