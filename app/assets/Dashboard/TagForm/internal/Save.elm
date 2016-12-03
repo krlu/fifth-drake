@@ -2,6 +2,8 @@ module TagForm.Internal.Save exposing (..)
 
 import GameModel exposing (Timestamp)
 import Http exposing (Request, defaultSettings, multipart, stringData)
+import Regex exposing (HowMany(All), regex, replace)
+import String exposing (trim)
 import TagForm.Internal.SaveTypes exposing (Msg(TagSaveFailure, TagSaved))
 import TagForm.Types exposing(Model)
 import Task
@@ -21,10 +23,15 @@ createRequest model ts =
     descriptionData = stringData "description" model.description
     categoryData = stringData "category" model.category
     timestampData = stringData "timestamp" (toString ts)
-    playerData = stringData "playerIgns" model.players --TODO: add JSON encoder
+    playerData =  stringData "playerIgns"
+               <| String.concat
+               <| String.words model.players
+      --TODO: add JSON encoder
   in
    {  verb = "PUT"
     , headers = []
     , url = url model.host
     , body = multipart [gameId, titleData, descriptionData, categoryData, timestampData, playerData]
    }
+
+

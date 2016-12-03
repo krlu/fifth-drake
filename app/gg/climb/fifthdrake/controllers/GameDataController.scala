@@ -177,7 +177,8 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       val description = data("description").head
       val category = data("category").head
       val timeStamp = data("timestamp").head.toInt
-      val playerIgns = data("playerIgns").head.replace(" ", "").split(",").toSeq
+      println(data("playerIgns").head.split(",").toSeq)
+      val playerIgns = data("playerIgns").head.split(",").toSeq
       val players = playerIgns.map(ign => dbh.getPlayerByIgn(ign)).toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
