@@ -10,8 +10,8 @@
 
 	Elm.Dashboard.embed(mountNode, {
 		minimapBackground: require("Dashboard/map.jpg"),
-		playButton: require("Dashboard/play1.svg"),
-		pauseButton: require("Dashboard/pause.svg"),
+		playButton: require("Dashboard/ic_play_arrow_white_24px.svg"),
+		pauseButton: require("Dashboard/ic_pause_white_24px.svg"),
 		location: {
 		  host: script.getAttribute("data-host"),
 		  gameId: script.getAttribute("data-game-id")

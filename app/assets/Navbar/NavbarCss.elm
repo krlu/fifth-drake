@@ -3,27 +3,21 @@ module NavbarCss exposing(..)
 import Css exposing (..)
 import Css.Elements exposing (a, span)
 import Css.Namespace
+import CssColors as Color
+import StyleUtils
 
 namespace : String
 namespace = "navbar"
 
-primaryColor : Color
-primaryColor = hex "#B59FE8"
+navbarWidth : Float
+navbarWidth = 50
 
-secondaryColor : Color
-secondaryColor = hex "#2883FF"
-
-collapsedWidth : Float
-collapsedWidth = 3
-
-expandedWidth : Float
-expandedWidth = 15
+buttonHeight : Float
+buttonHeight = 50
 
 type CssClass
   = NavbarLeft
-  | Collapsed
-  | Expanded
-  | Collapsible
+  | Selected
 
 type CssIds
   = NavbarLinks
@@ -32,40 +26,42 @@ type CssIds
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) NavbarLeft
-    [ fontSize (24 |> px)
-    , backgroundColor primaryColor
-    , color (hex "#FFFFFF")
+  [ (.) NavbarLeft (
+    [ backgroundColor Color.c_navBar
     , height (100 |> pct)
-    , overflow hidden
-    , property "-webkit-user-select" "none"
-    , property "user-select" "none"
-    , withClass Collapsed
-      [ width (collapsedWidth |> vw)
-      , property "transition" "width 0.5s ease-in-out"
-      ]
-    , withClass Expanded
-      [ width (expandedWidth |> vw)
-      , property "transition" "width 0.5s ease-in-out"
-      ]
-    , children
+    , width (navbarWidth |> px)
+    ] ++ StyleUtils.userSelect "none" ++
+    [ children
       [ (#) NavbarLeftLogo
-        [ textAlign center
-        , padding (10 |> px)
-        , marginTop (20 |> px)
-        , marginBottom (20 |> px)
+        [ displayFlex
+        , alignItems center
+        , property "justify-content" "center"
+        , height (buttonHeight |> px)
         , hover
           [ cursor pointer
           ]
-        ]
-      , (#) NavbarLinks
-        [ textAlign center
         , children
           [ a
-            [ padding (5 |> px)
-            , property "display" "table"
+            [ textDecoration none
+            , fontSize (30 |> px)
+            , color Color.c_gold
+            ]
+          ]
+        ]
+      , (#) NavbarLinks (
+        [ displayFlex
+        ] ++ StyleUtils.flexDirection "column" ++
+        [ property "justify-content" "center"
+        , width (navbarWidth |> px)
+        , height (100 |> pct)
+        , children
+          [ a
+            [ displayFlex
+            , alignItems center
+            , property "justify-content" "center"
+            , height (buttonHeight |> px)
             , hover
-              [ color secondaryColor
+              [ color Color.c_navBarSelected
               , cursor pointer
               ]
             , children
@@ -74,17 +70,11 @@ css =
                 ]
               ]
             ]
+          , (.) Selected
+            [ backgroundColor Color.c_navBarSelected
+            ]
           ]
-        ]
+        ])
       ]
-    ]
-  , (.) Collapsible
-    [ textAlign right
-    , padding (5 |> px)
-    , color secondaryColor
-    , hover
-      [ color (hex "#FFFFFF")
-      , cursor pointer
-      ]
-    ]
+    ])
   ]

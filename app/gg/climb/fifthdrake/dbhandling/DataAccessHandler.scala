@@ -31,26 +31,28 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
 
   def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
 
-  def getGame(gameKey: RiotId[Game]): Game ={
+  def getGame(gameKey: RiotId[Game]): Option[Game] ={
 
     val TIMEOUT = Duration(30, TimeUnit.SECONDS)
 
     val gameStates: Seq[GameState] = Await.result(mdbh.getCompleteGame(gameKey), TIMEOUT)
-    val metaData: MetaData = Await.result(mdbh.getGidByRiotId(gameKey), TIMEOUT).get
+    val metadata: Option[MetaData] = Await.result(mdbh.getGidByRiotId(gameKey), TIMEOUT)
 
-    val blueTeamStates = gameStates.map(state => (state.timestamp, state.blue._1))
-    val bluePlayerStates = gameStates.map(state => (state.timestamp, state.blue._2))
-    val redTeamStates = gameStates.map(state => (state.timestamp, state.red._1))
-    val redPlayerStates = gameStates.map(state => (state.timestamp, state.red._2))
+    metadata.map(metadata => {
+      val blueTeamStates = gameStates.map(state => (state.timestamp, state.blue._1))
+      val bluePlayerStates = gameStates.map(state => (state.timestamp, state.blue._2))
+      val redTeamStates = gameStates.map(state => (state.timestamp, state.red._1))
+      val redPlayerStates = gameStates.map(state => (state.timestamp, state.red._2))
 
-    val bluePlayerBehaviors = behaviorForPlayers(bluePlayerStates)
-    val redPlayerBehaviors = behaviorForPlayers(redPlayerStates)
-    val blueTeamBehaviors = getBehaviorForTeams(blueTeamStates)
-    val redTeamBehaviors = getBehaviorForTeams(redTeamStates)
+      val bluePlayerBehaviors = behaviorForPlayers(bluePlayerStates)
+      val redPlayerBehaviors = behaviorForPlayers(redPlayerStates)
+      val blueTeamBehaviors = getBehaviorForTeams(blueTeamStates)
+      val redTeamBehaviors = getBehaviorForTeams(redTeamStates)
 
-    val redTeam = new InGameTeam(redTeamBehaviors, redPlayerBehaviors)
-    val blueTeam = new InGameTeam(blueTeamBehaviors, bluePlayerBehaviors)
-    (metaData, new GameData(sideToTeam(redTeam, blueTeam)))
+      val redTeam = new InGameTeam(redTeamBehaviors, redPlayerBehaviors)
+      val blueTeam = new InGameTeam(blueTeamBehaviors, bluePlayerBehaviors)
+      (metadata, new GameData(sideToTeam(redTeam, blueTeam)))
+    })
   }
 
   private def behaviorForPlayers(playerStates: Seq[(Time, Set[PlayerState])])

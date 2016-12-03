@@ -1,11 +1,11 @@
 module Update exposing (..)
 
+import Controls.Controls as Controls
+import Controls.Types as TimelineT
 import Minimap.Minimap as Minimap
 import Minimap.Types as MinimapT
 import TagScroller.TagScroller as TagScroller
 import TagScroller.Types as TagScrollerT
-import Timeline.Timeline as Timeline
-import Timeline.Types as TimelineT
 import TagForm.TagForm as TagForm
 import Types exposing (..)
 
@@ -21,13 +21,13 @@ update msg model =
           }
         , Cmd.none
         )
-    TimelineMsg tmsg ->
+    ControlsMsg tmsg ->
       let
-        (timestamp, tmodel) =
-          Timeline.update model.timestamp model.game.metadata.gameLength tmsg model.timeline
+        (timestamp, cmodel) =
+          Controls.update model.timestamp model.game.metadata.gameLength tmsg model.controls
       in
         ( { model | timestamp = timestamp
-                  , timeline = tmodel
+                  , controls = cmodel
           }
         , Cmd.none
         )

@@ -3,13 +3,13 @@
 # ~~~~
 
 # Map static resources from the /public folder to the /static URL path
+GET   /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")
 GET   /static/public/*file        controllers.Assets.versioned(path="/public", file)
 
 GET   /health                     gg.climb.fifthdrake.controllers.HealthController.check
 
 GET   /game/:gameKey              gg.climb.fifthdrake.controllers.GameDataController.loadDashboard(gameKey: String)
 GET   /game/:gameKey/data         gg.climb.fifthdrake.controllers.GameDataController.loadGameData(gameKey: String)
-GET   /game/:gameKey/gameLength   gg.climb.fifthdrake.controllers.GameDataController.loadGameLength(gameKey: String)
 GET   /game/:gameKey/tags         gg.climb.fifthdrake.controllers.GameDataController.getTags(gameKey: String)
 
 GET   /champion/:name             gg.climb.fifthdrake.controllers.GameDataController.loadChampion(name: String)

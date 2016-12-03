@@ -1,8 +1,8 @@
-module Timeline.Internal.Subscriptions exposing (subscriptions)
+module Controls.Internal.Subscriptions exposing (subscriptions)
 
+import Controls.Types exposing (Msg(..), Model, Status(..))
 import Mouse
 import Time
-import Timeline.Types exposing (Msg(..), Model, Status(..))
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
