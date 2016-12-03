@@ -1,5 +1,6 @@
 module TagForm.TagForm exposing (..)
 
+import GameModel exposing (Timestamp)
 import Html exposing (Html)
 import TagForm.Types exposing(..)
 import TagForm.Internal.View as View
@@ -8,9 +9,18 @@ import Timeline.Types as Types
 import Types exposing (WindowLocation)
 
 init : WindowLocation -> (Model, Cmd Msg)
-init loc = (Model "" "" "" 0 "" loc.gameId loc.host, Cmd.none)
+init loc =
+  ( { title = ""
+    , description = ""
+    , category = ""
+    , players = ""
+    , gameId = loc.gameId
+    , host = loc.host
+    }
+  , Cmd.none
+  )
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> Timestamp -> (Model, Cmd Msg)
 update = Update.update
 
 view : Model -> Html Msg

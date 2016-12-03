@@ -1,0 +1,12 @@
+# Set default behavior
+* text=auto
+
+# Set text files
+*.java text
+*.scala text
+*.elm text
+*.js text
+
+# Set known binary files
+*.png binary
+*.jpg binary

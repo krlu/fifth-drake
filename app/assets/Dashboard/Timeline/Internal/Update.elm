@@ -1,39 +1,43 @@
 module Timeline.Internal.Update exposing (update)
 
-import Timeline.Internal.ModelUtils exposing(getCurrentValue, getValueAt, toggleStatus)
+import GameModel exposing (..)
+import Timeline.Internal.ModelUtils exposing(..)
 import Timeline.Types exposing (Msg(..), Model, Drag, Status(..))
 
-update : Msg -> Model -> (Model, Cmd Msg)
-update msg model = (update' msg model, Cmd.none)
-
-update' : Msg -> Model -> Model
-update' msg ({value, mouse} as model) =
+update : Timestamp -> GameLength -> Msg -> Model -> (Timestamp, Model)
+update timestamp gameLength msg ({mouse} as model) =
   case msg of
-    KnobGrab pos ->
-      { model | mouse = Just <| Drag pos pos }
-    KnobMove pos ->
-      { model | mouse = Maybe.map (\{start} -> Drag start pos) mouse }
-    KnobRelease pos ->
-      { model | mouse = Nothing, value = getCurrentValue model }
-    BarClick pos ->
-      { model | mouse = Just <| Drag pos pos, value = getValueAt model pos }
-    PlayPause ->
-      { model | status = toggleStatus model.status
-              , value =
-                  case (model.value >= model.maxVal, model.status) of
-                    (True, _) -> 0
-                    (False, Play) -> model.value
-                    (False, Pause) -> model.value + 1
-      }
-    TimerUpdate _ ->
-      if model.value >= model.maxVal then
-        { model | status = Pause }
-      else
-        { model | value = model.value + 1 }
-    SetValue v ->
-      { model | value = v }
-    SetTimelineLength length ->
-      { model | maxVal = length }
-    GameLengthFetchFailure err ->
-      (Debug.log "Timeline failed to fetch" model)
-
+      KnobGrab pos ->
+        ( timestamp
+        , { model | mouse = Just <| Drag pos pos }
+        )
+      KnobMove pos ->
+        ( timestamp
+        , { model | mouse = Maybe.map (\{start} -> Drag start pos) mouse }
+        )
+      KnobRelease pos ->
+        ( getTimestampAtMouse model timestamp gameLength
+        , { model | mouse = Nothing }
+        )
+      BarClick (pos, rel) ->
+        ( getTimestampAtPixel gameLength rel
+        , { model | mouse = Just <| Drag pos pos }
+        )
+      PlayPause ->
+        ( case (timestamp >= gameLength, model.status) of
+            (True, _) -> 0
+            (False, Play) -> timestamp
+            (False, Pause) -> timestamp + 1
+        , { model | status = toggleStatus model.status }
+        )
+      TimerUpdate _ ->
+        if timestamp >= gameLength then
+          ( timestamp
+          , { model | status = Pause }
+          )
+        else
+          ( timestamp + 1
+          , model
+          )
+      GameLengthFetchFailure err ->
+        (Debug.log "Timeline failed to fetch" (timestamp, model))

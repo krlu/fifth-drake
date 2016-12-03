@@ -11,46 +11,36 @@ import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  let
-    dispatch : (subMsg -> Msg) ->
-               (subModel -> Model) ->
-               (subMsg -> subModel ->
-               (subModel, Cmd subMsg)) ->
-               subMsg ->
-               subModel ->
-               (Model, Cmd Msg)
-    dispatch msgMap modelMap update' msg submodel =
+  case msg of
+    TagScrollerMsg tmsg ->
       let
-        (subModel, subCmds) = update' msg submodel
+        (timestamp, tmodel) = TagScroller.update tmsg model.tagScroller
       in
-        ( modelMap subModel
-        , Cmd.map msgMap subCmds
+        ( { model | tagScroller = tmodel
+                  , timestamp = Maybe.withDefault model.timestamp timestamp
+          }
+        , Cmd.none
         )
-
-    tModelMap origModel subModel = { origModel | timeline = subModel }
-    mModelMap origModel subModel = { origModel | minimap = subModel }
-    tagModelMap origModel subModel = { origModel | tagScroller = subModel }
-    tagFormMap origModel subModel = {origModel | tagForm = subModel}
-  in
-    case msg of
-      TimelineMsg m ->
-        let
-          (model', cmds) = dispatch TimelineMsg (tModelMap model) Timeline.update m model.timeline
-          (model'', cmds') = update (MinimapMsg << MinimapT.UpdateTimestamp <| model'.timeline.value) model'
-        in
-          model'' ! [cmds, cmds']
-      MinimapMsg m ->
-        dispatch MinimapMsg (mModelMap model) Minimap.update m model.minimap
-      TagScrollerMsg (TagScrollerT.TagClick value as m) ->
-        let
-          (model', cmds) = dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller
-          (model'', cmds') = update (TimelineMsg << TimelineT.SetValue <| value) model'
-        in
-          model'' ! [cmds, cmds']
-      TagScrollerMsg m ->
-        dispatch TagScrollerMsg (tagModelMap model) TagScroller.update m model.tagScroller
-      TagFormMsg m ->
-        let
-          tagModel = model.tagForm
-        in
-          dispatch TagFormMsg (tagFormMap model) TagForm.update m {tagModel | timestamp =  model.timeline.value}
+    TimelineMsg tmsg ->
+      let
+        (timestamp, tmodel) =
+          Timeline.update model.timestamp model.game.metadata.gameLength tmsg model.timeline
+      in
+        ( { model | timestamp = timestamp
+                  , timeline = tmodel
+          }
+        , Cmd.none
+        )
+    SetGame game ->
+      ({ model | game = game }, Cmd.none)
+    GameDataFetchFailure err ->
+      Debug.log "Game Data failed to fetch" (model, Cmd.none)
+    UpdateTimestamp timestamp ->
+      ( { model | timestamp = timestamp }
+      , Cmd.none
+      )
+    TagFormMsg m ->
+      let
+        (tagModel, cmd) = TagForm.update m model.tagForm model.timestamp
+      in
+        ({model | tagForm = tagModel}, Cmd.map TagFormMsg cmd)

@@ -7,26 +7,27 @@ import Html.Attributes exposing (src, draggable)
 import Html.CssHelpers exposing (withNamespace)
 import Maybe exposing (andThen)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespace)
-import Minimap.Types exposing (Model, Msg, Team)
+import Minimap.Types exposing (Model)
 import StyleUtils exposing (styles)
+import GameModel exposing (Data, Team, Timestamp)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> Html Msg
-view model =
+view : Model -> Data -> Timestamp -> Html a
+view model data timestamp =
   let
-    playerIcons : List (Html Msg)
+    playerIcons : List (Html a)
     playerIcons =
-      model.gameData
+      data
       |> (\{blueTeam, redTeam} ->
           let
-            teamToPlayerIcons : Team -> List (Html Msg)
+            teamToPlayerIcons : Team -> List (Html a)
             teamToPlayerIcons team =
-              team.playerStates
+              team.players
               |> Array.toList
               |> List.filterMap (\player ->
                 player.state
-                |> Array.get model.timestamp
+                |> Array.get timestamp
                 |> Maybe.map (\state ->
                   div
                     [ class [PlayerIcon]
