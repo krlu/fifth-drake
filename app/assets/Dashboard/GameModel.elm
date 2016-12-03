@@ -10,6 +10,9 @@ type alias Game =
   , data : Data
   }
 
+{-| This represents all metadata in a game.
+gameLength is the total duration of the game in seconds.
+-}
 type alias Metadata =
   { gameLength : GameLength
   }
