@@ -6,8 +6,8 @@ import gg.climb.fifthdrake.Time
 import gg.climb.fifthdrake.lolobjects.RiotId
 import org.joda.time.DateTime
 
-class MetaData(val redTeamName: String,
-               val blueTeamName: String,
+class MetaData(val blueTeamName: String,
+               val redTeamName: String,
                val gameDate: DateTime,
                val gameKey: RiotId[GameData],
                val patch: String,
