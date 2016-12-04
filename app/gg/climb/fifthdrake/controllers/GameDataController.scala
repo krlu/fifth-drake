@@ -157,14 +157,14 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
   }
 
   /**
-    * Request body should resemble this:
-    * Json(
+    * Request body MultiFormData should resemble:
+    * Map(
     *  "gameKey" -> "10"
     *  "title" -> "gank occurred top lane"
     *  "description" -> "Top laner ganked by roaming support and jungler"
     *  "category" -> "gank"
     *  "timestamp" -> 1234 (measured in seconds)
-    *  "igns" -> JsArray("Hauntzer", "Meteos", "Impact")
+    *  "playerIgns" -> JsArray("Hauntzer", "Meteos", "Impact")
     * )
     * @return
     */
@@ -177,7 +177,6 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       val description = data("description").head
       val category = data("category").head
       val timeStamp = data("timestamp").head.toInt
-      println(data("playerIgns").head.split(",").toSeq)
       val playerIgns = data("playerIgns").head.split(",").toSeq
       val players = playerIgns.map(ign => dbh.getPlayerByIgn(ign)).toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,

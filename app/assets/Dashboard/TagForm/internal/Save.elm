@@ -1,5 +1,6 @@
 module TagForm.Internal.Save exposing (..)
 
+import Char exposing (isDigit)
 import GameModel exposing (Timestamp)
 import Http exposing (Request, defaultSettings, multipart, stringData)
 import Regex exposing (HowMany(All), regex, replace)
@@ -23,9 +24,7 @@ createRequest model ts =
     descriptionData = stringData "description" model.description
     categoryData = stringData "category" model.category
     timestampData = stringData "timestamp" (toString ts)
-    playerData =  stringData "playerIgns"
-               <| String.concat
-               <| String.words model.players
+    playerData =  stringData "playerIgns" <| String.filter ((/=) ' ') model.players
       --TODO: add JSON encoder
   in
    {  verb = "PUT"
@@ -33,5 +32,3 @@ createRequest model ts =
     , url = url model.host
     , body = multipart [gameId, titleData, descriptionData, categoryData, timestampData, playerData]
    }
-
-
