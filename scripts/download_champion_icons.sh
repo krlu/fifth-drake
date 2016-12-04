@@ -47,7 +47,9 @@ NUM_CHAMPIONS=$(echo ${CHAMPIONS} | jq '. | length')
 # Download each champion icon into public/champions/{champion}.png
 for ((i = 0; i < ${NUM_CHAMPIONS}; i++)) do
     IMG_NAME=$(echo ${CHAMPIONS} | jq '.['${i}']' | sed 's/"//g')
-    IMG_URL="${IMAGE_BASE_URL}${IMG_NAME}"
-    echo "downloading: ${IMG_URL}"
-    curl "${IMG_URL}" > "${DEST_PATH}${IMG_NAME}"
+    if [ $(test -f "${DEST_PATH}${IMG_NAME}") ]; then
+        IMG_URL="${IMAGE_BASE_URL}${IMG_NAME}"
+        echo "downloading: ${IMG_URL}"
+        curl "${IMG_URL}" > "${DEST_PATH}${IMG_NAME}"
+    fi
 done
