@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.Player
+import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
-import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
