@@ -12,7 +12,7 @@ fi
 
 DDRAGON_VERSION_BASE_URL="https://global.api.pvp.net/api/lol/static-data/na/v1.2/versions"
 CHAMPIONS_BASE_URL="https://global.api.pvp.net/api/lol/static-data/na/v1.2/champion"
-DEST_PATH="public/champion/"
+DEST_PATH="public/champion"
 
 if [ ! -d ${DEST_PATH} ]; then
     mkdir ${DEST_PATH}
@@ -38,7 +38,7 @@ shift $((OPTIND-1))
 
 # DDragon version
 DDV=$(curl "${DDRAGON_VERSION_BASE_URL}?api_key=${API_KEY}" | jq '.[0]' | sed 's/"//g')
-IMAGE_BASE_URL="http://ddragon.leagueoflegends.com/cdn/${DDV}/img/champion/"
+IMAGE_BASE_URL="http://ddragon.leagueoflegends.com/cdn/${DDV}/img/champion"
 
 # All Champion Icon image names
 CHAMPIONS=$(curl "${CHAMPIONS_BASE_URL}?champData=image&api_key=${API_KEY}" | jq '.data | map(.image.full)')
@@ -47,9 +47,9 @@ NUM_CHAMPIONS=$(echo ${CHAMPIONS} | jq '. | length')
 # Download each champion icon into public/champions/{champion}.png
 for ((i = 0; i < ${NUM_CHAMPIONS}; i++)) do
     IMG_NAME=$(echo ${CHAMPIONS} | jq '.['${i}']' | sed 's/"//g')
-    if [ $(test -f "${DEST_PATH}${IMG_NAME}") ]; then
-        IMG_URL="${IMAGE_BASE_URL}${IMG_NAME}"
+    if [ ! -f "${DEST_PATH}/${IMG_NAME}" ]; then
+        IMG_URL="${IMAGE_BASE_URL}/${IMG_NAME}"
         echo "downloading: ${IMG_URL}"
-        curl "${IMG_URL}" > "${DEST_PATH}${IMG_NAME}"
+        curl "${IMG_URL}" > "${DEST_PATH}/${IMG_NAME}"
     fi
 done
