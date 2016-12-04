@@ -18,18 +18,19 @@ class ListBehavior[Time, A](initial: Time => A, fs: List[(Time, Time => A)])
   override def apply(t: Time): A = {
     def getVal(listBehavior: ListBehavior[Time, A]) : Time => A = listBehavior.next match {
         case None => listBehavior.current
-        case Some((t2, behavior)) if t < t2 => listBehavior.current
+        case Some((t2, _)) if t < t2 => listBehavior.current
         case Some((_, behavior)) => getVal(behavior)
       }
     getVal(this)(t)
   }
 
-  override def map[B](f: (A) => B) = new ListBehavior[Time, B](f.compose[Time](current))
+  override def map[B](f: (A) => B): ListBehavior[Time, B] = new ListBehavior[Time, B](f.compose[Time](current))
 
   override def sampledBy(start: Time, increment: Time, end: Time)(implicit m: Monoid[Time]): EventStream[Time, A] = {
-    def sample(current: Time): List[(Time, A)] = ordering.gteq(current, end) match {
-      case true => List((current, this(current)))
-      case false => (current, this(current)) :: sample(m.append(current, increment))
+    def sample(current: Time): List[(Time, A)] = if (ordering.gteq(current, end)) {
+      List((current, this (current)))
+    } else {
+      (current, this (current)) :: sample(m.append(current, increment))
     }
     new ListEventStream[Time, A](sample(start))
   }
@@ -40,9 +41,10 @@ class ListBehavior[Time, A](initial: Time => A, fs: List[(Time, Time => A)])
     */
   override def withPrev(diff: Time, prev: (Time, Time) => Time)
                        (implicit m: Monoid[Time]): Behavior[Time, (Option[A], A)] = {
-    new ListBehavior[Time, (Option[A], A)](t => ordering.lt(prev(t, diff), m.zero) match {
-      case true => (None, this(t))
-      case false => (Some(this(prev(t, diff))), this(t))
+    new ListBehavior[Time, (Option[A], A)](t => if (ordering.lt(prev(t, diff), m.zero)) {
+      (None, this (t))
+    } else {
+      (Some(this (prev(t, diff))), this (t))
     })
   }
 

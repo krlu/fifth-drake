@@ -1,8 +1,8 @@
-module Timeline.Internal.Update exposing (update)
+module Controls.Internal.Update exposing (update)
 
+import Controls.Internal.ModelUtils exposing(..)
+import Controls.Types exposing (Msg(..), Model, Drag, Status(..))
 import GameModel exposing (..)
-import Timeline.Internal.ModelUtils exposing(..)
-import Timeline.Types exposing (Msg(..), Model, Drag, Status(..))
 
 update : Timestamp -> GameLength -> Msg -> Model -> (Timestamp, Model)
 update timestamp gameLength msg ({mouse} as model) =

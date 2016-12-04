@@ -40,6 +40,9 @@ flywayPassword := props.value.getProperty("climb.pgPassword")
 
 scalastyleConfig := new File("project/scalastyle-config.xml")
 scalastyleFailOnError := true
+lazy val checkStyle = taskKey[Unit]("Check Style")
+checkStyle := org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Test).toTask("").value
+(test in Test) <<= (test in Test) dependsOn checkStyle
 
 scalaVersion := "2.11.7"
 

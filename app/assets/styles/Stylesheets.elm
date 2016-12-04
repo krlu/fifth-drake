@@ -1,5 +1,6 @@
 port module Stylesheets exposing (..)
 
+import Controls.Css
 import Css.File exposing (..)
 import DashboardCss
 import Html exposing (div)
@@ -8,7 +9,7 @@ import MainCss
 import Minimap.Css
 import NavbarCss
 import TagScroller.Css
-import Timeline.Css
+import TeamDisplay.Css
 
 port files : CssFileStructure -> Cmd msg
 
@@ -18,10 +19,11 @@ cssFiles : CssFileStructure
 cssFiles =
     toFileStructure
       [ "dashboard.css" => compile
-        [ DashboardCss.css
+        [ Controls.Css.css
+        , DashboardCss.css
         , Minimap.Css.css
-        , Timeline.Css.css
         , TagScroller.Css.css
+        , TeamDisplay.Css.css
         ]
       , "navbar.css" => compile
         [ NavbarCss.css

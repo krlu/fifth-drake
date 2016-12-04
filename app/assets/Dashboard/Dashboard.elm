@@ -1,13 +1,13 @@
 module Dashboard exposing (..)
 
 import Array
+import Controls.Controls as Controls
 import GameModel exposing (Data, Metadata)
 import Html.App
 import Minimap.Minimap as Minimap
-import Subscriptions
 import Populate
+import Subscriptions
 import TagScroller.TagScroller as TagScroller
-import Timeline.Timeline as Timeline
 import Types exposing (..)
 import Update
 import View
@@ -17,10 +17,12 @@ init flags =
   let
     minimapModel = Minimap.init flags.minimapBackground
     (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.location
-    timelineModel = Timeline.init flags
+    controlsModel = Controls.init flags
     metadata : Metadata
     metadata =
-      { gameLength = 100
+      { blueTeamName = ""
+      , redTeamName = ""
+      , gameLength = 100
       }
     data : Data
     data =
@@ -36,7 +38,7 @@ init flags =
   in
     { minimap = minimapModel
     , tagScroller = tagScrollerModel
-    , timeline = timelineModel
+    , controls = controlsModel
     , game =
       { metadata = metadata
       , data = data

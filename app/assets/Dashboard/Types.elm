@@ -1,20 +1,20 @@
 module Types exposing (..)
 
+import Controls.Types as Controls
 import GameModel exposing (Game, GameLength, Timestamp)
 import Http
 import Minimap.Types as Minimap
-import Timeline.Types as Timeline
 import TagScroller.Types as TagScroller
 
 type Msg
   = TagScrollerMsg TagScroller.Msg
-  | TimelineMsg Timeline.Msg
+  | ControlsMsg Controls.Msg
   | SetGame Game
   | GameDataFetchFailure Http.Error
   | UpdateTimestamp Timestamp
 
 type alias Model =
-  { timeline : Timeline.Model
+  { controls : Controls.Model
   , minimap : Minimap.Model
   , tagScroller : TagScroller.Model
   , game : Game

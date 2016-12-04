@@ -1,11 +1,11 @@
-module Timeline.Timeline exposing (init, update, view, subscriptions)
+module Controls.Controls exposing (init, update, view, subscriptions)
 
+import Controls.Internal.Subscriptions as Subscriptions
+import Controls.Internal.Update as Update
+import Controls.Internal.View as View
+import Controls.Types exposing (..)
 import GameModel exposing (GameLength, Timestamp)
 import Html exposing (Html)
-import Timeline.Internal.Subscriptions as Subscriptions
-import Timeline.Internal.Update as Update
-import Timeline.Internal.View as View
-import Timeline.Types exposing (..)
 
 initialModel : {a | playButton: String, pauseButton: String} -> Model
 initialModel {playButton, pauseButton} =
