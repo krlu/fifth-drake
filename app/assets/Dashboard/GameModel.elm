@@ -14,7 +14,9 @@ type alias Game =
 gameLength is the total duration of the game in seconds.
 -}
 type alias Metadata =
-  { gameLength : GameLength
+  { blueTeamName       : String
+  , redTeamName        : String
+  , gameLength         : GameLength
   }
 
 type alias Data =

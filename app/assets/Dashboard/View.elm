@@ -1,13 +1,14 @@
 module View exposing (..)
 
-import DashboardCss exposing (CssClass(..), namespace)
-import GameModel exposing (GameLength, Timestamp)
+import Controls.Controls as Controls
+import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider), namespace)
+import GameModel exposing (GameLength, Side(..), Timestamp)
 import Html exposing (..)
 import Html.App
 import Html.CssHelpers exposing (withNamespace)
 import Minimap.Minimap as Minimap
 import TagScroller.TagScroller as TagScroller
-import Timeline.Timeline as Timeline
+import TeamDisplay.TeamDisplay as TeamDisplay
 import Types exposing (..)
 
 {id, class, classList} = withNamespace namespace
@@ -15,19 +16,37 @@ import Types exposing (..)
 view : Model -> Html Msg
 view model =
   let
-      timeline =
-        Timeline.view model.timestamp model.game.metadata.gameLength model.timeline
-        |> Html.App.map TimelineMsg
-      minimap = Minimap.view model.minimap model.game.data model.timestamp
-      tagScroller = Html.App.map TagScrollerMsg <| TagScroller.view model.tagScroller
+    controls =
+      Controls.view
+        model.timestamp
+        model.game.metadata.gameLength
+        model.controls
+      |> Html.App.map ControlsMsg
+    minimap = Minimap.view model.minimap model.game.data model.timestamp
+    blueTeamDisplay =
+      TeamDisplay.view
+        Blue
+        model.game.metadata.blueTeamName
+        model.game.data.blueTeam
+        model.timestamp
+    redTeamDisplay =
+      TeamDisplay.view
+        Red
+        model.game.metadata.redTeamName
+        model.game.data.redTeam
+        model.timestamp
+
   in
-      div [ class [Dashboard] ]
-        [ div [ class [MapAndTags] ]
-            [ minimap
-            , div [ (withNamespace DashboardCss.namespace).class [Vdivider] ] []
-            , tagScroller
-            ]
-        , div [ class [Hdivider] ] []
-        , timeline
+    div
+      [ class [Dashboard] ]
+      [ div
+        [ class [TeamDisplays] ]
+        [ blueTeamDisplay
+        , redTeamDisplay
         ]
+      , div [ id [TeamDisplayDivider] ] []
+      , minimap
+      , div [ id [ControlsDivider] ] []
+      , controls
+      ]
 
