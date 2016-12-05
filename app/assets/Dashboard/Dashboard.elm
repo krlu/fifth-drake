@@ -3,7 +3,7 @@ module Dashboard exposing (..)
 import Array
 import Controls.Controls as Controls
 import GameModel exposing (Data, Metadata)
-import Html.App
+import Html
 import Minimap.Minimap as Minimap
 import Populate
 import Subscriptions
@@ -49,9 +49,9 @@ init flags =
     , Populate.populate flags.location
     ]
 
-main : Program Flags
+main : Program Flags Model Msg
 main =
-  Html.App.programWithFlags
+  Html.programWithFlags
     { init = init
     , view = View.view
     , update = Update.update

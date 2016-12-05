@@ -8,7 +8,7 @@
     "url": "https://github.com/climb-gg/fifth-drake.git"
   },
   "dependencies": {
-    "elm": "0.17.1",
+    "elm": "0.18.0",
     "elm-css": "^0.6.0",
     "lodash": "^4.16.6"
   },

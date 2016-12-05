@@ -39,5 +39,3 @@ update timestamp gameLength msg ({mouse} as model) =
           ( timestamp + 1
           , model
           )
-      GameLengthFetchFailure err ->
-        (Debug.log "Timeline failed to fetch" (timestamp, model))

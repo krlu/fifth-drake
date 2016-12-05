@@ -30,9 +30,9 @@ update msg model =
           }
         , Cmd.none
         )
-    SetGame game ->
+    SetGame (Ok game) ->
       ({ model | game = game }, Cmd.none)
-    GameDataFetchFailure err ->
+    SetGame (Err err) ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
     UpdateTimestamp timestamp ->
       ( { model | timestamp = timestamp }
