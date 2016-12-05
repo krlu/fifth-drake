@@ -2,7 +2,7 @@ module Dashboard exposing (..)
 
 import Array
 import Controls.Controls as Controls
-import GameModel exposing (Data, GameId, Metadata)
+import GameModel exposing (Data, Metadata)
 import Minimap.Minimap as Minimap
 import Navigation exposing (Location)
 import Populate
