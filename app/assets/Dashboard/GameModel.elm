@@ -58,7 +58,9 @@ type alias Position =
 
 type alias ChampionState =
   { hp                : Float
-  , mp                : Float
+  , hpMax             : Float
+  , power             : Float
+  , powerMax          : Float
   , xp                : Float
   }
 

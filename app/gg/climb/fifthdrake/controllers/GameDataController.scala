@@ -86,7 +86,9 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
             ),
             "championState" -> Json.obj(
               "hp" -> playerState.championState.hp,
-              "mp" -> playerState.championState.mp,
+              "hpMax" -> playerState.championState.hpMax,
+              "power" -> playerState.championState.power,
+              "powerMax" -> playerState.championState.powerMax,
               "xp" -> playerState.championState.xp
             ))
         }

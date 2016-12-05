@@ -117,7 +117,9 @@ position =
 
 championState : Decoder ChampionState
 championState =
-  map3 ChampionState
+  map5 ChampionState
     ("hp" ::= float)
-    ("mp" ::= float)
+    ("hpMax" ::= float)
+    ("power" ::= float)
+    ("powerMax" ::= float)
     ("xp" ::= float)

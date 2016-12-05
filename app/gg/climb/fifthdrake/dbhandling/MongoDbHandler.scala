@@ -162,9 +162,18 @@ class MongoDbHandler(mongoClient: MongoClient) {
   private def parseChampionState(doc: Document): Option[ChampionState] = {
     for {
       hp <- doc.get("h").map(_.asInt32().getValue)
-      mp <- doc.get("p").map(_.asInt32().getValue)
+      hpMax <- doc.get("maxHealth").map(_.asInt32().getValue)
+      power <- doc.get("p").map(_.asInt32().getValue)
+      powerMax <- doc.get("maxPower").map(_.asInt32().getValue)
       xp <- doc.get("xp").map(_.asInt32().getValue)
       name <- doc.get("championName").map(_.asString().getValue)
-    } yield new ChampionState(hp, mp, xp, name)
+    } yield new ChampionState(
+      hp = hp,
+      power = power,
+      xp = xp,
+      name = name,
+      powerMax = powerMax,
+      hpMax = hpMax
+    )
   }
 }

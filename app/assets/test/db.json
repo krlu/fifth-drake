@@ -74,7 +74,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -85,7 +87,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -96,7 +100,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -107,7 +113,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -118,7 +126,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -129,7 +139,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -140,7 +152,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -151,7 +165,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -162,7 +178,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -173,7 +191,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               }
@@ -193,7 +213,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -204,7 +226,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -215,7 +239,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -226,7 +252,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -237,7 +265,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -248,7 +278,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -259,7 +291,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -270,7 +304,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -281,7 +317,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -292,7 +330,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               }
@@ -312,7 +352,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -323,7 +365,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -334,7 +378,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -345,7 +391,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -356,7 +404,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -367,7 +417,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -378,7 +430,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -389,7 +443,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -400,7 +456,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -411,7 +469,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               }
@@ -503,7 +563,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -514,7 +576,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -525,7 +589,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -536,7 +602,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -547,7 +615,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -558,7 +628,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -569,7 +641,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -580,7 +654,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -591,7 +667,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -602,7 +680,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               }
@@ -622,7 +702,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -633,7 +715,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -644,7 +728,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -655,7 +741,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -666,7 +754,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -677,7 +767,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -688,7 +780,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -699,7 +793,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -710,7 +806,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -721,7 +819,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               }
@@ -741,7 +841,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -752,7 +854,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -763,7 +867,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -774,7 +880,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -785,7 +893,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -796,7 +906,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -807,7 +919,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -818,7 +932,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -829,7 +945,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               },
@@ -840,7 +958,9 @@
                 },
                 "championState": {
                   "hp": 0,
-                  "mp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
                   "xp": 0
                 }
               }
