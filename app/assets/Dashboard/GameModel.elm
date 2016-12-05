@@ -38,8 +38,7 @@ type alias TeamState =
   }
 
 type alias Player =
-  { side              : Side
-  , role              : Role
+  { role              : Role
   , ign               : String
   , championName      : String
   , championImage     : String
@@ -66,3 +65,15 @@ type alias ChampionState =
 
 type Role = Top | Jungle | Mid | Bot | Support
 type Side = Red | Blue
+
+getTeamName : Side -> Metadata -> String
+getTeamName side =
+  case side of
+    Blue -> .blueTeamName
+    Red -> .redTeamName
+
+getTeam : Side -> Data -> Team
+getTeam side =
+  case side of
+    Blue -> .blueTeam
+    Red -> .redTeam

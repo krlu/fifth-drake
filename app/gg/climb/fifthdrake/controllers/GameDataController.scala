@@ -95,7 +95,6 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
 
         def playerStateToJson(p: (Player, Behavior[Time, PlayerState])): JsValue = p match {
           case (player, states) => Json.obj(
-            "side" -> states(Duration.Zero).sideColor.name,
             "role" -> player.role.name,
             "ign" -> player.ign,
             "championName" -> states(Duration.Zero).championState.name,

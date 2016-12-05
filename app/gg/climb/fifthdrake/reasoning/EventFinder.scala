@@ -83,7 +83,6 @@ class EventFinder{
 
   private def getFight(bluePlayer: (Player, (Option[PlayerState], PlayerState)),
                redPlayer: (Player, (Option[PlayerState], PlayerState))): Option[Fight] = {
-    require(bluePlayer._2._2.sideColor.name != redPlayer._2._2.sideColor.name)
     for {
       redPrevState <- redPlayer._2._1
       bluePrevState <- bluePlayer._2._1

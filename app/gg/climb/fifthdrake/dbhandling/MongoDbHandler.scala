@@ -3,16 +3,16 @@ package gg.climb.fifthdrake.dbhandling
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.{Game, Time}
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Team}
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
+import gg.climb.fifthdrake.{Game, Time}
 import org.joda.time.DateTime
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.{MongoClient, Observable}
+import org.mongodb.scala.{MongoClient, MongoDatabase, Observable}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -20,9 +20,9 @@ import scala.concurrent.{Await, Future}
 
 class MongoDbHandler(mongoClient: MongoClient) {
 
-  val TIMEOUT = Duration(5, TimeUnit.SECONDS)
-  val names: Observable[String] = mongoClient.listDatabaseNames()
-  val database = mongoClient.getDatabase("league_analytics")
+  private val TIMEOUT = Duration(5, TimeUnit.SECONDS)
+  private val names: Observable[String] = mongoClient.listDatabaseNames()
+  private val database: MongoDatabase = mongoClient.getDatabase("league_analytics")
 
   def getAllGames: Future[Seq[MetaData]] = getSeq("lcs_game_identifiers", None, buildMetadata)
 
@@ -139,17 +139,17 @@ class MongoDbHandler(mongoClient: MongoClient) {
       states: Set[PlayerState] = playerStats.filter(_._2.asDocument().getInt32("teamId")
         .getValue.toString == side.riotId.id)
                .flatMap({ case (key, value) =>
-                 parsePlayerState(Document(value.asDocument()), side)
+                 parsePlayerState(Document(value.asDocument()))
                         }).toSet
     } yield (new TeamState(barons, dragons, turrets), states)
   }
 
-  private def parsePlayerState(playerStat: Document, side: Side): Option[PlayerState] = {
+  private def parsePlayerState(playerStat: Document): Option[PlayerState] = {
     for {
       playerId <- playerStat.get("playerId").map(_.asString().getValue).map(new RiotId[Player](_))
       championState <- parseChampionState(playerStat)
       location <- parseLocationData(playerStat)
-    } yield new PlayerState(playerId, championState, location, side)
+    } yield new PlayerState(playerId, championState, location)
   }
 
   private def parseLocationData(doc: Document): Option[LocationData] = {
