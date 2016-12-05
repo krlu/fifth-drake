@@ -7,8 +7,8 @@ import GameModel exposing (..)
 import Http
 import Json.Decode exposing (..)
 import Maybe exposing (withDefault)
+import Navigation exposing (Location)
 import Types exposing (..)
-import Types exposing (WindowLocation)
 
 (::=) : String -> Decoder a -> Decoder a
 (::=) key decoder =
@@ -18,15 +18,15 @@ import Types exposing (WindowLocation)
       Ok val -> succeed val
       Err e -> Debug.log (key ++ " failed to parse") (fail e))
 
-populate : WindowLocation -> Cmd Msg
-populate loc = Http.send SetGame <| getGame loc
+populate : String -> GameId -> Cmd Msg
+populate host gameId = Http.send SetGame <| getGame host gameId
 
-getGame : WindowLocation -> Http.Request Game
-getGame loc = Http.get (playerUrl loc) game
+getGame : String -> GameId -> Http.Request Game
+getGame host gameId = Http.get (playerUrl host gameId) game
 
-playerUrl : WindowLocation -> String
-playerUrl loc =
-  "http://" ++ loc.host ++ "/game/" ++ loc.gameId ++ "/data"
+playerUrl : String -> GameId -> String
+playerUrl host gameId =
+  "http://" ++ host ++ "/game/" ++ toString gameId ++ "/data"
 
 game : Decoder Game
 game =

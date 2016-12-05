@@ -21,10 +21,6 @@ module.exports = {
 		filename: '[name].js'
 	},
 
-    devServer: {
-        outputPath: buildPath
-    },
-
 	resolve: {
 		root: srcPath,
 		modulesDirectories: [
@@ -80,5 +76,17 @@ module.exports = {
 	    new CopyWebpackPlugin([
             { from: "public/champion/*", to: buildPath }
         ])
-    ]
+    ],
+
+	devServer: {
+		port: 3000,
+        outputPath: buildPath,
+		contentBase: path.join(__dirname, "public/"),
+		historyApiFallback: {
+			index: 'index.html',
+			rewrites: [
+				{ from: /game\/elm-css\/index\.css/, to: '/elm-css/index.css'}
+			]
+		}
+	}
 };
