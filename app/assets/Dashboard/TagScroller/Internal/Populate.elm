@@ -4,17 +4,18 @@ import GameModel exposing (GameId)
 import Http
 import Json.Decode exposing (..)
 import Navigation exposing (Location)
+import Populate exposing (getGameId)
 import TagScroller.Types exposing (Msg(..), Tag, TagCategory(..))
 
-tagUrl : String -> GameId -> String
-tagUrl host gameId =
-  "http://" ++ host ++ "/game/" ++ toString gameId ++ "/tags"
+tagUrl : Location -> String
+tagUrl loc =
+  loc.origin ++ "/game/" ++ toString (getGameId loc) ++ "/tags"
 
-getTags : String -> GameId -> Http.Request (List Tag)
-getTags host gameId = Http.get (tagUrl host gameId) (list tag)
+getTags : Location -> Http.Request (List Tag)
+getTags loc = Http.get (tagUrl loc) (list tag)
 
-populate : String -> GameId -> Cmd Msg
-populate host gameId = Http.send UpdateTags <| getTags host gameId
+populate : Location -> Cmd Msg
+populate loc = Http.send UpdateTags <| getTags loc
 
 tag : Decoder Tag
 tag =

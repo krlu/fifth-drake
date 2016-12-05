@@ -87,6 +87,12 @@ module.exports = {
 			rewrites: [
 				{ from: /game\/elm-css\/index\.css/, to: '/elm-css/index.css'}
 			]
-		}
+		},
+		proxy: [
+			{
+				context: ['/game/**/data', '/game/**/tags'],
+				target: 'http://localhost:4000'
+            }
+		]
 	}
 };

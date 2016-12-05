@@ -9,6 +9,15 @@ import Json.Decode exposing (..)
 import Maybe exposing (withDefault)
 import Navigation exposing (Location)
 import Types exposing (..)
+import UrlParser exposing ((</>), parsePath, s)
+
+getGameId : Location -> GameId
+getGameId =
+  parsePath (s "game" </> UrlParser.int)
+  >> \maybe ->
+    case maybe of
+      Just gameId -> gameId
+      Nothing -> Debug.crash "No game id found in URL"
 
 (::=) : String -> Decoder a -> Decoder a
 (::=) key decoder =
@@ -18,15 +27,15 @@ import Types exposing (..)
       Ok val -> succeed val
       Err e -> Debug.log (key ++ " failed to parse") (fail e))
 
-populate : String -> GameId -> Cmd Msg
-populate host gameId = Http.send SetGame <| getGame host gameId
+populate : Location -> Cmd Msg
+populate loc = Http.send SetGame <| getGame loc
 
-getGame : String -> GameId -> Http.Request Game
-getGame host gameId = Http.get (playerUrl host gameId) game
+getGame : Location -> Http.Request Game
+getGame loc = Http.get (playerUrl loc) game
 
-playerUrl : String -> GameId -> String
-playerUrl host gameId =
-  "http://" ++ host ++ "/game/" ++ toString gameId ++ "/data"
+playerUrl : Location -> String
+playerUrl loc =
+  loc.origin ++ "/game/" ++ toString (getGameId loc) ++ "/data"
 
 game : Decoder Game
 game =
