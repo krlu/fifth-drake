@@ -8,8 +8,8 @@ import TagScroller.Internal.Populate as Populate
 import TagScroller.Internal.Update as Update
 import TagScroller.Internal.View as View
 
-init : String -> GameId -> (Model, Cmd Msg)
-init host gameId = ({ tags = [] }, Populate.populate host gameId)
+init : Location -> (Model, Cmd Msg)
+init loc = ({ tags = [] }, Populate.populate loc)
 
 update : Msg -> Model -> (Maybe Timestamp, Model)
 update = Update.update

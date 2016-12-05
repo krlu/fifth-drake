@@ -26,5 +26,4 @@ type alias Flags =
   { minimapBackground : String
   , playButton        : String
   , pauseButton       : String
-  , dataHost          : String
   }

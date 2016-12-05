@@ -10,23 +10,13 @@ import Subscriptions
 import TagScroller.TagScroller as TagScroller
 import Types exposing (..)
 import Update
-import UrlParser exposing (..)
 import View
-
-getGameId : Location -> GameId
-getGameId =
-  parsePath (s "game" </> int)
-  >> \maybe ->
-    case maybe of
-      Just gameId -> gameId
-      Nothing -> Debug.crash "No game id found in URL"
 
 init : Flags -> Location -> (Model, Cmd Msg)
 init flags location =
   let
-    gameId = getGameId location
     minimapModel = Minimap.init flags.minimapBackground
-    (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.dataHost gameId
+    (tagScrollerModel, tagScrollerCmd) = TagScroller.init location
     controlsModel = Controls.init flags.playButton flags.pauseButton
     metadata : Metadata
     metadata =
@@ -56,7 +46,7 @@ init flags location =
     , timestamp = 0
     } !
     [ Cmd.map TagScrollerMsg tagScrollerCmd
-    , Populate.populate flags.dataHost gameId
+    , Populate.populate location
     ]
 
 main : Program Flags Model Msg
