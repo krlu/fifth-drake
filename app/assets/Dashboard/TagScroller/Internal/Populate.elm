@@ -1,19 +1,20 @@
 module TagScroller.Internal.Populate exposing (..)
 
+import GameModel exposing (GameId)
 import Http
 import Json.Decode exposing (..)
+import Navigation exposing (Location)
 import TagScroller.Types exposing (Msg(..), Tag, TagCategory(..))
-import Types exposing (WindowLocation)
 
-tagUrl : WindowLocation -> String
-tagUrl loc =
-  "http://" ++ loc.host ++ "/game/" ++ loc.gameId ++ "/tags"
+tagUrl : String -> GameId -> String
+tagUrl host gameId =
+  "http://" ++ host ++ "/game/" ++ toString gameId ++ "/tags"
 
-getTags : WindowLocation -> Http.Request (List Tag)
-getTags loc = Http.get (tagUrl loc) (list tag)
+getTags : String -> GameId -> Http.Request (List Tag)
+getTags host gameId = Http.get (tagUrl host gameId) (list tag)
 
-populate : WindowLocation -> Cmd Msg
-populate loc = Http.send UpdateTags <| getTags loc
+populate : String -> GameId -> Cmd Msg
+populate host gameId = Http.send UpdateTags <| getTags host gameId
 
 tag : Decoder Tag
 tag =

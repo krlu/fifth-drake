@@ -7,15 +7,15 @@ import Controls.Types exposing (..)
 import GameModel exposing (GameLength, Timestamp)
 import Html exposing (Html)
 
-initialModel : {a | playButton: String, pauseButton: String} -> Model
-initialModel {playButton, pauseButton} =
+initialModel : String -> String -> Model
+initialModel playButton pauseButton =
   { mouse = Nothing
   , status = Pause
   , pauseButton = pauseButton
   , playButton = playButton
   }
 
-init : {a | playButton: String, pauseButton: String} -> Model
+init : String -> String -> Model
 init = initialModel
 
 update : Timestamp -> GameLength -> Msg -> Model -> (Timestamp, Model)

@@ -12,9 +12,6 @@
 		minimapBackground: require("Dashboard/map.jpg"),
 		playButton: require("Dashboard/ic_play_arrow_white_24px.svg"),
 		pauseButton: require("Dashboard/ic_pause_white_24px.svg"),
-		location: {
-		  host: script.getAttribute("data-host"),
-		  gameId: script.getAttribute("data-game-id")
-		}
+		dataHost: script.getAttribute("data-host")
 	});
 })();

@@ -38,3 +38,4 @@ update msg model =
       ( { model | timestamp = timestamp }
       , Cmd.none
       )
+    LocationUpdate loc -> (model, Cmd.none)

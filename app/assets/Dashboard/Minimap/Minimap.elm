@@ -5,7 +5,6 @@ import GameModel exposing (..)
 import Html exposing (Html)
 import Minimap.Internal.View as View
 import Minimap.Types exposing (..)
-import Types exposing (WindowLocation)
 
 initialModel : String -> Model
 initialModel background =

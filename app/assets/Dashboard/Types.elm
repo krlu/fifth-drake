@@ -4,6 +4,7 @@ import Controls.Types as Controls
 import GameModel exposing (Game, GameLength, Timestamp)
 import Http
 import Minimap.Types as Minimap
+import Navigation exposing (Location)
 import TagScroller.Types as TagScroller
 
 type Msg
@@ -11,6 +12,7 @@ type Msg
   | ControlsMsg Controls.Msg
   | SetGame (Result Http.Error Game)
   | UpdateTimestamp Timestamp
+  | LocationUpdate Location
 
 type alias Model =
   { controls : Controls.Model
@@ -20,14 +22,9 @@ type alias Model =
   , timestamp : Timestamp
   }
 
-type alias WindowLocation =
-  { host              : String
-  , gameId            : String
-  }
-
 type alias Flags =
   { minimapBackground : String
   , playButton        : String
   , pauseButton       : String
-  , location          : WindowLocation
+  , dataHost          : String
   }
