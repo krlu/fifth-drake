@@ -10,7 +10,7 @@ import Html exposing (..)
 import Html.Attributes exposing (src)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (on, onClick)
-import Json.Decode as Json exposing ((:=), Decoder, andThen, int, object2)
+import Json.Decode as Json exposing (Decoder, andThen, field, int, map2)
 import Mouse
 import StyleUtils exposing (..)
 
@@ -19,15 +19,15 @@ import StyleUtils exposing (..)
 join : Decoder a -> Decoder b -> Decoder (a,b)
 join da db =
   da
-  |> flip Json.andThen (\x -> Json.map (\y -> (x, y)) db)
+  |> Json.andThen (\x -> Json.map (\y -> (x, y)) db)
 
 relativePosition : Decoder (Mouse.Position, Mouse.Position)
 relativePosition =
   join
     Mouse.position <|
-    object2 Mouse.Position
-      ("offsetX" := int)
-      ("offsetY" := int)
+    map2 Mouse.Position
+      (field "offsetX" int)
+      (field "offsetY" int)
 
 view : Timestamp -> GameLength -> Model -> Html Msg
 view timestamp gameLength model =

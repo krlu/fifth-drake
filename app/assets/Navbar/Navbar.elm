@@ -1,6 +1,5 @@
 module Navbar exposing (..)
 
-import Html.App
 import Html exposing (..)
 import Html.Attributes exposing (href, src)
 import Html.CssHelpers exposing (withNamespace)
@@ -125,9 +124,9 @@ subscriptions model =
 
 -- MAIN
 
-main : Program Flags
+main : Program Flags Model Msg
 main =
-  Html.App.programWithFlags
+  Html.programWithFlags
   { init = init
   , update = update
   , view = view

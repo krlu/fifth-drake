@@ -4,7 +4,6 @@ import Controls.Controls as Controls
 import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider), namespace)
 import GameModel exposing (GameLength, Side(..), Timestamp)
 import Html exposing (..)
-import Html.App
 import Html.CssHelpers exposing (withNamespace)
 import Minimap.Minimap as Minimap
 import TagScroller.TagScroller as TagScroller
@@ -21,7 +20,7 @@ view model =
         model.timestamp
         model.game.metadata.gameLength
         model.controls
-      |> Html.App.map ControlsMsg
+      |> Html.map ControlsMsg
     minimap = Minimap.view model.minimap model.game.data model.timestamp
     blueTeamDisplay =
       TeamDisplay.view

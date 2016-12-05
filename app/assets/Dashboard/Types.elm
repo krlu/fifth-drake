@@ -9,8 +9,7 @@ import TagScroller.Types as TagScroller
 type Msg
   = TagScrollerMsg TagScroller.Msg
   | ControlsMsg Controls.Msg
-  | SetGame Game
-  | GameDataFetchFailure Http.Error
+  | SetGame (Result Http.Error Game)
   | UpdateTimestamp Timestamp
 
 type alias Model =
