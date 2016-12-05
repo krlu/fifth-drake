@@ -3,6 +3,7 @@ module DashboardCss exposing (..)
 import Css exposing (..)
 import Css.Namespace
 import CssColors as Color
+import GameModel exposing (Side(Blue, Red))
 import Minimap.Css exposing (minimapHeight, minimapWidth)
 import StyleUtils
 import TagScroller.Css exposing (tagScrollerWidth)
@@ -27,6 +28,8 @@ type CssId
 type CssClass
   = Dashboard
   | TeamDisplays
+  | Widget
+  | WidgetColor Side
 
 css : Stylesheet
 css =
@@ -50,5 +53,20 @@ css =
   , (#) ControlsDivider
     [ width auto
     , height (50 |> px)
+    ]
+  , (.) Widget
+    [ display inlineBlock
+    , backgroundColor (hex "#3b4047")
+    , borderBottom2 (3 |> px) solid
+    , borderBottomLeftRadius (3 |> px)
+    , borderBottomRightRadius (3 |> px)
+    , withClass (WidgetColor Blue)
+      [ color Color.c_blueTeam
+      , borderColor Color.c_blueTeam
+      ]
+    , withClass (WidgetColor Red)
+      [ color Color.c_redTeam
+      , borderColor Color.c_redTeam
+      ]
     ]
   ]

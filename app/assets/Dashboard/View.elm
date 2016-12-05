@@ -21,11 +21,13 @@ view : Model -> Html Msg
 view model =
   let
     sideToTeamDisplay side =
-      TeamDisplay.view
-        side
-        (getTeamName side model.game.metadata)
-        (getTeam side model.game.data)
-        model.timestamp
+      div
+        [ class [Widget, WidgetColor side] ]
+        [ TeamDisplay.view
+          (getTeamName side model.game.metadata)
+          (getTeam side model.game.data)
+          model.timestamp
+        ]
 
     controls =
       Controls.view
