@@ -39,9 +39,6 @@ css =
     [ backgroundColor (hex "#3b4047")
     , width (teamDisplayWidth |> px)
     , height (teamDisplayHeight |> px)
-    , borderBottom2 (3 |> px) solid
-    , borderBottomLeftRadius (3 |> px)
-    , borderBottomRightRadius (3 |> px)
     , overflow hidden
     , children
       [ h1
@@ -74,9 +71,15 @@ css =
   , (.) (ColorClass Blue)
     [ color Color.c_blueTeam
     , borderColor Color.c_blueTeam
+    , borderBottom2 (3 |> px) solid
+    , borderBottomLeftRadius (3 |> px)
+    , borderBottomRightRadius (3 |> px)
     ]
   , (.) (ColorClass Red)
     [ color Color.c_redTeam
     , borderColor Color.c_redTeam
+    , borderBottom2 (3 |> px) solid
+    , borderBottomLeftRadius (3 |> px)
+    , borderBottomRightRadius (3 |> px)
     ]
   ]

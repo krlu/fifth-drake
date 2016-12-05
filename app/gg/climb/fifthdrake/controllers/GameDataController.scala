@@ -90,7 +90,11 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
               "power" -> playerState.championState.power,
               "powerMax" -> playerState.championState.powerMax,
               "xp" -> playerState.championState.xp
-            ))
+            ),
+            "kills" -> playerState.kills,
+            "deaths" -> playerState.deaths,
+            "assists" -> playerState.assists
+          )
         }
 
         def playerStateToJson(p: (Player, Behavior[Time, PlayerState])): JsValue = p match {

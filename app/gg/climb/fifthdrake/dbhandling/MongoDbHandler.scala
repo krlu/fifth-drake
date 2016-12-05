@@ -12,7 +12,7 @@ import org.joda.time.DateTime
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.{MongoClient, MongoDatabase, Observable}
+import org.mongodb.scala.{MongoClient, MongoDatabase}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -21,7 +21,6 @@ import scala.concurrent.{Await, Future}
 class MongoDbHandler(mongoClient: MongoClient) {
 
   private val TIMEOUT = Duration(5, TimeUnit.SECONDS)
-  private val names: Observable[String] = mongoClient.listDatabaseNames()
   private val database: MongoDatabase = mongoClient.getDatabase("league_analytics")
 
   def getAllGames: Future[Seq[MetaData]] = getSeq("lcs_game_identifiers", None, buildMetadata)
@@ -138,7 +137,7 @@ class MongoDbHandler(mongoClient: MongoClient) {
       turrets <- teamStats.get("towersKilled").map(_.asInt32().getValue)
       states: Set[PlayerState] = playerStats.filter(_._2.asDocument().getInt32("teamId")
         .getValue.toString == side.riotId.id)
-               .flatMap({ case (key, value) =>
+               .flatMap({ case (_, value) =>
                  parsePlayerState(Document(value.asDocument()))
                         }).toSet
     } yield (new TeamState(barons, dragons, turrets), states)
@@ -149,7 +148,17 @@ class MongoDbHandler(mongoClient: MongoClient) {
       playerId <- playerStat.get("playerId").map(_.asString().getValue).map(new RiotId[Player](_))
       championState <- parseChampionState(playerStat)
       location <- parseLocationData(playerStat)
-    } yield new PlayerState(playerId, championState, location)
+      kills <- playerStat.get("kills").map(_.asInt32().getValue)
+      deaths <- playerStat.get("deaths").map(_.asInt32().getValue)
+      assists <- playerStat.get("assists").map(_.asInt32().getValue)
+    } yield new PlayerState(
+      id = playerId,
+      championState = championState,
+      location = location,
+      kills = kills,
+      deaths = deaths,
+      assists = assists
+    )
   }
 
   private def parseLocationData(doc: Document): Option[LocationData] = {

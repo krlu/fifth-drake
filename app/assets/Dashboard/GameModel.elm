@@ -48,6 +48,9 @@ type alias Player =
 type alias PlayerState =
   { position          : Position
   , championState     : ChampionState
+  , kills             : Int
+  , deaths            : Int
+  , assists           : Int
   }
 
 type alias Position =
