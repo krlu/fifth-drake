@@ -1,6 +1,6 @@
 {
   "data": {
-    "metadata": {
+      "metadata": {
       "blueTeamName": "Echo Fox",
       "redTeamName": "Team Solo Mid",
       "gameLength": 3000
@@ -65,6 +65,7 @@
             "role": "mid",
             "ign": "Froggen",
             "championName": "Cassiopeia",
+            "championImage": "/static/public/champion/Cassiopeia.png",
             "playerStates": [
               {
                 "position": {
@@ -183,6 +184,7 @@
             "role": "support",
             "ign": "Big",
             "championName": "Karma",
+            "championImage": "/static/public/champion/Karma.png",
             "playerStates": [
               {
                 "position": {
@@ -301,6 +303,7 @@
             "role": "jungle",
             "ign": "Hard",
             "championName": "Olaf",
+            "championImage": "/static/public/champion/Olaf.png",
             "playerStates": [
               {
                 "position": {
@@ -419,6 +422,7 @@
             "role": "bot",
             "ign": "Keith",
             "championName": "Jhin",
+            "championImage": "/static/public/champion/Jhin.png",
             "playerStates": []
           },
           {
@@ -426,6 +430,7 @@
             "role": "top",
             "ign": "kfo",
             "championName": "Shen",
+            "championImage": "/static/public/champion/Shen.png",
             "playerStates": []
           }
         ]
@@ -489,6 +494,7 @@
             "role": "mid",
             "ign": "Bjergsen",
             "championName": "Azir",
+            "championImage": "/static/public/champion/Azir.png",
             "playerStates": [
               {
                 "position": {
@@ -607,6 +613,7 @@
             "role": "top",
             "ign": "Hauntzer",
             "championName": "Irelia",
+            "championImage": "/static/public/champion/Irelia.png",
             "playerStates": [
               {
                 "position": {
@@ -725,6 +732,7 @@
             "role": "jungle",
             "ign": "Svenskeren",
             "championName": "RekSai",
+            "championImage": "/static/public/champion/RekSai.png",
             "playerStates": [
               {
                 "position": {
@@ -843,6 +851,7 @@
             "role": "support",
             "ign": "Biofrost",
             "championName": "Nami",
+            "championImage": "/static/public/champion/Nami.png",
             "playerStates": []
           },
           {
@@ -850,6 +859,7 @@
             "role": "bot",
             "ign": "Doublelift",
             "championName": "Lucian",
+            "championImage": "/static/public/champion/Lucian.png",
             "playerStates": []
           }
         ]

@@ -20,6 +20,7 @@ type CssClass
   = Minimap
   | PlayerIcon
   | Background
+  | ChampionImage
 
 css : Stylesheet
 css =
@@ -35,9 +36,14 @@ css =
         [ position absolute
         , width (playerIconSize |> px)
         , height (playerIconSize |> px)
-        , backgroundColor (hex "#A52A2A")
-        , borderRadius (50 |> pct)
         , transform <| translate2 (-50 |> pct) (50 |> pct)
+        , children
+          [ (.) ChampionImage
+            [ width (100 |> pct)
+            , height (100 |> pct)
+            , borderRadius (50 |> pct)
+            ]
+          ]
         ]
       , (.) Background
         [ height (100 |> pct)
