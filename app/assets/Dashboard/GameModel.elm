@@ -63,7 +63,7 @@ type alias ChampionState =
   , hpMax             : Float
   , power             : Float
   , powerMax          : Float
-  , xp                : Float
+  , xp                : Xp
   }
 
 type Role = Top | Jungle | Mid | Bot | Support
@@ -80,3 +80,19 @@ getTeam side =
   case side of
     Blue -> .blueTeam
     Red -> .redTeam
+
+type alias Level = Int
+type alias Xp = Float
+
+getCurrentLevel : Xp -> Level
+getCurrentLevel xp = -- This is a derived formula
+  round <| (sqrt (2 * xp + 529) - 13) / 10
+
+getXpToNextLevel : Xp -> Xp
+getXpToNextLevel xp =
+  getXpRequiredForLevel (getCurrentLevel xp + 1) - xp
+
+getXpRequiredForLevel : Level -> Xp
+getXpRequiredForLevel level =
+  toFloat <| 10 * (level - 1) * (18 + 5 * level)
+

@@ -21,15 +21,26 @@ teamDisplaysGap = 50
 teamDisplaysWidth : Float
 teamDisplaysWidth = teamDisplayWidth * 2 + teamDisplaysGap
 
+contentGap : Float
+contentGap = 40
+
+playerDisplaysGap : Float
+playerDisplaysGap = 20
+
 type CssId
   = TeamDisplayDivider
   | ControlsDivider
+  | MainContent
+  | CenterContent
 
 type CssClass
   = Dashboard
   | TeamDisplays
+  | PlayerDisplay
   | Widget
   | WidgetColor Side
+  | PlayerDisplayDivider
+  | ContentDivider
 
 css : Stylesheet
 css =
@@ -44,6 +55,33 @@ css =
         , width (teamDisplaysWidth |> px)
         , property "justify-content" "space-between"
         ] ++ StyleUtils.flexDirection "row")
+      , (#) MainContent (
+        [ displayFlex
+        , property "justify-content" "flex-start"
+        ] ++ StyleUtils.flexDirection "row" ++
+        [ children
+          [ (.) CenterContent (
+            [ displayFlex
+            , alignItems center
+            ] ++ StyleUtils.flexDirection "column")
+          , (.) ContentDivider
+            [ height (100 |> pct)
+            , width (contentGap |> px)
+            ]
+          , (.) PlayerDisplay (
+            [ displayFlex
+            , property "justify-content" "flex-start"
+            ] ++ StyleUtils.flexDirection "column" ++
+            [ children
+              [ (.) PlayerDisplayDivider
+                [ width (100 |> pct)
+                , height (playerDisplaysGap |> px)
+                ]
+              ]
+            ])
+          ]
+        ]
+        )
       ]
     ])
   , (#) TeamDisplayDivider
