@@ -42,7 +42,7 @@ view model =
       |> Array.map
         (\p ->
           widget side
-            [ PlayerDisplay.view p model.timestamp
+            [ PlayerDisplay.view side p model.timestamp
             ]
         )
       |> Array.toList

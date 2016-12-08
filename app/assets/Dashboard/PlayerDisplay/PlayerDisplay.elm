@@ -11,9 +11,14 @@ import StyleUtils exposing (styles)
 
 {id, class, classList} = withNamespace namespace
 
-view : Player -> Timestamp -> Html a
-view player timestamp =
+view : Side -> Player -> Timestamp -> Html a
+view side player timestamp =
   let
+    direction =
+      case side of
+        Blue -> DirNormal
+        Red -> DirReverse
+
     kda =
       Array.get timestamp player.state
       |> Maybe.map (\state ->
@@ -65,14 +70,14 @@ view player timestamp =
           )
   in
     div
-      [ class [PlayerDisplay] ]
+      [ class [PlayerDisplay, direction] ]
       [ div
-        [ class [ChampDisplay] ]
+        [ class [ChampDisplay, direction] ]
         [ p
           [ class [PlayerLevel] ]
           [ text << toString <| level ]
         , div
-          [ class [ChampPortrait] ]
+          [ class [ChampPortrait, direction] ]
           [ img
               [ src player.championImage
               , draggable "false"
@@ -84,7 +89,7 @@ view player timestamp =
           champStats
         ]
       , div
-        [ class [PlayerStats] ]
+        [ class [PlayerStats, direction] ]
         [ p
           [ class [PlayerIgn] ]
           [ text player.ign ]

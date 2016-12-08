@@ -40,6 +40,8 @@ type CssClass
   | PlayerIgn
   | PlayerLevel
   | PlayerStats
+  | DirNormal
+  | DirReverse
 
 css : Stylesheet
 css =
@@ -51,12 +53,18 @@ css =
     , padding (10 |> px)
     , property "justify-content" "space-between"
     , alignItems flexStart
-    ] ++ StyleUtils.flexDirection "row" ++
-    [ children
+    , withClass DirNormal
+      (StyleUtils.flexDirection "row")
+    , withClass DirReverse
+      (StyleUtils.flexDirection "row-reverse")
+    , children
       [ (.) ChampDisplay (
-        displayFlex
-        :: StyleUtils.flexDirection "row" ++
-        [ property "justify-content" "flex-start"
+        [ displayFlex
+        , withClass DirNormal
+          (StyleUtils.flexDirection "row")
+        , withClass DirReverse
+          (StyleUtils.flexDirection "row-reverse")
+        , property "justify-content" "flex-start"
         , alignItems center
         , children
           [ (.) PlayerLevel
@@ -76,7 +84,12 @@ css =
             , width (portraitWidth |> px)
             , backgroundColor Color.c_gold
             , property "z-index" "2"
-            , marginLeft (-5 |> px)
+            , withClass DirNormal
+              [ marginLeft (-5 |> px)
+              ]
+            , withClass DirReverse
+              [ marginRight (-5 |> px)
+              ]
             , children
               [ img
                 [ width (100 |> pct)
@@ -117,7 +130,12 @@ css =
       , (.) PlayerStats (
         [ color Color.c_offWhite
         , displayFlex
-        , alignItems flexEnd
+        , withClass DirNormal
+          [ alignItems flexEnd
+          ]
+        , withClass DirReverse
+          [ alignItems flexStart
+          ]
         ] ++ StyleUtils.flexDirection "column" ++
         [ children
           [ p
