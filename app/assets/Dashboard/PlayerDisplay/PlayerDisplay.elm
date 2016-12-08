@@ -4,6 +4,7 @@ import Array
 import Css exposing (height, pct, width, zero)
 import GameModel exposing (..)
 import Html exposing (..)
+import Html.Attributes exposing (draggable, src)
 import Html.CssHelpers exposing (withNamespace)
 import PlayerDisplay.Css exposing (CssClass(..), namespace)
 import StyleUtils exposing (styles)
@@ -72,7 +73,12 @@ view player timestamp =
           [ text << toString <| level ]
         , div
           [ class [ChampPortrait] ]
-          []
+          [ img
+              [ src player.championImage
+              , draggable "false"
+              ]
+              []
+          ]
         , div
           [ class [ChampStats] ]
           champStats

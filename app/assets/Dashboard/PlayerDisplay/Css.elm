@@ -1,7 +1,7 @@
 module PlayerDisplay.Css exposing (..)
 
 import Css exposing (..)
-import Css.Elements exposing (p)
+import Css.Elements exposing (img, p)
 import Css.Namespace
 import CssColors as Color
 import GameModel exposing (Side)
@@ -74,11 +74,15 @@ css =
           , (.) ChampPortrait
             [ height (portraitHeight |> px)
             , width (portraitWidth |> px)
-            , borderRadius (50 |> px)
             , backgroundColor Color.c_gold
             , property "z-index" "2"
             , marginLeft (-5 |> px)
-            , marginRight (-7 |> px)
+            , children
+              [ img
+                [ width (100 |> pct)
+                , height (100 |> pct)
+                ]
+              ]
             ]
           , (.) ChampStats (
             [ displayFlex
