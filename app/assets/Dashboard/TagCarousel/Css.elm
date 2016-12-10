@@ -1,5 +1,5 @@
 module TagCarousel.Css exposing (..)
-
+import CssColors as Color
 import Css exposing (..)
 import Css.Namespace
 import Minimap.Css
@@ -9,13 +9,13 @@ namespace : String
 namespace = "tagCarousel"
 
 tagCarouselWidth : Float
-tagCarouselWidth = 60
+tagCarouselWidth = 1250
 
 tagCarouselHeight : Float
-tagCarouselHeight = Minimap.Css.minimapHeight
+tagCarouselHeight = 100
 
 tagHeight : Float
-tagHeight = 100
+tagHeight = 60
 
 type CssClass
   = TagCarousel
@@ -28,16 +28,16 @@ css =
     [ width (tagCarouselWidth |> px)
     , height (tagCarouselHeight |> px)
     , overflowY auto
-    , backgroundColor (hex "#D2691E")
+    , backgroundColor Color.c_carousel
     ] ++
     StyleUtils.userSelect "none" ++
     [ children
       [ (.) Tag
         [ height (tagHeight |> px)
         , width auto
-        , backgroundColor (hex "#7FFFD4")
+        , backgroundColor Color.c_navBar
         , border2 (1 |> px) solid
-        , property "align-content" "center"
+        , property "align-content" "right"
         ]
       ]
     ])

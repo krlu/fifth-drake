@@ -46,3 +46,6 @@ c_offWhite = hex "#F5F5F5"
 
 c_white : Color
 c_white = hex "#FFFFFF"
+
+c_carousel : Color
+c_carousel = hex "#4D596E"
