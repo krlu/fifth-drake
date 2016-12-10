@@ -106,12 +106,20 @@ css =
             ] ++ StyleUtils.flexDirection "column" ++
             [ children
               [ (.) ChampStat
-                [ height (champStatHeight |> px)
+                [ displayFlex
+                , height (champStatHeight |> px)
                 , width (100 |> pct)
                 , backgroundColor Color.c_offWhite
                 , margin (3 |> px)
+                , withClass DirNormal
+                  (StyleUtils.flexDirection "row")
+                , withClass DirReverse
+                  (StyleUtils.flexDirection "row-reverse")
                 , children
-                  [ (.) CurrentHp
+                  [ everything
+                    [ height (100 |> pct)
+                    ]
+                  , (.) CurrentHp
                     [ backgroundColor Color.c_hp
                     ]
                   , (.) CurrentPower

@@ -48,7 +48,7 @@ view side player timestamp =
       ]
       |> List.map (\(cssClass, current, max) ->
           div
-            [ class [ChampStat] ]
+            [ class [ChampStat, direction] ]
             [ div
               [ class [cssClass]
               , styles
@@ -62,7 +62,6 @@ view side player timestamp =
                       )
                     |> Maybe.withDefault (0 |> pct) -- can't use `zero`
                   )
-                , height (100 |> pct)
                 ]
               ]
               []
