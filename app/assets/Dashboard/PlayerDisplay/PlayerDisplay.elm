@@ -43,7 +43,7 @@ view side player timestamp =
       , (CurrentPower, .power, .powerMax)
       , ( CurrentXp
         , \x -> x.xp - getXpRequiredForLevel level
-        , always (getXpRequiredForLevel (level + 1))
+        , always <| getXpRequiredForLevel (level + 1) - getXpRequiredForLevel level
         )
       ]
       |> List.map (\(cssClass, current, max) ->

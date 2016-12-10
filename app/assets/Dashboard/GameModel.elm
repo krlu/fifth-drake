@@ -86,7 +86,7 @@ type alias Xp = Float
 
 getCurrentLevel : Xp -> Level
 getCurrentLevel xp = -- This is a derived formula
-  round <| (sqrt (2 * xp + 529) - 13) / 10
+  min 18 << truncate <| (sqrt (2 * xp + 529) - 13) / 10
 
 getXpToNextLevel : Xp -> Xp
 getXpToNextLevel xp =
@@ -94,5 +94,7 @@ getXpToNextLevel xp =
 
 getXpRequiredForLevel : Level -> Xp
 getXpRequiredForLevel level =
-  toFloat <| 10 * (level - 1) * (18 + 5 * level)
+  if level > 18
+  then 0
+  else toFloat <| 10 * (level - 1) * (18 + 5 * level)
 
