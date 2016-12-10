@@ -1,8 +1,8 @@
-module TagScroller.Internal.Populate exposing (..)
+module TagCarousel.Internal.Populate exposing (..)
 
 import Http
 import Json.Decode exposing (..)
-import TagScroller.Types exposing (Msg(..), Tag, TagCategory(..))
+import TagCarousel.Types exposing (Msg(..), Tag, TagCategory(..))
 import Task exposing (Task)
 import Types exposing (WindowLocation)
 

@@ -1,4 +1,4 @@
-module TagScroller.Css exposing (..)
+module TagCarousel.Css exposing (..)
 
 import Css exposing (..)
 import Css.Namespace
@@ -6,27 +6,27 @@ import Minimap.Css
 import StyleUtils
 
 namespace : String
-namespace = "tagscroller"
+namespace = "tagCarousel"
 
-tagScrollerWidth : Float
-tagScrollerWidth = 200
+tagCarouselWidth : Float
+tagCarouselWidth = 60
 
-tagScrollerHeight : Float
-tagScrollerHeight = Minimap.Css.minimapHeight
+tagCarouselHeight : Float
+tagCarouselHeight = Minimap.Css.minimapHeight
 
 tagHeight : Float
 tagHeight = 100
 
 type CssClass
-  = TagScroller
+  = TagCarousel
   | Tag
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) TagScroller (
-    [ width (tagScrollerWidth |> px)
-    , height (tagScrollerHeight |> px)
+  [ (.) TagCarousel (
+    [ width (tagCarouselWidth |> px)
+    , height (tagCarouselHeight |> px)
     , overflowY auto
     , backgroundColor (hex "#D2691E")
     ] ++

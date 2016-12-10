@@ -1,7 +1,7 @@
-module TagScroller.Internal.Update exposing (..)
+module TagCarousel.Internal.Update exposing (..)
 
 import GameModel exposing (Timestamp)
-import TagScroller.Types exposing (Model, Msg(..))
+import TagCarousel.Types exposing (Model, Msg(..))
 
 update : Msg -> Model -> (Maybe Timestamp, Model)
 update msg model =

@@ -1,7 +1,6 @@
 module TagForm.Types exposing (..)
 
 import Http exposing (RawError, Response)
-import TagScroller.Types exposing (Tag)
 import TagForm.Internal.SaveTypes as Save
 
 type Msg

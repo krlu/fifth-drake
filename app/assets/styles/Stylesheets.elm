@@ -8,7 +8,7 @@ import Html.App
 import MainCss
 import Minimap.Css
 import NavbarCss
-import TagScroller.Css
+import TagCarousel.Css
 import TeamDisplay.Css
 
 port files : CssFileStructure -> Cmd msg
@@ -22,7 +22,7 @@ cssFiles =
         [ Controls.Css.css
         , DashboardCss.css
         , Minimap.Css.css
-        , TagScroller.Css.css
+        , TagCarousel.Css.css
         , TeamDisplay.Css.css
         ]
       , "navbar.css" => compile

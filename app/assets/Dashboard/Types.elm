@@ -4,11 +4,11 @@ import Controls.Types as Controls
 import GameModel exposing (Game, GameLength, Timestamp)
 import Http
 import Minimap.Types as Minimap
-import TagScroller.Types as TagScroller
+import TagCarousel.Types as TagCarousel
 import TagForm.Types as TagForm
 
 type Msg
-  = TagScrollerMsg TagScroller.Msg
+  = TagCarouselMsg TagCarousel.Msg
   | ControlsMsg Controls.Msg
   | SetGame Game
   | GameDataFetchFailure Http.Error
@@ -19,10 +19,11 @@ type Msg
 type alias Model =
   { controls : Controls.Model
   , minimap : Minimap.Model
-  , tagScroller : TagScroller.Model
+  , tagCarousel : TagCarousel.Model
   , game : Game
   , timestamp : Timestamp
   , tagForm: TagForm.Model
+  , tagCarousel: TagCarousel.Model
   }
 
 type alias WindowLocation =

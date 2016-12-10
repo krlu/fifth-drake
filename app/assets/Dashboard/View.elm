@@ -7,7 +7,7 @@ import Html exposing (..)
 import Html.App
 import Html.CssHelpers exposing (withNamespace)
 import Minimap.Minimap as Minimap
-import TagScroller.TagScroller as TagScroller
+import TagCarousel.TagCarousel as TagCarousel
 import TagForm.TagForm as TagForm
 import TeamDisplay.TeamDisplay as TeamDisplay
 import Types exposing (..)
@@ -17,6 +17,7 @@ import Types exposing (..)
 view : Model -> Html Msg
 view model =
   let
+--    x = Debug.log("")
     controls =
       Controls.view
         model.timestamp
@@ -37,6 +38,7 @@ view model =
         model.game.data.redTeam
         model.timestamp
     tagForm = Html.App.map TagFormMsg <| TagForm.view model.tagForm
+    tagCarousel = Html.App.map TagCarouselMsg <| TagCarousel.view model.tagCarousel
   in
     div
       [ class [Dashboard] ]
@@ -50,5 +52,6 @@ view model =
       , div [ id [ControlsDivider] ] []
       , controls
       , tagForm
+      , tagCarousel
       ]
 

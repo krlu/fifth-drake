@@ -5,7 +5,7 @@ import Css.Namespace
 import CssColors as Color
 import Minimap.Css exposing (minimapHeight, minimapWidth)
 import StyleUtils
-import TagScroller.Css exposing (tagScrollerWidth)
+import TagCarousel.Css exposing (tagCarouselWidth)
 import TeamDisplay.Css exposing (teamDisplayWidth)
 
 namespace : String

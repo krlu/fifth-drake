@@ -7,12 +7,12 @@ import Html.App
 import Minimap.Minimap as Minimap
 import Populate
 import Subscriptions
-import TagScroller.TagScroller as TagScroller
+import TagCarousel.TagCarousel as TagCarousel
 import Types exposing (..)
 import Update
 import View
 import Minimap.Minimap as Minimap
-import TagScroller.TagScroller as TagScroller
+import TagCarousel.TagCarousel as TagCarousel
 import TagForm.TagForm as TagForm
 
 
@@ -20,7 +20,7 @@ init : Flags -> (Model, Cmd Msg)
 init flags =
   let
     minimapModel = Minimap.init flags.minimapBackground
-    (tagScrollerModel, tagScrollerCmd) = TagScroller.init flags.location
+    (tagCarouselModel, tagCarouselCmd) = TagCarousel.init flags.location
     (tagFormModel,tagFormCmd) = TagForm.init flags.location
     controlsModel = Controls.init flags
     metadata : Metadata
@@ -42,7 +42,7 @@ init flags =
       }
   in
     { minimap = minimapModel
-    , tagScroller = tagScrollerModel
+    , tagCarousel = tagCarouselModel
     , tagForm = tagFormModel
     , controls = controlsModel
     , game =
@@ -51,7 +51,7 @@ init flags =
       }
     , timestamp = 0
     } !
-    [ Cmd.map TagScrollerMsg tagScrollerCmd
+    [ Cmd.map TagCarouselMsg tagCarouselCmd
     , Populate.populate flags.location
     ]
 

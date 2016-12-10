@@ -4,19 +4,19 @@ import Controls.Controls as Controls
 import Controls.Types as TimelineT
 import Minimap.Minimap as Minimap
 import Minimap.Types as MinimapT
-import TagScroller.TagScroller as TagScroller
-import TagScroller.Types as TagScrollerT
+import TagCarousel.TagCarousel as TagCarousel
+import TagCarousel.Types as TagCarouselT
 import TagForm.TagForm as TagForm
 import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    TagScrollerMsg tmsg ->
+    TagCarouselMsg tmsg ->
       let
-        (timestamp, tmodel) = TagScroller.update tmsg model.tagScroller
+        (timestamp, tmodel) = TagCarousel.update tmsg model.tagCarousel
       in
-        ( { model | tagScroller = tmodel
+        ( { model | tagCarousel = tmodel
                   , timestamp = Maybe.withDefault model.timestamp timestamp
           }
         , Cmd.none

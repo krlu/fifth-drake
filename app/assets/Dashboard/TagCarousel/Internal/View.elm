@@ -1,10 +1,10 @@
-module TagScroller.Internal.View exposing (..)
+module TagCarousel.Internal.View exposing (..)
 
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
-import TagScroller.Css exposing (CssClass(Tag, TagScroller), namespace)
-import TagScroller.Types exposing (Msg(..), Model)
+import TagCarousel.Css exposing (CssClass(Tag, TagCarousel), namespace)
+import TagCarousel.Types exposing (Msg(..), Model)
 
 {id, class, classList} = withNamespace namespace
 
@@ -21,5 +21,5 @@ view model =
              ]
          )
   in
-    div [ class [TagScroller] ]
+    div [ class [TagCarousel] ]
       tags
