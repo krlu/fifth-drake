@@ -1,7 +1,7 @@
 module View exposing (..)
 
 import Controls.Controls as Controls
-import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider), namespace)
+import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider, TagDisplay), namespace)
 import GameModel exposing (GameLength, Side(..), Timestamp)
 import Html exposing (..)
 import Html.App
@@ -51,7 +51,9 @@ view model =
       , minimap
       , div [ id [ControlsDivider] ] []
       , controls
-      , tagForm
-      , tagCarousel
+      , div [id [TagDisplay]]
+        [ tagCarousel
+        , tagForm
+        ]
       ]
 

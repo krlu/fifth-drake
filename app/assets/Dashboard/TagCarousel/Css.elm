@@ -25,10 +25,11 @@ css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) TagCarousel (
-    [ width (tagCarouselWidth |> px)
+    [ width (90 |> pct)
     , height (tagCarouselHeight |> px)
     , overflowY auto
     , backgroundColor Color.c_carousel
+    , property "float" "left"
     ] ++
     StyleUtils.userSelect "none" ++
     [ children
@@ -38,6 +39,7 @@ css =
         , backgroundColor Color.c_navBar
         , border2 (1 |> px) solid
         , property "align-content" "right"
+        , property "float" "left"
         ]
       ]
     ])

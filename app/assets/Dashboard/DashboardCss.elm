@@ -23,6 +23,7 @@ teamDisplaysWidth = teamDisplayWidth * 2 + teamDisplaysGap
 type CssId
   = TeamDisplayDivider
   | ControlsDivider
+  | TagDisplay
 
 type CssClass
   = Dashboard
@@ -32,7 +33,8 @@ css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) Dashboard (
-    [ displayFlex
+    [ width (100 |> pct)
+    , displayFlex
     , alignItems center
     ] ++ StyleUtils.flexDirection "column" ++
     [ children
@@ -50,5 +52,9 @@ css =
   , (#) ControlsDivider
     [ width auto
     , height (50 |> px)
+    ]
+  , (#) TagDisplay
+    [ property "float" "left"
+    , width (100 |> pct)
     ]
   ]
