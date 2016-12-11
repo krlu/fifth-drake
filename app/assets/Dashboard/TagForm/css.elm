@@ -8,16 +8,19 @@ import StyleUtils
 namespace : String
 namespace = "tagForm"
 
-type CssClass
-  = TagForm | Field
+tagFormHeight : Float
+tagFormHeight = 100
+
+type CssClass = TagForm
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) TagForm (
-    [ width (10 |> pct)
+    [ width (10 |> px)
+    , height (10 |> px)
     , overflowY auto
     , backgroundColor Color.c_darkGray
     , property "float" "left"
-    ])
+    ] ++ StyleUtils.userSelect "none")
   ]

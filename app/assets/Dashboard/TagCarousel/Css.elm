@@ -4,6 +4,7 @@ import Css exposing (..)
 import Css.Namespace
 import Minimap.Css
 import StyleUtils
+import List
 
 namespace : String
 namespace = "tagCarousel"
@@ -25,7 +26,7 @@ css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) TagCarousel (
-    [ width (90 |> pct)
+    [ width (80 |> pct)
     , height (tagCarouselHeight |> px)
     , overflowY auto
     , backgroundColor Color.c_carousel
@@ -38,8 +39,10 @@ css =
         , width auto
         , backgroundColor Color.c_navBar
         , border2 (1 |> px) solid
-        , property "align-content" "right"
+        , property "align-content" "center"
         , property "float" "left"
+        , property "list-style-type" "none"
+        , margin (10 |> px)
         ]
       ]
     ])

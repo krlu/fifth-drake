@@ -11,9 +11,9 @@ import TagCarousel.Types exposing (Msg(..), Model)
 view : Model -> Html Msg
 view model =
   let
-    tags = model.tags
+    tags = List.sortBy .timestamp model.tags
          |> List.map (\tag ->
-           div [ class [Tag]
+           li [ class [Tag]
                , onClick <| TagClick tag.timestamp
                ]
              [ p [] [text tag.title]
@@ -21,5 +21,5 @@ view model =
              ]
          )
   in
-    div [ class [TagCarousel] ]
+    ol [ class [TagCarousel] ]
       tags
