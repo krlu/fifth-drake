@@ -7,6 +7,5 @@ import Types exposing (..)
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ Sub.map TagCarouselMsg <| TagCarousel.subscriptions model.tagCarousel
-    , Sub.map ControlsMsg <| Controls.subscriptions model.controls
+    [ Sub.map ControlsMsg <| Controls.subscriptions model.controls
     ]

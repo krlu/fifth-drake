@@ -1,4 +1,4 @@
-module TagCarousel.TagCarousel exposing (init, update, view, subscriptions)
+module TagCarousel.TagCarousel exposing (init, update, view)
 
 import GameModel exposing (GameId, Timestamp)
 import Html exposing (Html)
@@ -16,7 +16,3 @@ update = Update.update
 
 view : Model -> Html Msg
 view = View.view
-
-subscriptions : Model -> Sub Msg
-subscriptions _ = Sub.none
-

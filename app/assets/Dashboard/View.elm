@@ -16,7 +16,6 @@ import Types exposing (..)
 view : Model -> Html Msg
 view model =
   let
---    x = Debug.log("")
     controls =
       Controls.view
         model.timestamp
