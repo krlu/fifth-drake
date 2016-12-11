@@ -1,23 +1,36 @@
 module TagForm.TagForm exposing (..)
 
-import GameModel exposing (Timestamp)
+import GameModel exposing (GameId, Timestamp)
 import Html exposing (Html)
 import TagForm.Types exposing(..)
 import TagForm.Internal.View as View
 import TagForm.Internal.Update as Update
-import Types exposing (WindowLocation)
+import Navigation exposing (Location)
+import UrlParser exposing ((</>), parsePath, s)
 
-init : WindowLocation -> (Model, Cmd Msg)
+
+getGameId : Location -> GameId
+getGameId =
+  parsePath (s "game" </> UrlParser.int)
+  >> \maybe ->
+    case maybe of
+      Just gameId -> gameId
+      Nothing -> Debug.crash "No game id found in URL"
+
+init : Location -> (Model, Cmd Msg)
 init loc =
-  ( { title = ""
-    , description = ""
-    , category = ""
-    , players = ""
-    , gameId = loc.gameId
-    , host = loc.host
-    }
-  , Cmd.none
-  )
+  let
+    tagForm: Model
+    tagForm =
+     { title = ""
+     , description = ""
+     , category = ""
+     , players = ""
+     , gameId = getGameId loc
+     , host = loc.host
+     }
+  in
+  (tagForm, Cmd.none)
 
 update : Msg -> Model -> Timestamp -> (Model, Cmd Msg)
 update = Update.update

@@ -6,15 +6,16 @@ import Http
 import Minimap.Types as Minimap
 import TagCarousel.Types as TagCarousel
 import TagForm.Types as TagForm
+import Navigation exposing (Location)
+
 
 type Msg
   = TagCarouselMsg TagCarousel.Msg
   | ControlsMsg Controls.Msg
-  | SetGame Game
-  | GameDataFetchFailure Http.Error
+  | SetGame (Result Http.Error Game)
   | UpdateTimestamp Timestamp
   | TagFormMsg TagForm.Msg
-
+  | LocationUpdate Location
 
 type alias Model =
   { controls : Controls.Model
@@ -26,14 +27,8 @@ type alias Model =
   , tagCarousel: TagCarousel.Model
   }
 
-type alias WindowLocation =
-  { host              : String
-  , gameId            : String
-  }
-
 type alias Flags =
   { minimapBackground : String
   , playButton        : String
   , pauseButton       : String
-  , location          : WindowLocation
   }

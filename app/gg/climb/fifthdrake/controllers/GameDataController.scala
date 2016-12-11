@@ -98,6 +98,12 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
             "role" -> player.role.name,
             "ign" -> player.ign,
             "championName" -> states(Duration.Zero).championState.name,
+            "championImage" -> {
+              val champImg = for {
+                champion <- dbh.getChampion(states(Duration.Zero).championState.name)
+              } yield controllers.routes.Assets.versioned(s"champion/${champion.image.full}").url
+              champImg.getOrElse[String](controllers.routes.Assets.versioned("champion/unknown.png").url)
+            },
             "playerStates" -> Json.toJson(states)
           )
         }

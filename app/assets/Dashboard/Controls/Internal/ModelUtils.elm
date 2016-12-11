@@ -14,7 +14,7 @@ getTimestampAtMouse {mouse} timestamp gameLength =
       let
         delta = current.x - start.x |> toFloat
       in
-        max 0 << min gameLength <| timestamp + truncate (delta / timelineWidth * gameLength)
+        max 0 << min gameLength <| timestamp + truncate (delta / timelineWidth * toFloat gameLength)
 
 getPixelForTimestamp : Model -> Timestamp -> GameLength -> Float
 getPixelForTimestamp model timestamp gameLength =

@@ -1,33 +1,37 @@
 module TagCarousel.Internal.Populate exposing (..)
 
+import GameModel exposing (GameId)
 import Http
 import Json.Decode exposing (..)
 import TagCarousel.Types exposing (Msg(..), Tag, TagCategory(..))
 import Task exposing (Task)
-import Types exposing (WindowLocation)
+import Navigation exposing (Location)
+import Populate exposing (getGameId)
 
-tagUrl : WindowLocation -> String
+tagUrl : Location -> String
 tagUrl loc =
-  Http.url ("http://" ++ loc.host ++ "/game/" ++ loc.gameId ++ "/tags") []
+  loc.origin ++ "/game/" ++ toString (getGameId loc) ++ "/tags"
 
-getTags : WindowLocation -> Task Http.Error (List Tag)
-getTags loc = Http.get (list tag) <| tagUrl loc
+getTags : Location -> Http.Request (List Tag)
+getTags loc = Http.get (tagUrl loc) (list tag)
 
-populate : WindowLocation -> Cmd Msg
-populate loc = Task.perform TagFetchFailure UpdateTags <| getTags loc
+populate : Location -> Cmd Msg
+populate loc = Http.send UpdateTags <| getTags loc
 
 tag : Decoder Tag
 tag =
-  object5 Tag
-    ("title" := string)
-    ("description" := string)
-    ("category" := tagCategory)
-    ("timestamp" := int)
-    ("players" := list string)
+  map5 Tag
+    (field "title" string)
+    (field "description" string)
+    (field "category" tagCategory)
+    (field "timestamp" int)
+    (field "players" <| list string)
 
 tagCategory : Decoder TagCategory
-tagCategory = customDecoder string <| \s ->
-  case s of
-    "TeamFight" -> Ok TeamFight
-    "Objective" -> Ok Objective
-    _ -> Err <| s ++ " is not a proper tag type"
+tagCategory =
+  string
+  |> andThen (\s ->
+    case s of
+      "TeamFight" -> succeed TeamFight
+      "Objective" -> succeed Objective
+      _ -> fail <| s ++ " is not a proper tag type")

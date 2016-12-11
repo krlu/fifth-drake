@@ -1,14 +1,14 @@
 module TagCarousel.TagCarousel exposing (init, update, view, subscriptions)
 
-import GameModel exposing (Timestamp)
+import GameModel exposing (GameId, Timestamp)
 import Html exposing (Html)
 import TagCarousel.Types exposing (..)
 import TagCarousel.Internal.Populate as Populate
 import TagCarousel.Internal.Update as Update
 import TagCarousel.Internal.View as View
-import Types exposing (WindowLocation)
+import Navigation exposing (Location)
 
-init : WindowLocation -> (Model, Cmd Msg)
+init : Location -> (Model, Cmd Msg)
 init loc = ({ tags = [] }, Populate.populate loc)
 
 update : Msg -> Model -> (Maybe Timestamp, Model)

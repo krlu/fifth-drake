@@ -1,7 +1,6 @@
 module TagForm.Internal.SaveTypes exposing (..)
 
-import Http exposing (RawError, Response)
+import Http exposing (Body, Error, Response)
 
 type Msg
- = TagSaved Response
- | TagSaveFailure RawError
+ = TagSaved (Result Http.Error String)

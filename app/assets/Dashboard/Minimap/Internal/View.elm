@@ -1,7 +1,7 @@
 module Minimap.Internal.View exposing (..)
 
 import Array
-import Css exposing (left, bottom, px)
+import Css exposing (bottom, left, property, px)
 import Html exposing (..)
 import Html.Attributes exposing (src, draggable)
 import Html.CssHelpers exposing (withNamespace)
@@ -36,7 +36,13 @@ view model data timestamp =
                       , bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
                       ]
                     ]
-                    []
+                    [ img
+                        [ class [ChampionImage]
+                        , src player.championImage
+                        , draggable "false"
+                        ]
+                        []
+                    ]
                   )
                 )
           in

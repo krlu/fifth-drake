@@ -31,9 +31,9 @@ update msg model =
           }
         , Cmd.none
         )
-    SetGame game ->
+    SetGame (Ok game) ->
       ({ model | game = game }, Cmd.none)
-    GameDataFetchFailure err ->
+    SetGame (Err err) ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
     UpdateTimestamp timestamp ->
       ( { model | timestamp = timestamp }
@@ -44,3 +44,4 @@ update msg model =
         (tagModel, cmd) = TagForm.update m model.tagForm model.timestamp
       in
         ({model | tagForm = tagModel}, Cmd.map TagFormMsg cmd)
+    LocationUpdate loc -> (model, Cmd.none)

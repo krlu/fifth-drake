@@ -1,6 +1,6 @@
 module TagForm.Types exposing (..)
 
-import Http exposing (RawError, Response)
+import GameModel exposing (GameId)
 import TagForm.Internal.SaveTypes as Save
 
 type Msg
@@ -17,6 +17,6 @@ type alias Model =
   , description : String
   , category: String
   , players: String
-  , gameId: String
+  , gameId: GameId
   , host: String
   }

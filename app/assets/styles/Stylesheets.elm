@@ -4,11 +4,11 @@ import Controls.Css
 import Css.File exposing (..)
 import DashboardCss
 import Html exposing (div)
-import Html.App
 import MainCss
 import Minimap.Css
 import NavbarCss
 import TagCarousel.Css
+import Platform
 import TeamDisplay.Css
 
 port files : CssFileStructure -> Cmd msg
@@ -34,11 +34,6 @@ cssFiles =
       ]
 
 
-main : Program Never
+main : CssCompilerProgram
 main =
-    Html.App.program
-        { init = ( (), files cssFiles )
-        , view = \_ -> (div [] [])
-        , update = \_ _ -> ( (), Cmd.none )
-        , subscriptions = \_ -> Sub.none
-        }
+  compiler files cssFiles

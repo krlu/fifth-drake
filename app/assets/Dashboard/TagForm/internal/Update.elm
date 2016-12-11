@@ -1,9 +1,9 @@
 module TagForm.Internal.Update exposing (..)
 
 import GameModel exposing (Timestamp)
-import Http exposing (RawError,Response)
+import Http exposing (Response)
 import TagForm.Internal.Save exposing (sendRequest)
-import TagForm.Internal.SaveTypes exposing (Msg(TagSaveFailure, TagSaved))
+import TagForm.Internal.SaveTypes exposing (Msg(TagSaved))
 import TagForm.Types as Types exposing (..)
 
 update : Types.Msg -> Model -> Timestamp -> (Model, Cmd Types.Msg)
@@ -21,8 +21,6 @@ update msg model ts =
     (model, Cmd.none)
    SaveTag ->
     (model, Cmd.map SuccessOrFail (sendRequest model ts))
-   SuccessOrFail (TagSaved res) ->
-    (model, Cmd.none)
-   SuccessOrFail (TagSaveFailure err) ->
+   SuccessOrFail msg ->
     (model, Cmd.none)
 

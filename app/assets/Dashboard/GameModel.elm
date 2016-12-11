@@ -2,6 +2,8 @@ module GameModel exposing (..)
 
 import Array exposing (Array)
 
+type alias GameId = Int
+
 type alias GameLength = Timestamp
 type alias Timestamp = Int
 
@@ -40,6 +42,7 @@ type alias Player =
   , role              : Role
   , ign               : String
   , championName      : String
+  , championImage     : String
   , state             : Array PlayerState
   }
 

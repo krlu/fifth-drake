@@ -12,7 +12,6 @@ type Msg
   | BarClick (Mouse.Position, Mouse.Position)
   | PlayPause
   | TimerUpdate Time.Time
-  | GameLengthFetchFailure Http.Error
 
 type alias File = String
 

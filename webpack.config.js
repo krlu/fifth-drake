@@ -1,7 +1,9 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const assetPath = 'app/assets';
 const srcPath = path.join(__dirname, assetPath);
 const elmStylePaths = /Stylesheets.elm/;
+const buildPath = path.resolve(__dirname, assetPath, 'build');
 
 module.exports = {
 	entry: {
@@ -14,7 +16,7 @@ module.exports = {
 	},
 
 	output: {
-		path: path.resolve(__dirname, assetPath, 'build'),
+		path: buildPath,
 		publicPath: '/static',
 		filename: '[name].js'
 	},
@@ -68,5 +70,29 @@ module.exports = {
 			}
 		],
 		noParse: /\.elm$/
+	},
+
+	plugins: [
+	    new CopyWebpackPlugin([
+            { from: "public/champion/*", to: buildPath }
+        ])
+    ],
+
+	devServer: {
+		port: 3000,
+        outputPath: buildPath,
+		contentBase: path.join(__dirname, "public/"),
+		historyApiFallback: {
+			index: 'index.html',
+			rewrites: [
+				{ from: /game\/elm-css\/index\.css/, to: '/elm-css/index.css'}
+			]
+		},
+		proxy: [
+			{
+				context: ['/game/**/data', '/game/**/tags'],
+				target: 'http://localhost:4000'
+            }
+		]
 	}
 };

@@ -2,9 +2,9 @@ module Dashboard exposing (..)
 
 import Array
 import Controls.Controls as Controls
-import GameModel exposing (Data, Metadata)
-import Html.App
+import GameModel exposing (Data, GameId, Metadata)
 import Minimap.Minimap as Minimap
+import Navigation exposing (Location)
 import Populate
 import Subscriptions
 import TagCarousel.TagCarousel as TagCarousel
@@ -16,13 +16,14 @@ import TagCarousel.TagCarousel as TagCarousel
 import TagForm.TagForm as TagForm
 
 
-init : Flags -> (Model, Cmd Msg)
-init flags =
+init : Flags -> Location -> (Model, Cmd Msg)
+init flags location =
   let
     minimapModel = Minimap.init flags.minimapBackground
-    (tagCarouselModel, tagCarouselCmd) = TagCarousel.init flags.location
-    (tagFormModel,tagFormCmd) = TagForm.init flags.location
-    controlsModel = Controls.init flags
+    (tagCarouselModel, tagCarouselCmd) = TagCarousel.init location
+    (tagFormModel,tagFormCmd) = TagForm.init location
+    controlsModel = Controls.init flags.playButton flags.pauseButton
+
     metadata : Metadata
     metadata =
       { blueTeamName = ""
@@ -52,12 +53,13 @@ init flags =
     , timestamp = 0
     } !
     [ Cmd.map TagCarouselMsg tagCarouselCmd
-    , Populate.populate flags.location
+    , Populate.populate location
     ]
 
-main : Program Flags
+main : Program Flags Model Msg
 main =
-  Html.App.programWithFlags
+  Navigation.programWithFlags
+    LocationUpdate
     { init = init
     , view = View.view
     , update = Update.update
