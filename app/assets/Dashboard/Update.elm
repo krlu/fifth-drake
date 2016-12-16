@@ -14,7 +14,7 @@ update msg model =
   case msg of
     TagCarouselMsg tmsg ->
       let
-        (timestamp, tmodel) = TagCarousel.update tmsg model.tagCarousel
+        (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel
       in
         ( { model | tagCarousel = tmodel
                   , timestamp = Maybe.withDefault model.timestamp timestamp

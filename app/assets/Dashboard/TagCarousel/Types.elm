@@ -6,6 +6,7 @@ import Http
 type Msg
   = TagClick Timestamp
   | UpdateTags (Result Http.Error (List Tag))
+  | DeleteTag
 
 type alias Model =
   { tags: List Tag
