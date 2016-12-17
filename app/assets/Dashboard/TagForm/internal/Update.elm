@@ -1,13 +1,13 @@
 module TagForm.Internal.Update exposing (..)
 
-import GameModel exposing (Timestamp)
+import GameModel exposing (Player, Timestamp)
 import Http exposing (Response)
 import TagForm.Internal.Save exposing (sendRequest)
 import TagForm.Internal.SaveTypes exposing (Msg(TagSaved))
 import TagForm.Types as Types exposing (..)
-
-update : Types.Msg -> Model -> Timestamp -> (Model, Cmd Types.Msg)
-update msg model ts =
+import TagCarousel.TagCarousel as TagCarousel
+update : Types.Msg -> Model -> Timestamp -> List Player -> (Model, Cmd Types.Msg)
+update msg model ts players =
   case msg of
    CreateTitle title ->
     ({model | title = title }, Cmd.none)
@@ -20,7 +20,7 @@ update msg model ts =
    CancelForm ->  -- TODO: should hide the form
     (model, Cmd.none)
    SaveTag ->
-    (model, Cmd.map SuccessOrFail (sendRequest model ts))
+    (model, Cmd.map SuccessOrFail (sendRequest model ts players))
    SuccessOrFail msg ->
     (model, Cmd.none)
 

@@ -1,5 +1,6 @@
 module Update exposing (..)
 
+import Array exposing (append)
 import Controls.Controls as Controls
 import Controls.Types as TimelineT
 import Minimap.Minimap as Minimap
@@ -41,7 +42,10 @@ update msg model =
       )
     TagFormMsg m ->
       let
-        (tagModel, cmd) = TagForm.update m model.tagForm model.timestamp
+        bluePlayers = model.game.data.blueTeam.players
+        redPlayers = model.game.data.redTeam.players
+        allPlayers = append bluePlayers redPlayers |> Array.toList
+        (tagModel, cmd) = TagForm.update m model.tagForm model.timestamp allPlayers
       in
         ({model | tagForm = tagModel}, Cmd.map TagFormMsg cmd)
     LocationUpdate loc -> (model, Cmd.none)

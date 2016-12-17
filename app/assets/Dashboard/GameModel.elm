@@ -38,7 +38,8 @@ type alias TeamState =
   }
 
 type alias Player =
-  { side              : Side
+  { playerId          : String
+  , side              : Side
   , role              : Role
   , ign               : String
   , championName      : String

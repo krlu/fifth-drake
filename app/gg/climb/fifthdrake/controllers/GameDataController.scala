@@ -10,7 +10,6 @@ import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
-import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc._
 
@@ -94,6 +93,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
 
         def playerStateToJson(p: (Player, Behavior[Time, PlayerState])): JsValue = p match {
           case (player, states) => Json.obj(
+            "id" -> player.id.toString,
             "side" -> states(Duration.Zero).sideColor.name,
             "role" -> player.role.name,
             "ign" -> player.ign,
@@ -176,15 +176,16 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
     */
   def saveTag(): Action[AnyContent] = Action { request =>
     val body: AnyContent = request.body
-    body.asMultipartFormData.map{ (formData: MultipartFormData[TemporaryFile]) =>
-      val data: Map[String, Seq[String]] = formData.dataParts
-      val gameKey = data("gameKey").head
-      val title = data("title").head
-      val description = data("description").head
-      val category = data("category").head
-      val timeStamp = data("timestamp").head.toInt
-      val playerIgns = data("playerIgns").head.split(",").toSeq
-      val players = playerIgns.map(ign => dbh.getPlayerByIgn(ign)).toSet
+    body.asJson.map{ jsonValue =>
+      val data = jsonValue.as[JsObject].value
+      val gameKey = data("gameKey").as[String]
+      val title = data("title").as[String]
+      val description = data("description").as[String]
+      val category = data("category").as[String]
+      val timeStamp = data("timestamp").as[Int]
+      val players = data("playerIgns").as[JsArray].value.map{ jsVal =>
+        jsVal.as[String]
+      }.map(dbh.getPlayerByIgn(_)).toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
       Ok("Tag saved!")

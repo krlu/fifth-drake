@@ -1,6 +1,6 @@
 module TagForm.TagForm exposing (..)
 
-import GameModel exposing (GameId, Timestamp)
+import GameModel exposing (GameId, Player, Timestamp)
 import Html exposing (Html)
 import TagForm.Types exposing(..)
 import TagForm.Internal.View as View
@@ -32,7 +32,7 @@ init loc =
   in
   (tagForm, Cmd.none)
 
-update : Msg -> Model -> Timestamp -> (Model, Cmd Msg)
+update : Msg -> Model -> Timestamp -> List Player -> (Model, Cmd Msg)
 update = Update.update
 
 view : Model -> Html Msg

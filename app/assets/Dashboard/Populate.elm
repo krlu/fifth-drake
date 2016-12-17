@@ -74,7 +74,8 @@ teamState =
 
 player : Decoder Player
 player =
-  map6 Player
+  map7 Player
+    ("id" ::= string)
     ("side" ::= side)
     ("role" ::= role)
     ("ign" ::= string)

@@ -239,10 +239,12 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   }
 
   def getPlayerByIgn(ign: String): Player = {
+    println(ign)
     val id = DB readOnly { implicit session =>
       sql"SELECT player_id FROM league.player_ign WHERE ign = $ign".map(rs => rs.string("player_id"))
         .single().apply().getOrElse("")
     }
+    println(s"id: $id")
     getPlayer(new InternalId[Player](id))
   }
 

@@ -1,7 +1,9 @@
 module TagForm.Types exposing (..)
 
 import GameModel exposing (GameId)
+import TagCarousel.Types exposing (Msg(UpdateTags))
 import TagForm.Internal.SaveTypes as Save
+
 
 type Msg
  = CreateTitle String 
