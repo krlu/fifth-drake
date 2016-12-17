@@ -2,7 +2,7 @@ package gg.climb.fifthdrake.dbhandling
 
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.lolobjects.RiotId
+import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{Champion, GameData, InGameTeam, MetaData}
@@ -27,8 +27,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
   def insertTag(tag: Tag): Unit = pdbh.insertTag(tag)
 
-  def getPlayerByIgn(ign: String): Player = pdbh.getPlayerByIgn(ign)
-
+  def getPlayer(id: InternalId[Player]) = pdbh.getPlayer(id)
   def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
 
   def getGame(gameKey: RiotId[Game]): Option[Game] ={

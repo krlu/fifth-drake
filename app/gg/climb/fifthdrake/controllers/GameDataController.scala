@@ -3,7 +3,7 @@ package gg.climb.fifthdrake.controllers
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.RiotId
+import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
@@ -13,6 +13,7 @@ import gg.climb.ramenx.Behavior
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc._
 
+import scala.collection.Map
 import scala.concurrent.duration.Duration
 
 class GameDataController(dbh: DataAccessHandler) extends Controller {
@@ -93,7 +94,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
 
         def playerStateToJson(p: (Player, Behavior[Time, PlayerState])): JsValue = p match {
           case (player, states) => Json.obj(
-            "id" -> player.id.toString,
+            "id" -> player.id.id.toString,
             "side" -> states(Duration.Zero).sideColor.name,
             "role" -> player.role.name,
             "ign" -> player.ign,
@@ -169,10 +170,12 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
     *  "title" -> "gank occurred top lane"
     *  "description" -> "Top laner ganked by roaming support and jungler"
     *  "category" -> "gank"
-    *  "timestamp" -> 1234 (measured in seconds)
-    *  "playerIgns" -> JsArray("Hauntzer", "Meteos", "Impact")
+    *  "timestamp" -> 1234  //measured in seconds
+    *  "relevantPlayerIgns" -> JsArray("Hauntzer", "Meteos", "Impact")
+    *  "allplayerIgns" -> JSObject // contains all players
+    *                              // Uses key value pair: (playerIgn -> playerId)
     * )
-    * @return
+    * @return Ok if successful, otherwise BadRequest
     */
   def saveTag(): Action[AnyContent] = Action { request =>
     val body: AnyContent = request.body
@@ -183,9 +186,15 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       val description = data("description").as[String]
       val category = data("category").as[String]
       val timeStamp = data("timestamp").as[Int]
-      val players = data("playerIgns").as[JsArray].value.map{ jsVal =>
-        jsVal.as[String]
-      }.map(dbh.getPlayerByIgn(_)).toSet
+      val allPlayers: Map[String, JsValue] = data("allPlayerData").as[JsObject].value
+      val players = data("relevantPlayerIgns").as[JsArray].value.map{ jsVal =>
+        val ign = jsVal.as[String]
+        if(!allPlayers.contains(ign))
+          BadRequest("Player ign not found in current game!")
+        ign
+      }.map{ign =>
+        dbh.getPlayer(new InternalId[Player](allPlayers(ign).as[String]))
+      }.toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
       Ok("Tag saved!")

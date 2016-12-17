@@ -14,10 +14,10 @@ url : String -> String
 url host = "http://" ++ host ++ "/saveTag"
 
 sendRequest: Model -> Timestamp -> List Player -> Cmd Msg
-sendRequest model ts players = Http.send TagSaved (createRequest model ts)
+sendRequest model ts players = Http.send TagSaved (createRequest model ts players)
 
-createRequest: Model -> Timestamp -> Request String
-createRequest model ts =
+createRequest: Model -> Timestamp -> List Player -> Request String
+createRequest model ts allPlayers =
   let
     jsonData =
         object
@@ -26,9 +26,10 @@ createRequest model ts =
           , ("description", string model.description)
           , ("category", string model.category)
           , ("timestamp", int ts)
-          , ("playerIgns", list <| List.map string
+          , ("relevantPlayerIgns", list <| List.map string
                                 <| String.split ","
                                 <| String.filter ((/=) ' ') model.players)
+          , ("allPlayerData", object <| List.map getIdAndIgn allPlayers)
           ]
     body = jsonBody jsonData
   in
@@ -41,3 +42,6 @@ createRequest model ts =
       , timeout = Nothing
       , withCredentials = False
      }
+
+getIdAndIgn: Player -> (String, Value)
+getIdAndIgn player = (player.ign, string player.id)

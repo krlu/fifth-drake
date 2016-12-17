@@ -13,8 +13,7 @@ import List exposing (..)
 
 view : Model -> Html Msg
 view m =
-  let
-    tagForm = form [ class [TagForm] ]
+  form [ class [TagForm] ]
                 [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
                 , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
                 , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
@@ -23,5 +22,4 @@ view m =
                          button [ onClick SaveTag] [ text "save" ]
                        ]
                 ]
-  in
-    tagForm
+

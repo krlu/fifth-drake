@@ -37,6 +37,3 @@ update = Update.update
 
 view : Model -> Html Msg
 view = View.view
-
-subscriptions : Sub Msg
-subscriptions = Sub.none
