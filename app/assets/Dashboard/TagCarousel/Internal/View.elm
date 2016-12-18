@@ -13,11 +13,11 @@ view model =
   let
     tags = List.sortBy .timestamp model.tags
          |> List.map (\tag ->
-           li [ class [Tag]
-               , onClick <| TagClick tag.timestamp
-               ]
-             [ p [] [text tag.title]
-             , p [] [text << toString <| tag.category]
+           li [ class [Tag]]
+             [div [ onClick <| TagClick tag.timestamp]
+                  [ p [] [text tag.title]
+                  , p [] [text << toString <| tag.category]
+                  ]
              , p [] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
              ]
          )
