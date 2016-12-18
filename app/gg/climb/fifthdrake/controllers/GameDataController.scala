@@ -150,6 +150,9 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
   // scalastyle:on method.length
 
   def getTags(gameKey: String): Action[AnyContent] = Action {
+    Ok(loadTagData(gameKey))
+  }
+  private def loadTagData(gameKey: String): JsValue = {
     val tags = dbh.getTags(new RiotId[Game](gameKey))
     implicit val tagWrites = new Writes[Tag] {
       def writes(tag: Tag): JsObject = Json.obj(
@@ -161,9 +164,8 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
         "players" -> Json.toJson(tag.players.map(_.ign))
       )
     }
-    Ok(Json.toJson(tags))
+    Json.toJson(tags)
   }
-
   /**
     * Request body MultiFormData should resemble:
     * Map(
@@ -198,7 +200,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       }.toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
-      Ok("Tag saved!")
+      Ok(loadTagData(gameKey))
     }.getOrElse{
       BadRequest("Failed to insert tag")
     }
@@ -210,9 +212,9 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       val data = jsonValue.as[JsObject].value
       val tagId = data("id").as[String]
       dbh.deleteTag(new InternalId[Tag](tagId))
-      Ok("Tag saved!")
+      Ok(Json.obj("id" -> tagId))
     }.getOrElse{
-      BadRequest("Failed to insert tag")
+      BadRequest("Failed to delete tag")
     }
     Ok("hello world")
   }

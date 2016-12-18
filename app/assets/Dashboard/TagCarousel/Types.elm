@@ -27,13 +27,3 @@ type alias Tag =
 type TagCategory
   = TeamFight
   | Objective
-
-type alias Container a =
-  { pages               : List a
-  , pageWidth           : Int
-  , currentPage         : Int
-  , threshold           : Float
-  , isDragging          : Bool
-  , startDragPosition   : (Int, Int)
-  , currentDragPosition : (Int, Int)
-  }

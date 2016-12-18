@@ -27,4 +27,3 @@ filterTags tags id =
     customFilter tag = tag.id /= id
   in
     List.filter customFilter tags
-

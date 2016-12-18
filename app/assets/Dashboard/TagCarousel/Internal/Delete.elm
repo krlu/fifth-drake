@@ -23,7 +23,6 @@ createRequest id host =
           ]
     body = jsonBody jsonData
   in
-    Debug.log (url host)
     request
      {  method = "PUT"
       , headers = []
