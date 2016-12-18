@@ -162,14 +162,10 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def deleteTag(tag: Tag): Unit = {
-    for {
-      id <- tag.id
-    } yield {
-      getPlayerIdsForTag(id).foreach(riotId => deletePlayerToTag(riotId))
-      DB localTx { implicit session =>
-        sql"DELETE FROM league.tag WHERE id=${id.id.toInt}".update().apply()
-      }
+  def deleteTag(tagId: InternalId[Tag]): Unit = {
+    getPlayerIdsForTag(tagId).foreach(riotId => deletePlayerToTag(riotId))
+    DB localTx { implicit session =>
+      sql"DELETE FROM league.tag WHERE id=${tagId.id.toInt}".update().apply()
     }
   }
 

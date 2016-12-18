@@ -1,6 +1,6 @@
 module Update exposing (..)
 
-import Array exposing (append)
+import Array
 import Controls.Controls as Controls
 import Controls.Types as TimelineT
 import Minimap.Minimap as Minimap
@@ -20,7 +20,7 @@ update msg model =
         ( { model | tagCarousel = tmodel
                   , timestamp = Maybe.withDefault model.timestamp timestamp
           }
-        , Cmd.none
+        , Cmd.map TagCarouselMsg cmd
         )
     ControlsMsg tmsg ->
       let
@@ -44,7 +44,7 @@ update msg model =
       let
         bluePlayers = model.game.data.blueTeam.players
         redPlayers = model.game.data.redTeam.players
-        allPlayers = append bluePlayers redPlayers |> Array.toList
+        allPlayers = Array.append bluePlayers redPlayers |> Array.toList
         (tagModel, cmd) = TagForm.update m model.tagForm model.timestamp allPlayers
       in
         ({model | tagForm = tagModel}, Cmd.map TagFormMsg cmd)

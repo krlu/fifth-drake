@@ -9,7 +9,7 @@ import TagCarousel.Internal.View as View
 import Navigation exposing (Location)
 
 init : Location -> (Model, Cmd Msg)
-init loc = ({ tags = [] }, Populate.populate loc)
+init loc = ({host = loc.host, tags = [] }, Populate.populate loc)
 
 update : Msg -> Model -> (Maybe Timestamp, Model, Cmd Msg)
 update = Update.update

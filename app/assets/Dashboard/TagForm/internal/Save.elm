@@ -1,11 +1,9 @@
 module TagForm.Internal.Save exposing (..)
 
-import Char exposing (isDigit)
 import GameModel exposing (Player, Timestamp)
-import Http exposing (Request, expectJson, jsonBody, multipartBody, request, stringPart)
+import Http exposing (Request, expectJson, jsonBody, request)
 import Json.Decode as Decoder
 import Json.Encode exposing (Value, int, list, object, string)
-import Regex exposing (HowMany(All), regex, replace)
 import String as String
 import TagForm.Internal.SaveTypes exposing (Msg(TagSaved))
 import TagForm.Types exposing(Model)
@@ -33,6 +31,7 @@ createRequest model ts allPlayers =
           ]
     body = jsonBody jsonData
   in
+    Debug.log (url model.host)
     request
      {  method = "PUT"
       , headers = []

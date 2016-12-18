@@ -20,7 +20,8 @@ populate loc = Http.send UpdateTags <| getTags loc
 
 tag : Decoder Tag
 tag =
-  map5 Tag
+  map6 Tag
+    (field "id" string)
     (field "title" string)
     (field "description" string)
     (field "category" tagCategory)

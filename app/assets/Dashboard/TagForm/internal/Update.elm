@@ -16,7 +16,7 @@ update msg model ts players =
    CreateCategory category ->
     ({model | category = category}, Cmd.none)
    AddPlayers ign ->
-    ({model | players = ign }, Cmd.none)
+    ({model | players = ign}, Cmd.none)
    CancelForm ->  -- TODO: should hide the form
     (model, Cmd.none)
    SaveTag ->

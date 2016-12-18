@@ -11,7 +11,7 @@ import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
-import play.api.mvc._
+import play.api.mvc.{Action, _}
 
 import scala.collection.Map
 import scala.concurrent.duration.Duration
@@ -153,6 +153,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
     val tags = dbh.getTags(new RiotId[Game](gameKey))
     implicit val tagWrites = new Writes[Tag] {
       def writes(tag: Tag): JsObject = Json.obj(
+        "id" -> tag.id.getOrElse(new InternalId[Tag]("")).id,
         "title" -> tag.title,
         "description" -> tag.description,
         "category" -> tag.category.name,
@@ -201,6 +202,19 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
     }.getOrElse{
       BadRequest("Failed to insert tag")
     }
+  }
+
+  def deleteTag(): Action[AnyContent] = Action { request =>
+    val body: AnyContent = request.body
+    body.asJson.map{ jsonValue =>
+      val data = jsonValue.as[JsObject].value
+      val tagId = data("id").as[String]
+      dbh.deleteTag(new InternalId[Tag](tagId))
+      Ok("Tag saved!")
+    }.getOrElse{
+      BadRequest("Failed to insert tag")
+    }
+    Ok("hello world")
   }
 }
 

@@ -24,6 +24,7 @@ import scala.concurrent.duration.Duration
   */
 class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
 
+  def deleteTag(id: InternalId[Tag]) = pdbh.deleteTag(id)
   def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
   def insertTag(tag: Tag): Unit = pdbh.insertTag(tag)
 

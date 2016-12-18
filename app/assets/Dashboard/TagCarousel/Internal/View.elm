@@ -18,6 +18,7 @@ view model =
                ]
              [ p [] [text tag.title]
              , p [] [text << toString <| tag.category]
+             , p [] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
              ]
          )
   in
