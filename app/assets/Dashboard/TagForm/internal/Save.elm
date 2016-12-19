@@ -7,8 +7,7 @@ import Json.Encode exposing (Value, int, list, object, string)
 import String
 import TagCarousel.Internal.Populate exposing (tag)
 import TagCarousel.Types exposing (Tag)
-import TagForm.Internal.SaveTypes exposing (Msg(TagSaved))
-import TagForm.Types exposing(Model)
+import TagForm.Types exposing (Model, Msg(TagSaved))
 
 url : String -> String
 url host = "http://" ++ host ++ "/saveTag"
@@ -16,7 +15,7 @@ url host = "http://" ++ host ++ "/saveTag"
 sendRequest: Model -> Timestamp -> List Player -> Cmd Msg
 sendRequest model ts players = Http.send TagSaved (createRequest model ts players)
 
-createRequest: Model -> Timestamp -> List Player -> Request Tag
+createRequest: Model -> Timestamp -> List Player -> Request (List Tag)
 createRequest model ts allPlayers =
   let
     jsonData =
@@ -38,7 +37,7 @@ createRequest model ts allPlayers =
       , headers = []
       , url = url model.host
       , body = body
-      , expect = expectJson tag
+      , expect = expectJson (Decoder.list tag)
       , timeout = Nothing
       , withCredentials = False
      }

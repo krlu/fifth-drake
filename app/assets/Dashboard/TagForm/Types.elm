@@ -1,9 +1,8 @@
 module TagForm.Types exposing (..)
 
 import GameModel exposing (GameId)
-import TagCarousel.Types exposing (Msg(UpdateTags))
-import TagForm.Internal.SaveTypes as Save
-
+import Http
+import TagCarousel.Types exposing (Msg(UpdateTags), Tag)
 
 type Msg
  = CreateTitle String 
@@ -12,7 +11,7 @@ type Msg
  | AddPlayers String
  | CancelForm
  | SaveTag
- | SuccessOrFail Save.Msg
+ | TagSaved (Result Http.Error (List Tag))
 
 type alias Model =
   { title : String

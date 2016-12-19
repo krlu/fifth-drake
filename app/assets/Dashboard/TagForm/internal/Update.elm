@@ -3,9 +3,9 @@ module TagForm.Internal.Update exposing (..)
 import GameModel exposing (Player, Timestamp)
 import Http exposing (Response)
 import TagForm.Internal.Save exposing (sendRequest)
-import TagForm.Internal.SaveTypes exposing (Msg(TagSaved))
 import TagForm.Types as Types exposing (..)
 import TagCarousel.TagCarousel as TagCarousel
+
 update : Types.Msg -> Model -> Timestamp -> List Player -> (Model, Cmd Types.Msg)
 update msg model ts players =
   case msg of
@@ -20,7 +20,9 @@ update msg model ts players =
    CancelForm ->  -- TODO: should hide the form
     (model, Cmd.none)
    SaveTag ->
-    (model, Cmd.map SuccessOrFail (sendRequest model ts players))
-   SuccessOrFail msg ->
+    (model, sendRequest model ts players)
+   TagSaved (Ok tags) ->
+    (model, Cmd.none)
+   TagSaved (Err tags) ->
     (model, Cmd.none)
 
