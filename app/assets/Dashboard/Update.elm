@@ -15,7 +15,10 @@ update msg model =
   case msg of
     TagCarouselMsg tmsg ->
       let
-        (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel
+        bluePlayers = model.game.data.blueTeam.players
+        redPlayers = model.game.data.redTeam.players
+        allPlayers = Array.append bluePlayers redPlayers |> Array.toList
+        (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel model.timestamp allPlayers
       in
         ( { model | tagCarousel = tmodel
                   , timestamp = Maybe.withDefault model.timestamp timestamp
@@ -40,12 +43,4 @@ update msg model =
       ( { model | timestamp = timestamp }
       , Cmd.none
       )
-    TagFormMsg m ->
-      let
-        bluePlayers = model.game.data.blueTeam.players
-        redPlayers = model.game.data.redTeam.players
-        allPlayers = Array.append bluePlayers redPlayers |> Array.toList
-        (tagModel, cmd) = TagForm.update m model.tagForm model.timestamp allPlayers
-      in
-        ({model | tagForm = tagModel}, Cmd.map TagFormMsg cmd)
     LocationUpdate loc -> (model, Cmd.none)

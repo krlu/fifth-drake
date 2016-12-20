@@ -1,6 +1,6 @@
 module TagCarousel.Types exposing (..)
 
-import GameModel exposing (Timestamp)
+import GameModel exposing (GameId, Timestamp)
 import TagCarousel.Internal.DeleteTypes as Delete
 import Http
 
@@ -9,10 +9,18 @@ type Msg
   | UpdateTags (Result Http.Error (List Tag))
   | DeleteTag String
   | SuccessOrFail Delete.Msg
+  | CreateTitle String
+  | CreateDescription String
+  | CreateCategory String
+  | AddPlayers String
+  | CancelForm
+  | SaveTag
+  | TagSaved (Result Http.Error (List Tag))
 
 type alias Model =
-  { host : String
-  , tags : List Tag
+  { host    : String
+  , tags    : List Tag
+  , tagForm : TagForm
   }
 
 type alias Tag =
@@ -22,6 +30,15 @@ type alias Tag =
   , category    : TagCategory
   , timestamp   : Timestamp
   , players     : List String
+  }
+
+type alias TagForm =
+  { title       : String
+  , description : String
+  , category    : String
+  , players     : String
+  , gameId      : GameId
+  , host        : String
   }
 
 type TagCategory

@@ -18,9 +18,13 @@ tagCarouselHeight = 100
 tagHeight : Float
 tagHeight = 60
 
+tagFormHeight : Float
+tagFormHeight = 100
+
 type CssClass
   = TagCarousel
   | Tag
+  | TagFormCss
 
 css : Stylesheet
 css =
@@ -46,4 +50,11 @@ css =
         ]
       ]
     ])
+  , (.) TagFormCss (
+       [ width (10 |> px)
+       , height (10 |> px)
+       , overflowY auto
+       , backgroundColor Color.c_darkGray
+       , property "float" "left"
+       ] ++ StyleUtils.userSelect "none")
   ]

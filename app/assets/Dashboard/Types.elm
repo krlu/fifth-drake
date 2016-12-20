@@ -14,7 +14,6 @@ type Msg
   | ControlsMsg Controls.Msg
   | SetGame (Result Http.Error Game)
   | UpdateTimestamp Timestamp
-  | TagFormMsg TagForm.Msg
   | LocationUpdate Location
 
 type alias Model =

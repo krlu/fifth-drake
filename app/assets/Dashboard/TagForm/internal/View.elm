@@ -1,6 +1,7 @@
 module TagForm.Internal.View exposing (..)
 
-import TagForm.Css exposing (CssClass(TagForm), namespace)
+import TagCarousel.Types exposing (TagForm)
+import TagForm.Css exposing( namespace)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Attributes exposing (placeholder)

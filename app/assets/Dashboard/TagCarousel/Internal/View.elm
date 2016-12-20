@@ -4,7 +4,10 @@ import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
 import TagCarousel.Css exposing (CssClass(Tag, TagCarousel), namespace)
-import TagCarousel.Types exposing (Msg(..), Model)
+import TagCarousel.Types exposing (Model, Msg(..))
+import Html.Attributes exposing (placeholder)
+import Html.Events exposing (onClick, onInput)
+import TagForm.Css exposing (CssClass(TagFormCss))
 
 {id, class, classList} = withNamespace namespace
 
@@ -22,5 +25,14 @@ view model =
              ]
          )
   in
-    ol [ class [TagCarousel] ]
-      tags
+    div [] [ ol [ class [TagCarousel] ] tags
+           , form [ class [TagFormCss] ]
+             [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
+             , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
+             , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
+             , p [] [ input [ placeholder "Players", onInput AddPlayers ] [] ]
+             , p [] [ button [ onClick CancelForm ] [ text "cancel" ],
+                      button [ onClick SaveTag] [ text "save" ]
+                    ]
+             ]
+    ]

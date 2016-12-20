@@ -11,12 +11,12 @@ namespace = "tagForm"
 tagFormHeight : Float
 tagFormHeight = 100
 
-type CssClass = TagForm
+type CssClass = TagFormCss
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) TagForm (
+  [ (.) TagFormCss (
     [ width (10 |> px)
     , height (10 |> px)
     , overflowY auto

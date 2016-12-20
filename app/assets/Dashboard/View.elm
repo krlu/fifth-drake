@@ -35,7 +35,6 @@ view model =
         model.game.metadata.redTeamName
         model.game.data.redTeam
         model.timestamp
-    tagForm = TagForm.view model.tagForm |> Html.map TagFormMsg
     tagCarousel = TagCarousel.view model.tagCarousel |> Html.map TagCarouselMsg
   in
     div
@@ -50,8 +49,6 @@ view model =
       , div [ id [ControlsDivider] ] []
       , controls
       , div [id [TagDisplay]]
-        [ tagCarousel
-        , tagForm
-        ]
+        [ tagCarousel ]
       ]
 
