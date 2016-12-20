@@ -8,6 +8,7 @@ import MainCss
 import Minimap.Css
 import NavbarCss
 import Platform
+import PlayerDisplay.Css
 import TagScroller.Css
 import TeamDisplay.Css
 
@@ -22,6 +23,7 @@ cssFiles =
         [ Controls.Css.css
         , DashboardCss.css
         , Minimap.Css.css
+        , PlayerDisplay.Css.css
         , TagScroller.Css.css
         , TeamDisplay.Css.css
         ]

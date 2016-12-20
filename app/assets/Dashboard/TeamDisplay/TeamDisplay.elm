@@ -8,8 +8,8 @@ import TeamDisplay.Css exposing (CssClass(..), namespace)
 
 {id, class, classList} = withNamespace namespace
 
-view : Side -> String -> Team -> Timestamp -> Html a
-view side name team timestamp =
+view : String -> Team -> Timestamp -> Html a
+view name team timestamp =
   let
     teamState =
       Array.get timestamp team.teamStates
@@ -34,7 +34,7 @@ view side name team timestamp =
         ]
   in
     div
-      [ class [ TeamDisplay, ColorClass side] ]
+      [ class [ TeamDisplay] ]
       [ h1
         []
         [ text name ]

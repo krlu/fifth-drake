@@ -38,8 +38,7 @@ type alias TeamState =
   }
 
 type alias Player =
-  { side              : Side
-  , role              : Role
+  { role              : Role
   , ign               : String
   , championName      : String
   , championImage     : String
@@ -49,6 +48,9 @@ type alias Player =
 type alias PlayerState =
   { position          : Position
   , championState     : ChampionState
+  , kills             : Int
+  , deaths            : Int
+  , assists           : Int
   }
 
 type alias Position =
@@ -58,9 +60,41 @@ type alias Position =
 
 type alias ChampionState =
   { hp                : Float
-  , mp                : Float
-  , xp                : Float
+  , hpMax             : Float
+  , power             : Float
+  , powerMax          : Float
+  , xp                : Xp
   }
 
 type Role = Top | Jungle | Mid | Bot | Support
 type Side = Red | Blue
+
+getTeamName : Side -> Metadata -> String
+getTeamName side =
+  case side of
+    Blue -> .blueTeamName
+    Red -> .redTeamName
+
+getTeam : Side -> Data -> Team
+getTeam side =
+  case side of
+    Blue -> .blueTeam
+    Red -> .redTeam
+
+type alias Level = Int
+type alias Xp = Float
+
+getCurrentLevel : Xp -> Level
+getCurrentLevel xp = -- This is a derived formula
+  min 18 << truncate <| (sqrt (2 * xp + 529) - 13) / 10
+
+getXpToNextLevel : Xp -> Xp
+getXpToNextLevel xp =
+  getXpRequiredForLevel (getCurrentLevel xp + 1) - xp
+
+getXpRequiredForLevel : Level -> Xp
+getXpRequiredForLevel level =
+  if level > 18
+  then 0
+  else toFloat <| 10 * (level - 1) * (18 + 5 * level)
+
