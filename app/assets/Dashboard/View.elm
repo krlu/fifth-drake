@@ -39,13 +39,22 @@ view model =
     sideToPlayerDisplay side =
       getTeam side model.game.data
       |> .players
-      |> Array.map
+      |> Array.toList
+      |> List.sortBy
+        ( \p ->
+          case p.role of
+            Top -> 0
+            Jungle -> 1
+            Mid -> 2
+            Bot -> 3
+            Support -> 4
+        )
+      |> List.map
         (\p ->
           widget side
             [ PlayerDisplay.view side p model.timestamp
             ]
         )
-      |> Array.toList
       |> List.intersperse (div [class [PlayerDisplayDivider]] [])
       |> div [ class [PlayerDisplay] ]
 
