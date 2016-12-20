@@ -5,8 +5,7 @@ import Http exposing (Request, expectJson, expectString, jsonBody, request)
 import Json.Decode as Decoder
 import Json.Encode exposing (object, string)
 import Navigation exposing (Location)
-import TagCarousel.Internal.DeleteTypes exposing (Msg(TagDeleted))
-import TagCarousel.Types exposing(Model, Tag)
+import TagCarousel.Types exposing (Model, Msg(TagDeleted), Tag)
 
 url : String -> String
 url host = "http://" ++ host ++ "/deleteTag"

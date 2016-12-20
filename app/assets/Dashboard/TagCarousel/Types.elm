@@ -1,14 +1,13 @@
 module TagCarousel.Types exposing (..)
 
 import GameModel exposing (GameId, Timestamp)
-import TagCarousel.Internal.DeleteTypes as Delete
 import Http
 
 type Msg
   = TagClick Timestamp
   | UpdateTags (Result Http.Error (List Tag))
   | DeleteTag String
-  | SuccessOrFail Delete.Msg
+  | TagDeleted (Result Http.Error String)
   | CreateTitle String
   | CreateDescription String
   | CreateCategory String
