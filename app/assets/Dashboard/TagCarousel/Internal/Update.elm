@@ -26,7 +26,10 @@ update msg model ts players =
     SaveTag ->
      (Nothing, model, Save.sendRequest model.tagForm ts players)
     TagSaved (Ok tags) ->
-     (Nothing, { model | tags = tags }, Cmd.none)
+      let
+        x = Debug.log "" tags
+      in
+       (Nothing, { model | tags = tags }, Cmd.none)
     TagSaved (Err msg) ->
      (Nothing, Debug.log "Could not save tag!" model, Cmd.none)
     CreateTitle title ->

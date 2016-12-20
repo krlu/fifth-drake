@@ -212,11 +212,10 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       val data = jsonValue.as[JsObject].value
       val tagId = data("id").as[String]
       dbh.deleteTag(new InternalId[Tag](tagId))
-      Ok(Json.obj("id" -> tagId))
+      Ok(tagId)
     }.getOrElse{
       BadRequest("Failed to delete tag")
     }
-    Ok("hello world")
   }
 }
 
