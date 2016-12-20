@@ -5,7 +5,6 @@ import GameModel exposing (Game, GameLength, Timestamp)
 import Http
 import Minimap.Types as Minimap
 import TagCarousel.Types as TagCarousel
-import TagForm.Types as TagForm
 import Navigation exposing (Location)
 
 
@@ -22,7 +21,6 @@ type alias Model =
   , tagCarousel : TagCarousel.Model
   , game : Game
   , timestamp : Timestamp
-  , tagForm: TagForm.Model
   , tagCarousel: TagCarousel.Model
   }
 

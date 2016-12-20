@@ -7,7 +7,6 @@ import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Minimap.Minimap as Minimap
 import TagCarousel.TagCarousel as TagCarousel
-import TagForm.TagForm as TagForm
 import TeamDisplay.TeamDisplay as TeamDisplay
 import Types exposing (..)
 

@@ -13,7 +13,6 @@ import Update
 import View
 import Minimap.Minimap as Minimap
 import TagCarousel.TagCarousel as TagCarousel
-import TagForm.TagForm as TagForm
 
 
 init : Flags -> Location -> (Model, Cmd Msg)
@@ -21,7 +20,6 @@ init flags location =
   let
     minimapModel = Minimap.init flags.minimapBackground
     (tagCarouselModel, tagCarouselCmd) = TagCarousel.init location
-    (tagFormModel,tagFormCmd) = TagForm.init location
     controlsModel = Controls.init flags.playButton flags.pauseButton
 
     metadata : Metadata
@@ -44,7 +42,6 @@ init flags location =
   in
     { minimap = minimapModel
     , tagCarousel = tagCarouselModel
-    , tagForm = tagFormModel
     , controls = controlsModel
     , game =
       { metadata = metadata

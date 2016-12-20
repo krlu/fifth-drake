@@ -7,7 +7,6 @@ import Minimap.Minimap as Minimap
 import Minimap.Types as MinimapT
 import TagCarousel.TagCarousel as TagCarousel
 import TagCarousel.Types as TagCarouselT
-import TagForm.TagForm as TagForm
 import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)

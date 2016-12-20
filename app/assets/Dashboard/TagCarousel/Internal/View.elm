@@ -3,11 +3,10 @@ module TagCarousel.Internal.View exposing (..)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
-import TagCarousel.Css exposing (CssClass(Tag, TagCarousel), namespace)
+import TagCarousel.Css exposing (CssClass(Tag, TagCarousel, TagFormCss), namespace)
 import TagCarousel.Types exposing (Model, Msg(..))
 import Html.Attributes exposing (placeholder)
 import Html.Events exposing (onClick, onInput)
-import TagForm.Css exposing (CssClass(TagFormCss))
 
 {id, class, classList} = withNamespace namespace
 
