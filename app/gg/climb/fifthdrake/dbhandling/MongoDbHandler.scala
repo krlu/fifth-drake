@@ -3,16 +3,16 @@ package gg.climb.fifthdrake.dbhandling
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.{Game, Time}
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Team}
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
+import gg.climb.fifthdrake.{Game, Time}
 import org.joda.time.DateTime
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.{MongoClient, Observable}
+import org.mongodb.scala.{MongoClient, MongoDatabase}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -20,9 +20,8 @@ import scala.concurrent.{Await, Future}
 
 class MongoDbHandler(mongoClient: MongoClient) {
 
-  val TIMEOUT = Duration(5, TimeUnit.SECONDS)
-  val names: Observable[String] = mongoClient.listDatabaseNames()
-  val database = mongoClient.getDatabase("league_analytics")
+  private val TIMEOUT = Duration(5, TimeUnit.SECONDS)
+  private val database: MongoDatabase = mongoClient.getDatabase("league_analytics")
 
   def getAllGames: Future[Seq[MetaData]] = getSeq("lcs_game_identifiers", None, buildMetadata)
 
@@ -138,18 +137,28 @@ class MongoDbHandler(mongoClient: MongoClient) {
       turrets <- teamStats.get("towersKilled").map(_.asInt32().getValue)
       states: Set[PlayerState] = playerStats.filter(_._2.asDocument().getInt32("teamId")
         .getValue.toString == side.riotId.id)
-               .flatMap({ case (key, value) =>
-                 parsePlayerState(Document(value.asDocument()), side)
+               .flatMap({ case (_, value) =>
+                 parsePlayerState(Document(value.asDocument()))
                         }).toSet
     } yield (new TeamState(barons, dragons, turrets), states)
   }
 
-  private def parsePlayerState(playerStat: Document, side: Side): Option[PlayerState] = {
+  private def parsePlayerState(playerStat: Document): Option[PlayerState] = {
     for {
       playerId <- playerStat.get("playerId").map(_.asString().getValue).map(new RiotId[Player](_))
       championState <- parseChampionState(playerStat)
       location <- parseLocationData(playerStat)
-    } yield new PlayerState(playerId, championState, location, side)
+      kills <- playerStat.get("kills").map(_.asInt32().getValue)
+      deaths <- playerStat.get("deaths").map(_.asInt32().getValue)
+      assists <- playerStat.get("assists").map(_.asInt32().getValue)
+    } yield new PlayerState(
+      id = playerId,
+      championState = championState,
+      location = location,
+      kills = kills,
+      deaths = deaths,
+      assists = assists
+    )
   }
 
   private def parseLocationData(doc: Document): Option[LocationData] = {
@@ -162,9 +171,18 @@ class MongoDbHandler(mongoClient: MongoClient) {
   private def parseChampionState(doc: Document): Option[ChampionState] = {
     for {
       hp <- doc.get("h").map(_.asInt32().getValue)
-      mp <- doc.get("p").map(_.asInt32().getValue)
+      hpMax <- doc.get("maxHealth").map(_.asInt32().getValue)
+      power <- doc.get("p").map(_.asInt32().getValue)
+      powerMax <- doc.get("maxPower").map(_.asInt32().getValue)
       xp <- doc.get("xp").map(_.asInt32().getValue)
       name <- doc.get("championName").map(_.asString().getValue)
-    } yield new ChampionState(hp, mp, xp, name)
+    } yield new ChampionState(
+      hp = hp,
+      power = power,
+      xp = xp,
+      name = name,
+      powerMax = powerMax,
+      hpMax = hpMax
+    )
   }
 }

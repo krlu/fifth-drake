@@ -74,9 +74,8 @@ teamState =
 
 player : Decoder Player
 player =
-  map7 Player
+  map6 Player
     ("id" ::= string)
-    ("side" ::= side)
     ("role" ::= role)
     ("ign" ::= string)
     ("championName" ::= string)
@@ -106,9 +105,12 @@ role =
 
 playerState : Decoder PlayerState
 playerState =
-  map2 PlayerState
+  map5 PlayerState
     ("position" ::= position)
     ("championState" ::= championState)
+    ("kills" ::= int)
+    ("deaths" ::= int)
+    ("assists" ::= int)
 
 position : Decoder Position
 position =
@@ -118,7 +120,9 @@ position =
 
 championState : Decoder ChampionState
 championState =
-  map3 ChampionState
+  map5 ChampionState
     ("hp" ::= float)
-    ("mp" ::= float)
+    ("hpMax" ::= float)
+    ("power" ::= float)
+    ("powerMax" ::= float)
     ("xp" ::= float)

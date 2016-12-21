@@ -58,13 +58,13 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   private def behaviorForPlayers(playerStates: Seq[(Time, Set[PlayerState])])
   : Map[Player, Behavior[Time, PlayerState]] = separateStatesForPlayers(playerStates).map{ case (player, seq) =>
     val list = seq.toList.map{case (time, playerState) =>
-      (time, constantFunction(playerState))
+      (time, Function.const(playerState) _)
     }
     player -> new ListBehavior[Time, PlayerState](list.head._2, list)
   }
 
   private def getBehaviorForTeams(teamStates: Seq[(Time,TeamState)]) : Behavior[Time, TeamState] = {
-    val list = teamStates.map{case (time, teamState) =>(time, constantFunction(teamState))}.toList
+    val list = teamStates.map{case (time, teamState) =>(time, Function.const(teamState) _)}.toList
     new ListBehavior[Time, TeamState](list.head._2, list)
   }
 
@@ -91,7 +91,5 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
     case Blue => blueTeam
     case Red => redTeam
   }
-  private def constantFunction(p: PlayerState): (Time => PlayerState) = {d: Time => p}
-  private def constantFunction(t: TeamState): (Time => TeamState) = {d: Time => t}
 
 }

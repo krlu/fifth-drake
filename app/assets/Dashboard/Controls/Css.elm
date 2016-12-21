@@ -75,7 +75,7 @@ css =
             , children
               [ (.) BarSeen
                 [ property "pointer-events" "none"
-                , backgroundColor Color.c_darkGray
+                , backgroundColor Color.c_darkerGray
                 , height (100 |> pct)
                 ]
               ]
@@ -92,7 +92,7 @@ css =
             , left zero
             , width (knobWidth |> px)
             , height (knobHeight |> px)
-            , backgroundColor Color.c_darkGray
+            , backgroundColor Color.c_darkerGray
             , transform << translateX << pct <| -50
             ]
           ]

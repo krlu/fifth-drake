@@ -18,23 +18,6 @@ import scala.concurrent.duration.Duration
 
 class GameDataController(dbh: DataAccessHandler) extends Controller {
 
-  def xpRequiredForLevel(level: Int): Int =
-    if (level > 0 && level <= 18) {
-      10 * (level - 1) * (18 + 5 * level)
-    }
-    else {
-      throw
-        new IllegalArgumentException(s"Level `$level' is not a possible level in League of Legends")
-    }
-
-  def getCurrentLevel(xp: Int): Int =
-    if (xp > 0 && xp <= 18360) {
-      ((Math.sqrt(2 * xp + 529) - 13) / 10).toInt
-    }
-    else {
-      throw new IllegalArgumentException(s"Cannot have `$xp' xp")
-    }
-
   def loadDashboard(gameKey: String): Action[AnyContent] = Action { request =>
     Ok(views.html.gameDashboard(request.host, gameKey))
   }
@@ -87,15 +70,20 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
             ),
             "championState" -> Json.obj(
               "hp" -> playerState.championState.hp,
-              "mp" -> playerState.championState.mp,
+              "hpMax" -> playerState.championState.hpMax,
+              "power" -> playerState.championState.power,
+              "powerMax" -> playerState.championState.powerMax,
               "xp" -> playerState.championState.xp
-            ))
+            ),
+            "kills" -> playerState.kills,
+            "deaths" -> playerState.deaths,
+            "assists" -> playerState.assists
+          )
         }
 
         def playerStateToJson(p: (Player, Behavior[Time, PlayerState])): JsValue = p match {
           case (player, states) => Json.obj(
             "id" -> player.id.id.toString,
-            "side" -> states(Duration.Zero).sideColor.name,
             "role" -> player.role.name,
             "ign" -> player.ign,
             "championName" -> states(Duration.Zero).championState.name,

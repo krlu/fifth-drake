@@ -9,6 +9,7 @@ import Minimap.Css
 import NavbarCss
 import TagCarousel.Css
 import Platform
+import PlayerDisplay.Css
 import TeamDisplay.Css
 
 port files : CssFileStructure -> Cmd msg
@@ -23,6 +24,7 @@ cssFiles =
         , DashboardCss.css
         , Minimap.Css.css
         , TagCarousel.Css.css
+        , PlayerDisplay.Css.css
         , TeamDisplay.Css.css
         ]
       , "navbar.css" => compile
