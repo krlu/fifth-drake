@@ -7,8 +7,8 @@ import Json.Encode exposing (object, string)
 import Navigation exposing (Location)
 import TagCarousel.Types exposing (Model, Msg(TagDeleted), Tag)
 
-url : String -> String
-url host = "http://" ++ host ++ "/deleteTag"
+url : String -> String -> String
+url host tagId= "http://" ++ host ++ "/deleteTag/" ++ tagId
 
 sendRequest: String -> String -> Cmd Msg
 sendRequest id host = Http.send TagDeleted (createRequest id host)
@@ -23,9 +23,9 @@ createRequest id host =
     body = jsonBody jsonData
   in
     request
-     {  method = "PUT"
+     {  method = "DELETE"
       , headers = []
-      , url = url host
+      , url = url host id
       , body = body
       , expect = expectString
       , timeout = Nothing

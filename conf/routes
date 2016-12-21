@@ -14,5 +14,5 @@ GET   /game/:gameKey/tags         gg.climb.fifthdrake.controllers.GameDataContro
 
 GET   /champion/:name             gg.climb.fifthdrake.controllers.GameDataController.loadChampion(name: String)
 
-PUT   /saveTag                    gg.climb.fifthdrake.controllers.GameDataController.saveTag
-PUT   /deleteTag                  gg.climb.fifthdrake.controllers.GameDataController.deleteTag
+PUT      /saveTag                 gg.climb.fifthdrake.controllers.GameDataController.saveTag
+DELETE   /deleteTag/:id           gg.climb.fifthdrake.controllers.GameDataController.deleteTag(id: String)

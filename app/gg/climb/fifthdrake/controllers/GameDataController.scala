@@ -207,16 +207,9 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
     }
   }
 
-  def deleteTag(): Action[AnyContent] = Action { request =>
-    val body: AnyContent = request.body
-    body.asJson.map{ jsonValue =>
-      val data = jsonValue.as[JsObject].value
-      val tagId = data("id").as[String]
-      dbh.deleteTag(new InternalId[Tag](tagId))
-      Ok(tagId)
-    }.getOrElse{
-      BadRequest("Failed to delete tag")
-    }
+  def deleteTag(tagId: String): Action[AnyContent] = Action {
+    dbh.deleteTag(new InternalId[Tag](tagId))
+    Ok(tagId)
   }
 }
 

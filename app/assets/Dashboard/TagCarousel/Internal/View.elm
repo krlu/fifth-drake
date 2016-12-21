@@ -24,18 +24,19 @@ view model players =
              , p [] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
              ]
          )
-    tagFormView = if model.tagForm.active == True then
-                 div [ class [TagFormCss] ]
-                             [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
-                             , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
-                             , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
-                             , p [] [ input [ placeholder "Players", onInput AddPlayers ] [] ]
-                             , p [] [ button [ onClick SwitchForm ] [ text "cancel" ],
-                                      button [ onClick SaveTag] [ text "save" ]
-                                    ]
-                             ]
-              else
-                button [ onClick SwitchForm] [ text "create new tag" ]
+    tagFormView =
+      if model.tagForm.active == True then
+        div [ class [TagFormCss] ]
+                 [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
+                 , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
+                 , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
+                 , p [] [ input [ placeholder "Players", onInput AddPlayers ] [] ]
+                 , p [] [ button [ onClick SwitchForm ] [ text "cancel" ],
+                          button [ onClick SaveTag] [ text "save" ]
+                        ]
+                 ]
+      else
+        button [ onClick SwitchForm] [ text "create new tag" ]
   in
     div [] [ ol [ class [TagCarousel] ] tags
            , tagFormView
