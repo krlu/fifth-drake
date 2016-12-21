@@ -6,7 +6,7 @@ import String as String
 import TagCarousel.Internal.Delete as Delete
 import TagCarousel.Internal.Save as Save
 
-update : Msg -> Model -> Timestamp -> List Player -> (Maybe Timestamp, Model, Cmd Msg)
+update : Msg -> Model -> Timestamp -> List (String, String) -> (Maybe Timestamp, Model, Cmd Msg)
 update msg model ts players =
   case msg of
     TagClick val ->
@@ -50,7 +50,7 @@ update msg model ts players =
     AddPlayers igns ->
       let
         oldTagForm = model.tagForm
-        newTagForm = { oldTagForm |  players = igns}
+        newTagForm = { oldTagForm | players = igns}
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
 

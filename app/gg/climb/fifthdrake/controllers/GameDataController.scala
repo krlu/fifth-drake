@@ -188,7 +188,6 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       }.toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
-      println(allPlayers.keys)
       Ok(loadTagData(gameKey))
     }.getOrElse{
       BadRequest("Failed to insert tag")

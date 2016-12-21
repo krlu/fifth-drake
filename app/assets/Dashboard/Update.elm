@@ -14,8 +14,8 @@ update msg model =
   case msg of
     TagCarouselMsg tmsg ->
       let
-        bluePlayers = model.game.data.blueTeam.players
-        redPlayers = model.game.data.redTeam.players
+        bluePlayers = model.game.data.blueTeam.players |> Array.map (\player -> (player.id, player.ign))
+        redPlayers =  model.game.data.redTeam.players |> Array.map (\player -> (player.id, player.ign))
         allPlayers = Array.append bluePlayers redPlayers |> Array.toList
         (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel model.timestamp allPlayers
       in

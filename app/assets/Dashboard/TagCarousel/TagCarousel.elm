@@ -25,10 +25,10 @@ init loc =
   in
     ({host = loc.host, tagForm = tagForm, tags = [] }, Populate.populate loc)
 
-update : Msg -> Model -> Timestamp -> List Player -> (Maybe Timestamp, Model, Cmd Msg)
+update : Msg -> Model -> Timestamp -> List (String, String) -> (Maybe Timestamp, Model, Cmd Msg)
 update = Update.update
 
-view : Model -> List Player -> Html Msg
+view : Model -> List (String, String) -> Html Msg
 view = View.view
 
 getGameId : Location -> GameId

@@ -11,7 +11,7 @@ import Html.Events exposing (onClick, onInput)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> List Player -> Html Msg
+view : Model -> List (String, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
@@ -24,16 +24,13 @@ view model players =
              , p [] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
              ]
          )
-    playersView = players |> List.map (\player ->
-                      p[] [checkbox (AddPlayers player.id) player.ign]
-                  )
     tagFormView =
       if model.tagForm.active == True then
         div [ class [TagFormCss] ]
                  [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
                  , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
                  , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
-                 , p [] [checkbox (AddPlayers "1") "player1"]
+                 , p [] [ input [ placeholder "Players", onInput AddPlayers ] [] ]
                  , p [] [ button [ onClick SwitchForm ] [ text "cancel" ],
                           button [ onClick SaveTag] [ text "save" ]
                         ]

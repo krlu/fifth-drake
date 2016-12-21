@@ -71,10 +71,10 @@ view model =
       |> Html.map ControlsMsg
 
     minimap = Minimap.view model.minimap model.game.data model.timestamp
---    bluePlayers = model.game.data.blueTeam.players
---    redPlayers = model.game.data.redTeam.players
---    allPlayers = Array.append bluePlayers redPlayers |> Array.toList
---    tagCarousel = TagCarousel.view model.tagCarousel allPlayers |> Html.map TagCarouselMsg
+    bluePlayers = model.game.data.blueTeam.players |> Array.map (\player -> (player.id, player.ign))
+    redPlayers =  model.game.data.redTeam.players |> Array.map (\player -> (player.id, player.ign))
+    allPlayers = Array.append bluePlayers redPlayers |> Array.toList
+    tagCarousel = TagCarousel.view model.tagCarousel allPlayers |> Html.map TagCarouselMsg
     ((blueTeamDisplay, bluePlayerDisplays), (redTeamDisplay, redPlayerDisplays))
       = (Blue, Red)
       |> mapBoth sideToDisplays
@@ -99,8 +99,8 @@ view model =
           ]
         , div [ class [ContentDivider] ] []
         , redPlayerDisplays
---      , div [id [TagDisplay]]
---        [ tagCarousel ]
         ]
+      , div [id [TagDisplay]]
+        [ tagCarousel ]
       ]
 

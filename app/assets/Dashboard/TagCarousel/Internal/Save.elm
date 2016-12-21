@@ -11,10 +11,10 @@ import TagCarousel.Types exposing (Msg(TagSaved), Tag, TagForm)
 url : String -> String
 url host = "http://" ++ host ++ "/saveTag"
 
-sendRequest: TagForm -> Timestamp -> List Player -> Cmd Msg
+sendRequest: TagForm -> Timestamp -> List (String, String) -> Cmd Msg
 sendRequest model ts players = Http.send TagSaved (createRequest model ts players)
 
-createRequest: TagForm -> Timestamp -> List Player -> Request (List Tag)
+createRequest: TagForm -> Timestamp -> List (String, String) -> Request (List Tag)
 createRequest model ts allPlayers =
   let
     jsonData =
@@ -41,5 +41,5 @@ createRequest model ts allPlayers =
       , withCredentials = False
      }
 
-getIdAndIgn: Player -> (String, Value)
-getIdAndIgn player = (player.ign, string player.id)
+getIdAndIgn: (String, String)-> (String, Value)
+getIdAndIgn (id, ign) = (ign, string id)
