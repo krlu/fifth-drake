@@ -182,6 +182,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
     */
   def saveTag(): Action[AnyContent] = Action { request =>
     val body: AnyContent = request.body
+    println("hi")
     body.asJson.map{ jsonValue =>
       val data = jsonValue.as[JsObject].value
       val gameKey = data("gameKey").as[String]

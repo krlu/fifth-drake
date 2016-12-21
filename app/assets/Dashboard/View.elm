@@ -1,5 +1,6 @@
 module View exposing (..)
 
+import Array
 import Controls.Controls as Controls
 import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider, TagDisplay), namespace)
 import GameModel exposing (GameLength, Side(..), Timestamp)
@@ -34,7 +35,10 @@ view model =
         model.game.metadata.redTeamName
         model.game.data.redTeam
         model.timestamp
-    tagCarousel = TagCarousel.view model.tagCarousel |> Html.map TagCarouselMsg
+    bluePlayers = model.game.data.blueTeam.players
+    redPlayers = model.game.data.redTeam.players
+    allPlayers = Array.append bluePlayers redPlayers |> Array.toList
+    tagCarousel = TagCarousel.view model.tagCarousel allPlayers |> Html.map TagCarouselMsg
   in
     div
       [ class [Dashboard] ]

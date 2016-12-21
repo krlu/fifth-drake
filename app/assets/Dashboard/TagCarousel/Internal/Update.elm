@@ -21,15 +21,12 @@ update msg model ts players =
       (Nothing, { model | tags = filterTags model.tags id }, Cmd.none)
     TagDeleted (Err msg)->
       (Nothing, Debug.log "Could not delete tag!" model , Cmd.none)
-    CancelForm ->  -- TODO: should hide the form
-     (Nothing, model, Cmd.none)
+    SwitchForm ->
+      (Nothing, switchTag model , Cmd.none)
     SaveTag ->
      (Nothing, model, Save.sendRequest model.tagForm ts players)
     TagSaved (Ok tags) ->
-      let
-        x = Debug.log "" tags
-      in
-       (Nothing, { model | tags = tags }, Cmd.none)
+     (Nothing, switchTag { model | tags = tags }, Cmd.none)
     TagSaved (Err msg) ->
      (Nothing, Debug.log "Could not save tag!" model, Cmd.none)
     CreateTitle title ->
@@ -65,3 +62,15 @@ filterTags tags id =
     customFilter tag = tag.id /= id
   in
     List.filter customFilter tags
+
+switchTag: Model -> Model
+switchTag model =
+  let
+    oldTagForm = model.tagForm
+    oldActive = model.tagForm.active
+    newTagForm = if oldActive == True then
+                  { oldTagForm | active = False}
+                 else
+                  { oldTagForm | active = True}
+  in
+    { model | tagForm = newTagForm }

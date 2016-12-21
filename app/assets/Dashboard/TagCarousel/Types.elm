@@ -12,7 +12,7 @@ type Msg
   | CreateDescription String
   | CreateCategory String
   | AddPlayers String
-  | CancelForm
+  | SwitchForm
   | SaveTag
   | TagSaved (Result Http.Error (List Tag))
 
@@ -38,6 +38,7 @@ type alias TagForm =
   , players     : String
   , gameId      : GameId
   , host        : String
+  , active      : Bool
   }
 
 type TagCategory
