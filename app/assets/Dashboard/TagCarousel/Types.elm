@@ -41,6 +41,11 @@ type alias TagForm =
   , active      : Bool
   }
 
+--type alias SelectedPlayers =
+--  { playerId : String
+--  , ign      : String
+--  }
+
 type TagCategory
   = TeamFight
   | Objective

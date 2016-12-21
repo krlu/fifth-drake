@@ -52,7 +52,7 @@ css =
     ])
   , (.) TagFormCss (
        [ width (160 |> px)
-       , height (120 |> px)
+       , height (250 |> px)
        , overflowY auto
        , backgroundColor Color.c_darkGray
        , property "float" "left"

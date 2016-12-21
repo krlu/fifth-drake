@@ -182,7 +182,6 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
     */
   def saveTag(): Action[AnyContent] = Action { request =>
     val body: AnyContent = request.body
-    println("hi")
     body.asJson.map{ jsonValue =>
       val data = jsonValue.as[JsObject].value
       val gameKey = data("gameKey").as[String]
@@ -201,6 +200,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       }.toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
+      println(allPlayers.keys)
       Ok(loadTagData(gameKey))
     }.getOrElse{
       BadRequest("Failed to insert tag")

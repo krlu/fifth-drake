@@ -6,7 +6,7 @@ import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
 import TagCarousel.Css exposing (CssClass(Tag, TagCarousel, TagFormCss), namespace)
 import TagCarousel.Types exposing (Model, Msg(..))
-import Html.Attributes exposing (placeholder)
+import Html.Attributes exposing (placeholder, style, type_)
 import Html.Events exposing (onClick, onInput)
 
 {id, class, classList} = withNamespace namespace
@@ -24,13 +24,16 @@ view model players =
              , p [] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
              ]
          )
+    playersView = players |> List.map (\player ->
+                      p[] [checkbox (AddPlayers player.id) player.ign]
+                  )
     tagFormView =
       if model.tagForm.active == True then
         div [ class [TagFormCss] ]
                  [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
                  , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
                  , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
-                 , p [] [ input [ placeholder "Players", onInput AddPlayers ] [] ]
+                 , p [] [checkbox (AddPlayers "1") "player1"]
                  , p [] [ button [ onClick SwitchForm ] [ text "cancel" ],
                           button [ onClick SaveTag] [ text "save" ]
                         ]
@@ -40,4 +43,14 @@ view model players =
   in
     div [] [ ol [ class [TagCarousel] ] tags
            , tagFormView
+    ]
+
+
+checkbox : msg -> String -> Html msg
+checkbox msg name =
+  label
+    [ style [("padding", "20px")]
+    ]
+    [ input [ type_ "checkbox", onClick msg ] []
+    , text name
     ]
