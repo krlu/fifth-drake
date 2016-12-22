@@ -10,12 +10,19 @@ import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespac
 import Minimap.Types exposing (Model)
 import StyleUtils exposing (styles)
 import GameModel exposing (Data, Team, Timestamp)
+import Types exposing (TimeSelection(..))
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> Data -> Timestamp -> Html a
-view model data timestamp =
+view : Model -> Data -> TimeSelection -> Html a
+view model data selection =
   let
+    timestamp : Timestamp
+    timestamp =
+      case selection of
+        Instant t -> t
+        Range (_, end) -> end
+
     playerIcons : List (Html a)
     playerIcons =
       data

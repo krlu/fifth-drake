@@ -12,16 +12,19 @@ type Msg
   = TagCarouselMsg TagCarousel.Msg
   | ControlsMsg Controls.Msg
   | SetGame (Result Http.Error Game)
-  | UpdateTimestamp Timestamp
   | LocationUpdate Location
+
+type TimeSelection
+  = Instant Timestamp
+  | Range (Timestamp, Timestamp)
 
 type alias Model =
   { controls : Controls.Model
   , minimap : Minimap.Model
   , tagCarousel : TagCarousel.Model
   , game : Game
-  , timestamp : Timestamp
   , tagCarousel: TagCarousel.Model
+  , selection : TimeSelection
   }
 
 type alias Flags =

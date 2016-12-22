@@ -17,18 +17,27 @@ update msg model =
       let
         (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel model.timestamp
       in
-        ( { model | tagCarousel = tmodel
-                  , timestamp = Maybe.withDefault model.timestamp timestamp
+        ( { model
+            | tagCarousel = tmodel
+            , selection =
+              timestamp
+              |> Maybe.map Instant
+              |> Maybe.withDefault model.selection
           }
         , Cmd.map TagCarouselMsg cmd
         )
-    ControlsMsg tmsg ->
+    ControlsMsg controlMsg ->
       let
-        (timestamp, cmodel) =
-          Controls.update model.timestamp model.game.metadata.gameLength tmsg model.controls
+        (selection, cmodel) =
+          Controls.update
+            model.selection
+            model.game.metadata.gameLength
+            controlMsg
+            model.controls
       in
-        ( { model | timestamp = timestamp
-                  , controls = cmodel
+        ( { model
+            | selection = selection
+            , controls = cmodel
           }
         , Cmd.none
         )
@@ -36,8 +45,4 @@ update msg model =
       ({ model | game = game }, Cmd.none)
     SetGame (Err err) ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
-    UpdateTimestamp timestamp ->
-      ( { model | timestamp = timestamp }
-      , Cmd.none
-      )
     LocationUpdate loc -> (model, Cmd.none)

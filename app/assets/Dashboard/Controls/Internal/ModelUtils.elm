@@ -1,13 +1,13 @@
 module Controls.Internal.ModelUtils exposing (..)
 
 import Controls.Css exposing (timelineWidth)
-import Controls.Types exposing (Model, Status(..))
+import Controls.Types exposing (Drag, Model, Status(..))
 import GameModel exposing (..)
 import Mouse
 import String
 
-getTimestampAtMouse : Model -> Timestamp -> GameLength -> Timestamp
-getTimestampAtMouse {mouse} timestamp gameLength =
+getTimestampAtMouse : Maybe Drag -> Timestamp -> GameLength -> Timestamp
+getTimestampAtMouse mouse timestamp gameLength =
   case mouse of
     Nothing -> timestamp
     Just {start, current} ->
@@ -18,7 +18,7 @@ getTimestampAtMouse {mouse} timestamp gameLength =
 
 getPixelForTimestamp : Model -> Timestamp -> GameLength -> Float
 getPixelForTimestamp model timestamp gameLength =
-  getTimestampAtMouse model timestamp gameLength
+  getTimestampAtMouse model.mouse timestamp gameLength
     |> toFloat
     |> \val -> val / (toFloat gameLength) * timelineWidth
 

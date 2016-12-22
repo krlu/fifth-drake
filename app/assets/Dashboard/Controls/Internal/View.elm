@@ -13,6 +13,7 @@ import Html.Events exposing (on, onCheck, onClick)
 import Json.Decode as Json exposing (Decoder, andThen, field, int, map2)
 import Mouse
 import StyleUtils exposing (..)
+import Types exposing (TimeSelection(..))
 
 {id, class, classList} = withNamespace namespace
 
@@ -21,6 +22,11 @@ join da db =
   da
   |> Json.andThen (\x -> Json.map (\y -> (x, y)) db)
 
+{- This decoder will create both an absolute and relative position out of the
+   provided mouse input.
+
+   @return (absolute, relative)
+-}
 relativePosition : Decoder (Mouse.Position, Mouse.Position)
 relativePosition =
   join
@@ -29,8 +35,8 @@ relativePosition =
       (field "offsetX" int)
       (field "offsetY" int)
 
-view : Timestamp -> GameLength -> Model -> Html Msg
-view timestamp gameLength model =
+view : TimeSelection -> GameLength -> Model -> Html Msg
+view selection gameLength model =
   let
     playImg =
       -- This needs to show the opposing state. If it's currently playing, then
@@ -38,7 +44,6 @@ view timestamp gameLength model =
       case model.status of
         Play -> model.pauseButton
         Pause -> model.playButton
-    pxs = getPixelForTimestamp model timestamp gameLength
   in
     div
       [ class [Controls] ]
@@ -52,40 +57,63 @@ view timestamp gameLength model =
           ]
           []
         ]
+      , timeline selection gameLength model
+      ]
+
+timeline : TimeSelection -> GameLength -> Model -> Html Msg
+timeline selection gameLength model =
+  let
+    timeDisplayText : String
+    timeDisplayText =
+      (case selection of
+         Instant t ->
+           toTimeString t
+         Range (start, end) ->
+           toTimeString start ++ " - " ++ toTimeString end
+      )
+      ++ "/" ++ toTimeString gameLength
+    firstKnobLocation =
+      let
+        timestamp =
+          case selection of
+            Instant t -> t
+            Range (_, end) -> end
+      in
+      getPixelForTimestamp model timestamp gameLength
+  in
+    div
+      [ class [TimelineAndDisplay] ]
+      [ label
+        [ class [SecondKnobSelector] ]
+        [ p [] [text "Select Range:"]
+        , input
+          [ type_ "checkbox"
+          , onCheck UseSecondKnob
+          ]
+          []
+        ]
       , div
-        [ class [TimelineAndDisplay] ]
-        [ label
-          [ class [SecondKnobSelector] ]
-          [ p [] [text "Select Range:"]
-          , input
-            [ type_ "checkbox"
-            , onCheck UseSecondKnob
-            ]
-            []
-          ]
-        , div
-          [ class [Timeline]
-            , on "mousedown" (Json.map BarClick relativePosition)
-          ]
-          [ div
-            [ class [BarSeen]
-            , styles
-              [ Css.width (pxs |> px)
-              ]
-            ]
-            []
-          ]
-        , p
-          [ class [TimeDisplay] ]
-          [ text <| toTimeString timestamp ++ "/" ++ toTimeString gameLength
-          ]
-        , div
-          [ on "mousedown" (Json.map KnobGrab Mouse.position)
-          , class [Knob]
+        [ class [Timeline]
+          , on "mousedown" (Json.map BarClick relativePosition)
+        ]
+        [ div
+          [ class [BarSeen]
           , styles
-            [ left (pxs |> px)
+            [ Css.width (firstKnobLocation |> px)
             ]
           ]
           []
         ]
+      , p
+        [ class [TimeDisplay] ]
+        [ text timeDisplayText
+        ]
+      , div
+        [ on "mousedown" (Json.map KnobGrab Mouse.position)
+        , class [Knob]
+        , styles
+          [ left (firstKnobLocation |> px)
+          ]
+        ]
+        []
       ]

@@ -4,8 +4,9 @@ import Controls.Internal.Subscriptions as Subscriptions
 import Controls.Internal.Update as Update
 import Controls.Internal.View as View
 import Controls.Types exposing (..)
-import GameModel exposing (GameLength, Timestamp)
+import GameModel exposing (GameLength)
 import Html exposing (Html)
+import Types exposing (TimeSelection)
 
 initialModel : String -> String -> Model
 initialModel playButton pauseButton =
@@ -18,10 +19,10 @@ initialModel playButton pauseButton =
 init : String -> String -> Model
 init = initialModel
 
-update : Timestamp -> GameLength -> Msg -> Model -> (Timestamp, Model)
+update : TimeSelection -> GameLength -> Msg -> Model -> (TimeSelection, Model)
 update = Update.update
 
-view : Timestamp -> GameLength -> Model -> Html Msg
+view : TimeSelection -> GameLength -> Model -> Html Msg
 view = View.view
 
 subscriptions : Model -> Sub Msg

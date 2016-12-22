@@ -4,15 +4,32 @@ import Array
 import GameModel exposing (..)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
+import Maybe exposing (andThen)
 import TeamDisplay.Css exposing (CssClass(..), namespace)
+import Types exposing (TimeSelection(..))
 
 {id, class, classList} = withNamespace namespace
 
-view : String -> Team -> Timestamp -> Html a
-view name team timestamp =
+view : String -> Team -> TimeSelection -> Html a
+view name team selection =
   let
     teamState =
-      Array.get timestamp team.teamStates
+      (case selection of
+        Instant timestamp ->
+          Array.get timestamp team.teamStates
+        Range (start, end) ->
+          -- Sometimes you really wish you had `do` notation.
+          Array.get start team.teamStates
+          |> andThen (\startState ->
+            Array.get end team.teamStates
+            |> Maybe.map (\endState ->
+              { dragons = endState.dragons - startState.dragons
+              , barons = endState.barons - startState.barons
+              , turrets = endState.turrets - startState.turrets
+              }
+            )
+          )
+      )
       |> Maybe.map (\{turrets, dragons, barons} ->
         { dragons = toString dragons
         , barons = toString barons

@@ -8,11 +8,23 @@ import Html.Attributes exposing (draggable, src)
 import Html.CssHelpers exposing (withNamespace)
 import PlayerDisplay.Css exposing (CssClass(..), namespace)
 import StyleUtils exposing (styles)
+import Types exposing (TimeSelection(..))
 
 {id, class, classList} = withNamespace namespace
 
-view : Side -> Player -> Timestamp -> Html a
-view side player timestamp =
+view : TimeSelection -> Side -> Player -> Html a
+view selection =
+  case selection of
+    Instant timestamp ->
+      displayInstant timestamp
+    Range range ->
+      displayRange range
+
+displayRange : (Timestamp, Timestamp) -> Side -> Player -> Html a
+displayRange range side player = div [] []
+
+displayInstant : Timestamp -> Side -> Player -> Html a
+displayInstant timestamp side player =
   let
     direction =
       case side of

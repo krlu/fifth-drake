@@ -5,6 +5,7 @@ import GameModel exposing (..)
 import Html exposing (Html)
 import Minimap.Internal.View as View
 import Minimap.Types exposing (..)
+import Types exposing (TimeSelection)
 
 initialModel : String -> Model
 initialModel background =
@@ -16,5 +17,5 @@ initialModel background =
 init : String -> Model
 init = initialModel
 
-view : Model -> Data -> Timestamp -> Html a
+view : Model -> Data -> TimeSelection -> Html a
 view = View.view
