@@ -20,21 +20,28 @@ getDirection side =
 
 
 view : TimeSelection -> Side -> Player -> Html a
-view selection =
-  case selection of
-    Instant timestamp ->
-      displayInstant timestamp
-    Range range ->
-      displayRange range
-
-displayRange : (Timestamp, Timestamp) -> Side -> Player -> Html a
-displayRange range side player = div [] []
-
-displayInstant : Timestamp -> Side -> Player -> Html a
-displayInstant timestamp side player =
+view selection side player =
   let
-    dirClass = Direction (getDirection side)
+    direction = getDirection side
+  in
+    div
+      [ class [PlayerDisplay, Direction direction] ]
+      ( case selection of
+          Instant timestamp ->
+            displayInstant timestamp direction player
+          Range range ->
+            displayRange range direction player
+      )
 
+displayRange : (Timestamp, Timestamp) -> Direction -> Player -> List (Html a)
+displayRange range direction player =
+  [
+  ]
+
+displayInstant : Timestamp -> Direction -> Player -> List (Html a)
+displayInstant timestamp direction player =
+  let
+    dirClass = Direction direction
     kda =
       Array.get timestamp player.state
       |> Maybe.map (\state ->
@@ -84,8 +91,6 @@ displayInstant timestamp side player =
             ]
           )
   in
-    div
-      [ class [PlayerDisplay, dirClass] ]
       [ div
         [ class [ChampDisplay, dirClass] ]
         [ p
