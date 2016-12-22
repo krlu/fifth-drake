@@ -13,10 +13,13 @@ tagCarouselWidth : Float
 tagCarouselWidth = 1250
 
 tagCarouselHeight : Float
-tagCarouselHeight = 100
+tagCarouselHeight = 140
 
 tagHeight : Float
-tagHeight = 60
+tagHeight = 80
+
+tagWidth : Float
+tagWidth = 80
 
 tagFormHeight : Float
 tagFormHeight = 100
@@ -30,7 +33,7 @@ css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) TagCarousel (
-    [ width (80 |> pct)
+    [ width (85 |> pct)
     , height (tagCarouselHeight |> px)
     , overflowY auto
     , backgroundColor Color.c_carousel
@@ -40,7 +43,7 @@ css =
     [ children
       [ (.) Tag
         [ height (tagHeight |> px)
-        , width auto
+        , width (tagWidth |> px)
         , backgroundColor Color.c_navBar
         , border2 (1 |> px) solid
         , property "align-content" "center"
@@ -51,8 +54,8 @@ css =
       ]
     ])
   , (.) TagFormCss (
-       [ width (160 |> px)
-       , height (150 |> px)
+       [ width (15 |> pct)
+       , height (140 |> px)
        , overflowY auto
        , backgroundColor Color.c_darkGray
        , property "float" "left"

@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import Array
+import Array exposing (Array)
 import Controls.Controls as Controls
 import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider, TagDisplay), namespace)
 import GameModel exposing (GameLength, Side(..), Timestamp)
@@ -71,9 +71,11 @@ view model =
       |> Html.map ControlsMsg
 
     minimap = Minimap.view model.minimap model.game.data model.timestamp
-    bluePlayers = model.game.data.blueTeam.players |> Array.map (\player -> (player.id, player.ign))
-    redPlayers =  model.game.data.redTeam.players |> Array.map (\player -> (player.id, player.ign))
-    allPlayers = Array.append bluePlayers redPlayers |> Array.toList
+
+    bluePlayers = model.game.data.blueTeam.players
+    redPlayers =  model.game.data.redTeam.players
+    allPlayers = getPlayerIdsAndIgns bluePlayers redPlayers
+
     tagCarousel = TagCarousel.view model.tagCarousel allPlayers |> Html.map TagCarouselMsg
     ((blueTeamDisplay, bluePlayerDisplays), (redTeamDisplay, redPlayerDisplays))
       = (Blue, Red)
@@ -100,7 +102,15 @@ view model =
         , div [ class [ContentDivider] ] []
         , redPlayerDisplays
         ]
-      , div [id [TagDisplay]]
+      , div [ id [TeamDisplayDivider] ] []
+      , div [ id [TagDisplay] ]
         [ tagCarousel ]
       ]
 
+getPlayerIdsAndIgns: Array Player -> Array Player -> List (String, String)
+getPlayerIdsAndIgns bluePlayers redPlayers =
+  let
+     blueData = bluePlayers |> Array.map (\player -> (player.id, player.ign))
+     redData = redPlayers |> Array.map (\player -> (player.id, player.ign))
+  in
+      Array.append blueData redData |> Array.toList

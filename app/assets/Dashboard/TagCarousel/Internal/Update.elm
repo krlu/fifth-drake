@@ -6,8 +6,8 @@ import String as String
 import TagCarousel.Internal.Delete as Delete
 import TagCarousel.Internal.Save as Save
 
-update : Msg -> Model -> Timestamp -> List (String, String) -> (Maybe Timestamp, Model, Cmd Msg)
-update msg model ts players =
+update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
+update msg model ts =
   case msg of
     TagClick val ->
       (Just val, model, Cmd.none)
@@ -24,7 +24,7 @@ update msg model ts players =
     SwitchForm ->
       (Nothing, switchTag model , Cmd.none)
     SaveTag ->
-     (Nothing, model, Save.sendRequest model.tagForm ts players)
+     (Nothing, model, Save.sendRequest model.tagForm ts)
     TagSaved (Ok tags) ->
      (Nothing, switchTag { model | tags = tags }, Cmd.none)
     TagSaved (Err msg) ->
@@ -47,10 +47,20 @@ update msg model ts players =
         newTagForm = { oldTagForm |  category = category }
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
-    AddPlayers igns ->
+    AddPlayers id ->
       let
         oldTagForm = model.tagForm
-        newTagForm = { oldTagForm | players = igns}
+        oldIdsList = oldTagForm.selectedIds
+        newIdsList = if List.member id oldIdsList then
+                       let
+                         filter: String -> Bool
+                         filter thisId = thisId /= id
+                       in
+                         List.filter filter oldIdsList
+                     else
+                       id :: oldIdsList
+        x = Debug.log "" newIdsList
+        newTagForm = { oldTagForm | selectedIds = newIdsList}
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
 

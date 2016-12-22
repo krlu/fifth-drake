@@ -35,27 +35,12 @@ type alias TagForm =
   { title       : String
   , description : String
   , category    : String
-  , players     : String
+  , selectedIds : List String
   , gameId      : GameId
   , host        : String
   , active      : Bool
   }
 
---type alias SelectedPlayers =
---  { playerId : String
---  , ign      : String
---  }
-
 type TagCategory
   = TeamFight
   | Objective
-
-type alias Container a =
-  { pages               : List a
-  , pageWidth           : Int
-  , currentPage         : Int
-  , threshold           : Float
-  , isDragging          : Bool
-  , startDragPosition   : (Int, Int)
-  , currentDragPosition : (Int, Int)
-  }

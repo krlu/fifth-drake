@@ -11,11 +11,11 @@ import TagCarousel.Types exposing (Msg(TagSaved), Tag, TagForm)
 url : String -> String
 url host = "http://" ++ host ++ "/saveTag"
 
-sendRequest: TagForm -> Timestamp -> List (String, String) -> Cmd Msg
-sendRequest model ts players = Http.send TagSaved (createRequest model ts players)
+sendRequest: TagForm -> Timestamp -> Cmd Msg
+sendRequest model ts = Http.send TagSaved (createRequest model ts)
 
-createRequest: TagForm -> Timestamp -> List (String, String) -> Request (List Tag)
-createRequest model ts allPlayers =
+createRequest: TagForm -> Timestamp -> Request (List Tag)
+createRequest model ts =
   let
     jsonData =
         object
@@ -24,10 +24,7 @@ createRequest model ts allPlayers =
           , ("description", string model.description)
           , ("category", string model.category)
           , ("timestamp", int ts)
-          , ("relevantPlayerIgns", list <| List.map string
-                                        <| String.split ","
-                                        <| String.filter ((/=) ' ') model.players)
-          , ("allPlayerData", object <| List.map getIdAndIgn allPlayers)
+          , ("relevantPlayerIds", list <| List.map string model.selectedIds)
           ]
     body = jsonBody jsonData
   in
@@ -40,6 +37,3 @@ createRequest model ts allPlayers =
       , timeout = Nothing
       , withCredentials = False
      }
-
-getIdAndIgn: (String, String)-> (String, Value)
-getIdAndIgn (id, ign) = (ign, string id)

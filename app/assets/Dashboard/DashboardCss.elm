@@ -33,6 +33,7 @@ type CssId
   | TagDisplay
   | MainContent
   | CenterContent
+  | CarouselDivider
 
 type CssClass
   = Dashboard
@@ -90,6 +91,10 @@ css =
     [ width auto
     , height (30 |> px)
     ]
+  , (#) CarouselDivider
+      [ width auto
+      , height (40 |> px)
+      ]
   , (#) ControlsDivider
     [ width auto
     , height (50 |> px)
@@ -97,6 +102,7 @@ css =
   , (#) TagDisplay
     [ property "float" "left"
     , width (100 |> pct)
+    , height (20 |> pct)
     ]
   , (.) Widget
     [ display inlineBlock

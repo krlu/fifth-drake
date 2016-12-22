@@ -17,7 +17,7 @@ init loc =
        { title = ""
        , description = ""
        , category = ""
-       , players = ""
+       , selectedIds = []
        , gameId = getGameId loc
        , host = loc.host
        , active = False
@@ -25,7 +25,7 @@ init loc =
   in
     ({host = loc.host, tagForm = tagForm, tags = [] }, Populate.populate loc)
 
-update : Msg -> Model -> Timestamp -> List (String, String) -> (Maybe Timestamp, Model, Cmd Msg)
+update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update = Update.update
 
 view : Model -> List (String, String) -> Html Msg

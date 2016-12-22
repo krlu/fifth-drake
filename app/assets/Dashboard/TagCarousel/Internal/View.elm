@@ -23,14 +23,15 @@ view model players =
                   ]
              , p [] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
              ]
-         )
+          )
+    checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView =
       if model.tagForm.active == True then
         div [ class [TagFormCss] ]
                  [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
                  , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
                  , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
-                 , p [] [ input [ placeholder "Players", onInput AddPlayers ] [] ]
+                 , p [] checkBoxes
                  , p [] [ button [ onClick SwitchForm ] [ text "cancel" ],
                           button [ onClick SaveTag] [ text "save" ]
                         ]
@@ -41,6 +42,10 @@ view model players =
     div [] [ ol [ class [TagCarousel] ] tags
            , tagFormView
     ]
+
+
+playerDataToHtml: (String, String) -> Html Msg
+playerDataToHtml (id, ign) = p[][ checkbox (AddPlayers id) ign]
 
 
 checkbox : msg -> String -> Html msg

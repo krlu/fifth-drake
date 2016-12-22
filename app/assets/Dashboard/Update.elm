@@ -1,8 +1,9 @@
 module Update exposing (..)
 
-import Array
+import Array exposing (Array)
 import Controls.Controls as Controls
 import Controls.Types as TimelineT
+import GameModel exposing (Player)
 import Minimap.Minimap as Minimap
 import Minimap.Types as MinimapT
 import TagCarousel.TagCarousel as TagCarousel
@@ -14,10 +15,7 @@ update msg model =
   case msg of
     TagCarouselMsg tmsg ->
       let
-        bluePlayers = model.game.data.blueTeam.players |> Array.map (\player -> (player.id, player.ign))
-        redPlayers =  model.game.data.redTeam.players |> Array.map (\player -> (player.id, player.ign))
-        allPlayers = Array.append bluePlayers redPlayers |> Array.toList
-        (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel model.timestamp allPlayers
+        (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel model.timestamp
       in
         ( { model | tagCarousel = tmodel
                   , timestamp = Maybe.withDefault model.timestamp timestamp

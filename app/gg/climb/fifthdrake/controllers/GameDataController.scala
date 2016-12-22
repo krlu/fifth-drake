@@ -3,17 +3,16 @@ package gg.climb.fifthdrake.controllers
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
+import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc.{Action, _}
 
-import scala.collection.Map
 import scala.concurrent.duration.Duration
 
 class GameDataController(dbh: DataAccessHandler) extends Controller {
@@ -177,14 +176,9 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       val description = data("description").as[String]
       val category = data("category").as[String]
       val timeStamp = data("timestamp").as[Int]
-      val allPlayers: Map[String, JsValue] = data("allPlayerData").as[JsObject].value
-      val players = data("relevantPlayerIgns").as[JsArray].value.map{ jsVal =>
-        val ign = jsVal.as[String]
-        if(!allPlayers.contains(ign))
-          BadRequest("Player ign not found in current game!")
-        ign
-      }.map{ign =>
-        dbh.getPlayer(new InternalId[Player](allPlayers(ign).as[String]))
+      val players = data("relevantPlayerIds").as[JsArray].value.map{ jsVal =>
+        val id = jsVal.as[String]
+        dbh.getPlayer(new InternalId[Player](id))
       }.toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
