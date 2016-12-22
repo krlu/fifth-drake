@@ -66,8 +66,12 @@ css =
             , marginLeft (contentGap |> px)
             , marginRight (contentGap |> px)
             ] ++ StyleUtils.flexDirection "column" ++
-            [ firstChild
-              [ marginBottom (controlsGap |> px)
+            [ children
+              [ everything
+                [ firstChild
+                  [ marginBottom (controlsGap |> px)
+                  ]
+                ]
               ]
             ])
           , (.) PlayerDisplay (
