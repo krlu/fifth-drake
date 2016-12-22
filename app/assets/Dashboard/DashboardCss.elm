@@ -12,9 +12,6 @@ import TeamDisplay.Css exposing (teamDisplayWidth)
 namespace : String
 namespace = "dashboard"
 
-dividerWidth : Float
-dividerWidth = 10
-
 teamDisplaysGap : Float
 teamDisplaysGap = 50
 
@@ -24,13 +21,17 @@ teamDisplaysWidth = teamDisplayWidth * 2 + teamDisplaysGap
 contentGap : Float
 contentGap = 40
 
+controlsGap : Float
+controlsGap = 50
+
+teamDisplayGap : Float
+teamDisplayGap = 30
+
 playerDisplaysGap : Float
 playerDisplaysGap = 20
 
 type CssId
-  = TeamDisplayDivider
-  | ControlsDivider
-  | MainContent
+  = MainContent
   | CenterContent
 
 type CssClass
@@ -39,8 +40,6 @@ type CssClass
   | PlayerDisplay
   | Widget
   | WidgetColor Side
-  | PlayerDisplayDivider
-  | ContentDivider
 
 css : Stylesheet
 css =
@@ -54,28 +53,33 @@ css =
         [ displayFlex
         , width (teamDisplaysWidth |> px)
         , property "justify-content" "space-between"
+        , marginBottom (teamDisplayGap |> px)
         ] ++ StyleUtils.flexDirection "row")
       , (#) MainContent (
         [ displayFlex
         , property "justify-content" "flex-start"
         ] ++ StyleUtils.flexDirection "row" ++
         [ children
-          [ (.) CenterContent (
+          [ (#) CenterContent (
             [ displayFlex
             , alignItems center
-            ] ++ StyleUtils.flexDirection "column")
-          , (.) ContentDivider
-            [ height (100 |> pct)
-            , width (contentGap |> px)
-            ]
+            , marginLeft (contentGap |> px)
+            , marginRight (contentGap |> px)
+            ] ++ StyleUtils.flexDirection "column" ++
+            [ firstChild
+              [ marginBottom (controlsGap |> px)
+              ]
+            ])
           , (.) PlayerDisplay (
             [ displayFlex
             , property "justify-content" "flex-start"
             ] ++ StyleUtils.flexDirection "column" ++
             [ children
-              [ (.) PlayerDisplayDivider
-                [ width (100 |> pct)
-                , height (playerDisplaysGap |> px)
+              [ everything
+                [ marginTop (playerDisplaysGap |> px)
+                , firstChild
+                  [ marginTop zero
+                  ]
                 ]
               ]
             ])
@@ -84,14 +88,6 @@ css =
         )
       ]
     ])
-  , (#) TeamDisplayDivider
-    [ width auto
-    , height (30 |> px)
-    ]
-  , (#) ControlsDivider
-    [ width auto
-    , height (50 |> px)
-    ]
   , (.) Widget
     [ display inlineBlock
     , backgroundColor (hex "#3b4047")
