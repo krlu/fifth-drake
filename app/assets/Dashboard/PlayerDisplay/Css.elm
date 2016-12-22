@@ -27,6 +27,10 @@ champStatsHeight = portraitHeight
 
 champStatHeight = 7
 
+type Direction
+  = Normal
+  | Reverse
+
 type CssClass
   = PlayerDisplay
   | ChampDisplay
@@ -40,8 +44,7 @@ type CssClass
   | PlayerIgn
   | PlayerLevel
   | PlayerStats
-  | DirNormal
-  | DirReverse
+  | Direction Direction
 
 css : Stylesheet
 css =
@@ -53,16 +56,16 @@ css =
     , padding (10 |> px)
     , property "justify-content" "space-between"
     , alignItems flexStart
-    , withClass DirNormal
+    , withClass (Direction Normal)
       (StyleUtils.flexDirection "row")
-    , withClass DirReverse
+    , withClass (Direction Reverse)
       (StyleUtils.flexDirection "row-reverse")
     , children
       [ (.) ChampDisplay (
         [ displayFlex
-        , withClass DirNormal
+        , withClass (Direction Normal)
           (StyleUtils.flexDirection "row")
-        , withClass DirReverse
+        , withClass (Direction Reverse)
           (StyleUtils.flexDirection "row-reverse")
         , property "justify-content" "flex-start"
         , alignItems center
@@ -84,10 +87,10 @@ css =
             , width (portraitWidth |> px)
             , backgroundColor Color.c_gold
             , property "z-index" "2"
-            , withClass DirNormal
+            , withClass (Direction Normal)
               [ marginLeft (-5 |> px)
               ]
-            , withClass DirReverse
+            , withClass (Direction Reverse)
               [ marginRight (-5 |> px)
               ]
             , children
@@ -111,9 +114,9 @@ css =
                 , width (100 |> pct)
                 , backgroundColor Color.c_offWhite
                 , margin (3 |> px)
-                , withClass DirNormal
+                , withClass (Direction Normal)
                   (StyleUtils.flexDirection "row")
-                , withClass DirReverse
+                , withClass (Direction Reverse)
                   (StyleUtils.flexDirection "row-reverse")
                 , children
                   [ everything
@@ -138,10 +141,10 @@ css =
       , (.) PlayerStats (
         [ color Color.c_offWhite
         , displayFlex
-        , withClass DirNormal
+        , withClass (Direction Normal)
           [ alignItems flexEnd
           ]
-        , withClass DirReverse
+        , withClass (Direction Reverse)
           [ alignItems flexStart
           ]
         ] ++ StyleUtils.flexDirection "column" ++

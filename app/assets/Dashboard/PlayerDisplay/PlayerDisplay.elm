@@ -6,11 +6,18 @@ import GameModel exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (draggable, src)
 import Html.CssHelpers exposing (withNamespace)
-import PlayerDisplay.Css exposing (CssClass(..), namespace)
+import PlayerDisplay.Css exposing (CssClass(..), namespace, Direction(..))
 import StyleUtils exposing (styles)
 import Types exposing (TimeSelection(..))
 
 {id, class, classList} = withNamespace namespace
+
+getDirection : Side -> Direction
+getDirection side =
+  case side of
+    Blue -> Normal
+    Red -> Reverse
+
 
 view : TimeSelection -> Side -> Player -> Html a
 view selection =
@@ -26,10 +33,7 @@ displayRange range side player = div [] []
 displayInstant : Timestamp -> Side -> Player -> Html a
 displayInstant timestamp side player =
   let
-    direction =
-      case side of
-        Blue -> DirNormal
-        Red -> DirReverse
+    dirClass = Direction (getDirection side)
 
     kda =
       Array.get timestamp player.state
@@ -60,7 +64,7 @@ displayInstant timestamp side player =
       ]
       |> List.map (\(cssClass, current, max) ->
           div
-            [ class [ChampStat, direction] ]
+            [ class [ChampStat, dirClass] ]
             [ div
               [ class [cssClass]
               , styles
@@ -81,14 +85,14 @@ displayInstant timestamp side player =
           )
   in
     div
-      [ class [PlayerDisplay, direction] ]
+      [ class [PlayerDisplay, dirClass] ]
       [ div
-        [ class [ChampDisplay, direction] ]
+        [ class [ChampDisplay, dirClass] ]
         [ p
           [ class [PlayerLevel] ]
           [ text << toString <| level ]
         , div
-          [ class [ChampPortrait, direction] ]
+          [ class [ChampPortrait, dirClass] ]
           [ img
               [ src player.championImage
               , draggable "false"
@@ -100,7 +104,7 @@ displayInstant timestamp side player =
           champStats
         ]
       , div
-        [ class [PlayerStats, direction] ]
+        [ class [PlayerStats, dirClass] ]
         [ p
           [ class [PlayerIgn] ]
           [ text player.ign ]
