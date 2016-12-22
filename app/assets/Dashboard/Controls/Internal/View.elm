@@ -103,10 +103,24 @@ timeline selection gameLength model =
          )
         ]
         []
+
+    knobs =
+      [Just firstKnobLocation, secondKnobLocation]
+      |> List.filterMap identity
+      |> List.map (\loc ->
+           div
+             [ on "mousedown" (Json.map KnobGrab Mouse.position)
+             , class [Knob]
+             , styles
+               [ left (loc |> px)
+               ]
+             ]
+             []
+         )
   in
     div
       [ class [TimelineAndDisplay] ]
-      [ label
+      ([ label
         [ class [SecondKnobSelector] ]
         [ p [] [text "Select Range:"]
         , input
@@ -130,12 +144,4 @@ timeline selection gameLength model =
         [ class [TimeDisplay] ]
         [ text timeDisplayText
         ]
-      , div
-        [ on "mousedown" (Json.map KnobGrab Mouse.position)
-        , class [Knob]
-        , styles
-          [ left (firstKnobLocation |> px)
-          ]
-        ]
-        []
-      ]
+      ] ++ knobs)
