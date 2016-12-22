@@ -85,6 +85,24 @@ timeline selection gameLength model =
         |> Tuple.mapFirst timestampToPixels
         |> Tuple.mapSecond (Maybe.map timestampToPixels)
 
+    barHighlight =
+      div
+        [ class [HighlightBar]
+        , styles
+          ( ( case secondKnobLocation of
+              Nothing ->
+                (firstKnobLocation, 0)
+              Just secondKnobLocation ->
+                (secondKnobLocation - firstKnobLocation, firstKnobLocation)
+            )
+            |> (\(width, left) ->
+                 [ Css.width (width |> px)
+                 , Css.left (left |> px)
+                 ]
+               )
+         )
+        ]
+        []
   in
     div
       [ class [TimelineAndDisplay] ]
@@ -106,13 +124,7 @@ timeline selection gameLength model =
         [ class [Timeline]
           , on "mousedown" (Json.map BarClick relativePosition)
         ]
-        [ div
-          [ class [BarSeen]
-          , styles
-            [ Css.width (firstKnobLocation |> px)
-            ]
-          ]
-          []
+        [ barHighlight
         ]
       , p
         [ class [TimeDisplay] ]

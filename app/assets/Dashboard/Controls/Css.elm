@@ -37,7 +37,7 @@ knobBottom = (controlsHeight - barHeight) / 2
 
 type CssClass
   = Bar
-  | BarSeen
+  | HighlightBar
   | Controls
   | Knob
   | PlayButton
@@ -75,8 +75,9 @@ css =
             , backgroundColor Color.c_lightGray
             , textAlign right
             , children
-              [ (.) BarSeen
+              [ (.) HighlightBar
                 [ property "pointer-events" "none"
+                , position absolute
                 , backgroundColor Color.c_darkerGray
                 , height (100 |> pct)
                 ]
