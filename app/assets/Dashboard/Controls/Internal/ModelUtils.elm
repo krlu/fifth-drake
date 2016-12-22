@@ -16,8 +16,8 @@ getTimestampAtMouse mouse timestamp gameLength =
       in
         max 0 << min gameLength <| timestamp + truncate (delta / timelineWidth * toFloat gameLength)
 
-getPixelForTimestamp : Model -> Timestamp -> GameLength -> Float
-getPixelForTimestamp model timestamp gameLength =
+getPixelForTimestamp : Model -> GameLength -> Timestamp -> Float
+getPixelForTimestamp model gameLength timestamp =
   getTimestampAtMouse model.mouse timestamp gameLength
     |> toFloat
     |> \val -> val / (toFloat gameLength) * timelineWidth

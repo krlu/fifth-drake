@@ -44,8 +44,14 @@ update selection gameLength msg ({mouse} as model) =
           Debug.crash "Unimplmented"
       )
     UseSecondKnob b ->
-      Debug.log "Add timeselection thing here"
-      (selection, model)
+      case (b, selection) of
+        (True, Instant timestamp) ->
+          ( Range (timestamp, timestamp + 60)
+          , model
+          )
+        (False, Range (timestamp, _)) ->
+          (Instant timestamp, model)
+        _ -> Debug.crash "Impossible state: selection and checkbox not in sync"
 
 updateSelection : GameLength -> Mouse.Position -> TimeSelection
 updateSelection gameLength rel =

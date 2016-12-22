@@ -7,7 +7,7 @@ import Css exposing (left, px)
 import DashboardCss
 import GameModel exposing (GameLength, Timestamp)
 import Html exposing (..)
-import Html.Attributes exposing (src, type_)
+import Html.Attributes exposing (checked, src, type_)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (on, onCheck, onClick)
 import Json.Decode as Json exposing (Decoder, andThen, field, int, map2)
@@ -72,14 +72,19 @@ timeline selection gameLength model =
            toTimeString start ++ " - " ++ toTimeString end
       )
       ++ "/" ++ toTimeString gameLength
-    firstKnobLocation =
+
+    (firstKnobLocation, secondKnobLocation) =
       let
-        timestamp =
+        timestamps =
           case selection of
-            Instant t -> t
-            Range (_, end) -> end
+            Instant t -> (t, Nothing)
+            Range (start, end) -> (start, Just end)
+        timestampToPixels = getPixelForTimestamp model gameLength
       in
-      getPixelForTimestamp model timestamp gameLength
+        timestamps
+        |> Tuple.mapFirst timestampToPixels
+        |> Tuple.mapSecond (Maybe.map timestampToPixels)
+
   in
     div
       [ class [TimelineAndDisplay] ]
@@ -88,6 +93,11 @@ timeline selection gameLength model =
         [ p [] [text "Select Range:"]
         , input
           [ type_ "checkbox"
+          , checked
+            ( case secondKnobLocation of
+                Nothing -> False
+                Just _ -> True
+            )
           , onCheck UseSecondKnob
           ]
           []
