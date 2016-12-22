@@ -2,14 +2,14 @@ module Controls.Internal.View exposing (view)
 
 import Controls.Css exposing (CssClass(..), namespace, timelineWidth)
 import Controls.Internal.ModelUtils exposing(..)
-import Controls.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
+import Controls.Types exposing (..)
 import Css exposing (left, px)
 import DashboardCss
 import GameModel exposing (GameLength, Timestamp)
 import Html exposing (..)
-import Html.Attributes exposing (src)
+import Html.Attributes exposing (src, type_)
 import Html.CssHelpers exposing (withNamespace)
-import Html.Events exposing (on, onClick)
+import Html.Events exposing (on, onCheck, onClick)
 import Json.Decode as Json exposing (Decoder, andThen, field, int, map2)
 import Mouse
 import StyleUtils exposing (..)
@@ -32,7 +32,9 @@ relativePosition =
 view : Timestamp -> GameLength -> Model -> Html Msg
 view timestamp gameLength model =
   let
-    playImg = -- Yes this is intentional
+    playImg =
+      -- This needs to show the opposing state. If it's currently playing, then
+      -- you want to show pause.
       case model.status of
         Play -> model.pauseButton
         Pause -> model.playButton
@@ -52,9 +54,14 @@ view timestamp gameLength model =
         ]
       , div
         [ class [TimelineAndDisplay] ]
-        [ p
-          [ class [TimeDisplay, Hidden] ]
-          [ text <| toTimeString timestamp ++ "/" ++ toTimeString gameLength
+        [ label
+          [ class [SecondKnobSelector] ]
+          [ p [] [text "Select Range:"]
+          , input
+            [ type_ "checkbox"
+            , onCheck UseSecondKnob
+            ]
+            []
           ]
         , div
           [ class [Timeline]

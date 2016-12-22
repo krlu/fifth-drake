@@ -1,6 +1,7 @@
 module Controls.Css exposing (..)
 
 import Css exposing (..)
+import Css.Elements exposing (p)
 import Css.Namespace
 import CssColors as Color
 import DashboardCss
@@ -38,13 +39,13 @@ type CssClass
   = Bar
   | BarSeen
   | Controls
-  | Hidden
   | Knob
   | PlayButton
   | PlayPauseImg
   | TimeDisplay
   | Timeline
   | TimelineAndDisplay
+  | SecondKnobSelector
 
 css : Stylesheet
 css =
@@ -62,6 +63,7 @@ css =
         [ displayFlex
         , position relative
         , height (100 |> pct)
+        , color Color.c_white
         ] ++ StyleUtils.flexDirection "column" ++
         [ property "justify-content" "space-between"
         , alignItems flexEnd
@@ -80,12 +82,16 @@ css =
                 ]
               ]
             ]
-          , (.) TimeDisplay
-            [ color Color.c_white
-            , withClass Hidden
-              [ property "visibility" "hidden"
+          , (.) SecondKnobSelector (
+            [ displayFlex
+            , alignItems center
+            , property "justify-content" "center"
+            , children
+              [ p
+                [ marginRight (5 |> px)
+                ]
               ]
-            ]
+            ] ++ StyleUtils.flexDirection "row")
           , (.) Knob
             [ position absolute
             , bottom (knobBottom |> px)

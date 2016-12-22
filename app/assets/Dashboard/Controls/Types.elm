@@ -12,6 +12,7 @@ type Msg
   | BarClick (Mouse.Position, Mouse.Position)
   | PlayPause
   | TimerUpdate Time.Time
+  | UseSecondKnob Bool
 
 type alias File = String
 
