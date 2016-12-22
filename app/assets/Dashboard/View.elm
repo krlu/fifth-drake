@@ -58,7 +58,6 @@ view model =
             [ PlayerDisplay.view side p model.timestamp
             ]
         )
-      |> List.intersperse (div [class [PlayerDisplayDivider]] [])
       |> div [ class [PlayerDisplay] ]
 
     sideToDisplays side = (sideToTeamDisplay side, sideToPlayerDisplay side)
@@ -88,18 +87,14 @@ view model =
         [ blueTeamDisplay
         , redTeamDisplay
         ]
-      , div [ id [TeamDisplayDivider] ] []
       , div
         [ id [MainContent] ]
         [ bluePlayerDisplays
-        , div [ class [ContentDivider] ] []
         , div
           [ id [CenterContent] ]
           [ minimap
-          , div [ id [ControlsDivider] ] []
           , controls
           ]
-        , div [ class [ContentDivider] ] []
         , redPlayerDisplays
         ]
       , div [ id [TeamDisplayDivider] ] []

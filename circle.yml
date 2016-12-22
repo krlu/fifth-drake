@@ -32,12 +32,8 @@ test:
     - cp ./target/universal/*.zip ${CIRCLE_ARTIFACTS}
 
 deployment:
-  production:
-    branch: master
-    commands:
-      - ./scripts/download_champion_icons.sh -a ${RIOT_API_KEY}
-      - ./scripts/deploy_prod.sh
   staging:
     branch: develop
     commands:
+      - ./scripts/download_champion_icons.sh -a ${RIOT_API_KEY}
       - ./scripts/deploy_staging.sh

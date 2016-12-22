@@ -59,7 +59,6 @@ update msg model ts =
                          List.filter filter oldIdsList
                      else
                        id :: oldIdsList
-        x = Debug.log "" newIdsList
         newTagForm = { oldTagForm | selectedIds = newIdsList}
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
@@ -79,7 +78,7 @@ switchTag model =
     oldTagForm = model.tagForm
     oldActive = model.tagForm.active
     newTagForm = if oldActive == True then
-                  { oldTagForm | active = False}
+                  { oldTagForm | active = False, selectedIds = []}
                  else
                   { oldTagForm | active = True}
   in
