@@ -97,7 +97,6 @@ view model =
           ]
         , redPlayerDisplays
         ]
-      , div [ id [TeamDisplayDivider] ] []
       , div [ id [TagDisplay] ]
         [ tagCarousel ]
       ]

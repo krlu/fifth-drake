@@ -112,7 +112,8 @@ css =
   , (#) TagDisplay
     [ property "float" "left"
     , width (100 |> pct)
-    , height (20 |> pct)
+    , height (140 |> px)
+    , paddingTop (30 |> px)
     ]
   , (.) Widget
     [ display inlineBlock
