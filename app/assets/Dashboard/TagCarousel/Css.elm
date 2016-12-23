@@ -39,6 +39,7 @@ css =
     , overflowY auto
     , backgroundColor Color.c_carousel
     , property "float" "left"
+    , overflowX scroll
     ] ++
     StyleUtils.userSelect "none" ++
     [ children

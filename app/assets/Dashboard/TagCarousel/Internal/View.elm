@@ -16,7 +16,7 @@ view model players =
   let
     tags = List.sortBy .timestamp model.tags
          |> List.map (\tag ->
-           li [ class [Tag]]
+           li [ class [Tag], onClick <| TagClick tag.timestamp ]
              [div [ onClick <| TagClick tag.timestamp]
                   [ p [] [text tag.title]
                   , p [] [text << toString <| tag.category]
