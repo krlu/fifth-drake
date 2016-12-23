@@ -32,7 +32,8 @@ css =
     ] ++
     StyleUtils.userSelect "none" ++
     [ children
-      [ (.) PlayerIcon
+      [ (.) PlayerIcon(
+        StyleUtils.transition "all 1s linear" ++
         [ position absolute
         , width (playerIconSize |> px)
         , height (playerIconSize |> px)
@@ -44,7 +45,7 @@ css =
             , borderRadius (50 |> pct)
             ]
           ]
-        ]
+        ])
       , (.) Background
         [ height (100 |> pct)
         , width (100 |> pct)

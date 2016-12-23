@@ -22,3 +22,10 @@ flexDirection direction =
   , property "-webkit-flex-direction" direction
   ]
 
+transition : String -> List Mixin
+transition value =
+  [ property "transition" value
+  , property "-webkit-transition" value
+  , property "-o-transition" value
+  , property "-moz-transition" value
+  ]
