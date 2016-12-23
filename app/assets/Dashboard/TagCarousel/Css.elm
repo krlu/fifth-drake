@@ -28,6 +28,7 @@ type CssClass
   = TagCarousel
   | Tag
   | TagFormCss
+  | CheckboxCss
 
 css : Stylesheet
 css =
@@ -60,4 +61,8 @@ css =
        , backgroundColor Color.c_darkGray
        , property "float" "left"
        ] ++ StyleUtils.userSelect "none")
+  , (.) CheckboxCss(
+       [ margin (20 |> px)
+       ]
+    )
   ]

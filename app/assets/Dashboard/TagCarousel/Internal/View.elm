@@ -4,7 +4,7 @@ import GameModel exposing (Player)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
-import TagCarousel.Css exposing (CssClass(Tag, TagCarousel, TagFormCss), namespace)
+import TagCarousel.Css exposing (CssClass(CheckboxCss, Tag, TagCarousel, TagFormCss), namespace)
 import TagCarousel.Types exposing (Model, Msg(..))
 import Html.Attributes exposing (placeholder, style, type_)
 import Html.Events exposing (onClick, onInput)
@@ -50,9 +50,7 @@ playerDataToHtml (id, ign) = p[][ checkbox (AddPlayers id) ign]
 
 checkbox : msg -> String -> Html msg
 checkbox msg name =
-  label
-    [ style [("padding", "20px")]
-    ]
+  label [ class [CheckboxCss] ]
     [ input [ type_ "checkbox", onClick msg ] []
     , text name
     ]
