@@ -34,6 +34,7 @@ view model data timestamp =
                     , styles
                       [ left (minimapWidth * (state.position.x / model.mapWidth)|> px)
                       , bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
+                      , StyleUtils.visibility state.championState.hp
                       ]
                     ]
                     [ img
