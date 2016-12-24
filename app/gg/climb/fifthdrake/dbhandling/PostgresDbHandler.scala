@@ -171,7 +171,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   def getChampion(championName: String): Option[Champion] = DB readOnly {
     implicit session =>
-      sql"SELECT * FROM league.champion where name=${championName}"
+      sql"SELECT * FROM league.champion where name=${championName} OR key_name=${championName}"
         .map(rs => constructChampion(rs)).single().apply()
   }
 

@@ -35,11 +35,13 @@ css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) TagCarousel (
     [ width (85 |> pct)
+    , displayFlex
     , height (tagCarouselHeight |> px)
-    , overflowY auto
     , backgroundColor Color.c_carousel
     , property "float" "left"
     , overflowX scroll
+    , flexDirection row
+    , flexWrap noWrap
     ] ++
     StyleUtils.userSelect "none" ++
     [ children
@@ -52,6 +54,7 @@ css =
         , property "float" "left"
         , property "list-style-type" "none"
         , margin (10 |> px)
+        , flexShrink zero
         ]
       ]
     ])
