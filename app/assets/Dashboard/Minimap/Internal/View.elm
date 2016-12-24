@@ -9,7 +9,7 @@ import Maybe exposing (andThen)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespace)
 import Minimap.Types exposing (Model)
 import StyleUtils exposing (styles)
-import GameModel exposing (Data, Team, Timestamp)
+import GameModel exposing (Data, Side, Team, Timestamp)
 
 {id, class, classList} = withNamespace namespace
 
@@ -21,8 +21,8 @@ view model data timestamp =
       data
       |> (\{blueTeam, redTeam} ->
           let
-            teamToPlayerIcons : Team -> List (Html a)
-            teamToPlayerIcons team =
+            teamToPlayerIcons : Team -> CssClass -> List (Html a)
+            teamToPlayerIcons team cssClass =
               team.players
               |> Array.toList
               |> List.filterMap (\player ->
@@ -30,7 +30,10 @@ view model data timestamp =
                 |> Array.get timestamp
                 |> Maybe.map (\state ->
                   div
-                    [ class [PlayerIcon]
+                    [ class
+                      [ PlayerIcon
+                      , cssClass
+                      ]
                     , styles
                       [ left (minimapWidth * (state.position.x / model.mapWidth)|> px)
                       , bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
@@ -47,8 +50,8 @@ view model data timestamp =
                   )
                 )
           in
-            (teamToPlayerIcons blueTeam) ++
-            (teamToPlayerIcons redTeam)
+            (teamToPlayerIcons blueTeam BlueIcon) ++
+            (teamToPlayerIcons redTeam RedIcon)
           )
   in
     div [ class [Minimap]

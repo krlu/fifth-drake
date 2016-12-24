@@ -2,6 +2,7 @@ module Minimap.Css exposing (..)
 
 import Css exposing (..)
 import Css.Namespace
+import CssColors exposing (c_redTeam, c_blueTeam)
 import StyleUtils
 
 namespace : String
@@ -19,6 +20,8 @@ playerIconSize = 30
 type CssClass
   = Minimap
   | PlayerIcon
+  | BlueIcon
+  | RedIcon
   | Background
   | ChampionImage
 
@@ -50,6 +53,15 @@ css =
         [ height (100 |> pct)
         , width (100 |> pct)
         ]
+      , (.) BlueIcon
+        [ border3 (2.5 |> px) solid CssColors.c_blueTeam
+        , borderRadius (50 |> pct)
+        ]
+      , (.) RedIcon
+        [ border3 (2.5 |> px) solid CssColors.c_redTeam
+        , borderRadius (50 |> pct)
+        ]
       ]
     ])
   ]
+
