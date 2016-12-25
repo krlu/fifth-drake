@@ -77,9 +77,6 @@ switchTag model =
   let
     oldTagForm = model.tagForm
     oldActive = model.tagForm.active
-    newTagForm = if oldActive == True then
-                  { oldTagForm | active = False, selectedIds = []}
-                 else
-                  { oldTagForm | active = True}
+    newTagForm = { oldTagForm | active = not oldActive, selectedIds = []}
   in
     { model | tagForm = newTagForm }

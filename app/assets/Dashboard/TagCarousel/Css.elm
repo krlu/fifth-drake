@@ -38,7 +38,7 @@ css =
     , displayFlex
     , height (tagCarouselHeight |> px)
     , backgroundColor Color.c_carousel
-    , property "float" "left"
+    , float left
     , overflowX scroll
     , flexDirection row
     , flexWrap noWrap
@@ -50,9 +50,9 @@ css =
         , width (tagWidth |> px)
         , backgroundColor Color.c_navBar
         , border2 (1 |> px) solid
+        , float left
+        , listStyleType none
         , property "align-content" "center"
-        , property "float" "left"
-        , property "list-style-type" "none"
         , margin (10 |> px)
         , flexShrink zero
         ]
@@ -63,7 +63,7 @@ css =
        , height (140 |> px)
        , overflowY auto
        , backgroundColor Color.c_darkGray
-       , property "float" "left"
+       , float left
        ] ++ StyleUtils.userSelect "none")
   , (.) CheckboxCss(
        [ margin (20 |> px)
