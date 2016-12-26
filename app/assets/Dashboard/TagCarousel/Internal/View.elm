@@ -21,6 +21,7 @@ view model players =
              [div [ onClick <| TagClick tag.timestamp]
                   [ p [] [text tag.title]
                   , p [] [text << toString <| tag.category]
+                  , p [] [text tag.description]
                   ]
              , p [class [DeleteButtonCss]] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
              ]

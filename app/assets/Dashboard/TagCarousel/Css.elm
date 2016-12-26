@@ -51,6 +51,7 @@ css =
         , width (tagWidth |> pct)
         , backgroundColor Color.c_navBar
         , border2 (1 |> px) solid
+        , color Color.c_blackText
         , float left
         , listStyleType none
         , property "align-content" "center"
