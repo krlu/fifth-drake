@@ -1,12 +1,13 @@
 module TagCarousel.Internal.View exposing (..)
 
+import Dialog
 import GameModel exposing (Player)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
-import TagCarousel.Css exposing (CssClass(CheckboxCss, Tag, TagCarousel, TagFormCss), namespace)
+import TagCarousel.Css exposing (CssClass(CheckboxCss, DeleteButtonCss, Tag, TagCarousel, TagFormCss), namespace)
 import TagCarousel.Types exposing (Model, Msg(..))
-import Html.Attributes exposing (placeholder, style, type_)
+import Html.Attributes exposing (href, placeholder, rel, style, type_)
 import Html.Events exposing (onClick, onInput)
 
 {id, class, classList} = withNamespace namespace
@@ -21,7 +22,7 @@ view model players =
                   [ p [] [text tag.title]
                   , p [] [text << toString <| tag.category]
                   ]
-             , p [] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
+             , p [class [DeleteButtonCss]] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
              ]
           )
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
@@ -41,6 +42,8 @@ view model players =
   in
     div [] [ ol [ class [TagCarousel] ] tags
            , tagFormView
+           , Dialog.view Nothing
+           , bootstrap
     ]
 
 
@@ -54,3 +57,20 @@ checkbox msg name =
     [ input [ type_ "checkbox", onClick msg ] []
     , text name
     ]
+
+dialogConfig : Dialog.Config Msg
+dialogConfig =
+    { closeMessage = Nothing
+    , containerClass = Nothing
+    , header = Just (h3 [] [ text "1 Up!" ])
+    , body = Just (text ("this is a pop up!"))
+    , footer = Just (text "ok...")
+    }
+
+bootstrap : Html msg
+bootstrap =
+    node "link"
+        [ href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+        , rel "stylesheet"
+        ]
+        []

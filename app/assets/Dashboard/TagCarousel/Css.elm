@@ -10,16 +10,16 @@ namespace : String
 namespace = "tagCarousel"
 
 tagCarouselWidth : Float
-tagCarouselWidth = 1250
+tagCarouselWidth = 85 -- percent
 
 tagCarouselHeight : Float
-tagCarouselHeight = 140
+tagCarouselHeight = 211
 
 tagHeight : Float
-tagHeight = 80
+tagHeight = 80 -- percent
 
 tagWidth : Float
-tagWidth = 80
+tagWidth = 20 -- percent
 
 tagFormHeight : Float
 tagFormHeight = 100
@@ -29,12 +29,13 @@ type CssClass
   | Tag
   | TagFormCss
   | CheckboxCss
+  | DeleteButtonCss
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) TagCarousel (
-    [ width (85 |> pct)
+    [ width (tagCarouselWidth |> pct)
     , displayFlex
     , height (tagCarouselHeight |> px)
     , backgroundColor Color.c_carousel
@@ -46,8 +47,8 @@ css =
     StyleUtils.userSelect "none" ++
     [ children
       [ (.) Tag
-        [ height (tagHeight |> px)
-        , width (tagWidth |> px)
+        [ height (tagHeight |> pct)
+        , width (tagWidth |> pct)
         , backgroundColor Color.c_navBar
         , border2 (1 |> px) solid
         , float left
@@ -55,18 +56,24 @@ css =
         , property "align-content" "center"
         , margin (10 |> px)
         , flexShrink zero
+        , position relative
         ]
       ]
     ])
   , (.) TagFormCss (
        [ width (15 |> pct)
-       , height (140 |> px)
+       , height (211 |> px)
        , overflowY auto
        , backgroundColor Color.c_darkGray
        , float left
        ] ++ StyleUtils.userSelect "none")
   , (.) CheckboxCss(
-       [ margin (20 |> px)
+       [
+       ]
+    )
+  , (.) DeleteButtonCss(
+       [ position absolute
+       , bottom zero
        ]
     )
   ]

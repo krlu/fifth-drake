@@ -112,7 +112,7 @@ css =
   , (#) TagDisplay
     [ property "float" "left"
     , width (100 |> pct)
-    , height (140 |> px)
+    , height (211 |> px)
     , paddingTop (30 |> px)
     ]
   , (.) Widget
