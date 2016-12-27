@@ -29,10 +29,3 @@ transition value =
   , property "-o-transition" value
   , property "-moz-transition" value
   ]
-
-visibility : Float -> Mixin
-visibility value =
-  if value == 0 then
-    property "visibility" "hidden"
-  else
-    property "visibility" "visible"
