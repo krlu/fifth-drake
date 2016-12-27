@@ -5,7 +5,8 @@ import GameModel exposing (Player)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
-import TagCarousel.Css exposing (CssClass(CheckboxCss, DeleteButtonCss, Tag, TagCarousel, TagFormCss), namespace)
+import TagCarousel.Css exposing (CssClass(CheckboxCss, DeleteButtonCss,
+        SelectedTag, Tag, TagCarousel, TagFormCss), namespace)
 import TagCarousel.Types exposing (Model, Msg(..))
 import Html.Attributes exposing (href, placeholder, rel, style, type_)
 import Html.Events exposing (onClick, onInput)
@@ -16,16 +17,7 @@ view : Model -> List (String, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag ->
-           li [ class [Tag], onClick <| TagClick tag.timestamp ]
-             [div [ onClick <| TagClick tag.timestamp]
-                  [ p [] [text tag.title]
-                  , p [] [text << toString <| tag.category]
-                  , p [] [text tag.description]
-                  ]
-             , p [class [DeleteButtonCss]] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
-             ]
-          )
+         |> List.map (\tag -> tagHtml tag model.lastClickedTagId)
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView =
       if model.tagForm.active == True then
@@ -43,9 +35,26 @@ view model players =
   in
     div [] [ ol [ class [TagCarousel] ] tags
            , tagFormView
-           , Dialog.view Nothing
            , bootstrap
     ]
+
+
+tagHtml: TagCarousel.Types.Tag -> String -> Html Msg
+tagHtml tag lastClickedTagId =
+  let
+    tagCss = if(tag.id == lastClickedTagId) then
+               SelectedTag
+             else
+               Tag
+  in
+   li [ class [tagCss], onClick <| TagClick tag.timestamp tag.id]
+     [div []
+          [ p [] [text tag.title]
+          , p [] [text << toString <| tag.category]
+          , p [] [text tag.description]
+          ]
+     , p [class [DeleteButtonCss]] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
+     ]
 
 
 playerDataToHtml: (String, String) -> Html Msg

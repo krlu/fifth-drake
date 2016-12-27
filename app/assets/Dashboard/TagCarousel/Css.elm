@@ -30,6 +30,7 @@ type CssClass
   | TagFormCss
   | CheckboxCss
   | DeleteButtonCss
+  | SelectedTag
 
 css : Stylesheet
 css =
@@ -50,6 +51,19 @@ css =
         [ height (tagHeight |> pct)
         , width (tagWidth |> pct)
         , backgroundColor Color.c_navBar
+        , border2 (1 |> px) solid
+        , color Color.c_blackText
+        , float left
+        , listStyleType none
+        , property "align-content" "center"
+        , margin (10 |> px)
+        , flexShrink zero
+        , position relative
+        ],
+        (.) SelectedTag
+        [ height (tagHeight |> pct)
+        , width (tagWidth |> pct)
+        , backgroundColor Color.c_selectedTag
         , border2 (1 |> px) solid
         , color Color.c_blackText
         , float left

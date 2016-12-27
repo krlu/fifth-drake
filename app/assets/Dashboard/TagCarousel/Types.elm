@@ -4,7 +4,7 @@ import GameModel exposing (GameId, Timestamp)
 import Http
 
 type Msg
-  = TagClick Timestamp
+  = TagClick Timestamp String
   | UpdateTags (Result Http.Error (List Tag))
   | DeleteTag String
   | TagDeleted (Result Http.Error String)
@@ -17,9 +17,10 @@ type Msg
   | TagSaved (Result Http.Error (List Tag))
 
 type alias Model =
-  { host    : String
-  , tags    : List Tag
-  , tagForm : TagForm
+  { host             : String
+  , tags             : List Tag
+  , tagForm          : TagForm
+  , lastClickedTagId : String
   }
 
 type alias Tag =

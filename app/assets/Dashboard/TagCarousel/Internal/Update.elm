@@ -9,8 +9,8 @@ import TagCarousel.Internal.Save as Save
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update msg model ts =
   case msg of
-    TagClick val ->
-      (Just val, model, Cmd.none)
+    TagClick val id ->
+      (Just val, { model | lastClickedTagId = id }, Cmd.none)
     UpdateTags (Ok tags) ->
       (Nothing, { model | tags = tags }, Cmd.none)
     UpdateTags (Err err) ->
@@ -24,7 +24,19 @@ update msg model ts =
     SwitchForm ->
       (Nothing, switchTag model , Cmd.none)
     SaveTag ->
-     (Nothing, model, Save.sendRequest model.tagForm ts)
+      let
+        title = model.tagForm.title
+        category = model.tagForm.category
+        description = model.tagForm.description
+      in
+        if(String.length title == 0) then
+          (Nothing, model, Cmd.none)
+        else if(String.length category == 0) then
+          (Nothing, model, Cmd.none)
+        else if (String.length description == 0) then
+          (Nothing, model, Cmd.none)
+        else
+          (Nothing, model, Save.sendRequest model.tagForm ts)
     TagSaved (Ok tags) ->
      (Nothing, switchTag { model | tags = tags }, Cmd.none)
     TagSaved (Err msg) ->
