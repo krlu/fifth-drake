@@ -33,7 +33,6 @@ playerDisplaysGap = 20
 type CssId
   = TeamDisplayDivider
   | ControlsDivider
-  | TagDisplay
   | MainContent
   | CenterContent
   | CarouselDivider
@@ -108,12 +107,6 @@ css =
   , (#) ControlsDivider
     [ width auto
     , height (50 |> px)
-    ]
-  , (#) TagDisplay
-    [ property "float" "left"
-    , width (100 |> pct)
-    , height (211 |> px)
-    , paddingTop (30 |> px)
     ]
   , (.) Widget
     [ display inlineBlock

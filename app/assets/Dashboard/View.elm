@@ -2,7 +2,7 @@ module View exposing (..)
 
 import Array exposing (Array)
 import Controls.Controls as Controls
-import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider, TagDisplay), namespace)
+import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider), namespace)
 import GameModel exposing (GameLength, Side(..), Timestamp)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
@@ -97,8 +97,7 @@ view model =
           ]
         , redPlayerDisplays
         ]
-      , div [ id [TagDisplay] ]
-        [ tagCarousel ]
+      , tagCarousel
       ]
 
 getPlayerIdsAndIgns: Array Player -> Array Player -> List (String, String)

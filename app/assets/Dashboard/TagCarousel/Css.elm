@@ -10,7 +10,10 @@ namespace : String
 namespace = "tagCarousel"
 
 tagCarouselWidth : Float
-tagCarouselWidth = 85 -- percent
+tagCarouselWidth = 84 -- percent
+
+minimizedCarouselWidth : Float
+minimizedCarouselWidth = 56 -- percent
 
 tagCarouselHeight : Float
 tagCarouselHeight = 211
@@ -20,6 +23,9 @@ tagHeight = 80 -- percent
 
 tagWidth : Float
 tagWidth = 20 -- percent
+
+altTagWidth : Float
+altTagWidth = 30 -- percent
 
 tagFormHeight : Float
 tagFormHeight = 100
@@ -31,6 +37,10 @@ type CssClass
   | CheckboxCss
   | DeleteButtonCss
   | SelectedTag
+  | TagDisplay
+  | MinimizedCarousel
+  | AltTag
+  | AltSelectedTag
 
 css : Stylesheet
 css =
@@ -76,19 +86,68 @@ css =
       ]
     ])
   , (.) TagFormCss (
-       [ width (15 |> pct)
-       , height (211 |> px)
-       , overflowY auto
-       , backgroundColor Color.c_darkGray
-       , float left
-       ] ++ StyleUtils.userSelect "none")
+      [ width (44 |> pct)
+      , height (211 |> px)
+      , overflowY auto
+      , backgroundColor Color.c_darkGray
+      , float left
+      , position relative
+      ] ++ StyleUtils.userSelect "none"
+    )
   , (.) CheckboxCss(
-       [
-       ]
+      [
+      ]
     )
   , (.) DeleteButtonCss(
-       [ position absolute
-       , bottom zero
-       ]
+      [ position absolute
+      , bottom zero
+      ]
     )
+  , (.) MinimizedCarousel(
+      [ width (minimizedCarouselWidth |> pct)
+      , displayFlex
+      , height (tagCarouselHeight |> px)
+      , backgroundColor Color.c_carousel
+      , float left
+      , overflowX scroll
+      , flexDirection row
+      , flexWrap noWrap
+      ]++
+      StyleUtils.userSelect "none" ++
+      [ children
+        [ (.) AltTag
+         [ height (tagHeight |> pct)
+         , width (altTagWidth |> pct)
+         , backgroundColor Color.c_navBar
+         , border2 (1 |> px) solid
+         , color Color.c_blackText
+         , float left
+         , listStyleType none
+         , property "align-content" "center"
+         , margin (10 |> px)
+         , flexShrink zero
+         , position relative
+         ],
+         (.) AltSelectedTag
+         [ height (tagHeight |> pct)
+         , width (altTagWidth |> pct)
+         , backgroundColor Color.c_selectedTag
+         , border2 (1 |> px) solid
+         , color Color.c_blackText
+         , float left
+         , listStyleType none
+         , property "align-content" "center"
+         , margin (10 |> px)
+         , flexShrink zero
+         , position relative
+         ]
+        ]
+      ]
+    )
+  , (#) TagDisplay
+    [ property "float" "left"
+    , width (100 |> pct)
+    , height (211 |> px)
+    , paddingTop (30 |> px)
+    ]
   ]
