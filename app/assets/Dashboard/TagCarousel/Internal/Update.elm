@@ -9,8 +9,8 @@ import TagCarousel.Internal.Save as Save
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update msg model ts =
   case msg of
-    TagClick val id ->
-      (Just val, { model | lastClickedTagId = id }, Cmd.none)
+    TagClick timestamp ->
+      (Just timestamp, { model | lastClickedTime = timestamp }, Cmd.none)
     UpdateTags (Ok tags) ->
       (Nothing, { model | tags = tags }, Cmd.none)
     UpdateTags (Err err) ->
