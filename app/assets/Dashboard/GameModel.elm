@@ -3,7 +3,7 @@ module GameModel exposing (..)
 import Array exposing (Array)
 
 type alias GameId = Int
-type alias PlayerId = Int
+type alias PlayerId = String
 type alias GameLength = Timestamp
 type alias Timestamp = Int
 

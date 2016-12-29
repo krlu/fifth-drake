@@ -44,7 +44,7 @@ view model players =
     ]
 
 
-tagHtml: TagCarousel.Types.Tag -> Int -> Bool -> Html Msg
+tagHtml: TagCarousel.Types.Tag -> String -> Bool -> Html Msg
 tagHtml tag lastClickedTagId formActive =
   let
     tagCss = if(tag.id == lastClickedTagId) then

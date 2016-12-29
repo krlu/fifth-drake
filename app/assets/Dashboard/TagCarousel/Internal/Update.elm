@@ -80,7 +80,7 @@ filterTags: List Tag -> String -> List Tag
 filterTags tags id =
   let
     customFilter: Tag -> Bool
-    customFilter tag = (toString tag.id) /= id
+    customFilter tag = tag.id /= id
   in
     List.filter customFilter tags
 

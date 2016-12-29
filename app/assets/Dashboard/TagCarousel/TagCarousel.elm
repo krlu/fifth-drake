@@ -23,7 +23,7 @@ init loc =
        , active = False
        }
   in
-    ({host = loc.host, tagForm = tagForm, tags = [], lastClickedTagId = -1 }, Populate.populate loc)
+    ({host = loc.host, tagForm = tagForm, tags = [], lastClickedTagId = "" }, Populate.populate loc)
 
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update = Update.update

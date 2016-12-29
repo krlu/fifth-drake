@@ -4,7 +4,7 @@ import GameModel exposing (GameId, PlayerId, Timestamp)
 import Http
 
 
-type alias TagId = Int
+type alias TagId = String
 
 type Msg
   = TagClick Timestamp TagId
@@ -27,7 +27,7 @@ type alias Model =
   }
 
 type alias Tag =
-  { id          : Int
+  { id          : TagId
   , title       : String
   , description : String
   , category    : TagCategory

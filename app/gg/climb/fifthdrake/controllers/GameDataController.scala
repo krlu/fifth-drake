@@ -82,7 +82,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
 
         def playerStateToJson(p: (Player, Behavior[Time, PlayerState])): JsValue = p match {
           case (player, states) => Json.obj(
-            "id" -> player.id.id.toInt,
+            "id" -> player.id.id,
             "role" -> player.role.name,
             "ign" -> player.ign,
             "championName" -> states(Duration.Zero).championState.name,
@@ -145,12 +145,12 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       def writes(tag: Tag): JsObject =
         if(tag.hasInternalId) {
           Json.obj(
-            "id" -> tag.id.get.id.toInt,
+            "id" -> tag.id.get.id,
             "title" -> tag.title,
             "description" -> tag.description,
             "category" -> tag.category.name,
             "timestamp" -> tag.timestamp.toSeconds,
-            "players" -> Json.toJson(tag.players.map(_.id.id.toInt))
+            "players" -> Json.toJson(tag.players.map(_.id.id))
           )
         }
         else
@@ -183,8 +183,8 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       val category = data("category").as[String]
       val timeStamp = data("timestamp").as[Int]
       val players = data("relevantPlayerIds").as[JsArray].value.map{ jsVal =>
-        val id = jsVal.as[Int]
-        dbh.getPlayer(new InternalId[Player](id.toString))
+        val id = jsVal.as[String]
+        dbh.getPlayer(new InternalId[Player](id))
       }.toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
