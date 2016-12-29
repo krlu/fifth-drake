@@ -162,20 +162,16 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def deleteTag(tag: Tag): Unit = {
-    for {
-      id <- tag.id
-    } yield {
-      getPlayerIdsForTag(id).foreach(riotId => deletePlayerToTag(riotId))
-      DB localTx { implicit session =>
-        sql"DELETE FROM league.tag WHERE id=${id.id.toInt}".update().apply()
-      }
+  def deleteTag(tagId: InternalId[Tag]): Unit = {
+    getPlayerIdsForTag(tagId).foreach(riotId => deletePlayerToTag(riotId))
+    DB localTx { implicit session =>
+      sql"DELETE FROM league.tag WHERE id=${tagId.id.toInt}".update().apply()
     }
   }
 
   def getChampion(championName: String): Option[Champion] = DB readOnly {
     implicit session =>
-      sql"SELECT * FROM league.champion where name=${championName}"
+      sql"SELECT * FROM league.champion where name=${championName} OR key_name=${championName}"
         .map(rs => constructChampion(rs)).single().apply()
   }
 
@@ -238,12 +234,20 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
                       rs.string("image_group"))
   }
 
+  def getPlayersByIgn(ign: String): Seq[Player] = {
+    val ids = DB readOnly { implicit session =>
+      sql"SELECT player_id FROM league.player_ign WHERE ign = $ign".map(rs => rs.string("player_id"))
+        .list().apply()
+    }
+    ids.map(id => getPlayer(new InternalId[Player](id)))
+  }
+
   def getPlayerByRiotId(riotId: RiotId[Player]): Player = {
     val id = getPlayerId(riotId)
     getPlayer(id)
   }
 
-  def getPlayerId(riotId: RiotId[Player]): InternalId[Player] = {
+  private def getPlayerId(riotId: RiotId[Player]): InternalId[Player] = {
     val id = DB readOnly { implicit session =>
       sql"SELECT id FROM league.player WHERE riot_id = ${riotId.id}".map(rs => rs.string("id"))
         .single().apply().getOrElse("")
@@ -251,7 +255,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     new InternalId[Player](id)
   }
 
-  def getPlayerRiotId(id : InternalId[Player]) : RiotId[Player] = {
+  private def getPlayerRiotId(id : InternalId[Player]) : RiotId[Player] = {
     val riotIdVal = DB readOnly { implicit session =>
       sql"""
            SELECT riot_id
@@ -261,9 +265,9 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     new RiotId[Player](riotIdVal.toString)
   }
 
-  def getTeamByAcronym(acronym: String, time: Option[DateTime] = None): Team = {
-    val id = getTeamIdByAcronym(acronym)
-    getTeam(new InternalId[Team](id.toString), time)
+  def getTeamByAcronym(acronym: String, time: Option[DateTime] = None): Seq[Team] = {
+    val ids = getTeamIdByAcronym(acronym)
+    ids.map(id => getTeam(id, time))
   }
 
   def getTeam(teamId: InternalId[Team], time: Option[DateTime] = None): Team = {
@@ -281,20 +285,12 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     new Team(teamId, name, acronym, players)
   }
 
-  def getTeamIdByAcronym(acronym: String): String = {
-    val id = DB readOnly { implicit session =>
+  private def getTeamIdByAcronym(acronym: String): Seq[InternalId[Team]] = {
+    val ids: List[String] = DB readOnly { implicit session =>
       sql"SELECT id FROM league.team WHERE acronym = ${acronym}"
-        .map(rs => rs.string("id")).single().apply()
+        .map(rs => rs.string("id")).list().apply()
     }
-    id.orNull
-  }
-
-  def getTeamId(riotId: RiotId[Team]): String = {
-    val id = DB readOnly { implicit session =>
-      sql"SELECT id FROM league.team WHERE riot_id = ${riotId.id.toInt}"
-        .map(rs => rs.string("id")).single().apply()
-    }
-    id.orNull
+    ids.map(id => new InternalId[Team](id))
   }
 }
 

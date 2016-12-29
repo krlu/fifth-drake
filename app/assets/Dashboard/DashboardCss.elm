@@ -6,7 +6,7 @@ import CssColors as Color
 import GameModel exposing (Side(Blue, Red))
 import Minimap.Css exposing (minimapHeight, minimapWidth)
 import StyleUtils
-import TagScroller.Css exposing (tagScrollerWidth)
+import TagCarousel.Css exposing (tagCarouselWidth)
 import TeamDisplay.Css exposing (teamDisplayWidth)
 
 namespace : String
@@ -31,8 +31,11 @@ playerDisplaysGap : Float
 playerDisplaysGap = 20
 
 type CssId
-  = MainContent
+  = TeamDisplayDivider
+  | ControlsDivider
+  | MainContent
   | CenterContent
+  | CarouselDivider
 
 type CssClass
   = Dashboard
@@ -45,7 +48,8 @@ css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ (.) Dashboard (
-    [ displayFlex
+    [ width (100 |> pct)
+    , displayFlex
     , alignItems center
     ] ++ StyleUtils.flexDirection "column" ++
     [ children
@@ -92,6 +96,14 @@ css =
         )
       ]
     ])
+  , (#) TeamDisplayDivider
+    [ width auto
+    , height (30 |> px)
+    ]
+  , (#) ControlsDivider
+    [ width auto
+    , height (50 |> px)
+    ]
   , (.) Widget
     [ display inlineBlock
     , backgroundColor (hex "#3b4047")

@@ -1,11 +1,11 @@
-module TagScroller.Internal.Populate exposing (..)
+module TagCarousel.Internal.Populate exposing (..)
 
-import GameModel exposing (GameId)
 import Http
 import Json.Decode exposing (..)
+import TagCarousel.Types exposing (Msg(..), Tag, TagCategory(..))
+import Task exposing (Task)
 import Navigation exposing (Location)
 import Populate exposing (getGameId)
-import TagScroller.Types exposing (Msg(..), Tag, TagCategory(..))
 
 tagUrl : Location -> String
 tagUrl loc =
@@ -19,7 +19,8 @@ populate loc = Http.send UpdateTags <| getTags loc
 
 tag : Decoder Tag
 tag =
-  map5 Tag
+  map6 Tag
+    (field "id" string)
     (field "title" string)
     (field "description" string)
     (field "category" tagCategory)

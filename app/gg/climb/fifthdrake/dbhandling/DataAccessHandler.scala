@@ -2,7 +2,7 @@ package gg.climb.fifthdrake.dbhandling
 
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.lolobjects.RiotId
+import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{Champion, GameData, InGameTeam, MetaData}
@@ -23,8 +23,12 @@ import scala.concurrent.duration.Duration
   * @param mdbh - MongoDbHandler
   */
 class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
-  def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
 
+  def deleteTag(id: InternalId[Tag]) = pdbh.deleteTag(id)
+  def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
+  def insertTag(tag: Tag): Unit = pdbh.insertTag(tag)
+
+  def getPlayer(id: InternalId[Player]) = pdbh.getPlayer(id)
   def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
 
   def getGame(gameKey: RiotId[Game]): Option[Game] ={

@@ -32,6 +32,9 @@ c_exp = hex "#9778D0"
 c_lightGray : Color
 c_lightGray = hex "#D8D8D8"
 
+c_darkGray : Color
+c_darkGray = hex "#858585"
+
 c_darkerGray : Color
 c_darkerGray = hex "#858585"
 
@@ -46,3 +49,12 @@ c_offWhite = hex "#F5F5F5"
 
 c_white : Color
 c_white = hex "#FFFFFF"
+
+c_carousel : Color
+c_carousel = hex "#4D596E"
+
+c_blackText : Color
+c_blackText = hex "#000000"
+
+c_selectedTag : Color
+c_selectedTag = hex "#FFFFAA"

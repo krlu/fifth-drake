@@ -3,7 +3,7 @@ module GameModel exposing (..)
 import Array exposing (Array)
 
 type alias GameId = Int
-
+type alias PlayerId = String
 type alias GameLength = Timestamp
 type alias Timestamp = Int
 
@@ -38,7 +38,8 @@ type alias TeamState =
   }
 
 type alias Player =
-  { role              : Role
+  { id                : PlayerId
+  , role              : Role
   , ign               : String
   , championName      : String
   , championImage     : String

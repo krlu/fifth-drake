@@ -7,17 +7,21 @@ import Minimap.Minimap as Minimap
 import Navigation exposing (Location)
 import Populate
 import Subscriptions
-import TagScroller.TagScroller as TagScroller
+import TagCarousel.TagCarousel as TagCarousel
 import Types exposing (..)
 import Update
 import View
+import Minimap.Minimap as Minimap
+import TagCarousel.TagCarousel as TagCarousel
+
 
 init : Flags -> Location -> (Model, Cmd Msg)
 init flags location =
   let
     minimapModel = Minimap.init flags.minimapBackground
-    (tagScrollerModel, tagScrollerCmd) = TagScroller.init location
+    (tagCarouselModel, tagCarouselCmd) = TagCarousel.init location
     controlsModel = Controls.init flags.playButton flags.pauseButton
+
     metadata : Metadata
     metadata =
       { blueTeamName = ""
@@ -37,7 +41,7 @@ init flags location =
       }
   in
     { minimap = minimapModel
-    , tagScroller = tagScrollerModel
+    , tagCarousel = tagCarouselModel
     , controls = controlsModel
     , game =
       { metadata = metadata
@@ -45,7 +49,7 @@ init flags location =
       }
     , timestamp = 0
     } !
-    [ Cmd.map TagScrollerMsg tagScrollerCmd
+    [ Cmd.map TagCarouselMsg tagCarouselCmd
     , Populate.populate location
     ]
 

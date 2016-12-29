@@ -1,24 +1,26 @@
 module Update exposing (..)
 
+import Array exposing (Array)
 import Controls.Controls as Controls
 import Controls.Types as TimelineT
+import GameModel exposing (Player)
 import Minimap.Minimap as Minimap
 import Minimap.Types as MinimapT
-import TagScroller.TagScroller as TagScroller
-import TagScroller.Types as TagScrollerT
+import TagCarousel.TagCarousel as TagCarousel
+import TagCarousel.Types as TagCarouselT
 import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    TagScrollerMsg tmsg ->
+    TagCarouselMsg tmsg ->
       let
-        (timestamp, tmodel) = TagScroller.update tmsg model.tagScroller
+        (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel model.timestamp
       in
-        ( { model | tagScroller = tmodel
+        ( { model | tagCarousel = tmodel
                   , timestamp = Maybe.withDefault model.timestamp timestamp
           }
-        , Cmd.none
+        , Cmd.map TagCarouselMsg cmd
         )
     ControlsMsg tmsg ->
       let

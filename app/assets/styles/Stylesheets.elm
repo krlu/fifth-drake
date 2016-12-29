@@ -7,9 +7,9 @@ import Html exposing (div)
 import MainCss
 import Minimap.Css
 import NavbarCss
+import TagCarousel.Css
 import Platform
 import PlayerDisplay.Css
-import TagScroller.Css
 import TeamDisplay.Css
 
 port files : CssFileStructure -> Cmd msg
@@ -23,8 +23,8 @@ cssFiles =
         [ Controls.Css.css
         , DashboardCss.css
         , Minimap.Css.css
+        , TagCarousel.Css.css
         , PlayerDisplay.Css.css
-        , TagScroller.Css.css
         , TeamDisplay.Css.css
         ]
       , "navbar.css" => compile

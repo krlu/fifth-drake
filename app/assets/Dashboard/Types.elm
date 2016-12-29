@@ -4,11 +4,12 @@ import Controls.Types as Controls
 import GameModel exposing (Game, GameLength, Timestamp)
 import Http
 import Minimap.Types as Minimap
+import TagCarousel.Types as TagCarousel
 import Navigation exposing (Location)
-import TagScroller.Types as TagScroller
+
 
 type Msg
-  = TagScrollerMsg TagScroller.Msg
+  = TagCarouselMsg TagCarousel.Msg
   | ControlsMsg Controls.Msg
   | SetGame (Result Http.Error Game)
   | UpdateTimestamp Timestamp
@@ -17,9 +18,10 @@ type Msg
 type alias Model =
   { controls : Controls.Model
   , minimap : Minimap.Model
-  , tagScroller : TagScroller.Model
+  , tagCarousel : TagCarousel.Model
   , game : Game
   , timestamp : Timestamp
+  , tagCarousel: TagCarousel.Model
   }
 
 type alias Flags =

@@ -3,15 +3,15 @@ package gg.climb.fifthdrake.controllers
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.Player
-import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
 import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
-import gg.climb.fifthdrake.lolobjects.tagging.Tag
+import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
+import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
+import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
-import play.api.mvc._
+import play.api.mvc.{Action, _}
 
 import scala.concurrent.duration.Duration
 
@@ -82,6 +82,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
 
         def playerStateToJson(p: (Player, Behavior[Time, PlayerState])): JsValue = p match {
           case (player, states) => Json.obj(
+            "id" -> player.id.id,
             "role" -> player.role.name,
             "ign" -> player.ign,
             "championName" -> states(Duration.Zero).championState.name,
@@ -136,17 +137,66 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
   // scalastyle:on method.length
 
   def getTags(gameKey: String): Action[AnyContent] = Action {
+    Ok(loadTagData(gameKey))
+  }
+  private def loadTagData(gameKey: String): JsValue = {
     val tags = dbh.getTags(new RiotId[Game](gameKey))
     implicit val tagWrites = new Writes[Tag] {
-      def writes(tag: Tag): JsObject = Json.obj(
-        "title" -> tag.title,
-        "description" -> tag.description,
-        "category" -> tag.category.name,
-        "timestamp" -> tag.timestamp.toSeconds,
-        "players" -> Json.toJson(tag.players.map(_.ign))
-      )
+      def writes(tag: Tag): JsObject =
+        if(tag.hasInternalId) {
+          Json.obj(
+            "id" -> tag.id.get.id,
+            "title" -> tag.title,
+            "description" -> tag.description,
+            "category" -> tag.category.name,
+            "timestamp" -> tag.timestamp.toSeconds,
+            "players" -> Json.toJson(tag.players.map(_.id.id))
+          )
+        }
+        else
+          Json.obj("error:" -> "Error, tag does not have Id!")
     }
-    Ok(Json.toJson(tags))
+    Json.toJson(tags)
+  }
+  /**
+    * Request body MultiFormData should resemble:
+    * Map(
+    *  "gameKey" -> "10"
+    *  "title" -> "gank occurred top lane"
+    *  "description" -> "Top laner ganked by roaming support and jungler"
+    *  "category" -> "gank"
+    *  "timestamp" -> 1234  //measured in seconds
+    *  "relevantPlayerIgns" -> JsArray("Hauntzer", "Meteos", "Impact")
+    *  "allplayerIgns" -> JSObject // contains all players
+    *                              // Uses key value pair: (playerIgn -> playerId)
+    * )
+    *
+    * @return Ok if successful, otherwise BadRequest
+    */
+  def saveTag(): Action[AnyContent] = Action { request =>
+    val body: AnyContent = request.body
+    body.asJson.map{ jsonValue =>
+      val data = jsonValue.as[JsObject].value
+      val gameKey = data("gameKey").as[String]
+      val title = data("title").as[String]
+      val description = data("description").as[String]
+      val category = data("category").as[String]
+      val timeStamp = data("timestamp").as[Int]
+      val players = data("relevantPlayerIds").as[JsArray].value.map{ jsVal =>
+        val id = jsVal.as[String]
+        dbh.getPlayer(new InternalId[Player](id))
+      }.toSet
+      dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
+        new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
+      Ok(loadTagData(gameKey))
+    }.getOrElse{
+      BadRequest("Failed to insert tag")
+    }
+  }
+
+  def deleteTag(tagId: String): Action[AnyContent] = Action {
+    dbh.deleteTag(new InternalId[Tag](tagId))
+    Ok(tagId)
   }
 }
 
