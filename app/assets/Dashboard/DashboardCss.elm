@@ -100,10 +100,6 @@ css =
     [ width auto
     , height (30 |> px)
     ]
-  , (#) CarouselDivider
-      [ width auto
-      , height (40 |> px)
-      ]
   , (#) ControlsDivider
     [ width auto
     , height (50 |> px)

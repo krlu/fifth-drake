@@ -1,6 +1,5 @@
 module TagCarousel.Internal.View exposing (..)
 
-import Dialog
 import GameModel exposing (Player, PlayerId)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
