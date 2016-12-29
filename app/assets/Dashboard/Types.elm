@@ -11,6 +11,7 @@ import Navigation exposing (Location)
 type Msg
   = TagCarouselMsg TagCarousel.Msg
   | ControlsMsg Controls.Msg
+  | MinimapMsg Minimap.Msg
   | SetGame (Result Http.Error Game)
   | UpdateTimestamp Timestamp
   | LocationUpdate Location

@@ -69,7 +69,7 @@ view model =
         model.controls
       |> Html.map ControlsMsg
 
-    minimap = Minimap.view model.minimap model.game.data model.timestamp
+    minimap = Minimap.view model.minimap
 
     bluePlayers = model.game.data.blueTeam.players
     redPlayers =  model.game.data.redTeam.players

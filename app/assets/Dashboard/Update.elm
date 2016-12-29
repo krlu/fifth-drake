@@ -32,6 +32,15 @@ update msg model =
           }
         , Cmd.none
         )
+    MinimapMsg mmsg ->
+      let
+        mmodel =
+          Minimap.update model.minimap model.game.data model.timestamp mmsg
+      in
+        ( { model | minimap = mmodel
+          }
+        , Cmd.none
+        )
     SetGame (Ok game) ->
       ({ model | game = game }, Cmd.none)
     SetGame (Err err) ->
