@@ -1,6 +1,6 @@
 module TagCarousel.Internal.View exposing (..)
 
-import GameModel exposing (Player, PlayerId)
+import GameModel exposing (Player, PlayerId, Timestamp)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
@@ -15,7 +15,7 @@ view : Model -> List (PlayerId, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag model.lastClickedTagId model.tagForm.active)
+         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active)
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView =
       if model.tagForm.active == True then
@@ -43,10 +43,10 @@ view model players =
     ]
 
 
-tagHtml: TagCarousel.Types.Tag -> String -> Bool -> Html Msg
-tagHtml tag lastClickedTagId formActive =
+tagHtml: TagCarousel.Types.Tag -> Timestamp -> Bool -> Html Msg
+tagHtml tag lastClickedTimeStamp formActive =
   let
-    tagCss = if(tag.id == lastClickedTagId) then
+    tagCss = if(tag.timestamp == lastClickedTimeStamp) then
                if(formActive == True) then
                  AltSelectedTag
                else
@@ -57,7 +57,7 @@ tagHtml tag lastClickedTagId formActive =
                else
                  Tag
   in
-   li [ class [tagCss], onClick <| TagClick tag.timestamp tag.id]
+   li [ class [tagCss], onClick <| TagClick tag.timestamp ]
      [div []
           [ p [] [text tag.title]
           , p [] [text << toString <| tag.category]
