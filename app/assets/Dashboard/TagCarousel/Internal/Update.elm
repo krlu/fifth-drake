@@ -1,8 +1,8 @@
 module TagCarousel.Internal.Update exposing (..)
 
-import GameModel exposing (Player, Timestamp)
-import TagCarousel.Types exposing (Model, Msg(..), Tag)
-import String as String
+import GameModel exposing (Player, PlayerId, Timestamp)
+import TagCarousel.Types exposing (Model, Msg(..), Tag, TagId)
+import String as String exposing (toInt)
 import TagCarousel.Internal.Delete as Delete
 import TagCarousel.Internal.Save as Save
 
@@ -65,7 +65,7 @@ update msg model ts =
         oldIdsList = oldTagForm.selectedIds
         newIdsList = if List.member id oldIdsList then
                        let
-                         filter: String -> Bool
+                         filter: PlayerId -> Bool
                          filter thisId = thisId /= id
                        in
                          List.filter filter oldIdsList
@@ -80,7 +80,7 @@ filterTags: List Tag -> String -> List Tag
 filterTags tags id =
   let
     customFilter: Tag -> Bool
-    customFilter tag = tag.id /= id
+    customFilter tag = (toString tag.id) /= id
   in
     List.filter customFilter tags
 

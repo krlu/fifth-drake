@@ -1,19 +1,18 @@
 module TagCarousel.Internal.View exposing (..)
 
 import Dialog
-import GameModel exposing (Player)
+import GameModel exposing (Player, PlayerId)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
-import TagCarousel.Css exposing (CssClass(AltSelectedTag, AltTag, CheckboxCss, DeleteButtonCss,
-  MinimizedCarousel, SelectedTag, Tag, TagCarousel, TagDisplay, TagFormCss), namespace)
+import TagCarousel.Css exposing (CssClass(..), namespace)
 import TagCarousel.Types exposing (Model, Msg(..))
 import Html.Attributes exposing (href, placeholder, rel, style, type_)
 import Html.Events exposing (onClick, onInput)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> List (String, String) -> Html Msg
+view : Model -> List (PlayerId, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
@@ -45,7 +44,7 @@ view model players =
     ]
 
 
-tagHtml: TagCarousel.Types.Tag -> String -> Bool -> Html Msg
+tagHtml: TagCarousel.Types.Tag -> Int -> Bool -> Html Msg
 tagHtml tag lastClickedTagId formActive =
   let
     tagCss = if(tag.id == lastClickedTagId) then
@@ -69,7 +68,7 @@ tagHtml tag lastClickedTagId formActive =
      ]
 
 
-playerDataToHtml: (String, String) -> Html Msg
+playerDataToHtml: (PlayerId, String) -> Html Msg
 playerDataToHtml (id, ign) = p[][ checkbox (AddPlayers id) ign]
 
 

@@ -1,6 +1,6 @@
 module TagCarousel.TagCarousel exposing (init, update, view)
 
-import GameModel exposing (GameId, Player, Timestamp)
+import GameModel exposing (GameId, Player, PlayerId, Timestamp)
 import Html exposing (Html)
 import TagCarousel.Types exposing (..)
 import TagCarousel.Internal.Populate as Populate
@@ -23,12 +23,12 @@ init loc =
        , active = False
        }
   in
-    ({host = loc.host, tagForm = tagForm, tags = [], lastClickedTagId = "" }, Populate.populate loc)
+    ({host = loc.host, tagForm = tagForm, tags = [], lastClickedTagId = -1 }, Populate.populate loc)
 
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update = Update.update
 
-view : Model -> List (String, String) -> Html Msg
+view : Model -> List (PlayerId, String) -> Html Msg
 view = View.view
 
 getGameId : Location -> GameId

@@ -1,6 +1,5 @@
 module TagCarousel.Internal.Populate exposing (..)
 
-import GameModel exposing (GameId)
 import Http
 import Json.Decode exposing (..)
 import TagCarousel.Types exposing (Msg(..), Tag, TagCategory(..))
@@ -21,12 +20,12 @@ populate loc = Http.send UpdateTags <| getTags loc
 tag : Decoder Tag
 tag =
   map6 Tag
-    (field "id" string)
+    (field "id" int)
     (field "title" string)
     (field "description" string)
     (field "category" tagCategory)
     (field "timestamp" int)
-    (field "players" <| list string)
+    (field "players" <| list int)
 
 tagCategory : Decoder TagCategory
 tagCategory =

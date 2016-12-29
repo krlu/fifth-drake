@@ -82,7 +82,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
 
         def playerStateToJson(p: (Player, Behavior[Time, PlayerState])): JsValue = p match {
           case (player, states) => Json.obj(
-            "id" -> player.id.id.toString,
+            "id" -> player.id.id.toInt,
             "role" -> player.role.name,
             "ign" -> player.ign,
             "championName" -> states(Duration.Zero).championState.name,
@@ -142,14 +142,19 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
   private def loadTagData(gameKey: String): JsValue = {
     val tags = dbh.getTags(new RiotId[Game](gameKey))
     implicit val tagWrites = new Writes[Tag] {
-      def writes(tag: Tag): JsObject = Json.obj(
-        "id" -> tag.id.getOrElse(new InternalId[Tag]("")).id,
-        "title" -> tag.title,
-        "description" -> tag.description,
-        "category" -> tag.category.name,
-        "timestamp" -> tag.timestamp.toSeconds,
-        "players" -> Json.toJson(tag.players.map(_.ign))
-      )
+      def writes(tag: Tag): JsObject =
+        if(tag.hasInternalId) {
+          Json.obj(
+            "id" -> tag.id.get.id.toInt,
+            "title" -> tag.title,
+            "description" -> tag.description,
+            "category" -> tag.category.name,
+            "timestamp" -> tag.timestamp.toSeconds,
+            "players" -> Json.toJson(tag.players.map(_.id.id.toInt))
+          )
+        }
+        else
+          Json.obj("error:" -> "Error, tag does not have Id!")
     }
     Json.toJson(tags)
   }
@@ -165,6 +170,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
     *  "allplayerIgns" -> JSObject // contains all players
     *                              // Uses key value pair: (playerIgn -> playerId)
     * )
+    *
     * @return Ok if successful, otherwise BadRequest
     */
   def saveTag(): Action[AnyContent] = Action { request =>
@@ -177,8 +183,8 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
       val category = data("category").as[String]
       val timeStamp = data("timestamp").as[Int]
       val players = data("relevantPlayerIds").as[JsArray].value.map{ jsVal =>
-        val id = jsVal.as[String]
-        dbh.getPlayer(new InternalId[Player](id))
+        val id = jsVal.as[Int]
+        dbh.getPlayer(new InternalId[Player](id.toString))
       }.toSet
       dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
         new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))

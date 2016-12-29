@@ -24,7 +24,7 @@ createRequest model ts =
           , ("description", string model.description)
           , ("category", string model.category)
           , ("timestamp", int ts)
-          , ("relevantPlayerIds", list <| List.map string model.selectedIds)
+          , ("relevantPlayerIds", list <| List.map int model.selectedIds)
           ]
     body = jsonBody jsonData
   in

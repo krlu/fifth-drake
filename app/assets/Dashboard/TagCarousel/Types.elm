@@ -1,17 +1,20 @@
 module TagCarousel.Types exposing (..)
 
-import GameModel exposing (GameId, Timestamp)
+import GameModel exposing (GameId, PlayerId, Timestamp)
 import Http
 
+
+type alias TagId = Int
+
 type Msg
-  = TagClick Timestamp String
+  = TagClick Timestamp TagId
   | UpdateTags (Result Http.Error (List Tag))
-  | DeleteTag String
+  | DeleteTag TagId
   | TagDeleted (Result Http.Error String)
   | CreateTitle String
   | CreateDescription String
   | CreateCategory String
-  | AddPlayers String
+  | AddPlayers PlayerId
   | SwitchForm
   | SaveTag
   | TagSaved (Result Http.Error (List Tag))
@@ -20,23 +23,23 @@ type alias Model =
   { host             : String
   , tags             : List Tag
   , tagForm          : TagForm
-  , lastClickedTagId : String
+  , lastClickedTagId : TagId
   }
 
 type alias Tag =
-  { id          : String
+  { id          : Int
   , title       : String
   , description : String
   , category    : TagCategory
   , timestamp   : Timestamp
-  , players     : List String
+  , players     : List PlayerId
   }
 
 type alias TagForm =
   { title       : String
   , description : String
   , category    : String
-  , selectedIds : List String
+  , selectedIds : List PlayerId
   , gameId      : GameId
   , host        : String
   , active      : Bool
