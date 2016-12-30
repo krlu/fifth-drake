@@ -20,10 +20,17 @@ view model players =
     tagFormView =
       if model.tagForm.active == True then
         div [ class [TagFormCss] ]
-        [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
-        , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
-        , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
-        , p [] checkBoxes
+        [
+          div [ id [TagFormTextInput] ]
+          [ input [ placeholder "Title", onInput CreateTitle, id [TagFormTextBox] ] []
+          , input [ placeholder "Category", onInput CreateCategory, id [TagFormTextBox] ] []
+          , textarea [ placeholder "Description", onInput CreateDescription, id [TagFormTextArea] ] []
+          ]
+        , div [ id [PlayerCheckboxes] ] (
+          [ div [ id [PlayersInvolved] ] [text "Players Involved"]
+          ]
+          ++ checkBoxes
+          )
         , p [] [ button [ onClick SwitchForm ] [ text "cancel" ],
                  button [ onClick SaveTag] [ text "save" ]
                ]
@@ -68,12 +75,12 @@ tagHtml tag lastClickedTimeStamp formActive =
 
 
 playerDataToHtml: (PlayerId, String) -> Html Msg
-playerDataToHtml (id, ign) = p[][ checkbox (AddPlayers id) ign]
+playerDataToHtml (id, ign) = checkbox (AddPlayers id) ign
 
 
 checkbox : msg -> String -> Html msg
 checkbox msg name =
-  label [ class [CheckboxCss] ]
+  label [ id [CheckboxCss] ]
     [ input [ type_ "checkbox", onClick msg ] []
     , text name
     ]
