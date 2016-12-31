@@ -36,7 +36,6 @@ css =
     StyleUtils.userSelect "none" ++
     [ children
       [ (.) PlayerIcon (
-        StyleUtils.transition "all 1s linear" ++
         [ position absolute
         , width (playerIconSize |> px)
         , height (playerIconSize |> px)

@@ -1,13 +1,15 @@
 module Minimap.Internal.View exposing (..)
 
 import Animation
+import Css exposing (backgroundImage)
 import Dict
 import Html exposing (..)
 import Html.Attributes exposing (src, draggable)
-import Html.CssHelpers exposing (withNamespace)
+import Html.CssHelpers exposing (style, withNamespace)
 import Minimap.Css exposing (CssClass(..), namespace)
 import Minimap.Types exposing (Model)
 import GameModel exposing (..)
+import StyleUtils exposing (styles)
 
 {id, class, classList} = withNamespace namespace
 
@@ -25,7 +27,13 @@ view model =
               ]
             ]
             ++ (Animation.render iconState.style))
-            []
+            [ img
+              [ class [ChampionImage]
+              , src iconState.img
+              , draggable "false"
+              ]
+              []
+            ]
         )
   in
     div [ class [Minimap]

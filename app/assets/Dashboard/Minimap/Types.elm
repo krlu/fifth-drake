@@ -3,18 +3,21 @@ module Minimap.Types exposing (..)
 import Animation
 import Array exposing (..)
 import Dict exposing (Dict)
-import GameModel exposing (Side)
+import GameModel exposing (PlayerId, Side)
 
 type alias Model =
   { background : String
   -- the width and height of the map of the in game coordinates
   , mapWidth : Float
   , mapHeight : Float
-  , iconStates : Dict String State
+  , iconStates : Dict PlayerId State
   }
 
-type Msg =
-  AnimatePlayerIcon Animation.Msg
+type Msg
+  = AnimatePlayerIcons Animation.Msg
+  | GenerateIconStates
+  | IncrementIconStates
+  | SnapIconStates
 
 type alias State =
   { style : Animation.State

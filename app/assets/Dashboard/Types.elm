@@ -13,7 +13,6 @@ type Msg
   | ControlsMsg Controls.Msg
   | MinimapMsg Minimap.Msg
   | SetGame (Result Http.Error Game)
-  | UpdateTimestamp Timestamp
   | LocationUpdate Location
 
 type alias Model =
