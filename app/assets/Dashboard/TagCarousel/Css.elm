@@ -46,6 +46,7 @@ type CssClass
   | TagFormTextBox
   | TagFormTextArea
   | PlayersInvolved
+  | AddTagButton
 
 css : Stylesheet
 css =
@@ -161,6 +162,7 @@ css =
     , width (100 |> pct)
     , height (241 |> px)
     , paddingTop (30 |> px)
+    , displayFlex
     ]
   , (#) TagFormTextInput
     [ displayFlex
@@ -180,5 +182,10 @@ css =
     [ fontSize (18 |> px)
     , backgroundColor Color.c_lightGray
     , height (15 |> pct)
+    ]
+  , (#) AddTagButton
+    [ height (100 |> pct)
+    , width (16 |> pct)
+    , backgroundColor Color.c_carousel
     ]
   ]

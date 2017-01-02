@@ -6,7 +6,7 @@ import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick)
 import TagCarousel.Css exposing (CssClass(..), namespace)
 import TagCarousel.Types exposing (Model, Msg(..))
-import Html.Attributes exposing (href, placeholder, rel, style, type_)
+import Html.Attributes exposing (href, placeholder, rel, src, style, type_)
 import Html.Events exposing (onClick, onInput)
 
 {id, class, classList} = withNamespace namespace
@@ -36,7 +36,10 @@ view model players =
                ]
         ]
       else
-        button [ onClick SwitchForm] [ text "create new tag" ]
+        div [ id [AddTagButton], onClick SwitchForm]
+        [ img [src <| model.tagButton ] []
+        ]
+--        button [ onClick SwitchForm] [ text "create new tag" ]
     carouselCss =
       if model.tagForm.active == True then
         MinimizedCarousel
