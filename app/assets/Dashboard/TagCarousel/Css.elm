@@ -47,6 +47,9 @@ type CssClass
   | TagFormTextArea
   | PlayersInvolved
   | AddTagButton
+  | ColoredAddTagButton
+  | HoveredTag
+  | AltHoveredTag
 
 css : Stylesheet
 css =
@@ -79,7 +82,20 @@ css =
         (.) SelectedTag
         [ height (tagHeight |> pct)
         , width (tagWidth |> pct)
-        , backgroundColor Color.c_selectedTag
+        , backgroundColor Color.c_selected
+        , border2 (1 |> px) solid
+        , color Color.c_blackText
+        , float left
+        , listStyleType none
+        , property "align-content" "center"
+        , margin (10 |> px)
+        , flexShrink zero
+        , position relative
+        ],
+        (.) HoveredTag
+        [ height (tagHeight |> pct)
+        , width (tagWidth |> pct)
+        , backgroundColor Color.c_hovering
         , border2 (1 |> px) solid
         , color Color.c_blackText
         , float left
@@ -144,7 +160,20 @@ css =
          (.) AltSelectedTag
          [ height (tagHeight |> pct)
          , width (altTagWidth |> pct)
-         , backgroundColor Color.c_selectedTag
+         , backgroundColor Color.c_selected
+         , border2 (1 |> px) solid
+         , color Color.c_blackText
+         , float left
+         , listStyleType none
+         , property "align-content" "center"
+         , margin (10 |> px)
+         , flexShrink zero
+         , position relative
+         ],
+         (.) AltHoveredTag
+         [ height (tagHeight |> pct)
+         , width (altTagWidth |> pct)
+         , backgroundColor Color.c_hovering
          , border2 (1 |> px) solid
          , color Color.c_blackText
          , float left
@@ -187,5 +216,10 @@ css =
     [ height (100 |> pct)
     , width (16 |> pct)
     , backgroundColor Color.c_carousel
+    ]
+  , (#) ColoredAddTagButton
+    [ height (100 |> pct)
+    , width (16 |> pct)
+    , backgroundColor Color.c_hovering
     ]
   ]
