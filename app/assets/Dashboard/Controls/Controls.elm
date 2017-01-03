@@ -9,7 +9,7 @@ import Html exposing (Html)
 
 initialModel : String -> String -> Model
 initialModel playButton pauseButton =
-  { mouse = Nothing
+  { lastPosition = Nothing
   , status = Pause
   , pauseButton = pauseButton
   , playButton = playButton

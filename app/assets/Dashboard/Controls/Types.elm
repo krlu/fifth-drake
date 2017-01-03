@@ -6,8 +6,7 @@ import Http
 
 
 type Msg
-  = KnobGrab Mouse.Position
-  | KnobMove Mouse.Position
+  = KnobMove Mouse.Position
   | KnobRelease Mouse.Position
   | BarClick (Mouse.Position, Mouse.Position)
   | PlayPause
@@ -16,7 +15,7 @@ type Msg
 type alias File = String
 
 type alias Model =
-  { mouse: Maybe Drag
+  { lastPosition: Maybe Drag
 
   , status: Status
 
@@ -24,10 +23,7 @@ type alias Model =
   , playButton: File
   }
 
-type alias Drag =
-  { start: Mouse.Position
-  , current: Mouse.Position
-  }
+type alias Drag = Mouse.Position
 
 type Status
   = Play

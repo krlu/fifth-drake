@@ -6,21 +6,21 @@ import GameModel exposing (..)
 import Mouse
 import String
 
-getTimestampAtMouse : Model -> Timestamp -> GameLength -> Timestamp
-getTimestampAtMouse {mouse} timestamp gameLength =
-  case mouse of
-    Nothing -> timestamp
-    Just {start, current} ->
-      let
-        delta = current.x - start.x |> toFloat
-      in
-        max 0 << min gameLength <| timestamp + truncate (delta / timelineWidth * toFloat gameLength)
+getTimestampAtMouse : Mouse.Position -> Mouse.Position -> Timestamp -> GameLength -> Maybe Timestamp
+getTimestampAtMouse last current timestamp gameLength =
+  let
+    delta = current.x - last.x |> toFloat
+    timestamp_ = timestamp + truncate (delta / timelineWidth * toFloat gameLength)
+  in
+    case (timestamp_ > 0, timestamp_ < gameLength) of
+      (True, True) ->
+        Just timestamp_
+      _ ->
+        Nothing
 
-getPixelForTimestamp : Model -> Timestamp -> GameLength -> Float
-getPixelForTimestamp model timestamp gameLength =
-  getTimestampAtMouse model timestamp gameLength
-    |> toFloat
-    |> \val -> val / (toFloat gameLength) * timelineWidth
+getPixelForTimestamp : Timestamp -> GameLength -> Float
+getPixelForTimestamp timestamp gameLength =
+  (toFloat timestamp) / (toFloat gameLength) * timelineWidth
 
 getTimestampAtPixel : GameLength -> Mouse.Position -> Timestamp
 getTimestampAtPixel gameLength pos =

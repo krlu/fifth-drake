@@ -48,6 +48,7 @@ css =
         , withClass (IconColor Red)
           [ borderColor CssColors.c_redTeam
           ]
+        , backgroundSize cover
         , children
           [ (.) ChampionImage
             [ width (100 |> pct)

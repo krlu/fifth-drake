@@ -1,7 +1,7 @@
 module Minimap.Internal.View exposing (..)
 
 import Animation
-import Css exposing (backgroundImage)
+import Css exposing (backgroundImage, url)
 import Dict
 import Html exposing (..)
 import Html.Attributes exposing (src, draggable)
@@ -25,15 +25,12 @@ view model =
               [ PlayerIcon
               , IconColor iconState.side
               ]
+            , styles
+              [ backgroundImage (url iconState.img)
+              ]
             ]
             ++ (Animation.render iconState.style))
-            [ img
-              [ class [ChampionImage]
-              , src iconState.img
-              , draggable "false"
-              ]
-              []
-            ]
+            []
         )
   in
     div [ class [Minimap]

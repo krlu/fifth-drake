@@ -39,7 +39,6 @@ view model players =
     div [ id [TagDisplay] ]
     [ ol [ class [carouselCss] ] tags
      , tagFormView
-     , bootstrap
     ]
 
 
@@ -77,11 +76,3 @@ checkbox msg name =
     [ input [ type_ "checkbox", onClick msg ] []
     , text name
     ]
-
-bootstrap : Html msg
-bootstrap =
-    node "link"
-        [ href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-        , rel "stylesheet"
-        ]
-        []

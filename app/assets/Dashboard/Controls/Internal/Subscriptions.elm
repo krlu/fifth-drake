@@ -7,7 +7,7 @@ import Time
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ case model.mouse of
+    [ case model.lastPosition of
         Nothing -> Sub.none
         Just _ -> Sub.batch
                     [ Mouse.moves KnobMove
