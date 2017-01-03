@@ -1,7 +1,9 @@
 module Minimap.Internal.View exposing (..)
 
 import Array
+import Collage exposing (collage, defaultLine, path, toForm, traced)
 import Css exposing (bottom, left, property, px)
+import Element exposing (toHtml)
 import Html exposing (..)
 import Html.Attributes exposing (src, draggable)
 import Html.CssHelpers exposing (withNamespace)
@@ -56,6 +58,43 @@ view model data selection =
             (teamToPlayerIcons blueTeam) ++
             (teamToPlayerIcons redTeam)
           )
+
+    playerPaths : List (Html a)
+    playerPaths =
+        case selection of
+          Instant t -> []
+          Range (start, end) ->
+            data
+            |> (\{blueTeam, redTeam} ->
+                let
+                  teamToPlayerPaths : Team -> List (Html a)
+                  teamToPlayerPaths team =
+                    team.players
+                    |> Array.toList
+                    |> List.filterMap (\player ->
+                      player.state
+                      -- Might need to do start - 1
+                      |> List.drop (start)
+                      |> List.take (end - start)
+                      -- This is wrong, since origin for Collage is at center of element and not bottom left corner
+                      |> List.map (\state ->
+                        (minimapWidth * (state.position.x / model.mapWidth),
+                         minimapHeight * (state.position.y / model.mapHeight)
+                        )
+                      )
+                      -- Solid black line for player paths, can change later as necessary
+                      |> Maybe.map (\states ->
+                        path states
+                          |> traced defaultLine
+                          |> collage model.mapWidth model.mapHeight
+                          |> toHtml
+                      )
+                    )
+                in
+                  (teamToPlayerPaths blueTeam) ++
+                  (teamToPlayerPaths redTeam)
+               )
+
   in
     div [ class [Minimap]
         ]
@@ -67,4 +106,5 @@ view model data selection =
             []
         ]
         ++ playerIcons
+        ++ playerPaths
       )
