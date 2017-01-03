@@ -56,5 +56,8 @@ c_carousel = hex "#4D596E"
 c_blackText : Color
 c_blackText = hex "#000000"
 
-c_selectedTag : Color
-c_selectedTag = hex "#FFFFAA"
+c_selected : Color
+c_selected = hex "#6f996E"
+
+c_hovering : Color
+c_hovering = hex "#5f796E"
