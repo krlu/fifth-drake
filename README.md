@@ -26,7 +26,10 @@ after creating that database flyway will handle all other tasks for you. In
 order to create the database, you can use `createdb league_analytics` on the
 command line or `CREATE DATABASE league_analytics;` in psql.
 
-Next create the following configuration file conf/fifth-drake.local.properties
+Next create the following configuration file 
+
+`conf/fifth-drake.local.properties`
+
 Within this file, add the following fields: 
 
 ```
