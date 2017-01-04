@@ -28,7 +28,7 @@ view model players =
     div [ id [TagDisplay] ]
     [ ol [ class [carouselCss] ] tags
      , tagFormView
-     , bootstrap
+--     , bootstrap
     ]
 
 
@@ -54,7 +54,7 @@ tagFormHtml model players =
         ]
         ++ checkBoxes
         )
-      , p [] [ button [ onClick SwitchForm ] [ text "cancel" ],
+      , p [ id [SaveOrCancelForm] ] [ button [ onClick SwitchForm ] [ text "cancel" ],
                button [ onClick SaveTag] [ text "save" ]
              ]
       ]
@@ -113,11 +113,3 @@ checkbox msg name =
     [ input [ type_ "checkbox", onClick msg ] []
     , text name
     ]
-
-bootstrap : Html msg
-bootstrap =
-    node "link"
-        [ href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-        , rel "stylesheet"
-        ]
-        []
