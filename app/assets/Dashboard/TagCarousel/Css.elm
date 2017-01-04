@@ -50,6 +50,7 @@ type CssClass
   | ColoredAddTagButton
   | HoveredTag
   | AltHoveredTag
+  | SaveOrCancelForm
 
 css : Stylesheet
 css =
@@ -109,7 +110,7 @@ css =
     ])
   , (.) TagFormCss (
       [ width (44 |> pct)
-      , height (211 |> px)
+      , height (100 |> pct)
       , overflowY auto
       , backgroundColor Color.c_darkGray
       , float left
@@ -189,8 +190,8 @@ css =
   , (#) TagDisplay
     [ property "float" "left"
     , width (100 |> pct)
-    , height (241 |> px)
-    , paddingTop (30 |> px)
+    , height (210 |> px)
+    , marginTop (30 |> px)
     , displayFlex
     ]
   , (#) TagFormTextInput
@@ -200,11 +201,11 @@ css =
     , height (75 |> pct)
     ]
   , (#) TagFormTextBox
-    [ width (50 |> pct)
+    [ width (49.2 |> pct)
     , height (15 |> pct)
     ]
   , (#) TagFormTextArea
-    [ width (100 |> pct)
+    [ width (99 |> pct)
     , height (85 |> pct)
     ]
   , (#) PlayersInvolved
@@ -221,5 +222,9 @@ css =
     [ height (100 |> pct)
     , width (16 |> pct)
     , backgroundColor Color.c_hovering
+    ]
+  , (#) SaveOrCancelForm
+    [ position absolute
+    , bottom (0 |> px)
     ]
   ]
