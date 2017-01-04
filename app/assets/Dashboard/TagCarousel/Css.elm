@@ -125,7 +125,7 @@ css =
       ]
     )
   , (#) CheckboxCss(
-      [ margin (5 |> px)
+      [ margin (66 |> px)
       ]
     )
   , (.) DeleteButtonCss(
@@ -198,7 +198,7 @@ css =
     [ displayFlex
     , flexWrap wrap
     , width (60 |> pct)
-    , height (75 |> pct)
+    , height (90 |> pct)
     ]
   , (#) TagFormTextBox
     [ width (49.2 |> pct)
