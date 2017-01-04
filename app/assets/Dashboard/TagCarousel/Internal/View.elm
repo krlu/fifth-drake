@@ -16,7 +16,7 @@ view : Model -> List (PlayerId, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active model.hoveredTag)
+         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active)
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView = tagFormHtml model players
     carouselCss =
@@ -28,7 +28,6 @@ view model players =
     div [ id [TagDisplay] ]
     [ ol [ class [carouselCss] ] tags
      , tagFormView
---     , bootstrap
     ]
 
 
@@ -36,10 +35,6 @@ tagFormHtml : Model -> List (PlayerId, String) -> Html Msg
 tagFormHtml model players =
   let
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
-    addTagCss = if(model.tagForm.hovered) then
-                  ColoredAddTagButton
-                else
-                  AddTagButton
   in
     if model.tagForm.active == True then
       div [ class [TagFormCss] ]
@@ -59,34 +54,27 @@ tagFormHtml model players =
              ]
       ]
     else
-      div [ id [addTagCss], onClick SwitchForm]
-      [ img [src <| model.tagButton, onMouseOver MouseOverForm, onMouseLeave MouseLeaveForm] []
+      div [ id [AddTagButton], onClick SwitchForm]
+      [ img [src <| model.tagButton] []
       ]
 
 
-tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> Maybe TagId -> Html Msg
-tagHtml tag lastClickedTimeStamp formActive hoveredId =
+tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> Html Msg
+tagHtml tag lastClickedTimeStamp formActive =
   let
     tagCss = if(tag.timestamp == lastClickedTimeStamp) then
-               if(formActive == True) then
+               if(formActive) then
                  AltSelectedTag
                else
                  SelectedTag
-             else if(isHovering hoveredId tag.id) then
-              if(formActive == True) then
-                 AltHoveredTag
-               else
-                 HoveredTag
              else
-               if(formActive == True) then
+               if(formActive) then
                  AltTag
                else
                  Tag
   in
    li [ class [tagCss]
       , onClick <| TagClick tag.timestamp
-      , onMouseOver (MouseOverTag tag.id)
-      , onMouseLeave MouseLeaveTag
       ]
       [ div []
           [ p [] [text tag.title]
@@ -96,12 +84,6 @@ tagHtml tag lastClickedTimeStamp formActive hoveredId =
       , p [class [DeleteButtonCss]] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
       ]
 
-
-isHovering : Maybe TagId -> TagId -> Bool
-isHovering hoveredId tagId =
-  case hoveredId of
-    Nothing -> False
-    Just id -> id == tagId
 
 playerDataToHtml: (PlayerId, String) -> Html Msg
 playerDataToHtml (id, ign) = checkbox (AddPlayers id) ign

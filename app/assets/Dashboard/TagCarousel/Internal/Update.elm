@@ -74,23 +74,6 @@ update msg model ts =
         newTagForm = { oldTagForm | selectedIds = newIdsList}
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
-    MouseOverTag id ->
-      (Nothing, { model | hoveredTag = Just id }, Cmd.none)
-    MouseLeaveTag ->
-      (Nothing, { model | hoveredTag = Nothing }, Cmd.none)
-    MouseOverForm ->
-      let
-        oldTagForm = model.tagForm
-        newTagForm = { oldTagForm | hovered = True }
-      in
-        (Nothing, { model | tagForm = newTagForm }, Cmd.none)
-    MouseLeaveForm ->
-      let
-        oldTagForm = model.tagForm
-        newTagForm = { oldTagForm | hovered = False}
-      in
-        (Nothing, { model | tagForm = newTagForm }, Cmd.none)
-
 
 filterTags: List Tag -> String -> List Tag
 filterTags tags id =
@@ -105,6 +88,6 @@ switchTag model =
   let
     oldTagForm = model.tagForm
     oldActive = model.tagForm.active
-    newTagForm = { oldTagForm | active = not oldActive, selectedIds = [], hovered = False}
+    newTagForm = { oldTagForm | active = not oldActive, selectedIds = [] }
   in
     { model | tagForm = newTagForm }
