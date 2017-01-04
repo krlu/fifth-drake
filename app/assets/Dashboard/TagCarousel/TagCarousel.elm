@@ -21,7 +21,6 @@ init loc addTagButton =
        , gameId = getGameId loc
        , host = loc.host
        , active = False
-       , hovered = False
        }
   in
     ({host = loc.host
@@ -29,7 +28,6 @@ init loc addTagButton =
       , tags = []
       , lastClickedTime = -1
       , tagButton = addTagButton
-      , hoveredTag = Nothing
      },
       Populate.populate loc
     )

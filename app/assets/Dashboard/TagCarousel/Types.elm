@@ -18,10 +18,6 @@ type Msg
   | SwitchForm
   | SaveTag
   | TagSaved (Result Http.Error (List Tag))
-  | MouseOverTag TagId
-  | MouseLeaveTag
-  | MouseOverForm
-  | MouseLeaveForm
 
 type alias Model =
   { host             : String
@@ -29,7 +25,6 @@ type alias Model =
   , tagForm          : TagForm
   , lastClickedTime  : Timestamp
   , tagButton        : String
-  , hoveredTag       : Maybe TagId
   }
 
 type alias Tag =
@@ -49,7 +44,6 @@ type alias TagForm =
   , gameId      : GameId
   , host        : String
   , active      : Bool
-  , hovered     : Bool
   }
 
 type TagCategory
