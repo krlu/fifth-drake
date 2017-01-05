@@ -16,7 +16,7 @@ view : Model -> List (PlayerId, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active)
+         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active model.deleteTagButton)
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView = tagFormHtml model players
     carouselCss =
@@ -59,8 +59,8 @@ tagFormHtml model players =
       ]
 
 
-tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> Html Msg
-tagHtml tag lastClickedTimeStamp formActive =
+tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> String -> Html Msg
+tagHtml tag lastClickedTimeStamp formActive deleteButton =
   let
     tagCss = if(tag.timestamp == lastClickedTimeStamp) then
                if(formActive) then
@@ -81,7 +81,7 @@ tagHtml tag lastClickedTimeStamp formActive =
           , p [] [text << toString <| tag.category]
           , p [] [text tag.description]
           ]
-      , p [class [DeleteButtonCss]] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
+      , p [class [DeleteButtonCss]] [ div [ onClick (DeleteTag tag.id)] [img [src <| deleteButton] []]]
       ]
 
 

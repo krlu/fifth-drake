@@ -9,8 +9,8 @@ import TagCarousel.Internal.View as View
 import Navigation exposing (Location)
 import UrlParser exposing ((</>), parsePath, s)
 
-init : Location -> String -> (Model, Cmd Msg)
-init loc addTagButton =
+init : Location -> String -> String -> (Model, Cmd Msg)
+init loc addTagButton deleteTagButton =
   let
       tagForm : TagForm
       tagForm =
@@ -28,6 +28,7 @@ init loc addTagButton =
       , tags = []
       , lastClickedTime = -1
       , tagButton = addTagButton
+      , deleteTagButton = deleteTagButton
      },
       Populate.populate loc
     )

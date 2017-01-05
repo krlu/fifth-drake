@@ -25,6 +25,7 @@ type alias Model =
   , tagForm          : TagForm
   , lastClickedTime  : Timestamp
   , tagButton        : String
+  , deleteTagButton  : String
   }
 
 type alias Tag =

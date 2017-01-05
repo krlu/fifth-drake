@@ -29,4 +29,5 @@ type alias Flags =
   , playButton        : String
   , pauseButton       : String
   , addTagButton      : String
+  , deleteTagButton   : String
   }

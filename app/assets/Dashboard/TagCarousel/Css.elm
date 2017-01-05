@@ -113,11 +113,6 @@ css =
       [ margin (66 |> px)
       ]
     )
-  , (.) DeleteButtonCss(
-      [ position absolute
-      , bottom zero
-      ]
-    )
   , (.) MinimizedCarousel(
       [ width (minimizedCarouselWidth |> pct)
       , displayFlex
@@ -195,5 +190,10 @@ css =
   , (#) SaveOrCancelForm
     [ position absolute
     , bottom (0 |> px)
+    ]
+  , (.) DeleteButtonCss
+    [ position absolute
+    , bottom zero
+    , hover [ backgroundColor Color.c_darkGray ]
     ]
   ]
