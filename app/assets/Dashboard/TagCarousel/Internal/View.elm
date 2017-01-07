@@ -16,17 +16,18 @@ view : Model -> List (PlayerId, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active model.deleteTagButton)
+         |> List.map (\tag -> tagHtml tag model.lastClickedTime
+                              model.tagForm.active model.deleteTagButton model.hoveredTag)
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView = tagFormHtml model players
     carouselCss =
       if model.tagForm.active == True then
-        MinimizedCarousel
+        [TagCarousel, MinimizedCarousel]
       else
-        TagCarousel
+        [TagCarousel]
   in
     div [ id [TagDisplay] ]
-    [ ol [ class [carouselCss] ] tags
+    [ ol [ class carouselCss ] tags
      , tagFormView
     ]
 
@@ -59,29 +60,34 @@ tagFormHtml model players =
       ]
 
 
-tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> String -> Html Msg
-tagHtml tag lastClickedTimeStamp formActive deleteButton =
+tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> String -> TagId -> Html Msg
+tagHtml tag lastClickedTimeStamp formActive deleteButton hoveredTag =
   let
-    tagCss = if(tag.timestamp == lastClickedTimeStamp) then
-               if(formActive) then
-                 AltSelectedTag
-               else
-                 SelectedTag
-             else
-               if(formActive) then
-                 AltTag
-               else
-                 Tag
+    tagCss = [Tag]
+    selectedCss =
+      case (tag.timestamp == lastClickedTimeStamp) of
+        True -> tagCss ++ [SelectedTag]
+        False -> tagCss
+    selectedAndAltCss =
+      case formActive of
+        True -> selectedCss ++ [AltTag]
+        False -> selectedCss
+    x = if (tag.id == hoveredTag) then
+          [ div [ onClick (DeleteTag tag.id)] [img [src <| deleteButton] []]]
+        else
+          []
   in
-   li [ class [tagCss]
-      , onClick <| TagClick tag.timestamp
-      ]
+    li [ class selectedAndAltCss
+       , onClick <| TagClick tag.timestamp
+       , onMouseOver (MouseOver tag.id)
+       , onMouseLeave MouseLeave
+       ]
       [ div []
           [ p [] [text tag.title]
           , p [] [text << toString <| tag.category]
           , p [] [text tag.description]
           ]
-      , p [class [DeleteButtonCss]] [ div [ onClick (DeleteTag tag.id)] [img [src <| deleteButton] []]]
+      , p [class [DeleteButtonCss]] x
       ]
 
 
