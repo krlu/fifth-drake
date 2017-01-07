@@ -1,4 +1,5 @@
 module TagCarousel.Css exposing (..)
+import Css.Elements exposing (div)
 import CssColors as Color
 import Css exposing (..)
 import Css.Namespace
@@ -41,7 +42,6 @@ type CssClass
   | TagDisplay
   | MinimizedCarousel
   | AltTag
-  | AltSelectedTag
   | TagFormTextInput
   | TagFormTextBox
   | TagFormTextArea
@@ -62,37 +62,7 @@ css =
     , flexDirection row
     , flexWrap noWrap
     ] ++
-    StyleUtils.userSelect "none" ++
-    [ children
-      [ (.) Tag
-        [ height (tagHeight |> pct)
-        , width (tagWidth |> pct)
-        , backgroundColor Color.c_navBar
-        , border2 (1 |> px) solid
-        , color Color.c_blackText
-        , float left
-        , listStyleType none
-        , property "align-content" "center"
-        , margin (10 |> px)
-        , flexShrink zero
-        , position relative
-        , hover [ backgroundColor Color.c_hovering ]
-        ],
-        (.) SelectedTag
-        [ height (tagHeight |> pct)
-        , width (tagWidth |> pct)
-        , backgroundColor Color.c_selected
-        , border2 (1 |> px) solid
-        , color Color.c_blackText
-        , float left
-        , listStyleType none
-        , property "align-content" "center"
-        , margin (10 |> px)
-        , flexShrink zero
-        , position relative
-        ]
-      ]
-    ])
+    StyleUtils.userSelect "none")
   , (.) TagFormCss (
       [ width (44 |> pct)
       , height (100 |> pct)
@@ -115,46 +85,8 @@ css =
     )
   , (.) MinimizedCarousel(
       [ width (minimizedCarouselWidth |> pct)
-      , displayFlex
-      , height (tagCarouselHeight |> pct)
-      , backgroundColor Color.c_carousel
-      , float left
-      , overflowX scroll
-      , flexDirection row
-      , flexWrap noWrap
       ]++
-      StyleUtils.userSelect "none" ++
-      [ children
-        [ (.) AltTag
-         [ height (tagHeight |> pct)
-         , width (altTagWidth |> pct)
-         , backgroundColor Color.c_navBar
-         , border2 (1 |> px) solid
-         , color Color.c_blackText
-         , float left
-         , listStyleType none
-         , property "align-content" "center"
-         , margin (10 |> px)
-         , flexShrink zero
-         , position relative
-         , hover [ backgroundColor Color.c_hovering ]
-         ],
-         (.) AltSelectedTag
-         [ height (tagHeight |> pct)
-         , width (altTagWidth |> pct)
-         , backgroundColor Color.c_selected
-         , border2 (1 |> px) solid
-         , color Color.c_blackText
-         , float left
-         , listStyleType none
-         , property "align-content" "center"
-         , margin (10 |> px)
-         , flexShrink zero
-         , position relative
-         ]
-        ]
-      ]
-    )
+      StyleUtils.userSelect "none")
   , (#) TagDisplay
     [ property "float" "left"
     , width (100 |> pct)
@@ -191,9 +123,32 @@ css =
     [ position absolute
     , bottom (0 |> px)
     ]
-  , (.) DeleteButtonCss
-    [ position absolute
-    , bottom zero
-    , hover [ backgroundColor Color.c_darkGray ]
+  , (.) Tag
+    [ height (tagHeight |> pct)
+    , width (tagWidth |> pct)
+    , backgroundColor Color.c_navBar
+    , border2 (1 |> px) solid
+    , color Color.c_blackText
+    , float left
+    , listStyleType none
+    , property "align-content" "center"
+    , margin (10 |> px)
+    , flexShrink zero
+    , position relative
+    , hover [ backgroundColor Color.c_hovering ]
+    , children
+      [ (.) DeleteButtonCss
+        [ position absolute
+        , bottom zero
+        , hover [ backgroundColor Color.c_darkGray, display block ]
+        ]
+      ]
+    ]
+  , (.) AltTag
+    [ width (altTagWidth |> pct)
+    ]
+  , (.) SelectedTag
+    [ backgroundColor Color.c_selected
+    , hover [ backgroundColor Color.c_selected ]
     ]
   ]
