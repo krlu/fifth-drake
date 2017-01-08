@@ -7,7 +7,9 @@ import Html exposing (..)
 import Html.Attributes exposing (draggable, src)
 import Html.CssHelpers exposing (withNamespace)
 import PlayerDisplay.Css exposing (CssClass(..), namespace, Direction(..))
+import PlayerDisplay.Internal.Plots exposing (plotData)
 import StyleUtils exposing (styles)
+import Svg
 import Types exposing (TimeSelection(..))
 
 {id, class, classList} = withNamespace namespace
@@ -30,12 +32,15 @@ view selection side player =
           Instant timestamp ->
             displayInstant timestamp direction player
           Range range ->
-            displayRange range direction player
+            displayRange range player
       )
 
-displayRange : (Timestamp, Timestamp) -> Direction -> Player -> List (Html a)
-displayRange range direction player =
-  [
+displayRange : (Timestamp, Timestamp) -> Player -> List (Html a)
+displayRange range player =
+  [ Svg.svg
+    []
+    [ plotData range player
+    ]
   ]
 
 displayInstant : Timestamp -> Direction -> Player -> List (Html a)
