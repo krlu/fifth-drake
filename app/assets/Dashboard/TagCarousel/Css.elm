@@ -16,7 +16,7 @@ minimizedCarouselWidth : Float
 minimizedCarouselWidth = 56 -- percent
 
 tagCarouselHeight : Float
-tagCarouselHeight = 211
+tagCarouselHeight = 100
 
 tagHeight : Float
 tagHeight = 80 -- percent
@@ -34,6 +34,7 @@ type CssClass
   = TagCarousel
   | Tag
   | TagFormCss
+  | PlayerCheckboxes
   | CheckboxCss
   | DeleteButtonCss
   | SelectedTag
@@ -41,6 +42,10 @@ type CssClass
   | MinimizedCarousel
   | AltTag
   | AltSelectedTag
+  | TagFormTextInput
+  | TagFormTextBox
+  | TagFormTextArea
+  | PlayersInvolved
 
 css : Stylesheet
 css =
@@ -48,7 +53,7 @@ css =
   [ (.) TagCarousel (
     [ width (tagCarouselWidth |> pct)
     , displayFlex
-    , height (tagCarouselHeight |> px)
+    , height (tagCarouselHeight |> pct)
     , backgroundColor Color.c_carousel
     , float left
     , overflowX scroll
@@ -92,10 +97,17 @@ css =
       , backgroundColor Color.c_darkGray
       , float left
       , position relative
+      , displayFlex
+      , flexWrap wrap
       ] ++ StyleUtils.userSelect "none"
     )
-  , (.) CheckboxCss(
-      [
+  , (#) PlayerCheckboxes(
+      [ width (40 |> pct)
+      , height (75 |> pct)
+      ]
+    )
+  , (#) CheckboxCss(
+      [ margin (5 |> px)
       ]
     )
   , (.) DeleteButtonCss(
@@ -106,7 +118,7 @@ css =
   , (.) MinimizedCarousel(
       [ width (minimizedCarouselWidth |> pct)
       , displayFlex
-      , height (tagCarouselHeight |> px)
+      , height (tagCarouselHeight |> pct)
       , backgroundColor Color.c_carousel
       , float left
       , overflowX scroll
@@ -147,7 +159,26 @@ css =
   , (#) TagDisplay
     [ property "float" "left"
     , width (100 |> pct)
-    , height (211 |> px)
+    , height (241 |> px)
     , paddingTop (30 |> px)
+    ]
+  , (#) TagFormTextInput
+    [ displayFlex
+    , flexWrap wrap
+    , width (60 |> pct)
+    , height (75 |> pct)
+    ]
+  , (#) TagFormTextBox
+    [ width (50 |> pct)
+    , height (15 |> pct)
+    ]
+  , (#) TagFormTextArea
+    [ width (100 |> pct)
+    , height (85 |> pct)
+    ]
+  , (#) PlayersInvolved
+    [ fontSize (18 |> px)
+    , backgroundColor Color.c_lightGray
+    , height (15 |> pct)
     ]
   ]
