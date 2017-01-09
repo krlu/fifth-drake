@@ -85,8 +85,7 @@ css =
     )
   , (.) MinimizedCarousel(
       [ width (minimizedCarouselWidth |> pct)
-      ]++
-      StyleUtils.userSelect "none")
+      ])
   , (#) TagDisplay
     [ property "float" "left"
     , width (100 |> pct)
