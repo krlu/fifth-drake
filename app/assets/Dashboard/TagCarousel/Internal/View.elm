@@ -72,7 +72,8 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton hoveredTag =
       case formActive of
         True -> selectedCss ++ [AltTag]
         False -> selectedCss
-    x = if (tag.id == hoveredTag) then
+    deleteButtonHtml =
+        if (tag.id == hoveredTag) then
           [ div [ onClick (DeleteTag tag.id)] [img [src <| deleteButton] []]]
         else
           []
@@ -87,7 +88,7 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton hoveredTag =
           , p [] [text << toString <| tag.category]
           , p [] [text tag.description]
           ]
-      , p [class [DeleteButtonCss]] x
+      , p [class [DeleteButtonCss]] deleteButtonHtml
       ]
 
 
