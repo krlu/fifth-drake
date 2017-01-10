@@ -134,12 +134,18 @@ css =
     , margin (10 |> px)
     , flexShrink zero
     , position relative
-    , hover [ backgroundColor Color.c_hovering ]
-    , children
-      [ (.) DeleteButtonCss
-        [ position absolute
-        , bottom zero
-        , hover [ backgroundColor Color.c_darkGray, display block ]
+    , hover
+      [ backgroundColor Color.c_hovering
+      , children
+        [ (.) DeleteButtonCss
+          [ position absolute
+          , bottom zero
+          , hover
+            [ backgroundColor Color.c_darkGray
+            , display block
+            ]
+          , displayFlex
+          ]
         ]
       ]
     ]
@@ -148,6 +154,11 @@ css =
     ]
   , (.) SelectedTag
     [ backgroundColor Color.c_selected
-    , hover [ backgroundColor Color.c_selected ]
+    , hover
+      [ backgroundColor Color.c_selected
+      ]
+    ]
+  , (.) DeleteButtonCss
+    [ display none
     ]
   ]
