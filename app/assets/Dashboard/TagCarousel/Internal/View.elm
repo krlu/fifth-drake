@@ -16,8 +16,7 @@ view : Model -> List (PlayerId, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag model.lastClickedTime
-                              model.tagForm.active model.deleteTagButton model.hoveredTag)
+         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active model.deleteTagButton )
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView = tagFormHtml model players
     carouselCss =
@@ -60,8 +59,8 @@ tagFormHtml model players =
       ]
 
 
-tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> String -> TagId -> Html Msg
-tagHtml tag lastClickedTimeStamp formActive deleteButton hoveredTag =
+tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> String -> Html Msg
+tagHtml tag lastClickedTimeStamp formActive deleteButton =
   let
     tagCss = [Tag]
     selectedCss =
@@ -72,23 +71,16 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton hoveredTag =
       case formActive of
         True -> selectedCss ++ [AltTag]
         False -> selectedCss
-    deleteButtonHtml =
-        if (tag.id == hoveredTag) then
-          [ div [ onClick (DeleteTag tag.id)] [img [src <| deleteButton] []]]
-        else
-          []
   in
     li [ class selectedAndAltCss
        , onClick <| TagClick tag.timestamp
-       , onMouseOver (MouseOver tag.id)
-       , onMouseLeave MouseLeave
        ]
       [ div []
           [ p [] [text tag.title]
           , p [] [text << toString <| tag.category]
           , p [] [text tag.description]
           ]
-      , p [class [DeleteButtonCss]] deleteButtonHtml
+      , p [class [DeleteButtonCss]] [ div [ onClick (DeleteTag tag.id)] [img [src <| deleteButton] []]]
       ]
 
 

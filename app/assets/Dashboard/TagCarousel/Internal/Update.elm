@@ -74,10 +74,6 @@ update msg model ts =
         newTagForm = { oldTagForm | selectedIds = newIdsList}
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
-    MouseOver id ->
-      (Nothing, { model | hoveredTag = id }, Cmd.none)
-    MouseLeave ->
-      (Nothing, { model | hoveredTag = "" }, Cmd.none)
 
 filterTags: List Tag -> String -> List Tag
 filterTags tags id =
