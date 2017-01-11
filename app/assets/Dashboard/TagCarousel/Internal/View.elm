@@ -49,9 +49,10 @@ tagFormHtml model players =
         ]
         ++ checkBoxes
         )
-      , p [ id [SaveOrCancelForm] ] [ button [ onClick SwitchForm ] [ text "cancel" ],
-               button [ onClick SaveTag] [ text "save" ]
-             ]
+      , p [ id [SaveOrCancelForm] ]
+          [ button [ onClick SwitchForm ] [ text "cancel" ]
+          , button [ onClick SaveTag] [ text "save" ]
+          ]
       ]
     else
       div [ id [AddTagButton], onClick SwitchForm]
