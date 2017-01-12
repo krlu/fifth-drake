@@ -56,7 +56,7 @@ tagFormHtml model players =
       ]
     else
       div [ id [AddTagButton], onClick SwitchForm]
-      [ img [src <| model.tagButton] []
+      [ img [src model.tagButton] []
       ]
 
 
@@ -81,7 +81,9 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
           , p [] [text << toString <| tag.category]
           , p [] [text tag.description]
           ]
-      , p [class [DeleteButtonCss]] [ div [ onClick (DeleteTag tag.id)] [img [src <| deleteButton] []]]
+      , p [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
+          [ img [src <| deleteButton] []
+          ]
       ]
 
 

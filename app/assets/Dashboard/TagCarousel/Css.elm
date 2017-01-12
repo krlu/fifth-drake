@@ -125,7 +125,7 @@ css =
         , backgroundColor Color.c_carousel
         , hover [backgroundColor Color.c_hovering]
         ]
-       ,(.) TagFormCss (
+      , (.) TagFormCss (
         [ width (tagFormWidth |> pct)
         , height (tagFormHeight |> pct)
         , overflowY auto
@@ -171,7 +171,7 @@ css =
             ]
           ]
         ] ++ StyleUtils.userSelect "none" )
-       ,(.) TagCarousel (
+      , (.) TagCarousel (
         [ width (tagCarouselWidth |> pct)
         , displayFlex
         , height (tagCarouselHeight |> pct)
@@ -201,7 +201,6 @@ css =
                   , bottom zero
                   , hover
                     [ backgroundColor Color.c_darkGray
-                    , display block
                     ]
                   , displayFlex
                   ]
