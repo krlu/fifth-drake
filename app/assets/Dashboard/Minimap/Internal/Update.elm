@@ -1,17 +1,16 @@
 module Minimap.Internal.Update exposing (update)
 
-import Animation exposing (px)
+import Animation exposing (Property, px)
 import Array
 import Dict exposing (Dict)
 import GameModel exposing (..)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth)
-import Minimap.Types exposing (Model, Msg(..), State)
+import Minimap.Types exposing (Action(..), Model, Msg(..), State)
 import Time exposing (second)
 
 onStyle : (Animation.State -> Animation.State) -> State -> State
 onStyle styleFn state =
     { state | style = styleFn state.style }
-
 
 update : Model -> Data -> Timestamp -> Msg -> Model
 update model data timestamp msg =
@@ -60,10 +59,10 @@ update model data timestamp msg =
         )
         model.iconStates
       }
-    IncrementIconStates ->
+    MoveIconStates action ->
       let
-        newIconState : Dict PlayerId State
-        newIconState =
+        newIconStates : Dict PlayerId State
+        newIconStates =
           data
             |> (\{blueTeam, redTeam} ->
                 let
@@ -77,24 +76,47 @@ update model data timestamp msg =
                       |> Maybe.andThen (\state ->
                         (Dict.get player.id model.iconStates)
                         |> Maybe.map (\iconState ->
-                          ( player.id
-                          , { iconState
-                            | style =
-                              ( Animation.queue
-                                [ Animation.toWith
-                                  ( Animation.easing
-                                    { duration = 1*second
-                                    , ease = (\x -> x)
+                            let
+                              newCoordinates : List Property
+                              newCoordinates =
+                                [ Animation.left (minimapWidth * (state.position.x / model.mapWidth)|> px)
+                                , Animation.bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
+                                ]
+                              snap : Animation.State
+                              snap =
+                                ( Animation.interrupt
+                                  [ Animation.set
+                                    newCoordinates
+                                  ]
+                                  iconState.style
+                                )
+                              increment : Animation.State
+                              increment =
+                                ( Animation.queue
+                                  [ Animation.toWith
+                                    ( Animation.easing
+                                      { duration = 1*second
+                                      , ease = (\x -> x)
+                                      }
+                                    )
+                                    newCoordinates
+                                  ]
+                                  iconState.style
+                                )
+                            in
+                              case action of
+                                Snap ->
+                                  ( player.id
+                                  , { iconState
+                                    | style = snap
                                     }
                                   )
-                                  [ Animation.left (minimapWidth * (state.position.x / model.mapWidth)|> px)
-                                  , Animation.bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
-                                  ]
-                                ]
-                                iconState.style
-                              )
-                            }
-                          )
+                                Increment ->
+                                  ( player.id
+                                  , { iconState
+                                    | style = increment
+                                    }
+                                  )
                         )
                       )
                     )
@@ -104,44 +126,4 @@ update model data timestamp msg =
                     (teamToIconState redTeam Red)
                 )
       in
-        { model | iconStates = newIconState }
-    SnapIconStates ->
-      let
-        newIconState : Dict PlayerId State
-        newIconState =
-          data
-            |> (\{blueTeam, redTeam} ->
-                let
-                  teamToIconState : Team -> Side -> List ( PlayerId, State )
-                  teamToIconState team side =
-                    team.players
-                    |> Array.toList
-                    |> List.filterMap (\player ->
-                      player.state
-                      |> Array.get timestamp
-                      |> Maybe.andThen (\state ->
-                        (Dict.get player.id model.iconStates)
-                        |> Maybe.map (\iconState ->
-                          ( player.id
-                          , { iconState
-                            | style =
-                              ( Animation.interrupt
-                                [ Animation.set
-                                  [ Animation.left (minimapWidth * (state.position.x / model.mapWidth)|> px)
-                                  , Animation.bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
-                                  ]
-                                ]
-                                iconState.style
-                              )
-                            }
-                          )
-                        )
-                      )
-                    )
-                in
-                  Dict.fromList <|
-                    (teamToIconState blueTeam Blue) ++
-                    (teamToIconState redTeam Red)
-                )
-      in
-        { model | iconStates = newIconState }
+        { model | iconStates = newIconStates }

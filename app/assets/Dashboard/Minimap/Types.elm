@@ -16,11 +16,14 @@ type alias Model =
 type Msg
   = AnimatePlayerIcons Animation.Msg
   | GenerateIconStates
-  | IncrementIconStates
-  | SnapIconStates
+  | MoveIconStates Action
 
 type alias State =
   { style : Animation.State
   , side : Side
   , img : String
   }
+
+type Action = Snap | Increment
+--type Snap = String
+--type Increment = String

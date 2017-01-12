@@ -29,7 +29,7 @@ knobHeight : Float
 knobHeight = 12
 
 knobWidth : Float
-knobWidth = 1
+knobWidth = 10
 
 knobBottom : Float
 knobBottom = (controlsHeight - barHeight) / 2

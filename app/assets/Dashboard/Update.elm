@@ -19,48 +19,22 @@ update msg model =
       in
         ( { model | tagCarousel = tmodel
                   , timestamp = Maybe.withDefault model.timestamp timestamp
-                  , minimap = Minimap.update model.minimap model.game.data model.timestamp MinimapT.SnapIconStates
+                  , minimap = Minimap.update model.minimap model.game.data model.timestamp (MinimapT.MoveIconStates MinimapT.Snap)
           }
         , Cmd.map TagCarouselMsg cmd
         )
     ControlsMsg cmsg ->
-      -- create tuple for functions that need to be run depending on what controls callback occurred
-      -- setFunction will allow icons to snap to a location, whereas increment will have icons animation to a location
       let
-        (snapFunction , incrementFunction) =
-          ( let
-              (timestamp, cmodel) =
-                Controls.update model.timestamp model.game.metadata.gameLength cmsg model.controls
-            in
-              ( { model | timestamp = timestamp
-                        , controls = cmodel
-                        , minimap = Minimap.update model.minimap model.game.data model.timestamp MinimapT.SnapIconStates
-                }
-              , Cmd.none
-              )
-          , let
-              (timestamp, cmodel) =
-                Controls.update model.timestamp model.game.metadata.gameLength cmsg model.controls
-            in
-              ( { model | timestamp = timestamp
-                        , controls = cmodel
-                        , minimap = Minimap.update model.minimap model.game.data model.timestamp MinimapT.IncrementIconStates
-                }
-              , Cmd.none
-              )
-          )
+        (timestamp, cmodel) =
+          Controls.update model.timestamp model.game.metadata.gameLength cmsg model.controls
       in
-        case cmsg of
-          ControlsT.TimerUpdate _ ->
-            incrementFunction
-          ControlsT.BarClick _ ->
-            snapFunction
-          ControlsT.KnobMove _ ->
-            snapFunction
-          ControlsT.KnobRelease _ ->
-            snapFunction
-          _ ->
-            incrementFunction
+        ( { model
+          | timestamp = timestamp
+          , controls = cmodel
+          , minimap = Minimap.update model.minimap model.game.data model.timestamp (MinimapT.MoveIconStates model.controls.action)
+          }
+        , Cmd.none
+        )
     MinimapMsg mmsg ->
       let
         mmodel =
@@ -71,8 +45,9 @@ update msg model =
         , Cmd.none
         )
     SetGame (Ok game) ->
-      ( { model | game = game
-                , minimap =  Minimap.update model.minimap game.data model.timestamp MinimapT.GenerateIconStates
+      ( { model
+        | game = game
+        , minimap =  Minimap.update model.minimap game.data model.timestamp MinimapT.GenerateIconStates
         }
       , Cmd.none
       )

@@ -6,6 +6,7 @@ import Controls.Internal.View as View
 import Controls.Types exposing (..)
 import GameModel exposing (GameLength, Timestamp)
 import Html exposing (Html)
+import Minimap.Types exposing (Action(..))
 
 initialModel : String -> String -> Model
 initialModel playButton pauseButton =
@@ -13,6 +14,7 @@ initialModel playButton pauseButton =
   , status = Pause
   , pauseButton = pauseButton
   , playButton = playButton
+  , action = Snap
   }
 
 init : String -> String -> Model

@@ -1,5 +1,6 @@
 module Controls.Types exposing (..)
 
+import Minimap.Types exposing (Action)
 import Mouse
 import Time
 import Http
@@ -18,6 +19,8 @@ type alias Model =
   { lastPosition: Maybe Drag
 
   , status: Status
+
+  , action: Action
 
   , pauseButton: File
   , playButton: File

@@ -1,5 +1,6 @@
 module Controls.Internal.Update exposing (update)
 
+import Minimap.Types exposing(Action(Increment, Snap))
 import Controls.Internal.ModelUtils exposing(..)
 import Controls.Types exposing (Msg(..), Model, Drag, Status(..))
 import GameModel exposing (..)
@@ -24,6 +25,7 @@ update timestamp gameLength msg ({lastPosition} as model) =
                   lastPosition
                 Just _ ->
                   Just pos
+            , action = Snap
             }
           )
       KnobRelease pos ->
@@ -39,14 +41,22 @@ update timestamp gameLength msg ({lastPosition} as model) =
             (True, _) -> 0
             (False, Play) -> timestamp
             (False, Pause) -> timestamp + 1
-        , { model | status = toggleStatus model.status }
+        , { model
+          | status = toggleStatus model.status
+          , action = Increment
+          }
         )
       TimerUpdate _ ->
         if timestamp >= gameLength then
           ( timestamp
-          , { model | status = Pause }
+          , { model
+            | status = Pause
+            , action = Increment
+            }
           )
         else
           ( timestamp + 1
-          , model
+          , { model
+            | action = Increment
+            }
           )
