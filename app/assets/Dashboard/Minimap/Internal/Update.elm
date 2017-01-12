@@ -8,6 +8,9 @@ import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth)
 import Minimap.Types exposing (Action(..), Model, Msg(..), State)
 import Time exposing (second)
 
+epsilon : Float
+epsilon = 0.0000001
+
 onStyle : (Animation.State -> Animation.State) -> State -> State
 onStyle styleFn state =
     { state | style = styleFn state.style }
@@ -77,10 +80,16 @@ update model data timestamp msg =
                         (Dict.get player.id model.iconStates)
                         |> Maybe.map (\iconState ->
                             let
+                              opacity : Float
+                              opacity =
+                                case (state.championState.hp > epsilon) of
+                                  True -> 1.0
+                                  False -> 0.0
                               newCoordinates : List Property
                               newCoordinates =
                                 [ Animation.left (minimapWidth * (state.position.x / model.mapWidth)|> px)
                                 , Animation.bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
+                                , Animation.opacity (opacity)
                                 ]
                               snap : Animation.State
                               snap =
