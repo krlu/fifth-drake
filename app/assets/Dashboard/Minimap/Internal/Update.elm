@@ -8,8 +8,11 @@ import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth)
 import Minimap.Types exposing (Action(..), Model, Msg(..), State)
 import Time exposing (second)
 
-epsilon : Float
-epsilon = 0.0000001
+percent : Float
+percent = 0.01
+
+minHp : Float
+minHp = 25
 
 onStyle : (Animation.State -> Animation.State) -> State -> State
 onStyle styleFn state =
@@ -82,9 +85,9 @@ update model data timestamp msg =
                             let
                               opacity : Float
                               opacity =
-                                case (state.championState.hp > epsilon) of
-                                  True -> 1.0
-                                  False -> 0.0
+                                case (((state.championState.hp / state.championState.hpMax) > percent), state.championState.hp > minHp) of
+                                  (False, False) -> 0.0
+                                  (_, _) -> 1.0
                               newCoordinates : List Property
                               newCoordinates =
                                 [ Animation.left (minimapWidth * (state.position.x / model.mapWidth)|> px)
