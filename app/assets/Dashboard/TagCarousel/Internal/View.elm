@@ -20,14 +20,14 @@ view model players =
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView = tagFormHtml model players
     carouselCss =
-      if model.tagForm.active == True then
+      if model.tagForm.active then
         [TagCarousel, MinimizedCarousel]
       else
         [TagCarousel]
   in
     div [ id [TagDisplay] ]
     [ ol [ class carouselCss ] tags
-     , tagFormView
+    , tagFormView
     ]
 
 
@@ -36,7 +36,7 @@ tagFormHtml model players =
   let
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
   in
-    if model.tagForm.active == True then
+    if model.tagForm.active then
       div [ class [TagFormCss] ]
       [
         div [ id [TagFormTextInput] ]
@@ -82,7 +82,7 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
           , p [] [text tag.description]
           ]
       , p [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
-          [ img [src <| deleteButton] []
+          [ img [src deleteButton] []
           ]
       ]
 
