@@ -26,7 +26,22 @@ after creating that database flyway will handle all other tasks for you. In
 order to create the database, you can use `createdb league_analytics` on the
 command line or `CREATE DATABASE league_analytics;` in psql.
 
-After the database is created, you can simply use the following command to
+Next create the following configuration file 
+
+`conf/fifth-drake.local.properties`
+
+Within this file, add the following fields: 
+
+```
+## Postgres Settings
+climb.pgHost=localhost
+climb.pgPort=5432
+climb.pgDbName=[database name] #i.e league_analytics
+climb.pgUserName=[psql username]
+climb.pgPassword=[psql password]
+```
+
+Once the database is created and settings are configured, you can simply use the following command to
 actually create the proper schema structure:
 
 `sbt flywayMigrate`

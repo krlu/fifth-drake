@@ -1,12 +1,13 @@
 module TagCarousel.Internal.View exposing (..)
 
-import GameModel exposing (Player, PlayerId)
+import Css exposing (backgroundColor)
+import GameModel exposing (Player, PlayerId, Timestamp)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onMouseLeave, onMouseOver)
 import TagCarousel.Css exposing (CssClass(..), namespace)
-import TagCarousel.Types exposing (Model, Msg(..))
-import Html.Attributes exposing (href, placeholder, rel, style, type_)
+import TagCarousel.Types exposing (Model, Msg(..), TagId)
+import Html.Attributes exposing (href, placeholder, rel, src, style, type_)
 import Html.Events exposing (onClick, onInput)
 
 {id, class, classList} = withNamespace namespace
@@ -15,64 +16,84 @@ view : Model -> List (PlayerId, String) -> Html Msg
 view model players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag model.lastClickedTagId model.tagForm.active)
+         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active model.deleteTagButton )
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
-    tagFormView =
-      if model.tagForm.active == True then
-        div [ class [TagFormCss] ]
-        [ p [] [ input [ placeholder "Title", onInput CreateTitle ] [] ]
-        , p [] [ input [ placeholder "Category", onInput CreateCategory ] [] ]
-        , p [] [ textarea  [ placeholder "Description", onInput CreateDescription ] [] ]
-        , p [] checkBoxes
-        , p [] [ button [ onClick SwitchForm ] [ text "cancel" ],
-                 button [ onClick SaveTag] [ text "save" ]
-               ]
-        ]
-      else
-        button [ onClick SwitchForm] [ text "create new tag" ]
+    tagFormView = tagFormHtml model players
     carouselCss =
-      if model.tagForm.active == True then
-        MinimizedCarousel
+      if model.tagForm.active then
+        [TagCarousel, MinimizedCarousel]
       else
-        TagCarousel
+        [TagCarousel]
   in
     div [ id [TagDisplay] ]
-    [ ol [ class [carouselCss] ] tags
-     , tagFormView
+    [ ol [ class carouselCss ] tags
+    , tagFormView
     ]
 
 
-tagHtml: TagCarousel.Types.Tag -> String -> Bool -> Html Msg
-tagHtml tag lastClickedTagId formActive =
+tagFormHtml : Model -> List (PlayerId, String) -> Html Msg
+tagFormHtml model players =
   let
-    tagCss = if(tag.id == lastClickedTagId) then
-               if(formActive == True) then
-                 AltSelectedTag
-               else
-                 SelectedTag
-             else
-               if(formActive == True) then
-                 AltTag
-               else
-                 Tag
+    checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
   in
-   li [ class [tagCss], onClick <| TagClick tag.timestamp tag.id]
-     [div []
+    if model.tagForm.active then
+      div [ class [TagFormCss] ]
+      [
+        div [ id [TagFormTextInput] ]
+        [ input [ placeholder "Title", onInput CreateTitle, id [TagFormTextBox] ] []
+        , input [ placeholder "Category", onInput CreateCategory, id [TagFormTextBox] ] []
+        , textarea [ placeholder "Description", onInput CreateDescription, id [TagFormTextArea] ] []
+        ]
+      , div [ id [PlayerCheckboxes] ] (
+        [ div [ id [PlayersInvolved] ] [text "Players Involved"]
+        ]
+        ++ checkBoxes
+        )
+      , p [ id [SaveOrCancelForm] ]
+          [ button [ onClick SwitchForm ] [ text "cancel" ]
+          , button [ onClick SaveTag] [ text "save" ]
+          ]
+      ]
+    else
+      div [ id [AddTagButton], onClick SwitchForm]
+      [ img [src model.tagButton] []
+      ]
+
+
+tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> String -> Html Msg
+tagHtml tag lastClickedTimeStamp formActive deleteButton =
+  let
+    tagCss = [Tag]
+    selectedCss =
+      case (tag.timestamp == lastClickedTimeStamp) of
+        True -> tagCss ++ [SelectedTag]
+        False -> tagCss
+    selectedAndAltCss =
+      case formActive of
+        True -> selectedCss ++ [AltTag]
+        False -> selectedCss
+  in
+    li [ class selectedAndAltCss
+       , onClick <| TagClick tag.timestamp
+       ]
+      [ div []
           [ p [] [text tag.title]
           , p [] [text << toString <| tag.category]
           , p [] [text tag.description]
           ]
-     , p [class [DeleteButtonCss]] [ button [ onClick (DeleteTag tag.id)] [text "delete"]]
-     ]
+      , p [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
+          [ img [src deleteButton] []
+          ]
+      ]
 
 
 playerDataToHtml: (PlayerId, String) -> Html Msg
-playerDataToHtml (id, ign) = p[][ checkbox (AddPlayers id) ign]
+playerDataToHtml (id, ign) = checkbox (AddPlayers id) ign
 
 
 checkbox : msg -> String -> Html msg
 checkbox msg name =
-  label [ class [CheckboxCss] ]
+  label [ id [CheckboxCss] ]
     [ input [ type_ "checkbox", onClick msg ] []
     , text name
     ]

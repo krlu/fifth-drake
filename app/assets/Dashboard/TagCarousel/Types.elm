@@ -7,7 +7,7 @@ import Http
 type alias TagId = String
 
 type Msg
-  = TagClick Timestamp TagId
+  = TagClick Timestamp
   | UpdateTags (Result Http.Error (List Tag))
   | DeleteTag TagId
   | TagDeleted (Result Http.Error String)
@@ -23,7 +23,9 @@ type alias Model =
   { host             : String
   , tags             : List Tag
   , tagForm          : TagForm
-  , lastClickedTagId : TagId
+  , lastClickedTime  : Timestamp
+  , tagButton        : String
+  , deleteTagButton  : String
   }
 
 type alias Tag =
