@@ -6,6 +6,7 @@ import Http
 import Minimap.Types as Minimap
 import TagCarousel.Types as TagCarousel
 import Navigation exposing (Location)
+import PlayerDisplay.Types as PlayerDisplay
 
 
 type Msg
@@ -13,6 +14,7 @@ type Msg
   | ControlsMsg Controls.Msg
   | SetGame (Result Http.Error Game)
   | LocationUpdate Location
+  | PlayerDisplayMsg  PlayerDisplay.Msg
 
 type TimeSelection
   = Instant Timestamp

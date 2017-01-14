@@ -46,3 +46,4 @@ update msg model =
     SetGame (Err err) ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
     LocationUpdate loc -> (model, Cmd.none)
+    PlayerDisplayMsg msg -> (model, Cmd.none)

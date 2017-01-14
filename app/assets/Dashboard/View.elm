@@ -58,7 +58,7 @@ view model =
             [ PlayerDisplay.view model.selection side p
             ]
         )
-      |> div [ class [PlayerDisplay] ]
+      |> div [ class [PlayerDisplay] ] |> Html.map PlayerDisplayMsg
 
     controls =
       Controls.view

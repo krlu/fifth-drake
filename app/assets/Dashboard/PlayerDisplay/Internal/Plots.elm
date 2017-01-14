@@ -7,6 +7,7 @@ import Plot exposing (Point, line, margin, plot, size, xAxis)
 import Plot.Axis as Axis
 import Plot.Line exposing (stroke, strokeWidth)
 import Svg
+import Tuple
 
 plotData : (Timestamp, Timestamp) -> Player -> Svg.Svg a
 plotData range player =
@@ -20,6 +21,7 @@ plotData range player =
         )
       |> List.map (Tuple.mapSecond (.hp << .championState))
   in
+    Debug.log ""
     plot
       [ size (playerDisplayWidth, playerDisplayHeight)
       , margin (10, 20, 40, 20)
