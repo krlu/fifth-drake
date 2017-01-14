@@ -14,7 +14,6 @@ type Msg
   | ControlsMsg Controls.Msg
   | SetGame (Result Http.Error Game)
   | LocationUpdate Location
-  | PlayerDisplayMsg  PlayerDisplay.Msg
 
 type TimeSelection
   = Instant Timestamp

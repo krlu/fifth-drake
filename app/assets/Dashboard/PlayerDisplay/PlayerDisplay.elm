@@ -8,7 +8,6 @@ import Html.Attributes exposing (draggable, src)
 import Html.CssHelpers exposing (withNamespace)
 import PlayerDisplay.Css exposing (CssClass(..), namespace, Direction(..))
 import PlayerDisplay.Internal.Plots exposing (plotData)
-import PlayerDisplay.Types exposing (Msg(PlotInteraction))
 import Plot
 import StyleUtils exposing (styles)
 import Svg
@@ -24,7 +23,7 @@ getDirection side =
     Red -> Reverse
 
 
-view : TimeSelection -> Side -> Player -> Html Msg
+view : TimeSelection -> Side -> Player -> Html a
 view selection side player =
   let
     direction = getDirection side
@@ -38,8 +37,8 @@ view selection side player =
             displayRange range player
       )
 
-displayRange : (Timestamp, Timestamp) -> Player -> List (Html Msg)
-displayRange range player = [ Html.map PlotInteraction <| plotData range player ]
+displayRange : (Timestamp, Timestamp) -> Player -> List (Html a)
+displayRange range player = [ plotData range player ]
 
 
 displayInstant : Timestamp -> Direction -> Player -> List (Html a)
