@@ -25,6 +25,7 @@ type alias Model =
   , game : Game
   , tagCarousel: TagCarousel.Model
   , selection : TimeSelection
+  , timestamp : Timestamp
   }
 
 type alias Flags =
