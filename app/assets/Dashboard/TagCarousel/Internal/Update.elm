@@ -9,8 +9,8 @@ import TagCarousel.Internal.Save as Save
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update msg model ts =
   case msg of
-    TagClick val id ->
-      (Just val, { model | lastClickedTagId = id }, Cmd.none)
+    TagClick timestamp ->
+      (Just timestamp, { model | lastClickedTime = timestamp }, Cmd.none)
     UpdateTags (Ok tags) ->
       (Nothing, { model | tags = tags }, Cmd.none)
     UpdateTags (Err err) ->
@@ -75,7 +75,6 @@ update msg model ts =
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
 
-
 filterTags: List Tag -> String -> List Tag
 filterTags tags id =
   let
@@ -89,6 +88,6 @@ switchTag model =
   let
     oldTagForm = model.tagForm
     oldActive = model.tagForm.active
-    newTagForm = { oldTagForm | active = not oldActive, selectedIds = []}
+    newTagForm = { oldTagForm | active = not oldActive, selectedIds = [] }
   in
     { model | tagForm = newTagForm }

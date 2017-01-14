@@ -11,7 +11,7 @@ namespace : String
 namespace = "playerDisplay"
 
 playerDisplayWidth = 300
-playerDisplayHeight = 100
+playerDisplayHeight = 90
 
 playerIgnFontSize = 16
 

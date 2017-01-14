@@ -31,4 +31,6 @@ type alias Flags =
   { minimapBackground : String
   , playButton        : String
   , pauseButton       : String
+  , addTagButton      : String
+  , deleteTagButton   : String
   }
