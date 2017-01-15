@@ -20,20 +20,23 @@ plotData range player =
           Array.get i player.state
           |> Maybe.map (\state -> (toFloat (i+1), state))
         )
-      |> List.map (Tuple.mapSecond (.hp << .championState))
+      |> List.map (Tuple.mapSecond (getHpPercent << .championState))
   in
     plot
       [ size (playerDisplayWidth, playerDisplayHeight)
       , margin (10, 20, 40, 20)
-      , domainLowest (\val -> val - 10)
-      , domainHighest (\val -> val + 10)
+      , domainLowest (always 0)
+      , domainHighest (always 100)
       ]
       [ line
-        [ stroke "deeppink"
+        [ stroke "green"
         , strokeWidth 2
         ]
         hp
       , xAxis
-        [ Axis.line [ stroke "green" ]
+        [ Axis.line [ stroke "black" ]
         ]
       ]
+
+getHpPercent : ChampionState -> Float
+getHpPercent championState = 100 * championState.hp/championState.hpMax
