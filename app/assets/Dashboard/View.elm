@@ -69,12 +69,10 @@ view model =
 
     minimap = Minimap.view model.minimap model.game.data model.selection
 
-
-    bluePlayers = model.game.data.blueTeam.players |> Array.toList
-    redPlayers =  model.game.data.redTeam.players  |> Array.toList
-    allPlayers =  bluePlayers ++ redPlayers
-
-    tagCarousel = allPlayers
+    tagCarousel =
+      model.game.data.blueTeam.players
+      |> Array.toList
+      |> List.append ( Array.toList model.game.data.redTeam.players )
       |> List.map (\player -> (player.id, player.ign))
       |> TagCarousel.view model.tagCarousel
       |> Html.map TagCarouselMsg
