@@ -139,7 +139,7 @@ css =
             [ width (playerCheckBoxesWidth |> pct)
             , height (playerCheckBoxesHeight |> pct)
             , children
-              [( #) CheckboxCss
+              [ (#) CheckboxCss
                 [ margin (checkboxMargin |> px)
                 ]
               , (#) PlayersInvolved
