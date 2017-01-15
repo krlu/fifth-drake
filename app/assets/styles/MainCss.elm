@@ -6,45 +6,51 @@ import Css.Namespace
 import CssColors as Color
 import StyleUtils
 
+
 namespace : String
-namespace = "main"
+namespace =
+    "main"
+
 
 type CssId
-  = Container
-  | Navbar
-  | Content
+    = Container
+    | Navbar
+    | Content
+
 
 css =
-  (stylesheet << Css.Namespace.namespace namespace)
-  [ everything
-    [ margin zero
-    , padding zero
-    , fontFamilies ["Rubik", "sans-serif"]
-    , fontWeight (300 |> int)
-    ]
-  , body
-    [ fontSize Css.small
-    , overflow hidden
-    ]
-  , (#) Container (
-    [ displayFlex
-    , backgroundColor Color.c_backgroundDark
-    ] ++ StyleUtils.flexDirection "row" ++
-    [ alignItems stretch
-    , flexWrap noWrap
-    , children
-      [ (#) Navbar
-        [ order (1 |> int)
-        , flex (0 |> int)
-        , height (100 |> vh)
+    (stylesheet << Css.Namespace.namespace namespace)
+        [ everything
+            [ margin zero
+            , padding zero
+            , fontFamilies [ "Rubik", "sans-serif" ]
+            , fontWeight (300 |> int)
+            ]
+        , body
+            [ fontSize Css.small
+            , overflow hidden
+            ]
+        , (#) Container
+            ([ displayFlex
+             , backgroundColor Color.c_backgroundDark
+             ]
+                ++ StyleUtils.flexDirection "row"
+                ++ [ alignItems stretch
+                   , flexWrap noWrap
+                   , children
+                        [ (#) Navbar
+                            [ order (1 |> int)
+                            , flex (0 |> int)
+                            , height (100 |> vh)
+                            ]
+                        , (#) Content
+                            [ order (2 |> int)
+                            , flex (1 |> int)
+                            , height (100 |> vh)
+                            , displayFlex
+                            , property "justify-content" "center"
+                            ]
+                        ]
+                   ]
+            )
         ]
-      , (#) Content
-        [ order (2 |> int)
-        , flex (1 |> int)
-        , height (100 |> vh)
-        , displayFlex
-        , property "justify-content" "center"
-        ]
-      ]
-    ])
-  ]

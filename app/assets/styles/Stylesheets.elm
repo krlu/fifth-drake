@@ -12,30 +12,37 @@ import Platform
 import PlayerDisplay.Css
 import TeamDisplay.Css
 
+
 port files : CssFileStructure -> Cmd msg
 
-(=>) = (,)
+
+(=>) =
+    (,)
+
 
 cssFiles : CssFileStructure
 cssFiles =
     toFileStructure
-      [ "dashboard.css" => compile
-        [ Controls.Css.css
-        , DashboardCss.css
-        , Minimap.Css.css
-        , TagCarousel.Css.css
-        , PlayerDisplay.Css.css
-        , TeamDisplay.Css.css
+        [ "dashboard.css"
+            => compile
+                [ Controls.Css.css
+                , DashboardCss.css
+                , Minimap.Css.css
+                , TagCarousel.Css.css
+                , PlayerDisplay.Css.css
+                , TeamDisplay.Css.css
+                ]
+        , "navbar.css"
+            => compile
+                [ NavbarCss.css
+                ]
+        , "index.css"
+            => compile
+                [ MainCss.css
+                ]
         ]
-      , "navbar.css" => compile
-        [ NavbarCss.css
-        ]
-      , "index.css" => compile
-        [ MainCss.css
-        ]
-      ]
 
 
 main : CssCompilerProgram
 main =
-  compiler files cssFiles
+    compiler files cssFiles
