@@ -10,8 +10,8 @@ machine:
 
 dependencies:
   override:
-    - ./scripts/install_libsysconfcpus.sh
-    - ./scripts/install_front_end_dependencies.sh
+    - ./scripts/circleci/install_libsysconfcpus.sh
+    - ./scripts/setup/install_front_end_dependencies.sh
   cache_directories:
     - node_modules
     - elm-stuff
@@ -35,5 +35,5 @@ deployment:
   staging:
     branch: develop
     commands:
-      - ./scripts/download_champion_icons.sh -a ${RIOT_API_KEY}
-      - ./scripts/deploy_staging.sh
+      - ./scripts/setup/download_champion_icons.sh -a ${RIOT_API_KEY}
+      - ./scripts/circleci/deploy_staging.sh

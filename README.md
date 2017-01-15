@@ -9,15 +9,21 @@ This is the core application that we are building.
 
 # Setup
 There's a few parts to setup when first initializing this project:
- - Frontend package installation
+ - Initialization Script
  - Local Configuration
  - Database Migrations
 
-## Frontend dependencies
-You will need to install a few components for the front end. You can do so via
-the following command:
+## Initialization Script
+You will need to install a few components for the front end. You can do so by
+running the following command from the top level of the git repository.
 
-`npm install && elm package install`
+`./scripts/setup.sh`
+
+This script runs all the files in the `scripts/setup` folder which does the
+following:
+ - Installs javascript and elm dependencies.
+ - Downloads champion icons.
+ - Adds a pre-commit hook to check elm formatting.
 
 ## Database Initialization and Migrations
 You will also need to create a new database called league\_analytics in
@@ -26,11 +32,11 @@ after creating that database flyway will handle all other tasks for you. In
 order to create the database, you can use `createdb league_analytics` on the
 command line or `CREATE DATABASE league_analytics;` in psql.
 
-Next create the following configuration file 
+Next create the following configuration file
 
 `conf/fifth-drake.local.properties`
 
-Within this file, add the following fields: 
+Within this file, add the following fields:
 
 ```
 ## Postgres Settings
@@ -41,8 +47,8 @@ climb.pgUserName=[psql username]
 climb.pgPassword=[psql password]
 ```
 
-Once the database is created and settings are configured, you can simply use the following command to
-actually create the proper schema structure:
+Once the database is created and settings are configured, you can simply use the
+following command to actually create the proper schema structure:
 
 `sbt flywayMigrate`
 
