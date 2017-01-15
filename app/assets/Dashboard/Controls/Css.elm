@@ -15,44 +15,44 @@ namespace =
     "controls"
 
 
-controlsWidth : Float
+controlsWidth : Px
 controlsWidth =
-    512
+    px 512
 
 
-controlsHeight : Float
+controlsHeight : Px
 controlsHeight =
-    60
+    px 60
 
 
-buttonWidth : Float
+buttonWidth : Px
 buttonWidth =
     controlsHeight
 
 
-timelineWidth : Float
+timelineWidth : Px
 timelineWidth =
-    controlsWidth - buttonWidth
+    px (controlsWidth.numericValue - buttonWidth.numericValue)
 
 
-barHeight : Float
+barHeight : Px
 barHeight =
-    7
+    px 7
 
 
-knobHeight : Float
+knobHeight : Px
 knobHeight =
-    12
+    px 12
 
 
-knobWidth : Float
+knobWidth : Px
 knobWidth =
-    1
+    px 1
 
 
-knobBottom : Float
+knobBottom : Px
 knobBottom =
-    (controlsHeight - barHeight) / 2
+    px <| (controlsHeight.numericValue - barHeight.numericValue) / 2
 
 
 type CssClass
@@ -73,8 +73,8 @@ css =
     (stylesheet << Css.Namespace.namespace namespace)
         [ (.) Controls
             ([ displayFlex
-             , height (controlsHeight |> px)
-             , width (controlsWidth |> px)
+             , height controlsHeight
+             , width controlsWidth
              ]
                 ++ StyleUtils.flexDirection "row"
                 ++ StyleUtils.userSelect "none"
@@ -91,8 +91,8 @@ css =
                                    , children
                                         [ (.) Timeline
                                             [ position relative
-                                            , height (barHeight |> px)
-                                            , width (timelineWidth |> px)
+                                            , height barHeight
+                                            , width timelineWidth
                                             , backgroundColor Color.c_lightGray
                                             , textAlign right
                                             , children
@@ -111,10 +111,10 @@ css =
                                             ]
                                         , (.) Knob
                                             [ position absolute
-                                            , bottom (knobBottom |> px)
+                                            , bottom knobBottom
                                             , left zero
-                                            , width (knobWidth |> px)
-                                            , height (knobHeight |> px)
+                                            , width knobWidth
+                                            , height knobHeight
                                             , backgroundColor Color.c_darkerGray
                                             , transform << translateX << pct <| -50
                                             ]
@@ -126,7 +126,7 @@ css =
                             , property "border" "none"
                             , property "background" "none"
                             , padding zero
-                            , width (buttonWidth |> px)
+                            , width buttonWidth
                             , children
                                 [ (.) PlayPauseImg
                                     [ height (100 |> pct)

@@ -12,14 +12,14 @@ namespace =
     "navbar"
 
 
-navbarWidth : Float
+navbarWidth : Px
 navbarWidth =
-    50
+    px 50
 
 
-buttonHeight : Float
+buttonHeight : Px
 buttonHeight =
-    50
+    px 50
 
 
 type CssClass
@@ -38,7 +38,7 @@ css =
         [ (.) NavbarLeft
             ([ backgroundColor Color.c_navBar
              , height (100 |> pct)
-             , width (navbarWidth |> px)
+             , width navbarWidth
              ]
                 ++ StyleUtils.userSelect "none"
                 ++ [ children
@@ -46,7 +46,7 @@ css =
                             [ displayFlex
                             , alignItems center
                             , property "justify-content" "center"
-                            , height (buttonHeight |> px)
+                            , height buttonHeight
                             , hover
                                 [ cursor pointer
                                 ]
@@ -63,14 +63,14 @@ css =
                              ]
                                 ++ StyleUtils.flexDirection "column"
                                 ++ [ property "justify-content" "center"
-                                   , width (navbarWidth |> px)
+                                   , width navbarWidth
                                    , height (100 |> pct)
                                    , children
                                         [ a
                                             [ displayFlex
                                             , alignItems center
                                             , property "justify-content" "center"
-                                            , height (buttonHeight |> px)
+                                            , height buttonHeight
                                             , hover
                                                 [ color Color.c_navBarSelected
                                                 , cursor pointer

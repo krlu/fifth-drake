@@ -13,24 +13,24 @@ namespace =
     "team-display"
 
 
-teamNameSize : Float
+teamNameSize : Px
 teamNameSize =
-    48
+    px 48
 
 
-statsFontSize : Float
+statsFontSize : Px
 statsFontSize =
-    14
+    px 14
 
 
-teamDisplayWidth : Float
+teamDisplayWidth : Px
 teamDisplayWidth =
-    300
+    px 300
 
 
-teamDisplayHeight : Float
+teamDisplayHeight : Px
 teamDisplayHeight =
-    125
+    px 125
 
 
 type CssClass
@@ -48,12 +48,12 @@ css =
              , property "justify-content" "space-around"
              ]
                 ++ StyleUtils.flexDirection "column"
-                ++ [ width (teamDisplayWidth |> px)
-                   , height (teamDisplayHeight |> px)
+                ++ [ width teamDisplayWidth
+                   , height teamDisplayHeight
                    , overflow hidden
                    , children
                         [ h1
-                            [ fontSize (teamNameSize |> px)
+                            [ fontSize teamNameSize
                             , whiteSpace noWrap
                             ]
                         , (.) TeamStats
@@ -67,7 +67,7 @@ css =
                                             [ color Color.c_offWhite
                                             , flex (int 1)
                                             , textAlign center
-                                            , fontSize (statsFontSize |> px)
+                                            , fontSize statsFontSize
                                             , children
                                                 [ span
                                                     [ color Color.c_teamStatLabels

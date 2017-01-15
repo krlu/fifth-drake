@@ -18,14 +18,14 @@ getTimestampAtMouse { mouse } timestamp gameLength =
                 delta =
                     current.x - start.x |> toFloat
             in
-                max 0 << min gameLength <| timestamp + truncate (delta / timelineWidth * toFloat gameLength)
+                max 0 << min gameLength <| timestamp + truncate (delta / timelineWidth.numericValue * toFloat gameLength)
 
 
 getPixelForTimestamp : Model -> Timestamp -> GameLength -> Float
 getPixelForTimestamp model timestamp gameLength =
     getTimestampAtMouse model timestamp gameLength
         |> toFloat
-        |> \val -> val / (toFloat gameLength) * timelineWidth
+        |> \val -> val / (toFloat gameLength) * timelineWidth.numericValue
 
 
 getTimestampAtPixel : GameLength -> Mouse.Position -> Timestamp
@@ -37,7 +37,7 @@ getTimestampAtPixel gameLength pos =
         max =
             toFloat gameLength
     in
-        round <| x * max / timelineWidth
+        round <| x * max / timelineWidth.numericValue
 
 
 toggleStatus : Status -> Status

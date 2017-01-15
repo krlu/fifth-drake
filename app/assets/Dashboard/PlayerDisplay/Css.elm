@@ -13,48 +13,58 @@ namespace =
     "playerDisplay"
 
 
+playerDisplayWidth : Px
 playerDisplayWidth =
-    300
+    px 300
 
 
+playerDisplayHeight : Px
 playerDisplayHeight =
-    90
+    px 90
 
 
+playerIgnFontSize : Px
 playerIgnFontSize =
-    16
+    px 16
 
 
+levelHeight : Px
 levelHeight =
-    30
+    px 30
 
 
+levelWidth : Px
 levelWidth =
     levelHeight
 
 
+levelFontSize : Px
 levelFontSize =
-    18
+    px 18
 
 
+portraitHeight : Px
 portraitHeight =
-    60
+    px 60
 
 
+portraitWidth : Px
 portraitWidth =
     portraitHeight
 
 
+champStatsWidth : Px
 champStatsWidth =
-    100
+    px 100
 
 
+champStatsHeight : Px
 champStatsHeight =
     portraitHeight
 
 
 champStatHeight =
-    7
+    px 7
 
 
 type CssClass
@@ -79,8 +89,8 @@ css =
     (stylesheet << Css.Namespace.namespace namespace)
         [ (.) PlayerDisplay
             ([ displayFlex
-             , width (playerDisplayWidth |> px)
-             , height (playerDisplayHeight |> px)
+             , width playerDisplayWidth
+             , height playerDisplayHeight
              , padding (10 |> px)
              , property "justify-content" "space-between"
              , alignItems flexStart
@@ -101,18 +111,18 @@ css =
                         [ (.) PlayerLevel
                             [ backgroundColor Color.c_darkerGray
                             , color Color.c_offWhite
-                            , height (levelHeight |> px)
-                            , width (levelWidth |> px)
+                            , height levelHeight
+                            , width levelWidth
                             , borderRadius (50 |> pct)
-                            , fontSize (levelFontSize |> px)
+                            , fontSize levelFontSize
                             , displayFlex
                             , alignItems center
                             , property "justify-content" "center"
                             , property "z-index" "1"
                             ]
                         , (.) ChampPortrait
-                            [ height (portraitHeight |> px)
-                            , width (portraitWidth |> px)
+                            [ height portraitHeight
+                            , width portraitWidth
                             , backgroundColor Color.c_gold
                             , property "z-index" "2"
                             , withClass DirNormal
@@ -130,8 +140,8 @@ css =
                             ]
                         , (.) ChampStats
                             ([ displayFlex
-                             , width (champStatsWidth |> px)
-                             , height (champStatsHeight |> px)
+                             , width champStatsWidth
+                             , height champStatsHeight
                              , property "justify-content" "center"
                              , property "z-index" "0"
                              ]
@@ -139,7 +149,7 @@ css =
                                 ++ [ children
                                         [ (.) ChampStat
                                             [ displayFlex
-                                            , height (champStatHeight |> px)
+                                            , height champStatHeight
                                             , width (100 |> pct)
                                             , backgroundColor Color.c_offWhite
                                             , margin (3 |> px)
@@ -184,7 +194,7 @@ css =
                                     [ margin (5 |> px)
                                     ]
                                 , (.) PlayerIgn
-                                    [ fontSize (playerIgnFontSize |> px)
+                                    [ fontSize playerIgnFontSize
                                     ]
                                 ]
                            ]

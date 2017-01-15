@@ -14,215 +14,114 @@ namespace =
     "tagCarousel"
 
 
-tagDisplayWidth : Float
-tagDisplayWidth =
-    100
-
-
-
--- percent
-
-
-tagDisplayHeight : Float
+tagDisplayHeight : Px
 tagDisplayHeight =
-    210
+    px 210
 
 
-tagDisplayMarginTop : Float
+tagDisplayMarginTop : Px
 tagDisplayMarginTop =
-    30
+    px 30
 
 
-addTagButtonHeight : Float
-addTagButtonHeight =
-    100
-
-
-
--- percent
-
-
-addTagButtonWidth : Float
+addTagButtonWidth : Pct
 addTagButtonWidth =
-    16
+    pct 16
 
 
-
--- percent
-
-
-tagCarouselWidth : Float
+tagCarouselWidth : Pct
 tagCarouselWidth =
-    84
+    pct 84
 
 
-
--- percent
-
-
-minimizedCarouselWidth : Float
+minimizedCarouselWidth : Pct
 minimizedCarouselWidth =
-    56
+    pct 56
 
 
-
--- percent
-
-
-tagCarouselHeight : Float
-tagCarouselHeight =
-    100
-
-
-tagHeight : Float
+tagHeight : Pct
 tagHeight =
-    80
+    pct 80
 
 
-
--- percent
-
-
-tagWidth : Float
+tagWidth : Pct
 tagWidth =
-    20
+    pct 20
 
 
-
--- percent
-
-
-altTagWidth : Float
+altTagWidth : Pct
 altTagWidth =
-    30
+    pct 30
 
 
-
--- percent
-
-
-tagFormWidth : Float
+tagFormWidth : Pct
 tagFormWidth =
-    44
+    pct 44
 
 
-
--- percent
-
-
-tagFormHeight : Float
-tagFormHeight =
-    100
-
-
-
--- percent
-
-
-playerCheckBoxesWidth : Float
+playerCheckBoxesWidth : Pct
 playerCheckBoxesWidth =
-    40
+    pct 40
 
 
-
--- percent
-
-
-playerCheckBoxesHeight : Float
+playerCheckBoxesHeight : Pct
 playerCheckBoxesHeight =
-    75
+    pct 75
 
 
-
--- percent
-
-
-checkboxMargin : Float
+checkboxMargin : Px
 checkboxMargin =
-    68
+    px 68
 
 
-playersInvolvedFontSize : Float
+playersInvolvedFontSize : Px
 playersInvolvedFontSize =
-    18
+    px 18
 
 
-playersInvolvedHeight : Float
+playersInvolvedHeight : Pct
 playersInvolvedHeight =
-    15
+    pct 15
 
 
-
--- percent
-
-
-tagFormTextInputWidth : Float
+tagFormTextInputWidth : Pct
 tagFormTextInputWidth =
-    60
+    pct 60
 
 
-
--- percent
-
-
-tagFormTextInputHeight : Float
+tagFormTextInputHeight : Pct
 tagFormTextInputHeight =
-    90
+    pct 90
 
 
-
--- percent
-
-
-tagFormTextBoxWidth : Float
+tagFormTextBoxWidth : Pct
 tagFormTextBoxWidth =
-    49.2
+    pct 49.2
 
 
-
--- percent
-
-
-tagFormTextBoxHeight : Float
+tagFormTextBoxHeight : Pct
 tagFormTextBoxHeight =
-    15
+    pct 15
 
 
-
--- percent
-
-
-tagFormTextAreaWidth : Float
+tagFormTextAreaWidth : Pct
 tagFormTextAreaWidth =
-    99
+    pct 99
 
 
-
--- percent
-
-
-tagFormTextAreaHeight : Float
+tagFormTextAreaHeight : Pct
 tagFormTextAreaHeight =
-    85
+    pct 85
 
 
-
--- percent
-
-
-saveOrCancelFormDistFromBottom : Float
-saveOrCancelFormDistFromBottom =
-    0
-
-
-tagBorderSize : Float
+tagBorderSize : Px
 tagBorderSize =
-    1
+    px 1
 
 
-tagMargin : Float
+tagMargin : Px
 tagMargin =
-    10
+    px 10
 
 
 type CssClass
@@ -249,20 +148,20 @@ css =
     (stylesheet << Css.Namespace.namespace namespace)
         [ (#) TagDisplay
             [ property "float" "left"
-            , width (tagDisplayWidth |> pct)
-            , height (tagDisplayHeight |> px)
-            , marginTop (tagDisplayMarginTop |> px)
+            , width (100 |> pct)
+            , height tagDisplayHeight
+            , marginTop tagDisplayMarginTop
             , displayFlex
             , children
                 [ (#) AddTagButton
-                    [ height (addTagButtonHeight |> pct)
-                    , width (addTagButtonWidth |> pct)
+                    [ height (100 |> pct)
+                    , width addTagButtonWidth
                     , backgroundColor Color.c_carousel
                     , hover [ backgroundColor Color.c_hovering ]
                     ]
                 , (.) TagFormCss
-                    ([ width (tagFormWidth |> pct)
-                     , height (tagFormHeight |> pct)
+                    ([ width tagFormWidth
+                     , height (100 |> pct)
                      , overflowY auto
                      , backgroundColor Color.c_darkGray
                      , float left
@@ -271,47 +170,47 @@ css =
                      , flexWrap wrap
                      , children
                         [ (#) PlayerCheckboxes
-                            [ width (playerCheckBoxesWidth |> pct)
-                            , height (playerCheckBoxesHeight |> pct)
+                            [ width playerCheckBoxesWidth
+                            , height playerCheckBoxesHeight
                             , children
                                 [ (#) CheckboxCss
-                                    [ margin (checkboxMargin |> px)
+                                    [ margin checkboxMargin
                                     ]
                                 , (#) PlayersInvolved
-                                    [ fontSize (playersInvolvedFontSize |> px)
+                                    [ fontSize playersInvolvedFontSize
                                     , backgroundColor Color.c_lightGray
-                                    , height (playersInvolvedHeight |> pct)
+                                    , height playersInvolvedHeight
                                     ]
                                 ]
                             ]
                         , (#) TagFormTextInput
                             [ displayFlex
                             , flexWrap wrap
-                            , width (tagFormTextInputWidth |> pct)
-                            , height (tagFormTextInputHeight |> pct)
+                            , width tagFormTextInputWidth
+                            , height tagFormTextInputHeight
                             , children
                                 [ (#) TagFormTextBox
-                                    [ width (tagFormTextBoxWidth |> pct)
-                                    , height (tagFormTextBoxHeight |> pct)
+                                    [ width tagFormTextBoxWidth
+                                    , height tagFormTextBoxHeight
                                     ]
                                 , (#) TagFormTextArea
-                                    [ width (tagFormTextAreaWidth |> pct)
-                                    , height (tagFormTextAreaHeight |> pct)
+                                    [ width tagFormTextAreaWidth
+                                    , height tagFormTextAreaHeight
                                     ]
                                 ]
                             ]
                         , (#) SaveOrCancelForm
                             [ position absolute
-                            , bottom (saveOrCancelFormDistFromBottom |> px)
+                            , bottom zero
                             ]
                         ]
                      ]
                         ++ StyleUtils.userSelect "none"
                     )
                 , (.) TagCarousel
-                    ([ width (tagCarouselWidth |> pct)
+                    ([ width tagCarouselWidth
                      , displayFlex
-                     , height (tagCarouselHeight |> pct)
+                     , height (100 |> pct)
                      , backgroundColor Color.c_carousel
                      , float left
                      , overflowX scroll
@@ -319,15 +218,15 @@ css =
                      , flexWrap noWrap
                      , children
                         [ (.) Tag
-                            [ height (tagHeight |> pct)
-                            , width (tagWidth |> pct)
+                            [ height tagHeight
+                            , width tagWidth
                             , backgroundColor Color.c_navBar
-                            , border2 (tagBorderSize |> px) solid
+                            , border2 tagBorderSize solid
                             , color Color.c_blackText
                             , float left
                             , listStyleType none
                             , property "align-content" "center"
-                            , margin (tagMargin |> px)
+                            , margin tagMargin
                             , flexShrink zero
                             , position relative
                             , hover
@@ -360,10 +259,10 @@ css =
                         ++ StyleUtils.userSelect "none"
                     )
                 , (.) MinimizedCarousel
-                    [ width (minimizedCarouselWidth |> pct)
+                    [ width minimizedCarouselWidth
                     , children
                         [ (.) AltTag
-                            [ width (altTagWidth |> pct)
+                            [ width altTagWidth
                             ]
                         ]
                     ]

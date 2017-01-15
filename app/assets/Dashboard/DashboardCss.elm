@@ -15,34 +15,34 @@ namespace =
     "dashboard"
 
 
-teamDisplaysGap : Float
+teamDisplaysGap : Px
 teamDisplaysGap =
-    50
+    px 50
 
 
-teamDisplaysWidth : Float
+teamDisplaysWidth : Px
 teamDisplaysWidth =
-    teamDisplayWidth * 2 + teamDisplaysGap
+    px (teamDisplayWidth.numericValue * 2 + teamDisplaysGap.numericValue)
 
 
-contentGap : Float
+contentGap : Px
 contentGap =
-    40
+    px 40
 
 
-controlsGap : Float
+controlsGap : Px
 controlsGap =
-    50
+    px 50
 
 
-teamDisplayGap : Float
+teamDisplayGap : Px
 teamDisplayGap =
-    30
+    px 30
 
 
-playerDisplaysGap : Float
+playerDisplaysGap : Px
 playerDisplaysGap =
-    20
+    px 20
 
 
 type CssId
@@ -73,9 +73,9 @@ css =
                 ++ [ children
                         [ (.) TeamDisplays
                             ([ displayFlex
-                             , width (teamDisplaysWidth |> px)
+                             , width teamDisplaysWidth
                              , property "justify-content" "space-between"
-                             , marginBottom (teamDisplayGap |> px)
+                             , marginBottom teamDisplayGap
                              ]
                                 ++ StyleUtils.flexDirection "row"
                             )
@@ -88,14 +88,14 @@ css =
                                         [ (#) CenterContent
                                             ([ displayFlex
                                              , alignItems center
-                                             , marginLeft (contentGap |> px)
-                                             , marginRight (contentGap |> px)
+                                             , marginLeft contentGap
+                                             , marginRight contentGap
                                              ]
                                                 ++ StyleUtils.flexDirection "column"
                                                 ++ [ children
                                                         [ everything
                                                             [ firstChild
-                                                                [ marginBottom (controlsGap |> px)
+                                                                [ marginBottom controlsGap
                                                                 ]
                                                             ]
                                                         ]
@@ -108,7 +108,7 @@ css =
                                                 ++ StyleUtils.flexDirection "column"
                                                 ++ [ children
                                                         [ everything
-                                                            [ marginTop (playerDisplaysGap |> px)
+                                                            [ marginTop playerDisplaysGap
                                                             , firstChild
                                                                 [ marginTop zero
                                                                 ]

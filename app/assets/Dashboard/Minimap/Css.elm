@@ -10,19 +10,19 @@ namespace =
     "minimap"
 
 
-minimapHeight : Float
+minimapHeight : Px
 minimapHeight =
-    512
+    px 512
 
 
-minimapWidth : Float
+minimapWidth : Px
 minimapWidth =
-    512
+    px 512
 
 
-playerIconSize : Float
+playerIconSize : Px
 playerIconSize =
-    30
+    px 30
 
 
 type CssClass
@@ -37,15 +37,15 @@ css =
     (stylesheet << Css.Namespace.namespace namespace)
         [ (.) Minimap
             ([ position relative
-             , height (minimapHeight |> px)
-             , width (minimapWidth |> px)
+             , height minimapHeight
+             , width minimapWidth
              ]
                 ++ StyleUtils.userSelect "none"
                 ++ [ children
                         [ (.) PlayerIcon
                             [ position absolute
-                            , width (playerIconSize |> px)
-                            , height (playerIconSize |> px)
+                            , width playerIconSize
+                            , height playerIconSize
                             , transform <| translate2 (-50 |> pct) (50 |> pct)
                             , children
                                 [ (.) ChampionImage

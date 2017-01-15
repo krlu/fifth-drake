@@ -37,8 +37,8 @@ view model data timestamp =
                                                         div
                                                             [ class [ PlayerIcon ]
                                                             , styles
-                                                                [ left (minimapWidth * (state.position.x / model.mapWidth) |> px)
-                                                                , bottom (minimapHeight * (state.position.y / model.mapHeight) |> px)
+                                                                [ left (minimapWidth.numericValue * (state.position.x / model.mapWidth) |> px)
+                                                                , bottom (minimapHeight.numericValue * (state.position.y / model.mapHeight) |> px)
                                                                 ]
                                                             ]
                                                             [ img
