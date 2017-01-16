@@ -91,11 +91,29 @@
 
     <script>
       function onSuccess(googleUser) {
-        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+        let token = googleUser.getAuthResponse().id_token;
+
+        console.log("id token success: " + token);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', "http://" + window.location.host + "/auth/" + token, true);
+        xhr.send();
+
+        xhr.addEventListener("readystatechange", processRequest, false);
+
+        function processRequest(e) {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log("cookie received");
+            }
+
+            console.log("done processing request");
+        }
       }
+
       function onFailure(error) {
         console.log(error);
       }
+
       function renderButton() {
         gapi.signin2.render('signin-btn', {
           'scope': 'profile email',

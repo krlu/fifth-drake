@@ -1,6 +1,6 @@
 package gg.climb.fifthdrake.controllers
 
-import play.api.mvc.{Action, AnyContent, Controller}
+import play.api.mvc.{Action, AnyContent, Controller, Cookie}
 
 /**
   * Created by michael on 1/15/17.
@@ -11,4 +11,7 @@ class HomePageController extends Controller {
     Ok(views.html.landingPage())
   }
 
+  def getIdCookie(id: String): Action[AnyContent] = Action {
+    Ok("").withCookies(Cookie("G_AUTH_USER_TOKEN", id))
+  }
 }
