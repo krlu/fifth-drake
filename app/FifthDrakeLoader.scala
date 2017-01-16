@@ -1,4 +1,4 @@
-import gg.climb.fifthdrake.controllers.{GameDataController, HealthController}
+import gg.climb.fifthdrake.controllers.{GameDataController, HealthController, HomePageController}
 import gg.climb.fifthdrake.dbhandling.{DataAccessHandler, MongoDbHandler, PostgresDbHandler}
 import org.mongodb.scala.MongoClient
 import play.api.ApplicationLoader.Context
@@ -32,11 +32,15 @@ class FifthDrakeApp(context: Context) extends BuiltInComponentsFromContext(conte
     )
   }
 
+  lazy val homePageController = new HomePageController()
   lazy val gameDataController = new GameDataController(dbh)
   lazy val healthController = new HealthController()
   lazy val assets = new controllers.Assets(httpErrorHandler)
-  lazy val router: Router = new Routes(httpErrorHandler,
-                                       assets,
-                                       healthController,
-                                       gameDataController)
+  lazy val router: Router = new Routes(
+    httpErrorHandler,
+    homePageController,
+    assets,
+    healthController,
+    gameDataController
+  )
 }

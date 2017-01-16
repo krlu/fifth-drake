@@ -2,6 +2,8 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+GET   /                           gg.climb.fifthdrake.controllers.HomePageController.loadLandingPage
+
 # Map static resources from the /public folder to the /static URL path
 GET   /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")
 GET   /static/public/*file        controllers.Assets.versioned(path="/public", file)
