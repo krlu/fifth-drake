@@ -98,7 +98,9 @@
         xhr.open('POST', "/auth");
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function() {
-            console.log("authenticated");
+            if (xhr.status == 200) {
+                window.location += "home"
+            }
         };
         xhr.send('G_AUTH_USER_TOKEN=' + token);
       }
