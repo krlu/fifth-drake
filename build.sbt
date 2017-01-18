@@ -70,8 +70,6 @@ classpathTypes += "maven-plugin"
 
 PlayKeys.playRunHooks <+= baseDirectory.map(Webpack.apply)
 
-fork in run := true
-
 def fileToOption (f : File) : Option[String] =
   if (f.exists) {
     Some(f.getAbsolutePath)
