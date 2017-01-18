@@ -3,7 +3,8 @@
 # ~~~~
 
 GET   /                           gg.climb.fifthdrake.controllers.HomePageController.loadLandingPage
-GET   /auth/:id                   gg.climb.fifthdrake.controllers.HomePageController.getIdCookie(id: String)
+GET   /home                       gg.climb.fifthdrake.controllers.HomePageController.loadHomePage
+POST  /auth                       gg.climb.fifthdrake.controllers.HomePageController.authenticateUser
 
 # Map static resources from the /public folder to the /static URL path
 GET   /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")

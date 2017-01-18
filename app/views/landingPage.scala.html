@@ -20,7 +20,7 @@
         background-color: #1F2227;
       }
 
-      .navbar {
+      .navigation {
         list-style: none;
         font-size: large;
 
@@ -30,7 +30,7 @@
         align-items: center;
       }
 
-      .navbar a {
+      .navigation a {
         text-decoration: none;
         display: block;
         padding: 0.5em;
@@ -75,7 +75,7 @@
     </style>
   </head>
   <body>
-    <ul class="navbar">
+    <ul class="navigation">
       <li><a class="logo golden" href="#">C</a></li>
       <li><a href="#">CLIMB.GG</a></li>
     </ul>
@@ -92,22 +92,13 @@
     <script>
       function onSuccess(googleUser) {
         let token = googleUser.getAuthResponse().id_token;
-
-        console.log("id token success: " + token);
-
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', "http://" + window.location.host + "/auth/" + token, true);
-        xhr.send();
-
-        xhr.addEventListener("readystatechange", processRequest, false);
-
-        function processRequest(e) {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                console.log("cookie received");
-            }
-
-            console.log("done processing request");
-        }
+        xhr.open('POST', "/auth");
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            console.log("authenticated");
+        };
+        xhr.send('G_AUTH_USER_TOKEN=' + token);
       }
 
       function onFailure(error) {
