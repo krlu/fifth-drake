@@ -4,7 +4,7 @@
 
 GET   /                           gg.climb.fifthdrake.controllers.HomePageController.loadLandingPage
 GET   /home                       gg.climb.fifthdrake.controllers.HomePageController.loadHomePage
-POST  /auth                       gg.climb.fifthdrake.controllers.HomePageController.authenticateUser
+POST  /auth                       gg.climb.fifthdrake.controllers.HomePageController.setTokenCookie()
 
 # Map static resources from the /public folder to the /static URL path
 GET   /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")
