@@ -1,13 +1,8 @@
 package gg.climb.fifthdrake.controllers
 
-import java.util.Collections
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.json.jackson2.JacksonFactory
 import gg.climb.fifthdrake.browser.GoogleAuthToken
-import play.api.mvc.{Action, AnyContent, Controller, Cookie, DiscardingCookie}
+import gg.climb.fifthdrake.controllers.requests.{Authenticated, AuthorizationFilter}
+import play.api.mvc.{Action, AnyContent, Controller, Cookie}
 
 /**
   * Every page that requires authentication must verify token in case of:
@@ -28,16 +23,8 @@ class HomePageController(googleClientId: String) extends Controller {
     }
   }
 
-  def loadHomePage: Action[AnyContent] = Action { request =>
-    request.cookies.get(GoogleAuthToken.name).map( token =>
-      verifyGoogleAuthToken(token.value).map( user =>
-        Ok(s"<h1>${user.get("given_name")}'s Home Page<h1>")
-      ).getOrElse(
-        Redirect(routes.HomePageController.loadLandingPage()).discardingCookies(DiscardingCookie(GoogleAuthToken.name))
-      )
-    ).getOrElse(
-      Redirect(routes.HomePageController.loadLandingPage())
-    )
+  def loadHomePage: Action[AnyContent] = Authenticated { request =>
+    Ok(s"${request.userInfo.get.get("given_name")}'s Home Page")
   }
 
   def setTokenCookie(): Action[AnyContent] = Action { request =>
@@ -51,18 +38,5 @@ class HomePageController(googleClientId: String) extends Controller {
     ).getOrElse(
       BadRequest("Missing Google Auth Token")
     )
-  }
-
-  def verifyGoogleAuthToken(token: String): Option[Payload] = {
-    val transport = GoogleNetHttpTransport.newTrustedTransport
-    val jsonFactory = JacksonFactory.getDefaultInstance
-    val verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-      .setAudience(Collections.singleton(googleClientId))
-      .build()
-
-    Option(verifier.verify(token))
-      .map( t =>
-        t.getPayload
-      )
   }
 }
