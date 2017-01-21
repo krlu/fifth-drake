@@ -1,15 +1,12 @@
 package gg.climb.fifthdrake.controllers
 
 import gg.climb.fifthdrake.browser.GoogleAuthToken
-import gg.climb.fifthdrake.controllers.requests.{Authenticated, AuthorizationFilter}
+import gg.climb.fifthdrake.controllers.requests.Authenticated
 import play.api.mvc.{Action, AnyContent, Controller, Cookie}
 
 /**
-  * Every page that requires authentication must verify token in case of:
-  * 1) Fake Token
-  * 2) Expired Token
-  *
-  * HomePageController#verifyGoogleAuthToken handles both of the above cases
+  * Serves landing page and user home page
+  * Also handles setting log in cookie
   *
   * Created by michael on 1/15/17.
   */
