@@ -6,15 +6,20 @@ import Html exposing (Html)
 import Minimap.Internal.View as View
 import Minimap.Types exposing (..)
 
+
 initialModel : String -> Model
 initialModel background =
-  { background = background
-  , mapWidth = 15000
-  , mapHeight = 15000
-  }
+    { background = background
+    , mapWidth = 15000
+    , mapHeight = 15000
+    }
+
 
 init : String -> Model
-init = initialModel
+init =
+    initialModel
+
 
 view : Model -> Data -> Timestamp -> Html a
-view = View.view
+view =
+    View.view

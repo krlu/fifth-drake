@@ -9,40 +9,49 @@ import TagCarousel.Internal.View as View
 import Navigation exposing (Location)
 import UrlParser exposing ((</>), parsePath, s)
 
-init : Location -> String -> String -> (Model, Cmd Msg)
+
+init : Location -> String -> String -> ( Model, Cmd Msg )
 init loc addTagButton deleteTagButton =
-  let
-      tagForm : TagForm
-      tagForm =
-       { title = ""
-       , description = ""
-       , category = ""
-       , selectedIds = []
-       , gameId = getGameId loc
-       , host = loc.host
-       , active = False
-       }
-  in
-    ({host = loc.host
-      , tagForm = tagForm
-      , tags = []
-      , lastClickedTime = -1
-      , tagButton = addTagButton
-      , deleteTagButton = deleteTagButton
-     },
-      Populate.populate loc
-    )
+    let
+        tagForm : TagForm
+        tagForm =
+            { title = ""
+            , description = ""
+            , category = ""
+            , selectedIds = []
+            , gameId = getGameId loc
+            , host = loc.host
+            , active = False
+            }
+    in
+        ( { host = loc.host
+          , tagForm = tagForm
+          , tags = []
+          , lastClickedTime = -1
+          , tagButton = addTagButton
+          , deleteTagButton = deleteTagButton
+          }
+        , Populate.populate loc
+        )
 
-update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
-update = Update.update
 
-view : Model -> List (PlayerId, String) -> Html Msg
-view = View.view
+update : Msg -> Model -> Timestamp -> ( Maybe Timestamp, Model, Cmd Msg )
+update =
+    Update.update
+
+
+view : Model -> List ( PlayerId, String ) -> Html Msg
+view =
+    View.view
+
 
 getGameId : Location -> GameId
 getGameId =
-  parsePath (s "game" </> UrlParser.int)
-  >> \maybe ->
-    case maybe of
-      Just gameId -> gameId
-      Nothing -> Debug.crash "No game id found in URL"
+    parsePath (s "game" </> UrlParser.int)
+        >> \maybe ->
+            case maybe of
+                Just gameId ->
+                    gameId
+
+                Nothing ->
+                    Debug.crash "No game id found in URL"

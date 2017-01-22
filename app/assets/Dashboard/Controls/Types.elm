@@ -6,30 +6,32 @@ import Http
 
 
 type Msg
-  = KnobGrab Mouse.Position
-  | KnobMove Mouse.Position
-  | KnobRelease Mouse.Position
-  | BarClick (Mouse.Position, Mouse.Position)
-  | PlayPause
-  | TimerUpdate Time.Time
+    = KnobGrab Mouse.Position
+    | KnobMove Mouse.Position
+    | KnobRelease Mouse.Position
+    | BarClick ( Mouse.Position, Mouse.Position )
+    | PlayPause
+    | TimerUpdate Time.Time
 
-type alias File = String
+
+type alias File =
+    String
+
 
 type alias Model =
-  { mouse: Maybe Drag
+    { mouse : Maybe Drag
+    , status : Status
+    , pauseButton : File
+    , playButton : File
+    }
 
-  , status: Status
-
-  , pauseButton: File
-  , playButton: File
-  }
 
 type alias Drag =
-  { start: Mouse.Position
-  , current: Mouse.Position
-  }
+    { start : Mouse.Position
+    , current : Mouse.Position
+    }
+
 
 type Status
-  = Play
-  | Pause
-
+    = Play
+    | Pause

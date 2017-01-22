@@ -1,5 +1,6 @@
-## Local Configuration
+## Repostory specific
 conf/fifth-drake.local.properties
+bin/elm-format
 
 ## Ide things
 # Intellij

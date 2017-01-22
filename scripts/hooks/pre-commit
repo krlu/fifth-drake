@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# Checks to see whether *.elm files have been formatted correctly before
+# allowing commits.
+set -euo pipefail
+
+# Set up color escape codes for awesome message output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+# Working directory in a pre-commit hook should be root directory of the git
+# repo, but this allows us to run the script independently.
+ELM_FORMAT="$(git rev-parse --show-toplevel)/bin/elm-format"
+
+test_fmt() {
+	# Generate file list to provide to elm-format
+	local files=$(git diff --cached --name-only --diff-filter=ACMR | grep '\.elm$')
+	if [[ $files != "" && $(echo $files | wc -l) > 0 ]]; then
+		echo -e "${BOLD}[Elm-PreCommit]${NC} Checking Elm code for formatting"
+		# Store and Update IFS for us in `for` loop
+		OLD_IFS=$IFS
+		IFS=$'\n'
+
+		failedFiles=()
+		i=0
+
+		# Ignore errors for ELM_FORMAT. we expect it to fail in some cases.
+		set +e
+		for file in $files; do
+			git cat-file -p :$file | $ELM_FORMAT --stdin --validate > /dev/null
+			if [[ $? == 1 ]]; then
+				failedFiles[$((i++))]=$file
+			fi
+		done
+		# Renable errors
+		set -e
+		# Reset IFS. Not strictly necessary, but safe.
+		IFS=$OLD_IFS
+
+		if [[ ${#failedFiles[@]} == 0 ]]; then
+			echo -e "${BOLD}[Elm-PreCommit] ${GREEN}All Ok${NC}. Committing"
+		else
+			echo -e "${BOLD}[Elm-PreCommit]${RED}[ERROR]${NC} The following" \
+				    "files must be formatted correctly"
+			for file in ${failedFiles[@]}; do
+				echo " - $file"
+			done
+			exit 1
+		fi
+	fi
+}
+
+test_fmt

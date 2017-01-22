@@ -7,22 +7,31 @@ import Controls.Types exposing (..)
 import GameModel exposing (GameLength, Timestamp)
 import Html exposing (Html)
 
+
 initialModel : String -> String -> Model
 initialModel playButton pauseButton =
-  { mouse = Nothing
-  , status = Pause
-  , pauseButton = pauseButton
-  , playButton = playButton
-  }
+    { mouse = Nothing
+    , status = Pause
+    , pauseButton = pauseButton
+    , playButton = playButton
+    }
+
 
 init : String -> String -> Model
-init = initialModel
+init =
+    initialModel
 
-update : Timestamp -> GameLength -> Msg -> Model -> (Timestamp, Model)
-update = Update.update
+
+update : Timestamp -> GameLength -> Msg -> Model -> ( Timestamp, Model )
+update =
+    Update.update
+
 
 view : Timestamp -> GameLength -> Model -> Html Msg
-view = View.view
+view =
+    View.view
+
 
 subscriptions : Model -> Sub Msg
-subscriptions = Subscriptions.subscriptions
+subscriptions =
+    Subscriptions.subscriptions

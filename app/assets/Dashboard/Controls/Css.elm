@@ -6,110 +6,135 @@ import CssColors as Color
 import DashboardCss
 import StyleUtils
 
+
 -- Variables for Timeline appearance
 -- All of these values are pixel equivalents
-namespace = "controls"
 
-controlsWidth : Float
-controlsWidth = 512
 
-controlsHeight : Float
-controlsHeight = 60
+namespace =
+    "controls"
 
-buttonWidth : Float
-buttonWidth = controlsHeight
 
-timelineWidth : Float
-timelineWidth = controlsWidth - buttonWidth
+controlsWidth : Px
+controlsWidth =
+    px 512
 
-barHeight : Float
-barHeight = 7
 
-knobHeight : Float
-knobHeight = 12
+controlsHeight : Px
+controlsHeight =
+    px 60
 
-knobWidth : Float
-knobWidth = 1
 
-knobBottom : Float
-knobBottom = (controlsHeight - barHeight) / 2
+buttonWidth : Px
+buttonWidth =
+    controlsHeight
+
+
+timelineWidth : Px
+timelineWidth =
+    px (controlsWidth.numericValue - buttonWidth.numericValue)
+
+
+barHeight : Px
+barHeight =
+    px 7
+
+
+knobHeight : Px
+knobHeight =
+    px 12
+
+
+knobWidth : Px
+knobWidth =
+    px 1
+
+
+knobBottom : Px
+knobBottom =
+    px <| (controlsHeight.numericValue - barHeight.numericValue) / 2
+
 
 type CssClass
-  = Bar
-  | BarSeen
-  | Controls
-  | Hidden
-  | Knob
-  | PlayButton
-  | PlayPauseImg
-  | TimeDisplay
-  | Timeline
-  | TimelineAndDisplay
+    = Bar
+    | BarSeen
+    | Controls
+    | Hidden
+    | Knob
+    | PlayButton
+    | PlayPauseImg
+    | TimeDisplay
+    | Timeline
+    | TimelineAndDisplay
+
 
 css : Stylesheet
 css =
-  (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) Controls (
-    [ displayFlex
-    , height (controlsHeight |> px)
-    , width (controlsWidth |> px)
-    ] ++
-    StyleUtils.flexDirection "row" ++
-    StyleUtils.userSelect "none" ++
-    [ alignItems center
-    , children
-      [ (.) TimelineAndDisplay (
-        [ displayFlex
-        , position relative
-        , height (100 |> pct)
-        ] ++ StyleUtils.flexDirection "column" ++
-        [ property "justify-content" "space-between"
-        , alignItems flexEnd
-        , children
-          [ (.) Timeline
-            [ position relative
-            , height (barHeight |> px)
-            , width (timelineWidth |> px)
-            , backgroundColor Color.c_lightGray
-            , textAlign right
-            , children
-              [ (.) BarSeen
-                [ property "pointer-events" "none"
-                , backgroundColor Color.c_darkerGray
-                , height (100 |> pct)
-                ]
-              ]
-            ]
-          , (.) TimeDisplay
-            [ color Color.c_white
-            , withClass Hidden
-              [ property "visibility" "hidden"
-              ]
-            ]
-          , (.) Knob
-            [ position absolute
-            , bottom (knobBottom |> px)
-            , left zero
-            , width (knobWidth |> px)
-            , height (knobHeight |> px)
-            , backgroundColor Color.c_darkerGray
-            , transform << translateX << pct <| -50
-            ]
-          ]
-        ])
-      , (.) PlayButton
-        [ height (100 |> pct)
-        , property "border" "none"
-        , property "background" "none"
-        , padding zero
-        , width (buttonWidth |> px)
-        , children
-          [ (.) PlayPauseImg
-            [ height (100 |> pct)
-            , width (100 |> pct)
-            ]
-          ]
+    (stylesheet << Css.Namespace.namespace namespace)
+        [ (.) Controls
+            ([ displayFlex
+             , height controlsHeight
+             , width controlsWidth
+             ]
+                ++ StyleUtils.flexDirection "row"
+                ++ StyleUtils.userSelect "none"
+                ++ [ alignItems center
+                   , children
+                        [ (.) TimelineAndDisplay
+                            ([ displayFlex
+                             , position relative
+                             , height (100 |> pct)
+                             ]
+                                ++ StyleUtils.flexDirection "column"
+                                ++ [ property "justify-content" "space-between"
+                                   , alignItems flexEnd
+                                   , children
+                                        [ (.) Timeline
+                                            [ position relative
+                                            , height barHeight
+                                            , width timelineWidth
+                                            , backgroundColor Color.c_lightGray
+                                            , textAlign right
+                                            , children
+                                                [ (.) BarSeen
+                                                    [ property "pointer-events" "none"
+                                                    , backgroundColor Color.c_darkerGray
+                                                    , height (100 |> pct)
+                                                    ]
+                                                ]
+                                            ]
+                                        , (.) TimeDisplay
+                                            [ color Color.c_white
+                                            , withClass Hidden
+                                                [ property "visibility" "hidden"
+                                                ]
+                                            ]
+                                        , (.) Knob
+                                            [ position absolute
+                                            , bottom knobBottom
+                                            , left zero
+                                            , width knobWidth
+                                            , height knobHeight
+                                            , backgroundColor Color.c_darkerGray
+                                            , transform << translateX << pct <| -50
+                                            ]
+                                        ]
+                                   ]
+                            )
+                        , (.) PlayButton
+                            [ height (100 |> pct)
+                            , property "border" "none"
+                            , property "background" "none"
+                            , padding zero
+                            , width buttonWidth
+                            , children
+                                [ (.) PlayPauseImg
+                                    [ height (100 |> pct)
+                                    , width (100 |> pct)
+                                    ]
+                                ]
+                            ]
+                        ]
+                   ]
+            )
         ]
-      ]
-    ])
-  ]
