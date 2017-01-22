@@ -11,6 +11,7 @@ import scalaz.Monoid
 package object fifthdrake {
   type Time = Duration
   type Game = (MetaData, GameData)
+  type GoogleClientId = String
 
   implicit object TimeMonoid extends Monoid[Time] {
     override def zero: Time = Duration.Zero

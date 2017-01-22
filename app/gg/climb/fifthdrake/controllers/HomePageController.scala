@@ -1,5 +1,6 @@
 package gg.climb.fifthdrake.controllers
 
+import gg.climb.fifthdrake.GoogleClientId
 import gg.climb.fifthdrake.browser.GoogleAuthToken
 import gg.climb.fifthdrake.controllers.requests.Authenticated
 import play.api.mvc.{Action, AnyContent, Controller, Cookie}
@@ -10,7 +11,7 @@ import play.api.mvc.{Action, AnyContent, Controller, Cookie}
   *
   * Created by michael on 1/15/17.
   */
-class HomePageController(googleClientId: String) extends Controller {
+class HomePageController(googleClientId: GoogleClientId) extends Controller {
 
   def loadLandingPage: Action[AnyContent] = Action { request =>
     if (request.cookies.get(GoogleAuthToken.name).isDefined) {
@@ -21,7 +22,7 @@ class HomePageController(googleClientId: String) extends Controller {
   }
 
   def loadHomePage: Action[AnyContent] = Authenticated { request =>
-    Ok(s"${request.userInfo.get.get("given_name")}'s Home Page")
+    Ok(s"${request.userInfo.get("given_name")}'s Home Page")
   }
 
   def setTokenCookie(): Action[AnyContent] = Action { request =>
