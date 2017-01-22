@@ -2,7 +2,7 @@ module Subscriptions exposing (..)
 
 import Controls.Controls as Controls
 import Controls.Types as ControlsT
-import GlobalVariables exposing (animationTime)
+import Configuration exposing (animationTime)
 import Minimap.Minimap as Minimap exposing (..)
 import PlaybackTypes exposing (..)
 import TagCarousel.TagCarousel as TagCarousel

@@ -4,14 +4,16 @@ import Animation exposing (Property, px)
 import Array
 import Dict exposing (Dict)
 import GameModel exposing (..)
-import GlobalVariables exposing (animationTime)
+import Configuration exposing (animationTime)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth)
 import Minimap.Types exposing (Model, Msg(..), State)
 import PlaybackTypes exposing (..)
-import Time
 
 epsilon : Float
 epsilon = 0.00001
+
+animationTimeScalar : Float
+animationTimeScalar = 0.925
 
 onStyle : (Animation.State -> Animation.State) -> State -> State
 onStyle styleFn state =
@@ -93,7 +95,7 @@ update model data timestamp msg =
                       ( Animation.queue
                         [ Animation.toWith
                           ( Animation.easing
-                            { duration = animationTime
+                            { duration = animationTimeScalar * animationTime
                             , ease = (\x -> x)
                             }
                           )
