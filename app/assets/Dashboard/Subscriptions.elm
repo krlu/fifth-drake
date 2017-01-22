@@ -2,6 +2,7 @@ module Subscriptions exposing (..)
 
 import Controls.Controls as Controls
 import Controls.Types as ControlsT
+import GlobalVariables exposing (animationTime)
 import Minimap.Minimap as Minimap exposing (..)
 import PlaybackTypes exposing (..)
 import TagCarousel.TagCarousel as TagCarousel
@@ -15,5 +16,5 @@ subscriptions model =
     , Sub.map MinimapMsg <| Minimap.subscriptions model.minimap
     , case model.controls.status of
         Pause -> Sub.none
-        Play -> Time.every Time.second TimerUpdate
+        Play -> Time.every animationTime TimerUpdate
     ]

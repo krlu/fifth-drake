@@ -38,16 +38,16 @@ update msg model =
         )
     TimerUpdate _ ->
       let
-        controls_ = model.controls
+        controlModel = model.controls
         --paused controls will be used when the game is over
-        pausedControls_ =
-          { controls_
+        pausedControls =
+          { controlModel
           | status = Pause
           }
       in
         if model.timestamp >= model.game.metadata.gameLength then
           ( { model
-            | controls = pausedControls_
+            | controls = pausedControls
             }
           , Cmd.none
           )

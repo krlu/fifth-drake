@@ -4,6 +4,7 @@ import Animation exposing (Property, px)
 import Array
 import Dict exposing (Dict)
 import GameModel exposing (..)
+import GlobalVariables exposing (animationTime)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth)
 import Minimap.Types exposing (Model, Msg(..), State)
 import PlaybackTypes exposing (..)
@@ -92,7 +93,7 @@ update model data timestamp msg =
                       ( Animation.queue
                         [ Animation.toWith
                           ( Animation.easing
-                            { duration = Time.second
+                            { duration = animationTime
                             , ease = (\x -> x)
                             }
                           )
