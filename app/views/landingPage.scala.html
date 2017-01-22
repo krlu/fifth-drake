@@ -1,0 +1,127 @@
+@(googleClientId: String)
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="google-signin-client_id" content="@googleClientId">
+    <title>Climb.gg</title>
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: Rubik, sans-serif;
+        font-weight: 300;
+        color: #E2E2E2
+      }
+
+      body {
+        font-size: medium;
+        overflow: hidden;
+        background-color: #1F2227;
+      }
+
+      .navigation {
+        list-style: none;
+        font-size: large;
+
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        align-items: center;
+      }
+
+      .navigation a {
+        text-decoration: none;
+        display: block;
+        padding: 0.5em;
+      }
+
+      .main {
+        display: flex;
+        flex-flow: column wrap;
+      }
+
+      .main div {
+        display: block;
+        align-self: center;
+        text-align: center;
+      }
+
+      .golden {
+        color: #CEB564
+      }
+
+      .logo {
+        font-size: 32px;
+        font-weight: 600;
+      }
+
+      #welcome {
+        font-size: 48px;
+        margin-bottom: 1em;
+        margin-top: 1em;
+      }
+
+      #description {
+        width: 50%;
+        margin-bottom: 5em;
+      }
+
+      #signin-btn * span {
+        font-family: Roboto, sans-serif;
+        font-weight: bold;
+        color: #1F2227;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="navigation">
+      <li><a class="logo golden" href="#">C</a></li>
+      <li><a href="#">CLIMB.GG</a></li>
+    </ul>
+    <div class="main">
+      <div id="welcome"> WELCOME TO <B class="golden">CLIMB.GG</B></div>
+      <div id="description">
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum
+        tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas
+        semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.
+      </div>
+      <div id="signin-btn"></div>
+    </div>
+
+    <script>
+      function onSuccess(googleUser) {
+        let token = googleUser.getAuthResponse().id_token;
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', "/auth");
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                window.location += "home"
+            }
+        };
+        xhr.send('G_AUTH_USER_TOKEN=' + token);
+      }
+
+      function onFailure(error) {
+        console.log(error);
+      }
+
+      function renderButton() {
+        gapi.signin2.render('signin-btn', {
+          'scope': 'profile email',
+          'width': 320,
+          'height': 60,
+          'longtitle': true,
+          'theme': 'light',
+          'onsuccess': onSuccess,
+          'onfailure': onFailure
+        });
+      }
+    </script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+  </body>
+</html>
