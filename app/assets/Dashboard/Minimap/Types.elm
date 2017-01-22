@@ -4,6 +4,7 @@ import Animation
 import Array exposing (..)
 import Dict exposing (Dict)
 import GameModel exposing (PlayerId, Side)
+import PlaybackTypes exposing (..)
 
 type alias Model =
   { background : String
@@ -23,7 +24,3 @@ type alias State =
   , side : Side
   , img : String
   }
-
-type Action = Snap | Increment
---type Snap = String
---type Increment = String

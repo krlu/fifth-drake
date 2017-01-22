@@ -1,9 +1,10 @@
 module Controls.Internal.ModelUtils exposing (..)
 
 import Controls.Css exposing (timelineWidth)
-import Controls.Types exposing (Model, Status(..))
+import Controls.Types exposing (Model)
 import GameModel exposing (..)
 import Mouse
+import PlaybackTypes exposing (Status(..))
 import String
 
 getTimestampAtMouse : Mouse.Position -> Mouse.Position -> Timestamp -> GameLength -> Maybe Timestamp

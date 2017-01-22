@@ -5,8 +5,9 @@ import Array
 import Dict exposing (Dict)
 import GameModel exposing (..)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth)
-import Minimap.Types exposing (Action(..), Model, Msg(..), State)
-import Time exposing (second)
+import Minimap.Types exposing (Model, Msg(..), State)
+import PlaybackTypes exposing (..)
+import Time
 
 percent : Float
 percent = 0.01
@@ -107,7 +108,7 @@ update model data timestamp msg =
                                 ( Animation.queue
                                   [ Animation.toWith
                                     ( Animation.easing
-                                      { duration = 1*second
+                                      { duration = Time.second
                                       , ease = (\x -> x)
                                       }
                                     )
