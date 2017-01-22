@@ -2,7 +2,7 @@ module Controls.Internal.View exposing (view)
 
 import Controls.Css exposing (CssClass(..), namespace, timelineWidth)
 import Controls.Internal.ModelUtils exposing(..)
-import Controls.Types exposing (Msg(BarClick, PlayPause, KnobMove), Model, Status(..))
+import Controls.Types exposing (Msg(BarClick, PlayPause, KnobMove), Model)
 import Css exposing (left, px)
 import DashboardCss
 import GameModel exposing (GameLength, Timestamp)
@@ -12,6 +12,7 @@ import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (on, onClick)
 import Json.Decode as Json exposing (Decoder, andThen, field, int, map2)
 import Mouse
+import PlaybackTypes exposing (Status(..))
 import StyleUtils exposing (..)
 
 {id, class, classList} = withNamespace namespace

@@ -1,16 +1,18 @@
 module Controls.Internal.ModelUtils exposing (..)
 
 import Controls.Css exposing (timelineWidth)
-import Controls.Types exposing (Model, Status(..))
+import Controls.Types exposing (Model)
 import GameModel exposing (..)
 import Mouse
+import PlaybackTypes exposing (Status(..))
 import String
 
 getTimestampAtMouse : Mouse.Position -> Mouse.Position -> Timestamp -> GameLength -> Maybe Timestamp
 getTimestampAtMouse last current timestamp gameLength =
   let
     delta = current.x - last.x |> toFloat
-    timestamp_ = timestamp + truncate (delta / timelineWidth * toFloat gameLength)
+    gameLength_ = toFloat gameLength
+    timestamp_ = timestamp + truncate (delta / timelineWidth * gameLength_)
   in
     case (timestamp_ > 0, timestamp_ < gameLength) of
       (True, True) ->

@@ -4,8 +4,8 @@ import Array
 import Dict exposing (Dict)
 import GameModel exposing (..)
 import Html exposing (Html)
-import Minimap.Internal.View as View
 import Minimap.Internal.Update as Update
+import Minimap.Internal.View as View
 import Minimap.Internal.Subscriptions as Subscriptions
 import Minimap.Types exposing (..)
 

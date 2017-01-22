@@ -18,6 +18,9 @@ minimapWidth = 512
 playerIconSize : Float
 playerIconSize = 30
 
+iconBorderWidth : Float
+iconBorderWidth = 2.5
+
 type CssClass
   = Minimap
   | PlayerIcon
@@ -40,7 +43,7 @@ css =
         , width (playerIconSize |> px)
         , height (playerIconSize |> px)
         , transform <| translate2 (-50 |> pct) (50 |> pct)
-        , border2 (2.5 |> px) solid
+        , border2 (iconBorderWidth |> px) solid
         , borderRadius (50 |> pct)
         , withClass (IconColor Blue)
           [ borderColor CssColors.c_blueTeam

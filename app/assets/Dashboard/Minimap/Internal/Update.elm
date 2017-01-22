@@ -5,8 +5,9 @@ import Array
 import Dict exposing (Dict)
 import GameModel exposing (..)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth)
-import Minimap.Types exposing (Action(..), Model, Msg(..), State)
-import Time exposing (second)
+import Minimap.Types exposing (Model, Msg(..), State)
+import PlaybackTypes exposing (..)
+import Time
 
 epsilon : Float
 epsilon = 0.00001
@@ -58,16 +59,6 @@ update model data timestamp msg =
             )
       in
         { model | iconStates = newIconStates }
-    AnimatePlayerIcons animationMsg ->
-      { model
-      | iconStates =
-        Dict.map (\_ iconState ->
-          { iconState
-          | style = Animation.update animationMsg iconState.style
-          }
-        )
-        model.iconStates
-      }
     MoveIconStates action ->
       let
         newIconStates : Dict PlayerId State
@@ -80,8 +71,8 @@ update model data timestamp msg =
                     opacity : Float
                     opacity =
                       case state.championState.hp > epsilon of
-                        False -> 0.0
                         True -> 1.0
+                        False -> 0.0
                     newCoordinates : List Property
                     newCoordinates =
                       [ Animation.left (minimapWidth * (state.position.x / model.mapWidth)|> px)
@@ -101,8 +92,7 @@ update model data timestamp msg =
                       ( Animation.queue
                         [ Animation.toWith
                           ( Animation.easing
-                          -- use timerupdate speed here
-                            { duration = 950*Time.millisecond
+                            { duration = Time.second
                             , ease = (\x -> x)
                             }
                           )
@@ -124,7 +114,23 @@ update model data timestamp msg =
                           | style = increment
                           }
                         )
+                      NoAction ->
+                        ( player.id
+                        , { iconState
+                          | style = iconState.style
+                          }
+                        )
               )
             )
       in
         { model | iconStates = newIconStates }
+    AnimatePlayerIcons animationMsg ->
+      { model
+      | iconStates =
+        Dict.map (\_ iconState ->
+          { iconState
+          | style = Animation.update animationMsg iconState.style
+          }
+        )
+        model.iconStates
+      }

@@ -1,7 +1,7 @@
 module StyleUtils exposing (..)
 
-import Html.Attributes
 import Css exposing (Mixin, property)
+import Html.Attributes
 
 styles = Css.asPairs >> Html.Attributes.style
 
@@ -20,12 +20,4 @@ flexDirection direction =
   [ property "flex-direction" direction
   , property "-ms-flex-direction" direction
   , property "-webkit-flex-direction" direction
-  ]
-
-transition : String -> List Mixin
-transition value =
-  [ property "transition" value
-  , property "-webkit-transition" value
-  , property "-o-transition" value
-  , property "-moz-transition" value
   ]
