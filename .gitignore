@@ -1,3 +1,6 @@
+## Local Configuration
+conf/fifth-drake.local.properties
+
 ## Ide things
 # Intellij
 .idea
@@ -25,6 +28,9 @@ elm-stuff/
 build/
 .gradle
 
+## macOS Stuff
+*.DS_Store
+
 ## Generated things
 logs
 target
@@ -34,3 +40,6 @@ target
 project/play-fork-run.sbt
 project/sbt-ui.sbt
 npm-debug.log
+project/project/
+public/elm-css
+public/champion/

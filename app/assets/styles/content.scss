@@ -1,9 +1,0 @@
-@import "./config";
-@import "./mixins";
-
-.content {
-  height: $minimap-height;
-  width: $minimap-width + $divider-width + $tag-scroller-width;
-  display: flex;
-  @include flex-direction(row);
-}

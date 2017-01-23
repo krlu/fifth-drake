@@ -1,38 +1,1210 @@
-{ "players":
-    [ { "id": 1
-      , "state":
-          [ {"x": 0, "y": 0 }
-          , {"x": 10, "y": 10 }
-          , {"x": 20, "y": 20 }
-          , {"x": 30, "y": 30 }
-          , {"x": 40, "y": 40 }
-          , {"x": 50, "y": 50 }
-          , {"x": 60, "y": 60 }
-          , {"x": 70, "y": 70 }
-          , {"x": 80, "y": 80 }
-          , {"x": 90, "y": 90 }
-          , {"x": 100, "y": 100 }
-          ]
+{
+  "data": {
+      "metadata": {
+      "blueTeamName": "Echo Fox",
+      "redTeamName": "Team Solo Mid",
+      "gameLength": 3000
+    },
+    "data": {
+      "blueTeam": {
+        "teamStates": [
+          {
+            "dragons": 0,
+            "barons": 0,
+            "turrets": 0
+          },
+          {
+            "dragons": 1,
+            "barons": 0,
+            "turrets": 0
+          },
+          {
+            "dragons": 1,
+            "barons": 0,
+            "turrets": 2
+          },
+          {
+            "dragons": 1,
+            "barons": 1,
+            "turrets": 2
+          },
+          {
+            "dragons": 1,
+            "barons": 1,
+            "turrets": 2
+          },
+          {
+            "dragons": 2,
+            "barons": 1,
+            "turrets": 6
+          },
+          {
+            "dragons": 2,
+            "barons": 1,
+            "turrets": 9
+          },
+          {
+            "dragons": 3,
+            "barons": 2,
+            "turrets": 10
+          },
+          {
+            "dragons": 3,
+            "barons": 2,
+            "turrets": 11
+          },
+          {
+            "dragons": 5,
+            "barons": 3,
+            "turrets": 11
+          }
+        ],
+        "players": [
+          {
+            "side": "blue",
+            "role": "mid",
+            "ign": "Froggen",
+            "championName": "Cassiopeia",
+            "championImage": "/static/public/champion/Cassiopeia.png",
+            "playerStates": [
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 1000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 2000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 3000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 4000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 5000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 6000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 7000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 8000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 9000,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              }
+            ]
+          },
+          {
+            "side": "blue",
+            "role": "support",
+            "ign": "Big",
+            "championName": "Karma",
+            "championImage": "/static/public/champion/Karma.png",
+            "playerStates": [
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 1000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 2000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 3000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 4000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 5000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 6000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 7000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 8000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 9000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              }
+            ]
+          },
+          {
+            "side": "blue",
+            "role": "jungle",
+            "ign": "Hard",
+            "championName": "Olaf",
+            "championImage": "/static/public/champion/Olaf.png",
+            "playerStates": [
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 1000,
+                  "y": 1000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 2000,
+                  "y": 2000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 3000,
+                  "y": 3000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 4000,
+                  "y": 4000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 5000,
+                  "y": 5000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 6000,
+                  "y": 6000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 7000,
+                  "y": 7000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 8000,
+                  "y": 8000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 9000,
+                  "y": 9000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              }
+            ]
+          },
+          {
+            "side": "blue",
+            "role": "bot",
+            "ign": "Keith",
+            "championName": "Jhin",
+            "championImage": "/static/public/champion/Jhin.png",
+            "playerStates": []
+          },
+          {
+            "side": "blue",
+            "role": "top",
+            "ign": "kfo",
+            "championName": "Shen",
+            "championImage": "/static/public/champion/Shen.png",
+            "playerStates": []
+          }
+        ]
+      },
+      "redTeam": {
+        "teamStates": [
+          {
+            "dragons": 0,
+            "barons": 0,
+            "turrets": 0
+          },
+          {
+            "dragons": 1,
+            "barons": 0,
+            "turrets": 0
+          },
+          {
+            "dragons": 1,
+            "barons": 0,
+            "turrets": 2
+          },
+          {
+            "dragons": 1,
+            "barons": 1,
+            "turrets": 2
+          },
+          {
+            "dragons": 1,
+            "barons": 1,
+            "turrets": 2
+          },
+          {
+            "dragons": 2,
+            "barons": 1,
+            "turrets": 6
+          },
+          {
+            "dragons": 2,
+            "barons": 1,
+            "turrets": 9
+          },
+          {
+            "dragons": 3,
+            "barons": 2,
+            "turrets": 10
+          },
+          {
+            "dragons": 3,
+            "barons": 2,
+            "turrets": 11
+          },
+          {
+            "dragons": 5,
+            "barons": 3,
+            "turrets": 11
+          }
+        ],
+        "players": [
+          {
+            "side": "red",
+            "role": "mid",
+            "ign": "Bjergsen",
+            "championName": "Azir",
+            "championImage": "/static/public/champion/Azir.png",
+            "playerStates": [
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 14000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 13000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 12000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 11000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 10000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 9000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 8000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 7000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 6000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              }
+            ]
+          },
+          {
+            "side": "red",
+            "role": "top",
+            "ign": "Hauntzer",
+            "championName": "Irelia",
+            "championImage": "/static/public/champion/Irelia.png",
+            "playerStates": [
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 14000,
+                  "y": 14000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 13000,
+                  "y": 13000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 12000,
+                  "y": 12000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 11000,
+                  "y": 11000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 10000,
+                  "y": 10000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 9000,
+                  "y": 9000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 8000,
+                  "y": 8000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 7000,
+                  "y": 7000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 6000,
+                  "y": 6000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              }
+            ]
+          },
+          {
+            "side": "red",
+            "role": "jungle",
+            "ign": "Svenskeren",
+            "championName": "RekSai",
+            "championImage": "/static/public/champion/RekSai.png",
+            "playerStates": [
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 15000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 14000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 13000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 12000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 11000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 10000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 9000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 8000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 7000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              },
+              {
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "position": {
+                  "x": 15000,
+                  "y": 6000
+                },
+                "championState": {
+                  "hp": 0,
+                  "hpMax": 1000,
+                  "power": 0,
+                  "powerMax": 1000,
+                  "xp": 0
+                }
+              }
+            ]
+          },
+          {
+            "side": "red",
+            "role": "support",
+            "ign": "Biofrost",
+            "championName": "Nami",
+            "championImage": "/static/public/champion/Nami.png",
+            "playerStates": []
+          },
+          {
+            "side": "red",
+            "role": "bot",
+            "ign": "Doublelift",
+            "championName": "Lucian",
+            "championImage": "/static/public/champion/Lucian.png",
+            "playerStates": []
+          }
+        ]
       }
-    , { "id": 2
-      , "state":
-          [ {"x": 512, "y": 512 }
-          , {"x": 40 , "y": 10 }
-          , {"x": 65, "y": 20 }
-          , {"x": 30, "y": 30 }
-          , {"x": 40, "y": 40 }
-          , {"x": 500, "y": 50 }
-          , {"x": 60, "y": 60 }
-          , {"x": 70, "y": 70 }
-          , {"x": 80, "y": 80 }
-          , {"x": 90, "y": 90 }
-          , {"x": 100, "y": 100 }
-          ]
-      }
-    ]
-, "tags":
-    [ {"tagType": "TeamFight", "timestamp": 10 }
-    , {"tagType": "TeamFight", "timestamp": 22 }
-    , {"tagType": "UserDefined", "timestamp": 50 }
-    ]
+    }
+  },
+  "tags": [
+    {
+      "title": "Fight 1",
+      "description": "Doublelift dies",
+      "category": "TeamFight",
+      "timestamp": 10,
+      "players": [
+        "Doublelift",
+        "Bjergsen",
+        "Svenskeren",
+        "Biofrost",
+        "Hauntzer"
+      ]
+    },
+    {
+      "title": "Fight 2",
+      "description": "Bang dies",
+      "category": "TeamFight",
+      "timestamp": 30,
+      "players": [
+        "Faker",
+        "Bang",
+        "Wolf",
+        "Bengi",
+        "Duke"
+      ]
+    },
+    {
+      "title": "Objective 3",
+      "description": "APHROOOOOOOOO",
+      "category": "Objective",
+      "timestamp": 50,
+      "players": [
+        "ZionSpartan",
+        "XMithie",
+        "Huhi",
+        "Stixxay",
+        "Aphromoo"
+      ]
+    }
+  ]
 }

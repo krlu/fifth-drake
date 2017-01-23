@@ -10,6 +10,7 @@ This is the core application that we are building.
 # Setup
 There's a few parts to setup when first initializing this project:
  - Frontend package installation
+ - Local Configuration
  - Database Migrations
 
 ## Frontend dependencies
@@ -25,16 +26,31 @@ after creating that database flyway will handle all other tasks for you. In
 order to create the database, you can use `createdb league_analytics` on the
 command line or `CREATE DATABASE league_analytics;` in psql.
 
-After the database is created, you can simply use the following command to
+Next create the following configuration file 
+
+`conf/fifth-drake.local.properties`
+
+Within this file, add the following fields: 
+
+```
+## Postgres Settings
+climb.pgHost=localhost
+climb.pgPort=5432
+climb.pgDbName=[database name] #i.e league_analytics
+climb.pgUserName=[psql username]
+climb.pgPassword=[psql password]
+```
+
+Once the database is created and settings are configured, you can simply use the following command to
 actually create the proper schema structure:
 
-`sbt -Dflyway.user=$postgresUser flywayMigrate`
+`sbt flywayMigrate`
 
 For development purposes, you may need to use the following, but NEVER run this
 in production. The command drops all you existing data and migrates reapplies
 the schemas from scratch.
 
-`sbt -Dflyway.user=$postgresUser flywayClean flywayMigrate`
+`sbt flywayClean flywayMigrate`
 
 # Running play server for both front and backend
 You can run the play server using activator. To do so, simply run:
@@ -49,12 +65,23 @@ Use the following command to bundle and build your front end packages using
 webpack:
 `webpack`
 
+# Building CSS files
+In order to build the css for the front end, you'll need to use:
+`npm run compile-css`
+
 # Run developement server
 It's possible that you'll want a lighter weight server to rapidly test front end
 changes. You will likely not need this, but as of now, it is supported via the
 following command.
 
 `npm run dev`
+
+## Running fake backend
+Apart from running the frontend alone, you will likely want to test its
+interactions with the backend. To do this, you can run the following to create a
+fake test database to work with.
+
+`npm run test-db`
 
 # Style
 Quick notes on style in this repo
