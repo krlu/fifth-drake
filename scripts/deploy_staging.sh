@@ -5,7 +5,7 @@ CLIMB_USER=climb
 CLIMB_SERVER=climb.gg
 
 LOCAL_PATH=$CIRCLE_ARTIFACTS
-REMOTE_PATH="/data/fifth-drake"
+REMOTE_PATH="/data/fifth-drake/staging"
 
 # The 141 avoids
 # http://stackoverflow.com/questions/22464786/ignoring-bash-pipefail-for-error-code-141
