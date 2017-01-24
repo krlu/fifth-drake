@@ -9,13 +9,13 @@ object Webpack {
 
 			override def beforeStarted(): Unit = {
 				process = Option(
-					                Process("webpack", base).run()
+					                Process("npm run build", base).run()
 				                )
 			}
 
 			override def afterStarted(addr: InetSocketAddress): Unit = {
 				process = Option(
-					                Process("webpack --watch", base).run()
+					                Process("npm run watch", base).run()
 				                )
 			}
 

@@ -6,10 +6,11 @@ import Controls.Internal.View as View
 import Controls.Types exposing (..)
 import GameModel exposing (GameLength, Timestamp)
 import Html exposing (Html)
+import PlaybackTypes exposing (..)
 
 initialModel : String -> String -> Model
 initialModel playButton pauseButton =
-  { mouse = Nothing
+  { lastMousePosition = Nothing
   , status = Pause
   , pauseButton = pauseButton
   , playButton = playButton
