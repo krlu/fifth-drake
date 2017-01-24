@@ -15,7 +15,7 @@ import play.api.mvc.{Action, AnyContent, Controller, Cookie}
 class HomePageController(googleClientId: GoogleClientId) extends Controller {
 
   def loadLandingPage: Action[AnyContent] = Action { request =>
-    Logger.debug("loading landing page")
+    Logger.info("loading landing page")
     if (request.cookies.get(GoogleAuthToken.name).isDefined) {
       Logger.debug("redirecting user to home page for token authentication")
       Redirect(routes.HomePageController.loadHomePage())
@@ -26,7 +26,7 @@ class HomePageController(googleClientId: GoogleClientId) extends Controller {
   }
 
   def loadHomePage: Action[AnyContent] = Authenticated { request =>
-    Logger.debug("loading home page")
+    Logger.info("loading home page")
     Ok(s"${request.userInfo.get("given_name")}'s Home Page")
   }
 

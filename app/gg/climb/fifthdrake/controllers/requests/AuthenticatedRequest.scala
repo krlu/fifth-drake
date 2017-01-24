@@ -42,8 +42,6 @@ object Authenticated extends ActionBuilder[AuthenticatedRequest] {
       Option(verifier.verify(token)).map(t => t.getPayload)
     }
 
-    Logger.debug("")
-
     val cookie = request.cookies.get(GoogleAuthToken.name)
     val payload = cookie.flatMap(c => verifyGoogleAuthToken(c.value))
 
@@ -57,7 +55,7 @@ object Authenticated extends ActionBuilder[AuthenticatedRequest] {
         Future.successful(Forbidden("Invalid Authentication"))
       }
       case (_, Some(p)) => {
-        Logger.debug(s"User payload: $p")
+        Logger.debug(s"user payload: $p")
         block(new AuthenticatedRequest[A](p, request))
       }
     }
