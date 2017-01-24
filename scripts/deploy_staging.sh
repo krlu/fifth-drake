@@ -32,7 +32,9 @@ ssh $CLIMB_USER@$CLIMB_SERVER \
 	mkdir -p $REMOTE_PATH/logs
 
 echo "Running the new server"
-ssh $CLIMB_USER@$CLIMB_SERVER nohup $EXECUTABLE_REMOTE \
+ssh $CLIMB_USER@$CLIMB_SERVER \
+  cd $REMOTE_PATH \; \
+  nohup $EXECUTABLE_REMOTE \
 	-Dclimb.pgUserName="climb" \
 	-Dplay.crypto.secret="thisissimplystaging" \
 	 \> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.log \
