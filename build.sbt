@@ -85,5 +85,3 @@ javaOptions ++= {
   }
   opts
 }
-
-fork in run := true

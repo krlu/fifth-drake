@@ -97,7 +97,6 @@ view model =
           ]
         , redPlayerDisplays
         ]
-      , tagCarousel
       ]
 
 getPlayerIdsAndIgns: Array Player -> Array Player -> List (PlayerId, String)
