@@ -2,6 +2,8 @@ module Minimap.Css exposing (..)
 
 import Css exposing (..)
 import Css.Namespace
+import CssColors exposing (c_redTeam, c_blueTeam)
+import GameModel exposing (Side(Blue, Red))
 import StyleUtils
 
 namespace : String
@@ -16,9 +18,13 @@ minimapWidth = 512
 playerIconSize : Float
 playerIconSize = 30
 
+iconBorderWidth : Float
+iconBorderWidth = 2.5
+
 type CssClass
   = Minimap
   | PlayerIcon
+  | IconColor Side
   | Background
   | ChampionImage
 
@@ -32,11 +38,20 @@ css =
     ] ++
     StyleUtils.userSelect "none" ++
     [ children
-      [ (.) PlayerIcon
+      [ (.) PlayerIcon (
         [ position absolute
         , width (playerIconSize |> px)
         , height (playerIconSize |> px)
         , transform <| translate2 (-50 |> pct) (50 |> pct)
+        , border2 (iconBorderWidth |> px) solid
+        , borderRadius (50 |> pct)
+        , withClass (IconColor Blue)
+          [ borderColor CssColors.c_blueTeam
+          ]
+        , withClass (IconColor Red)
+          [ borderColor CssColors.c_redTeam
+          ]
+        , backgroundSize cover
         , children
           [ (.) ChampionImage
             [ width (100 |> pct)
@@ -44,7 +59,7 @@ css =
             , borderRadius (50 |> pct)
             ]
           ]
-        ]
+        ])
       , (.) Background
         [ height (100 |> pct)
         , width (100 |> pct)
@@ -52,3 +67,4 @@ css =
       ]
     ])
   ]
+

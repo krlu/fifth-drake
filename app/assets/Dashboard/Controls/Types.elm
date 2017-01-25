@@ -1,35 +1,24 @@
 module Controls.Types exposing (..)
 
-import Mouse
-import Time
 import Http
-
+import Mouse
+import PlaybackTypes exposing (..)
+import Time
 
 type Msg
-  = KnobGrab Mouse.Position
-  | KnobMove Mouse.Position
+  = KnobMove Mouse.Position
   | KnobRelease Mouse.Position
   | BarClick (Mouse.Position, Mouse.Position)
   | PlayPause
-  | TimerUpdate Time.Time
 
 type alias File = String
 
 type alias Model =
-  { mouse: Maybe Drag
-
+  { lastMousePosition: Maybe Drag
   , status: Status
-
   , pauseButton: File
   , playButton: File
   }
 
-type alias Drag =
-  { start: Mouse.Position
-  , current: Mouse.Position
-  }
-
-type Status
-  = Play
-  | Pause
+type alias Drag = Mouse.Position
 

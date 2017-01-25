@@ -2,7 +2,7 @@ module Controls.Internal.View exposing (view)
 
 import Controls.Css exposing (CssClass(..), namespace, timelineWidth)
 import Controls.Internal.ModelUtils exposing(..)
-import Controls.Types exposing (Msg(KnobGrab, BarClick, PlayPause), Model, Status(..))
+import Controls.Types exposing (Msg(BarClick, PlayPause, KnobMove), Model)
 import Css exposing (left, px)
 import DashboardCss
 import GameModel exposing (GameLength, Timestamp)
@@ -12,6 +12,7 @@ import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (on, onClick)
 import Json.Decode as Json exposing (Decoder, andThen, field, int, map2)
 import Mouse
+import PlaybackTypes exposing (Status(..))
 import StyleUtils exposing (..)
 
 {id, class, classList} = withNamespace namespace
@@ -36,7 +37,7 @@ view timestamp gameLength model =
       case model.status of
         Play -> model.pauseButton
         Pause -> model.playButton
-    pxs = getPixelForTimestamp model timestamp gameLength
+    pixelForTimestamp = getPixelForTimestamp timestamp gameLength
   in
     div
       [ class [Controls] ]
@@ -58,12 +59,12 @@ view timestamp gameLength model =
           ]
         , div
           [ class [Timeline]
-            , on "mousedown" (Json.map BarClick relativePosition)
+          , on "mousedown" (Json.map BarClick relativePosition)
           ]
           [ div
             [ class [BarSeen]
             , styles
-              [ Css.width (pxs |> px)
+              [ Css.width (pixelForTimestamp |> px)
               ]
             ]
             []
@@ -73,10 +74,10 @@ view timestamp gameLength model =
           [ text <| toTimeString timestamp ++ "/" ++ toTimeString gameLength
           ]
         , div
-          [ on "mousedown" (Json.map KnobGrab Mouse.position)
+          [ on "mousedown" (Json.map KnobMove Mouse.position)
           , class [Knob]
           , styles
-            [ left (pxs |> px)
+            [ left (pixelForTimestamp |> px)
             ]
           ]
           []
