@@ -22,7 +22,7 @@ contentGap : Float
 contentGap = 40
 
 controlsGap : Float
-controlsGap = 20
+controlsGap = 50
 
 teamDisplayGap : Float
 teamDisplayGap = 30
