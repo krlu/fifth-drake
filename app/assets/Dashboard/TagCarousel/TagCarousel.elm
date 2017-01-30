@@ -36,7 +36,7 @@ init loc addTagButton deleteTagButton =
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update = Update.update
 
-view : Model -> List (PlayerId, String) -> Html Msg
+view : Model -> List (PlayerId, String, String, String) -> Html Msg
 view = View.view
 
 getGameId : Location -> GameId
