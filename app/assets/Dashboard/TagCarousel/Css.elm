@@ -198,7 +198,7 @@ css =
           ]
         ] ++ StyleUtils.userSelect "none" )
       , (.) TagCarousel (
-        [ width (tagCarouselWidth |> px)
+        [ width (tagCarouselWidth |> pct)
         , displayFlex
         , height (tagCarouselHeight |> pct)
         , backgroundColor Color.c_carousel
