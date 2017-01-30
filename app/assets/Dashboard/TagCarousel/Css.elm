@@ -1,5 +1,5 @@
 module TagCarousel.Css exposing (..)
-import Css.Elements exposing (div, img)
+import Css.Elements exposing (div)
 import CssColors as Color
 import Css exposing (..)
 import Css.Namespace
@@ -20,7 +20,7 @@ tagDisplayMarginTop : Float
 tagDisplayMarginTop = 30
 
 addTagButtonHeight : Float
-addTagButtonHeight = 50 -- px
+addTagButtonHeight = 100 -- percent
 
 addTagButtonWidth : Float
 addTagButtonWidth = 16 -- percent
@@ -50,10 +50,10 @@ tagFormHeight : Float
 tagFormHeight = 100 -- percent
 
 playerCheckBoxesWidth : Float
-playerCheckBoxesWidth = 64 -- px
+playerCheckBoxesWidth = 40 -- percent
 
 playerCheckBoxesHeight : Float
-playerCheckBoxesHeight = 100 -- percent
+playerCheckBoxesHeight = 75 -- percent
 
 checkboxMargin : Float
 checkboxMargin = 68
@@ -65,22 +65,22 @@ playersInvolvedHeight : Float
 playersInvolvedHeight = 15 -- percent
 
 tagFormTextInputWidth : Float
-tagFormTextInputWidth = 75 -- pct
+tagFormTextInputWidth = 60 -- percent
 
 tagFormTextInputHeight : Float
-tagFormTextInputHeight = 100 -- percent
+tagFormTextInputHeight = 90 -- percent
 
 tagFormTextBoxWidth : Float
-tagFormTextBoxWidth = 100-- percent
+tagFormTextBoxWidth = 49.2 -- percent
 
 tagFormTextBoxHeight : Float
 tagFormTextBoxHeight = 15 -- percent
 
 tagFormTextAreaWidth : Float
-tagFormTextAreaWidth = 100 -- percent
+tagFormTextAreaWidth = 99 -- percent
 
 tagFormTextAreaHeight : Float
-tagFormTextAreaHeight = 70 -- percent
+tagFormTextAreaHeight = 85 -- percent
 
 saveOrCancelFormDistFromBottom : Float
 saveOrCancelFormDistFromBottom = 0
@@ -91,15 +91,12 @@ tagBorderSize = 1
 tagMargin : Float
 tagMargin = 10
 
-labelImageSize : Float
-labelImageSize = 20 -- px
-
 type CssClass
   = TagCarousel
   | Tag
   | TagFormCss
   | PlayerCheckboxes
-  | CheckboxLabel
+  | CheckboxCss
   | DeleteButtonCss
   | SelectedTag
   | TagDisplay
@@ -111,9 +108,6 @@ type CssClass
   | PlayersInvolved
   | AddTagButton
   | SaveOrCancelForm
-  | PlusImage
-  | CheckboxItem
-  | LabelImage
 
 css : Stylesheet
 css =
@@ -126,16 +120,10 @@ css =
     , displayFlex
     , children
       [ (#) AddTagButton
-        [ height (addTagButtonHeight |> px)
-        , width (addTagButtonHeight |> px)
-        , borderRadius (50 |> pct)
+        [ height (addTagButtonHeight |> pct)
+        , width (addTagButtonWidth |> pct)
         , backgroundColor Color.c_carousel
         , hover [backgroundColor Color.c_hovering]
-        , children
-          [ (.) PlusImage
-              [ width (100 |> pct)
-              ]
-          ]
         ]
       , (.) TagFormCss (
         [ width (tagFormWidth |> pct)
@@ -147,48 +135,34 @@ css =
         , displayFlex
         , flexWrap wrap
         , children
-          [ (.) PlayerCheckboxes
-            [ width (playerCheckBoxesWidth |> px)
+          [ (#) PlayerCheckboxes
+            [ width (playerCheckBoxesWidth |> pct)
             , height (playerCheckBoxesHeight |> pct)
-            , displayFlex
-            , flexWrap wrap
             , children
-              [ (.) CheckboxItem
-                [ flexDirection column
-                , children
-                  [ (.) CheckboxLabel
-                    [ children
-                      [ (img)
-                        [ float left
-                        ]
-                      ]
-                    ]
-                  , (.) PlayersInvolved
-                    [ fontSize (playersInvolvedFontSize |> px)
-                    , backgroundColor Color.c_lightGray
-                    , height (playersInvolvedHeight |> pct)
-                    , float left
-                    ]
-                  ]
+              [( #) CheckboxCss
+                [ margin (checkboxMargin |> px)
+                ]
+              , (#) PlayersInvolved
+                [ fontSize (playersInvolvedFontSize |> px)
+                , backgroundColor Color.c_lightGray
+                , height (playersInvolvedHeight |> pct)
                 ]
               ]
             ]
           , (#) TagFormTextInput
             [ displayFlex
             , flexWrap wrap
-            , width auto
+            , width (tagFormTextInputWidth |> pct)
             , height (tagFormTextInputHeight |> pct)
             , children
-              [ (.) TagFormTextBox
+              [ (#) TagFormTextBox
                 [ width (tagFormTextBoxWidth |> pct)
                 , height (tagFormTextBoxHeight |> pct)
-                , flexDirection column
                 ]
-              , (.) TagFormTextArea
+              , (#) TagFormTextArea
                 [ width (tagFormTextAreaWidth |> pct)
                 , height (tagFormTextAreaHeight |> pct)
-                , flexDirection column
-              ]
+                ]
               ]
             ]
           , (#) SaveOrCancelForm
@@ -255,9 +229,5 @@ css =
           ]
         ]
       ]
-    ]
-  , (.) LabelImage
-    [ height (labelImageSize |> px)
-    , width (labelImageSize |> px)
     ]
   ]
