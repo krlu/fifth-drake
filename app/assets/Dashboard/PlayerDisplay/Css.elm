@@ -10,20 +10,22 @@ import StyleUtils
 namespace : String
 namespace = "playerDisplay"
 
-playerDisplayWidth = 300
-playerDisplayHeight = 90
+playerDisplayWidth = 275
+playerDisplayHeight = 60
 
 playerIgnFontSize = 16
 
 levelHeight = 30
 levelWidth = levelHeight
+levelMargin = 7
 levelFontSize = 18
 
-portraitHeight = 60
+portraitHeight = 38
 portraitWidth = portraitHeight
 
 champStatsWidth = 100
 champStatsHeight = portraitHeight
+champStatsMargin = 3
 
 champStatHeight = 7
 
@@ -73,6 +75,7 @@ css =
             , height (levelHeight |> px)
             , width (levelWidth |> px)
             , borderRadius (50 |> pct)
+            , margin (levelMargin |> px)
             , fontSize (levelFontSize |> px)
             , displayFlex
             , alignItems center
@@ -110,11 +113,15 @@ css =
                 , height (champStatHeight |> px)
                 , width (100 |> pct)
                 , backgroundColor Color.c_offWhite
-                , margin (3 |> px)
+                , margin (champStatsMargin |> px)
                 , withClass DirNormal
-                  (StyleUtils.flexDirection "row")
+                  (StyleUtils.flexDirection "row" ++
+                  [ paddingLeft (0 |> px) ]
+                  )
                 , withClass DirReverse
-                  (StyleUtils.flexDirection "row-reverse")
+                  (StyleUtils.flexDirection "row-reverse" ++
+                  [ paddingRight (0 |> px) ]
+                  )
                 , children
                   [ everything
                     [ height (100 |> pct)
