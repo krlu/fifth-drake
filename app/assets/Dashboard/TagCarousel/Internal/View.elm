@@ -37,12 +37,52 @@ tagFormHtml model players =
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
   in
     if model.tagForm.active then
-      div [ class [TagFormCss] ]
-      [
-        div [ id [TagFormTextInput] ]
-        [ input [ placeholder "Title", onInput CreateTitle, id [TagFormTextBox] ] []
-        , input [ placeholder "Category", onInput CreateCategory, id [TagFormTextBox] ] []
-        , textarea [ placeholder "Description", onInput CreateDescription, id [TagFormTextArea] ] []
+      div
+        [ class [TagFormCss] ]
+        [
+          div
+            [ id [TagFormTextInput] ]
+            [ input
+              [ placeholder "Title"
+              , onInput CreateTitle
+              , class [TagFormTextBox]
+              ]
+              []
+            , select
+              [ placeholder "Category"
+              , onInput CreateCategory
+              , class [TagFormTextBox]
+              ]
+              [ option
+                [id "Objective"]
+                [text "Objective"]
+              , option
+                [id "TeamFight"]
+                [text "TeamFight"]
+              ]
+            , textarea
+              [ placeholder "Description"
+              , onInput CreateDescription
+              , class [TagFormTextArea]
+              ]
+              []
+            ]
+        , div [ class [PlayerCheckboxes] ]
+          ( [ div
+              [ class [PlayersInvolved] ]
+              [ text "Players Involved" ]
+            ] ++
+            checkBoxes
+          )
+        , div
+          [ id [SaveOrCancelForm] ]
+          [ button
+            [ onClick SwitchForm ]
+            [ text "cancel" ]
+          , button
+            [ onClick SaveTag]
+            [ text "save" ]
+          ]
         ]
       , div [ id [PlayerCheckboxes] ] (
         [ div [ id [PlayersInvolved] ] [text "Players Involved"]
