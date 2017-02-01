@@ -2,7 +2,7 @@ module Controls.Internal.View exposing (view)
 
 import Controls.Css exposing (CssClass(..), namespace, timelineWidth)
 import Controls.Internal.ModelUtils exposing(..)
-import Controls.Types exposing (Msg(BarClick, PlayPause, KnobMove), Model)
+import Controls.Types exposing (Model, Msg(BarClick, KnobMove, KnobRelease, PlayPause))
 import Css exposing (left, px)
 import DashboardCss
 import GameModel exposing (GameLength, Timestamp)
@@ -60,6 +60,7 @@ view timestamp gameLength model =
         , div
           [ class [Timeline]
           , on "mousedown" (Json.map BarClick relativePosition)
+          , on "mouseup" (Json.map KnobRelease Mouse.position)
           ]
           [ div
             [ class [BarSeen]
@@ -75,6 +76,7 @@ view timestamp gameLength model =
           ]
         , div
           [ on "mousedown" (Json.map KnobMove Mouse.position)
+          , on "mouseup" (Json.map KnobRelease Mouse.position)
           , class [Knob]
           , styles
             [ left (pixelForTimestamp |> px)
