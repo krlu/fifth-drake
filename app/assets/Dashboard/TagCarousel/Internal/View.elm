@@ -51,12 +51,18 @@ tagFormHtml model players =
               , class [TagFormTextBox]
               ]
               []
-            , input
+            , select
               [ placeholder "Category"
               , onInput CreateCategory
               , class [TagFormTextBox]
               ]
-              []
+              [ option
+                [id "Objective"]
+                [text "Objective"]
+              , option
+                [id "TeamFight"]
+                [text "TeamFight"]
+              ]
             , textarea
               [ placeholder "Description"
               , onInput CreateDescription
