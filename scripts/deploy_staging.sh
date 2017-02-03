@@ -35,7 +35,9 @@ echo "Running the new server"
 ssh $CLIMB_USER@$CLIMB_SERVER \
   cd $REMOTE_PATH \; \
   nohup $EXECUTABLE_REMOTE \
+    -Dclimb.pgDbName="league_analytics" \
 	-Dclimb.pgUserName="climb" \
+	-Dclimb.pgPassword="fukenny" \
 	-Dplay.crypto.secret="thisissimplystaging" \
 	 \> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.log \
 	2\> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.err \
