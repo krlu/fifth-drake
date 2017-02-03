@@ -105,7 +105,13 @@ class MongoDbHandler(mongoClient: MongoClient) {
 
   private def parseMetaData(data: Document): Option[(String, URL, Int, Time)] = {
     for {
-      url <- data.get("youtubeURL").map(_.asString().getValue).map(new URL(_))
+      url <- data.get("youtubeURL")
+        .flatMap(Option(_))
+        .map(b => {
+          if (b.isNull) { "https://www.youtube.com" }
+          else { b.asString().getValue }
+        })
+        .map(new URL(_))
       patch <- data.get("gameVersion").map(_.asString().getValue)
       seasonId <- data.get("seasonId").map(_.asInt32().getValue)
       duration <- data.get("gameDuration").map(_.asInt32().getValue)
