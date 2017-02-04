@@ -1,7 +1,6 @@
 CREATE TABLE league.game_identifier(
   id SERIAL PRIMARY KEY,
   game_key TEXT NOT NULL,
-  game_date TEXT NOT NULL,
   blue_team TEXT,
   red_team TEXT,
   game_date date NOT NULL,
