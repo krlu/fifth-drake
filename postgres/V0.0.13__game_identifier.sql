@@ -2,6 +2,11 @@ CREATE TABLE league.game_identifier(
   id SERIAL PRIMARY KEY,
   game_key TEXT NOT NULL,
   game_date TEXT NOT NULL,
-  team_1 TEXT,
-  team_2 TEXT
+  blue_team TEXT,
+  red_team TEXT,
+  game_date date NOT NULL,
+  week Text NOT NULL,
+  split TEXT NOT NULL,
+  series_hash TEXT NOT NULL,
+  mongo collection TEXT NOT NULL
 );
