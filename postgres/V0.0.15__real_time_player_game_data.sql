@@ -1,6 +1,6 @@
 CREATE TABLE league.real_time_player_game_data(
   id SERIAL PRIMARY KEY NOT NULL,
-  internal_game_id INTEGER REFERENCES league.game_identifier(id) NOT NULL,
+  internal_game_id UUID REFERENCES league.game_identifier(id) NOT NULL,
   timestamp INTEGER NOT NULL,
   internal_player_id INTEGER REFERENCES league.static_player_game_data(id) NOT NULL,
   minion_kills INTEGER NOT NULL,
