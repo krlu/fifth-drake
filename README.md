@@ -19,12 +19,28 @@ the following command:
 
 `npm install && elm package install`
 
-## Database Initialization and Migrations
+# Database Setup
+
+## Initialization and Extensions
 You will also need to create a new database called league\_analytics in
 postgres. Flyway cannot create the database for you programmatically. However,
 after creating that database flyway will handle all other tasks for you. In
 order to create the database, you can use `createdb league_analytics` on the
 command line or `CREATE DATABASE league_analytics;` in psql.
+
+Next login to postgres and check your postgres extensions by running the SQL:
+
+`select * from pg_extension;`
+
+To see if the "uuid-ossp" extension is available, run this SQL:
+
+`select * from pg_available_extensions;`
+
+To install/load the extension, run this SQL:
+
+`CREATE EXTENSION "uuid-ossp";`
+
+## Configurations and Migrations
 
 Next create the following configuration file 
 
