@@ -33,7 +33,7 @@ flywayUrl := {
   val dbName = props.value.getOrElse("climb.pgDbName", "league_analytics")
   s"jdbc:postgresql://$host:$port/$dbName"
 }
-flywaySchemas := Seq("audit", "league")
+flywaySchemas := Seq("audit", "league", "account")
 flywayLocations := Seq("filesystem:postgres/")
 flywayUser := props.value.getProperty("climb.pgUserName")
 flywayPassword := props.value.getProperty("climb.pgPassword")
