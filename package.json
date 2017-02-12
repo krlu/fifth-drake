@@ -10,7 +10,8 @@
   "dependencies": {
     "elm": "0.18.0",
     "elm-css": "^0.6.0",
-    "lodash": "^4.16.6"
+    "lodash": "^4.16.6",
+    "opus-recorder": "^0.5.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^4.0.1",
