@@ -294,13 +294,45 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     ids.map(id => new InternalId[Team](id))
   }
 
-  def userAccountStored(userId: String): Boolean = {
+  def isUserAccountStored(userId: String): Boolean = {
     DB readOnly { implicit session =>
       sql"SELECT id FROM account.user WHERE user_id = $userId"
         .map(rs => rs.string("id"))
         .list()
         .apply()
         .nonEmpty
+    }
+  }
+
+  def isUserLoggedIn(userId: String): Boolean = {
+    DB readOnly { implicit session =>
+      sql"SELECT logged_in FROM account.user WHERE user_id = $userId"
+        .map(rs => rs.boolean("logged_in"))
+        .list()
+        .apply()
+        .headOption
+        .getOrElse(false)
+    }
+  }
+
+  def isUserAuthorized(userId: String): Boolean = {
+    DB readOnly { implicit session =>
+      sql"SELECT authorized FROM account.user WHERE user_id = $userId"
+        .map(rs => rs.boolean("authorized"))
+        .list()
+        .apply()
+        .headOption
+        .getOrElse(false)
+    }
+  }
+
+  def getPartialUserAccount(userId: String): Option[(String, String, String)] = {
+    DB readOnly { implicit session =>
+      sql"SELECT first_name, last_name, email FROM account.user WHERE user_id = $userId"
+        .map(rs => (rs.string("first_name"), rs.string("last_name"), rs.string("email")))
+        .list()
+        .apply()
+        .headOption
     }
   }
 

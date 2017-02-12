@@ -16,7 +16,7 @@ import play.api.mvc.{Action, _}
 
 import scala.concurrent.duration.Duration
 
-class GameDataController(dbh: DataAccessHandler) extends Controller {
+class GameDataController(dbh: DataAccessHandler, AuthenticatedAction: AuthenticatedAction) extends Controller {
 
   def loadDashboard(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Ok(views.html.gameDashboard(request.host, gameKey))
