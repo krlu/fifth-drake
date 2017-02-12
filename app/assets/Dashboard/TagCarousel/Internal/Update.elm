@@ -1,6 +1,7 @@
 module TagCarousel.Internal.Update exposing (..)
 
 import GameModel exposing (Player, PlayerId, Timestamp)
+import TagCarousel.Internal.TagUtils exposing (defaultTagForm)
 import TagCarousel.Types exposing (Model, Msg(..), Tag, TagId)
 import String as String exposing (toInt)
 import TagCarousel.Internal.Delete as Delete
@@ -28,6 +29,12 @@ update msg model ts =
         title = model.tagForm.title
         category = model.tagForm.category
         description = model.tagForm.description
+        gameId = model.tagForm.gameId
+        host = model.tagForm.host
+        modelWithEmptyTagform =
+          { model
+            | tagForm = defaultTagForm gameId host category
+          }
       in
         if(String.length title == 0) then
           (Nothing, model, Cmd.none)
@@ -36,7 +43,7 @@ update msg model ts =
         else if (String.length description == 0) then
           (Nothing, model, Cmd.none)
         else
-          (Nothing, model, Save.sendRequest model.tagForm ts)
+          (Nothing, modelWithEmptyTagform, Save.sendRequest model.tagForm ts)
     TagSaved (Ok tags) ->
      (Nothing, switchTag { model | tags = tags }, Cmd.none)
     TagSaved (Err msg) ->

@@ -6,6 +6,8 @@ import Http
 
 type alias TagId = String
 
+type alias Host = String
+
 type Msg
   = TagClick Timestamp
   | UpdateTags (Result Http.Error (List Tag))
@@ -20,7 +22,7 @@ type Msg
   | TagSaved (Result Http.Error (List Tag))
 
 type alias Model =
-  { host             : String
+  { host             : Host
   , tags             : List Tag
   , tagForm          : TagForm
   , lastClickedTime  : Timestamp
@@ -43,7 +45,7 @@ type alias TagForm =
   , category    : String
   , selectedIds : List PlayerId
   , gameId      : GameId
-  , host        : String
+  , host        : Host
   , active      : Bool
   }
 

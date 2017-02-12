@@ -114,6 +114,7 @@ type CssClass
   | PlusImage
   | CheckboxItem
   | LabelImage
+  | TagClickableArea
 
 css : Stylesheet
 css =
@@ -259,5 +260,9 @@ css =
   , (.) LabelImage
     [ height (labelImageSize |> px)
     , width (labelImageSize |> px)
+    ]
+  , (.) TagClickableArea
+    [ height (100 |> pct)
+    , width (100 |> pct)
     ]
   ]
