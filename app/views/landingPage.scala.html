@@ -1,9 +1,9 @@
-@(googleClientId: String)
+@import gg.climb.fifthdrake.GoogleClientId
+@(googleClientId: GoogleClientId, loggedIn: Boolean)
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="google-signin-client_id" content="@googleClientId">
     <title>Climb.gg</title>
     <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
@@ -23,19 +23,43 @@
       }
 
       .navigation {
-        list-style: none;
         font-size: large;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
 
+      .left {
+        list-style: none;
         display: flex;
         flex-flow: row wrap;
         justify-content: flex-start;
         align-items: center;
       }
 
-      .navigation a {
+      .right {
+        list-style: none;
+        display: none;
+        flex-flow: row wrap;
+        justify-content: flex-end;
+        align-items: center;
+        margin-right: 0.5em;
+      }
+
+      .left a, .right a {
         text-decoration: none;
         display: block;
         padding: 0.5em;
+      }
+
+      .left a:hover {
+        cursor: pointer;
+      }
+
+      .right a:hover {
+        cursor: pointer;
+        color: #FFFFFF;
       }
 
       .main {
@@ -54,7 +78,7 @@
       }
 
       .logo {
-        font-size: 32px;
+        font-size: 2.5em;
         font-weight: 600;
       }
 
@@ -69,58 +93,84 @@
         margin-bottom: 5em;
       }
 
-      #signin-btn * span {
-        font-family: Roboto, sans-serif;
-        font-weight: bold;
-        color: #1F2227;
+      #signinButton {
+        width: 240px;
+        height: 60px;
+        background-color: #FFFFFF;
+        border-radius: 0.5em;
+        display: none;
+        flex-flow: row nowrap;
+        justify-content: space-around;
+        align-items: center;
+        align-content: center;
+      }
+
+      #signinButton:hover {
+        background-color: #E2E2E2;
+        cursor: pointer;
+      }
+
+      #signinButton * {
+        color: #3B4455;
+      }
+
+      #g-logo {
+        font-size: 2em;
       }
     </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
   </head>
   <body>
-    <ul class="navigation">
-      <li><a class="logo golden" href="#">C</a></li>
-      <li><a href="#">CLIMB.GG</a></li>
-    </ul>
+    <div class="navigation">
+      <ul class="left">
+        <li><a class="logo golden" href="#">C</a></li>
+        <li><a href="#">CLIMB.GG</a></li>
+      </ul>
+      <ul class="right">
+        <li><a href="/home">Go to App Homepage</a></li>
+      </ul>
+    </div>
     <div class="main">
       <div id="welcome"> WELCOME TO <B class="golden">CLIMB.GG</B></div>
       <div id="description">
         Climb enables coaches and analysts to extract actionable insights and key performance metrics from professional
         League of Legends game-play by analyzing and visualizing game data.
       </div>
-      <div id="signin-btn"></div>
+      <div id="signinButton">
+        <span id="g-logo">G</span>
+        <b>Sign in with Google</b>
+      </div>
     </div>
 
     <script>
-      function onSuccess(googleUser) {
-        let token = googleUser.getAuthResponse().id_token;
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', "/auth");
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-            if (xhr.status == 200) {
-                window.location += "home"
-            }
-        };
-        xhr.send('G_AUTH_USER_TOKEN=' + token);
-      }
-
-      function onFailure(error) {
-        console.log(error);
-      }
-
-      function renderButton() {
-        gapi.signin2.render('signin-btn', {
-          'scope': 'profile email',
-          'width': 320,
-          'height': 60,
-          'longtitle': true,
-          'theme': 'light',
-          'onsuccess': onSuccess,
-          'onfailure': onFailure
+      function start() {
+        gapi.load('auth2', function() {
+          auth2 = gapi.auth2.init({
+            client_id: '@googleClientId',
+          });
         });
       }
-    </script>
 
-    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+      function signInCallback(json) {
+        if (json['code']) {
+          $.post(window.location.protocol + "//" + window.location.host + "/auth", json, function(){
+              location.reload(true);
+          })
+        } else {
+          alert("Error authorizing Google account. Try again.")
+        }
+      }
+
+      $('#signinButton').click(function() {
+        auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
+      });
+
+      @if(loggedIn) {
+        $('.right').attr('style', 'display: flex');
+      } else {
+        $('#signinButton').attr('style', 'display: flex');
+      }
+    </script>
   </body>
 </html>

@@ -1,49 +1,72 @@
 package gg.climb.fifthdrake.controllers
 
-import gg.climb.fifthdrake.GoogleClientId
-import gg.climb.fifthdrake.browser.GoogleAuthToken
-import gg.climb.fifthdrake.controllers.requests.Authenticated
+import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeTokenRequest, GoogleTokenResponse}
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.jackson2.JacksonFactory
+import gg.climb.fifthdrake.{GoogleClientId, GoogleClientSecret}
+import gg.climb.fifthdrake.browser.UserId
+import gg.climb.fifthdrake.controllers.requests.AuthenticatedAction
+import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import play.api.Logger
-import play.api.mvc.{Action, AnyContent, Controller, Cookie}
+import play.api.mvc.{Action, AnyContent, Controller}
 
 /**
   * Serves landing page and user home page
-  * Also handles setting log in cookie
+  * Stores user account information upon first log in
   *
   * Created by michael on 1/15/17.
   */
-class HomePageController(googleClientId: GoogleClientId) extends Controller {
+class HomePageController(dbh: DataAccessHandler,
+                         googleClientId: GoogleClientId,
+                         googleClientSecret: GoogleClientSecret,
+                         AuthenticatedAction: AuthenticatedAction) extends Controller {
 
   def loadLandingPage: Action[AnyContent] = Action { request =>
     Logger.info("loading landing page")
-    if (request.cookies.get(GoogleAuthToken.name).isDefined) {
-      Logger.debug("redirecting user to home page for token authentication")
-      Redirect(routes.HomePageController.loadHomePage())
-    } else {
-      Logger.debug("sending landing page result")
-      Ok(views.html.landingPage(googleClientId))
+    val userId = request.session.get(UserId.name)
+    val validId = userId.map(id => dbh.isUserAccountStored(id))
+
+    validId match {
+      case Some(v) => Ok(views.html.landingPage(googleClientId, v))
+      case None => Ok(views.html.landingPage(googleClientId, false))
     }
   }
 
-  def loadHomePage: Action[AnyContent] = Authenticated { request =>
+  def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>
     Logger.info("loading home page")
-    Ok(s"${request.userInfo.get("given_name")}'s Home Page")
+    Ok(s"${request.firstName}'s Home Page")
   }
 
-  def setTokenCookie(): Action[AnyContent] = Action { request =>
-    Logger.debug("setting G_AUTH_USER_TOKEN")
+  def logIn(): Action[AnyContent] = Action { request =>
+    Logger.info("saving user account information upon log in")
 
-    val token: Option[String] = for {
-      form: Map[String, Seq[String]] <- request.body.asFormUrlEncoded
-      token <- Some(form(GoogleAuthToken.name).head)
-    } yield token
+    def exchangeAuthorizationCode(code: String, redirectUrl: String): GoogleTokenResponse = {
+      new GoogleAuthorizationCodeTokenRequest(
+        new NetHttpTransport(),
+        JacksonFactory.getDefaultInstance,
+        "https://www.googleapis.com/oauth2/v4/token",
+        googleClientId,
+        googleClientSecret,
+        code,
+        redirectUrl
+      ).execute()
+    }
 
-    token.map(t => {
-      Logger.debug(s"Cookie set with value: $t")
-      Redirect(routes.HomePageController.loadHomePage()).withCookies(Cookie(GoogleAuthToken.name, t))
-    }).getOrElse({
-      Logger.debug("Did not receive a token in form")
-      BadRequest("Missing Google Auth Token")
-    })
+    val form = request.body.asFormUrlEncoded
+    val code = form.map(f => f("code").head)
+
+    Logger.info(s"body: $form")
+
+    (form, code) match {
+      case (_, Some(c)) =>
+        val tokenResponse = exchangeAuthorizationCode(c, "postmessage")
+        val accessToken = tokenResponse.getAccessToken
+        val refreshToken = tokenResponse.getRefreshToken
+        val idToken = tokenResponse.parseIdToken()
+        val payload = idToken.getPayload
+        dbh.storeUserAccount(accessToken, refreshToken, payload)
+        Ok("").withSession(UserId.name -> payload.getSubject)
+      case (_, _) => BadRequest("Missing authorization code")
+    }
   }
 }

@@ -2,7 +2,7 @@ package gg.climb.fifthdrake.controllers
 
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.controllers.requests.{Authenticated, AuthorizationFilter}
+import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
@@ -16,9 +16,11 @@ import play.api.mvc.{Action, _}
 
 import scala.concurrent.duration.Duration
 
-class GameDataController(dbh: DataAccessHandler) extends Controller {
+class GameDataController(dbh: DataAccessHandler,
+                         AuthenticatedAction: AuthenticatedAction,
+                         AuthorizationFilter: AuthorizationFilter) extends Controller {
 
-  def loadDashboard(gameKey: String): Action[AnyContent] = (Authenticated andThen AuthorizationFilter) { request =>
+  def loadDashboard(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Ok(views.html.gameDashboard(request.host, gameKey))
   }
 
@@ -38,7 +40,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
   }
 
   // scalastyle:off method.length
-  def loadGameData(gameKey: String): Action[AnyContent] = (Authenticated andThen AuthorizationFilter) {
+  def loadGameData(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
     dbh.getGame(new RiotId[Game](gameKey)) match {
       case Some(game@(metadata, _)) =>
         implicit def behaviorWrites[A]
@@ -137,7 +139,7 @@ class GameDataController(dbh: DataAccessHandler) extends Controller {
   }
   // scalastyle:on method.length
 
-  def getTags(gameKey: String): Action[AnyContent] = (Authenticated andThen AuthorizationFilter) {
+  def getTags(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
     Ok(loadTagData(gameKey))
   }
 

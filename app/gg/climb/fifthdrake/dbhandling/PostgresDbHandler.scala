@@ -10,6 +10,7 @@ import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import org.joda.time.DateTime
 import scalikejdbc._
 
+import scala.collection.immutable.Seq
 import scala.concurrent.duration.Duration
 
 //noinspection RedundantBlock
@@ -291,6 +292,70 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
         .map(rs => rs.string("id")).list().apply()
     }
     ids.map(id => new InternalId[Team](id))
+  }
+
+  def isUserAccountStored(userId: String): Boolean = {
+    DB readOnly { implicit session =>
+      sql"SELECT id FROM account.user WHERE user_id = $userId"
+        .map(rs => rs.string("id"))
+        .list()
+        .apply()
+        .nonEmpty
+    }
+  }
+
+  def isUserAuthorized(userId: String): Boolean = {
+    DB readOnly { implicit session =>
+      sql"SELECT authorized FROM account.user WHERE user_id = $userId"
+        .map(rs => rs.boolean("authorized"))
+        .list()
+        .apply()
+        .headOption
+        .getOrElse(false)
+    }
+  }
+
+  def getPartialUserAccount(userId: String): (String, String, String) = {
+    DB readOnly { implicit session =>
+      sql"SELECT first_name, last_name, email FROM account.user WHERE user_id = $userId"
+        .map(rs => (rs.string("first_name"), rs.string("last_name"), rs.string("email")))
+        .list()
+        .apply()
+        .head
+    }
+  }
+
+  def storeUserAccount(firstName: String,
+                       lastName: String,
+                       userId: String,
+                       email: String,
+                       authorized: Boolean,
+                       accessToken: String,
+                       refreshToken: String,
+                       loggedIn: Boolean): Unit = {
+    DB localTx { implicit session =>
+      sql"""INSERT INTO account.user (
+              first_name,
+              last_name,
+              user_id,
+              email,
+              authorized,
+              access_token,
+              refresh_token,
+              logged_in
+            ) VALUES (
+              $firstName,
+              $lastName,
+              $userId,
+              $email,
+              $authorized,
+              $accessToken,
+              $refreshToken,
+              $loggedIn
+            )"""
+        .updateAndReturnGeneratedKey()
+        .apply()
+    }
   }
 }
 
