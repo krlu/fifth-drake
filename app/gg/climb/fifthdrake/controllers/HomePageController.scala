@@ -28,7 +28,7 @@ class HomePageController(dbh: DataAccessHandler,
 
     validId match {
       case Some(v) => Ok(views.html.landingPage(googleClientId, v))
-      case _ => Ok(views.html.landingPage(googleClientId, false))
+      case None => Ok(views.html.landingPage(googleClientId, false))
     }
   }
 

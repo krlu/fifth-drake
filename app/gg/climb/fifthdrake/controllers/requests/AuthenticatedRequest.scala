@@ -27,7 +27,7 @@ class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[Authenti
       case Some(user) =>
         Logger.info(s"user [${user._3}] is authenticated for: ${request.toString()}")
         block(new AuthenticatedRequest[A](user._1, user._2, user._3, request))
-      case _ =>
+      case None =>
         Logger.info("failed to authenticate user for: ${request.toString()}")
         Future.successful(
           Redirect(routes.HomePageController.loadLandingPage())
