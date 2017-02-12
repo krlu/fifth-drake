@@ -1,9 +1,9 @@
-@(googleClientId: String)
+@import gg.climb.fifthdrake.GoogleClientId
+@(googleClientId: GoogleClientId)
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="google-signin-client_id" content="@googleClientId">
     <title>Climb.gg</title>
     <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
@@ -54,7 +54,7 @@
       }
 
       .logo {
-        font-size: 32px;
+        font-size: 2.5em;
         font-weight: 600;
       }
 
@@ -69,12 +69,33 @@
         margin-bottom: 5em;
       }
 
-      #signin-btn * span {
-        font-family: Roboto, sans-serif;
-        font-weight: bold;
-        color: #1F2227;
+      #signinButton {
+        width: 240px;
+        height: 60px;
+        background-color: #FFFFFF;
+        border-radius: 0.5em;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-around;
+        align-items: center;
+        align-content: center;
+      }
+
+      #signinButton:hover {
+        background-color: #E2E2E2;
+        cursor: pointer;
+      }
+
+      #signinButton * {
+        color: #3B4455;
+      }
+
+      #g-logo {
+        font-size: 2em;
       }
     </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
   </head>
   <body>
     <ul class="navigation">
@@ -87,40 +108,36 @@
         Climb enables coaches and analysts to extract actionable insights and key performance metrics from professional
         League of Legends game-play by analyzing and visualizing game data.
       </div>
-      <div id="signin-btn"></div>
+      <div id="signinButton">
+        <span id="g-logo">G</span>
+        <b>Sign in with Google</b>
+      </div>
     </div>
 
     <script>
-      function onSuccess(googleUser) {
-        let token = googleUser.getAuthResponse().id_token;
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', "/auth");
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-            if (xhr.status == 200) {
-                window.location += "home"
-            }
-        };
-        xhr.send('G_AUTH_USER_TOKEN=' + token);
-      }
-
-      function onFailure(error) {
-        console.log(error);
-      }
-
-      function renderButton() {
-        gapi.signin2.render('signin-btn', {
-          'scope': 'profile email',
-          'width': 320,
-          'height': 60,
-          'longtitle': true,
-          'theme': 'light',
-          'onsuccess': onSuccess,
-          'onfailure': onFailure
+      function start() {
+        gapi.load('auth2', function() {
+          auth2 = gapi.auth2.init({
+            client_id: '@googleClientId',
+          });
         });
       }
-    </script>
 
-    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+      function signInSuccess() {
+        window.location = window.location.protocol + "//" + window.location.host + "/home";
+      }
+
+      function signInCallback(json) {
+        if (json['code']) {
+          $.post(window.location.protocol + "//" + window.location.host + "/auth", json, signInSuccess);
+        } else {
+          alert("Error authorizing Google account. Try again.")
+        }
+      }
+
+      $('#signinButton').click(function() {
+        auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
+      });
+    </script>
   </body>
 </html>

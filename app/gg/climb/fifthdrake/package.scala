@@ -12,6 +12,7 @@ package object fifthdrake {
   type Time = Duration
   type Game = (MetaData, GameData)
   type GoogleClientId = String
+  type GoogleClientSecret = String
 
   implicit object TimeMonoid extends Monoid[Time] {
     override def zero: Time = Duration.Zero

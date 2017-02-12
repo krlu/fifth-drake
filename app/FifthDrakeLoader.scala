@@ -32,9 +32,7 @@ class FifthDrakeApp(context: Context) extends BuiltInComponentsFromContext(conte
     )
   }
 
-  lazy val googleClientId: String = context.initialConfiguration.getString("climb.googleClientId").get
-
-  lazy val homePageController = new HomePageController(googleClientId)
+  lazy val homePageController = new HomePageController(dbh)
   lazy val gameDataController = new GameDataController(dbh)
   lazy val healthController = new HealthController()
   lazy val assets = new controllers.Assets(httpErrorHandler)

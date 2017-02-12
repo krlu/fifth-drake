@@ -6,5 +6,6 @@ CREATE TABLE account.user(
   email TEXT NOT NULL,
   authorized BOOLEAN NOT NULL,
   access_token TEXT NOT NULL,
-  refresh_token TEXT NOT NULL
+  refresh_token TEXT NOT NULL,
+  logged_in BOOLEAN NOT NULL
 );
