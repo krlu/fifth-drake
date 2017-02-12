@@ -123,7 +123,7 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
         [ p []
           [text tag.title]
         , p []
-          [text << toString <| tag.category]
+          [text tag.category]
         , p []
           [text tag.description]
         ]

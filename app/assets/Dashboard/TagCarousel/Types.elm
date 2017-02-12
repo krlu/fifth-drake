@@ -3,6 +3,7 @@ module TagCarousel.Types exposing (..)
 import GameModel exposing (GameId, PlayerId, Timestamp)
 import Http
 
+type alias TagCategory = String
 
 type alias TagId = String
 
@@ -42,13 +43,10 @@ type alias Tag =
 type alias TagForm =
   { title       : String
   , description : String
-  , category    : String
+  , category    : TagCategory
   , selectedIds : List PlayerId
   , gameId      : GameId
   , host        : Host
   , active      : Bool
   }
 
-type TagCategory
-  = TeamFight
-  | Objective

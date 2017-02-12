@@ -3,7 +3,7 @@ module TagCarousel.Internal.TagUtils exposing (..)
 import GameModel exposing (GameId)
 import TagCarousel.Types exposing (..)
 
-defaultTagForm : GameId -> Host -> String -> TagForm
+defaultTagForm : GameId -> Host -> TagCategory -> TagForm
 defaultTagForm gameId host category =
   { title = ""
   , description = ""
