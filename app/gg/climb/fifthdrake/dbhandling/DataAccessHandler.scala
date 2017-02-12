@@ -70,8 +70,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
         payload.getEmail,
         authorized = false,
         accessToken,
-        refreshToken,
-        loggedIn = true
+        refreshToken
       )
       Logger.info("successfully stored user account")
     } else {

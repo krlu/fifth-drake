@@ -331,8 +331,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
                        email: String,
                        authorized: Boolean,
                        accessToken: String,
-                       refreshToken: String,
-                       loggedIn: Boolean): Unit = {
+                       refreshToken: String): Unit = {
     DB localTx { implicit session =>
       sql"""INSERT INTO account.user (
               first_name,
@@ -341,8 +340,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
               email,
               authorized,
               access_token,
-              refresh_token,
-              logged_in
+              refresh_token
             ) VALUES (
               $firstName,
               $lastName,
@@ -350,8 +348,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
               $email,
               $authorized,
               $accessToken,
-              $refreshToken,
-              $loggedIn
+              $refreshToken
             )"""
         .updateAndReturnGeneratedKey()
         .apply()
