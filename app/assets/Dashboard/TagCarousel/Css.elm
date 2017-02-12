@@ -264,6 +264,6 @@ css =
   , (.) TagClickableArea
     [ height (100 |> pct)
     , width (100 |> pct)
-    , overflow "hidden"
+    , overflow hidden
     ]
   ]
