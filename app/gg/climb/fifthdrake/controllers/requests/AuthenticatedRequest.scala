@@ -20,7 +20,7 @@ class AuthenticatedRequest[A](val firstName: String,
 class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[AuthenticatedRequest] {
   override def invokeBlock[A](request: Request[A],
                               block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
-    Logger.debug(s"authenticating request: [Headers] ${request.headers}")
+    Logger.debug(s"authenticating request: ${request.toString()}")
 
     val userId = request.session.get(UserId.name)
     val loggedIn = userId.map(id => dbh.isUserLoggedIn(id))
@@ -37,9 +37,16 @@ class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[Authenti
   }
 }
 
-object AuthorizationFilter extends ActionFilter[AuthenticatedRequest] {
+class AuthorizationFilter(dbh: DataAccessHandler) extends ActionFilter[AuthenticatedRequest] {
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = Future.successful {
-    Logger.debug("filtering authenticated request for user authorization")
-    Some(Ok(""))
+    Logger.debug(s"authorizing request: ${request.toString()}")
+
+    val userId = request.session.get(UserId.name)
+    val authorized = userId.map(id => dbh.isUserAuthorized(id))
+
+    authorized match {
+      case Some(true) => None
+      case _ => Some(Unauthorized("You are not authorized to access this URL"))
+    }
   }
 }
