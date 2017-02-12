@@ -23,7 +23,13 @@ class HomePageController(dbh: DataAccessHandler,
 
   def loadLandingPage: Action[AnyContent] = Action { request =>
     Logger.info("loading landing page")
-    Ok(views.html.landingPage(googleClientId))
+    val userId = request.session.get(UserId.name)
+    val validId = userId.map(id => dbh.isUserAccountStored(id))
+
+    validId match {
+      case Some(v) => Ok(views.html.landingPage(googleClientId, v))
+      case _ => Ok(views.html.landingPage(googleClientId, false))
+    }
   }
 
   def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>

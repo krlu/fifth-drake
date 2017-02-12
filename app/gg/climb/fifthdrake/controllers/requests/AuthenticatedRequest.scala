@@ -20,17 +20,15 @@ class AuthenticatedRequest[A](val firstName: String,
 class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[AuthenticatedRequest] {
   override def invokeBlock[A](request: Request[A],
                               block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
-    Logger.debug(s"authenticating request: ${request.toString()}")
-
     val userId = request.session.get(UserId.name)
     val userInfo = userId.map(id => dbh.getPartialUserAccount(id))
 
     userInfo match {
       case Some(user) =>
-        Logger.info(s"user [${user._3}] is authenticated")
+        Logger.info(s"user [${user._3}] is authenticated for: ${request.toString()}")
         block(new AuthenticatedRequest[A](user._1, user._2, user._3, request))
       case _ =>
-        Logger.info("failed to authenticate user due to missing user id")
+        Logger.info("failed to authenticate user for: ${request.toString()}")
         Future.successful(
           Redirect(routes.HomePageController.loadLandingPage())
             .withSession(request.session - UserId.name)
@@ -41,17 +39,15 @@ class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[Authenti
 
 class AuthorizationFilter(dbh: DataAccessHandler) extends ActionFilter[AuthenticatedRequest] {
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = Future.successful {
-    Logger.debug(s"authorizing request: ${request.toString()}")
-
     val userId = request.session.get(UserId.name)
     val authorized = userId.map(id => dbh.isUserAuthorized(id))
 
     authorized match {
       case Some(true) =>
-        Logger.info(s"user [${request.email}] is authorized")
+        Logger.info(s"user [${request.email}] is authorized for: ${request.toString()}")
         None
       case _ =>
-        Logger.info(s"user [${request.email}] is not authorized")
+        Logger.info(s"user [${request.email}] is not authorized for: ${request.toString()}")
         Some(Unauthorized("You are not authorized to access this URL"))
     }
   }

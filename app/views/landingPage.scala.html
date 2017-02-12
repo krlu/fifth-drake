@@ -1,5 +1,5 @@
 @import gg.climb.fifthdrake.GoogleClientId
-@(googleClientId: GoogleClientId)
+@(googleClientId: GoogleClientId, loggedIn: Boolean)
 <!DOCTYPE html>
 <html>
   <head>
@@ -23,19 +23,43 @@
       }
 
       .navigation {
-        list-style: none;
         font-size: large;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
 
+      .left {
+        list-style: none;
         display: flex;
         flex-flow: row wrap;
         justify-content: flex-start;
         align-items: center;
       }
 
-      .navigation a {
+      .right {
+        list-style: none;
+        display: none;
+        flex-flow: row wrap;
+        justify-content: flex-end;
+        align-items: center;
+        margin-right: 0.5em;
+      }
+
+      .left a, .right a {
         text-decoration: none;
         display: block;
         padding: 0.5em;
+      }
+
+      .left a:hover {
+        cursor: pointer;
+      }
+
+      .right a:hover {
+        cursor: pointer;
+        color: #FFFFFF;
       }
 
       .main {
@@ -74,7 +98,7 @@
         height: 60px;
         background-color: #FFFFFF;
         border-radius: 0.5em;
-        display: flex;
+        display: none;
         flex-flow: row nowrap;
         justify-content: space-around;
         align-items: center;
@@ -98,10 +122,15 @@
     <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
   </head>
   <body>
-    <ul class="navigation">
-      <li><a class="logo golden" href="#">C</a></li>
-      <li><a href="#">CLIMB.GG</a></li>
-    </ul>
+    <div class="navigation">
+      <ul class="left">
+        <li><a class="logo golden" href="#">C</a></li>
+        <li><a href="#">CLIMB.GG</a></li>
+      </ul>
+      <ul class="right">
+        <li><a href="/home">Go to App Homepage</a></li>
+      </ul>
+    </div>
     <div class="main">
       <div id="welcome"> WELCOME TO <B class="golden">CLIMB.GG</B></div>
       <div id="description">
@@ -123,13 +152,11 @@
         });
       }
 
-      function signInSuccess() {
-        window.location = window.location.protocol + "//" + window.location.host + "/home";
-      }
-
       function signInCallback(json) {
         if (json['code']) {
-          $.post(window.location.protocol + "//" + window.location.host + "/auth", json, signInSuccess);
+          $.post(window.location.protocol + "//" + window.location.host + "/auth", json, function(){
+              location.reload(true);
+          })
         } else {
           alert("Error authorizing Google account. Try again.")
         }
@@ -138,6 +165,12 @@
       $('#signinButton').click(function() {
         auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
       });
+
+      @if(loggedIn) {
+        $('.right').attr('style', 'display: flex');
+      } else {
+        $('#signinButton').attr('style', 'display: flex');
+      }
     </script>
   </body>
 </html>
