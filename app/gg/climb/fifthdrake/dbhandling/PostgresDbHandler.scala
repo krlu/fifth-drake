@@ -304,17 +304,6 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def isUserLoggedIn(userId: String): Boolean = {
-    DB readOnly { implicit session =>
-      sql"SELECT logged_in FROM account.user WHERE user_id = $userId"
-        .map(rs => rs.boolean("logged_in"))
-        .list()
-        .apply()
-        .headOption
-        .getOrElse(false)
-    }
-  }
-
   def isUserAuthorized(userId: String): Boolean = {
     DB readOnly { implicit session =>
       sql"SELECT authorized FROM account.user WHERE user_id = $userId"
@@ -326,13 +315,13 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def getPartialUserAccount(userId: String): Option[(String, String, String)] = {
+  def getPartialUserAccount(userId: String): (String, String, String) = {
     DB readOnly { implicit session =>
       sql"SELECT first_name, last_name, email FROM account.user WHERE user_id = $userId"
         .map(rs => (rs.string("first_name"), rs.string("last_name"), rs.string("email")))
         .list()
         .apply()
-        .headOption
+        .head
     }
   }
 
@@ -345,7 +334,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
                        refreshToken: String,
                        loggedIn: Boolean): Unit = {
     DB localTx { implicit session =>
-      sql"""insert into account.user (
+      sql"""INSERT INTO account.user (
               first_name,
               last_name,
               user_id,
@@ -354,7 +343,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
               access_token,
               refresh_token,
               logged_in
-            ) values (
+            ) VALUES (
               $firstName,
               $lastName,
               $userId,

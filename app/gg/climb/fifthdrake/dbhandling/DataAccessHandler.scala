@@ -58,9 +58,8 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   }
 
   def isUserAccountStored(userId: String): Boolean = pdbh.isUserAccountStored(userId)
-  def isUserLoggedIn(userId: String): Boolean = pdbh.isUserLoggedIn(userId)
   def isUserAuthorized(userId: String): Boolean = pdbh.isUserAuthorized(userId)
-  def getPartialUserAccount(userId: String): Option[(String, String, String)] = pdbh.getPartialUserAccount(userId)
+  def getPartialUserAccount(userId: String): (String, String, String) = pdbh.getPartialUserAccount(userId)
   def storeUserAccount(accessToken: String, refreshToken: String, payload: Payload): Unit = {
     Logger.info(s"attempting to store account information for user: ${payload.getSubject}")
     if (!isUserAccountStored(payload.getSubject)) {

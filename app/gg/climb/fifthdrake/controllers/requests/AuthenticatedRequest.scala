@@ -23,16 +23,18 @@ class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[Authenti
     Logger.debug(s"authenticating request: ${request.toString()}")
 
     val userId = request.session.get(UserId.name)
-    val loggedIn = userId.map(id => dbh.isUserLoggedIn(id))
     val userInfo = userId.map(id => dbh.getPartialUserAccount(id))
 
-    (userId, loggedIn, userInfo) match {
-      case (_, Some(true), Some(Some(user))) =>
+    userInfo match {
+      case Some(user) =>
+        Logger.info(s"user [${user._3}] is authenticated")
         block(new AuthenticatedRequest[A](user._1, user._2, user._3, request))
-      case (_, _, _) => Future.successful(
-        Redirect(routes.HomePageController.loadLandingPage())
-          .withSession(request.session - UserId.name)
-      )
+      case _ =>
+        Logger.info("failed to authenticate user due to missing user id")
+        Future.successful(
+          Redirect(routes.HomePageController.loadLandingPage())
+            .withSession(request.session - UserId.name)
+        )
     }
   }
 }
@@ -45,8 +47,12 @@ class AuthorizationFilter(dbh: DataAccessHandler) extends ActionFilter[Authentic
     val authorized = userId.map(id => dbh.isUserAuthorized(id))
 
     authorized match {
-      case Some(true) => None
-      case _ => Some(Unauthorized("You are not authorized to access this URL"))
+      case Some(true) =>
+        Logger.info(s"user [${request.email}] is authorized")
+        None
+      case _ =>
+        Logger.info(s"user [${request.email}] is not authorized")
+        Some(Unauthorized("You are not authorized to access this URL"))
     }
   }
 }
