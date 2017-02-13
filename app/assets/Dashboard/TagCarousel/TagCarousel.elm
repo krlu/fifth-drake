@@ -10,7 +10,7 @@ import TagCarousel.Internal.View as View
 import Navigation exposing (Location)
 import UrlParser exposing ((</>), parsePath, s)
 
-defaultCategory : String
+defaultCategory : TagCategory
 defaultCategory = "Objective"
 
 init : Location -> String -> String -> (Model, Cmd Msg)
@@ -18,9 +18,8 @@ init loc addTagButton deleteTagButton =
   let
       gameId = getGameId loc
       host = loc.host
-      category = defaultCategory
       tagForm : TagForm
-      tagForm = TagUtils.defaultTagForm gameId host category
+      tagForm = TagUtils.defaultTagForm gameId host defaultCategory
   in
     ( { host = loc.host
       , tagForm = tagForm
