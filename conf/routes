@@ -2,21 +2,22 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET   /                           gg.climb.fifthdrake.controllers.HomePageController.loadLandingPage
-GET   /home                       gg.climb.fifthdrake.controllers.HomePageController.loadHomePage
-POST  /auth                       gg.climb.fifthdrake.controllers.HomePageController.logIn()
+GET   /                                gg.climb.fifthdrake.controllers.HomePageController.loadLandingPage
+GET   /home                            gg.climb.fifthdrake.controllers.HomePageController.loadHomePage
+POST  /auth                            gg.climb.fifthdrake.controllers.HomePageController.logIn()
 
 # Map static resources from the /public folder to the /static URL path
-GET   /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")
-GET   /static/public/*file        controllers.Assets.versioned(path="/public", file)
+GET   /favicon.ico                     controllers.Assets.at(path="/public", file="favicon.ico")
+GET   /static/public/*file             controllers.Assets.versioned(path="/public", file)
 
-GET   /health                     gg.climb.fifthdrake.controllers.HealthController.check
+GET   /health                          gg.climb.fifthdrake.controllers.HealthController.check
 
-GET   /game/:gameKey              gg.climb.fifthdrake.controllers.GameDataController.loadDashboard(gameKey: String)
-GET   /game/:gameKey/data         gg.climb.fifthdrake.controllers.GameDataController.loadGameData(gameKey: String)
-GET   /game/:gameKey/tags         gg.climb.fifthdrake.controllers.GameDataController.getTags(gameKey: String)
+GET   /game/:gameKey                   gg.climb.fifthdrake.controllers.GameDataController.loadDashboard(gameKey: String)
+GET   /game/:gameKey/data              gg.climb.fifthdrake.controllers.GameDataController.loadGameData(gameKey: String)
+GET   /game/:gameKey/tags              gg.climb.fifthdrake.controllers.GameDataController.getTags(gameKey: String)
+POST  /game/:gameKey/saveAudioNote     gg.climb.fifthdrake.controllers.GameDataController.saveAudioNote(gameKey: String)
 
-GET   /champion/:name             gg.climb.fifthdrake.controllers.GameDataController.loadChampion(name: String)
+GET   /champion/:name                  gg.climb.fifthdrake.controllers.GameDataController.loadChampion(name: String)
 
-PUT      /saveTag                 gg.climb.fifthdrake.controllers.GameDataController.saveTag
-DELETE   /deleteTag/:id           gg.climb.fifthdrake.controllers.GameDataController.deleteTag(id: String)
+PUT      /saveTag                               gg.climb.fifthdrake.controllers.GameDataController.saveTag
+DELETE   /deleteTag/:id                         gg.climb.fifthdrake.controllers.GameDataController.deleteTag(id: String)

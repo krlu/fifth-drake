@@ -1,7 +1,10 @@
 package gg.climb.fifthdrake.controllers
 
+import java.io.File
+import java.nio.file.{Files, Paths}
 import java.util.concurrent.TimeUnit
 
+import gg.climb.fifthdrake.browser.UserId
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.esports.Player
@@ -11,6 +14,7 @@ import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
+import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc.{Action, _}
 
@@ -201,6 +205,43 @@ class GameDataController(dbh: DataAccessHandler,
   def deleteTag(tagId: String): Action[AnyContent] = Action {
     dbh.deleteTag(new InternalId[Tag](tagId))
     Ok(tagId)
+  }
+
+  /**
+    * Request MultipartForm contains an audio file encoded in Ogg
+    *
+    * File in the form should be named "audio_note"
+    * Query String should contain "t={timestamp in s}"
+    * Saves file to /data/audio/notes
+    *
+    * @param gameKey used to associate note with game
+    * @return If successful, OK with a "success" flash session
+    */
+  def saveAudioNote(gameKey: String): Action[MultipartFormData[TemporaryFile]] =
+    (AuthenticatedAction andThen AuthorizationFilter)(parse.multipartFormData) { request =>
+      val time: Option[String] = request.queryString.get("t").map(_.head)
+
+      time match {
+        case Some(t) => {
+          var filename = s"${gameKey}_${request.session.get(UserId.name)}_$t.ogg"
+
+          var count = 1
+          while (Files.exists(Paths.get(s"/data/audio/notes/$filename"))) {
+            filename = s"${gameKey}_${request.session.get(UserId.name)}_${t}_$count.ogg"
+            count += 1
+          }
+
+          request.body.file("audio_note").map { audio =>
+            audio.ref.moveTo(new File(s"/data/audio/notes/$filename"))
+            Ok().flashing("success" -> "audio note successfully saved")
+          }.getOrElse(
+            Ok().flashing("error" -> "failed to receive audio file")
+          )
+        }
+        case None => {
+          Ok().flashing("error" -> "no timestamp specified")
+        }
+      }
   }
 }
 
