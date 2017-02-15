@@ -15,8 +15,10 @@ import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
 import play.api.libs.Files.TemporaryFile
+import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc.{Action, _}
+import play.api.mvc.
 
 import scala.concurrent.duration.Duration
 
@@ -241,6 +243,55 @@ class GameDataController(dbh: DataAccessHandler,
         case None => {
           Ok().flashing("error" -> "no timestamp specified")
         }
+      }
+  }
+
+  /**
+    * Find all saved audio notes for a specific game key
+    *
+    * @param gameKey
+    * @return Ok, with a json body where audioNotes is an array of all saved audio filenames
+    */
+  def findAudioNotes(gameKey: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
+      val audioNotesDir = new File("/data/audio/notes")
+      if (audioNotesDir.exists && audioNotesDir.isDirectory) {
+        val audioNotes = audioNotesDir.listFiles
+          .filter(_.isFile)
+          .toList
+          .filter(_.getName.split("_")(0) == gameKey)
+          .map(_.getName)
+        Ok(Json.obj(
+          "audioNotes" -> audioNotes
+        ))
+      } else {
+        Ok(Json.obj(
+          "audioNotes" -> Json.arr()
+        ))
+      }
+  }
+
+  /** Load an audio note from a specific game key
+    *
+    * Query string should contain "f={filename}"
+    *
+    * @param gameKey
+    * @return
+    */
+  def getAudioNote(gameKey: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
+      val filename: Option[String] = request.queryString.get("f").map(_.head)
+      filename match {
+        case Some(f) => {
+          val file = new File(s"/data/audio/notes/$f")
+          if (file.exists && file.isFile) {
+            val content = Enumerator.fromFile(file)
+            Ok(content).withHeaders(CONTENT_LENGTH -> file.length.toString)
+          } else {
+            Ok().flashing("error" -> "file does not exist")
+          }
+        }
+        case None => Ok().flashing("error" -> "no filename specified")
       }
   }
 }
