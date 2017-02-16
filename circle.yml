@@ -20,7 +20,7 @@ dependencies:
 
 database:
   override:
-    - psql -U ubuntu -d circle_test -c "\"CREATE EXTENSION uuid-ossp\""
+    - psql -U ubuntu -d circle_test -c "CREATE EXTENSION \"uuid-ossp\""
     - ./bin/activator flywayMigrate
 
 test:
