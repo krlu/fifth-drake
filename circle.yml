@@ -20,6 +20,7 @@ dependencies:
 
 database:
   override:
+    - Run psql -c "CREATE EXTENSION uuid-ossp"
     - ./bin/activator flywayMigrate
 
 test:
