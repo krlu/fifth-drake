@@ -6,7 +6,7 @@ CREATE TABLE league.game_identifier(
   game_date TIMESTAMP NOT NULL,
   game_number INTEGER NOT NULL,
   week Integer NOT NULL,
-  tournament_id TEXT REFERENCES league.tournament(id),
+  tournament_id UUID REFERENCES league.tournament(id),
   in_game_hash TEXT NOT NULL,
   series_hash TEXT NOT NULL,
   realm TEXT NOT NULL,
