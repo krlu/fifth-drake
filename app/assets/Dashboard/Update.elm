@@ -20,7 +20,7 @@ update msg model =
       in
         ( { model | tagCarousel = tmodel
                   , timestamp = Maybe.withDefault model.timestamp timestamp
-                  , minimap = Minimap.update model.minimap model.game.data model.timestamp (MinimapT.MoveIconStates Snap)
+                  , minimap = Minimap.update model.minimap model.game.data (Maybe.withDefault model.timestamp timestamp) (MinimapT.MoveIconStates Snap)
           }
         , Cmd.map TagCarouselMsg cmd
         )

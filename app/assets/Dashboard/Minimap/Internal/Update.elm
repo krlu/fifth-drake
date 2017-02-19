@@ -12,9 +12,6 @@ import PlaybackTypes exposing (..)
 epsilon : Float
 epsilon = 0.00001
 
-animationTimeScalar : Float
-animationTimeScalar = 0.925
-
 onStyle : (Animation.State -> Animation.State) -> State -> State
 onStyle styleFn state =
     { state | style = styleFn state.style }
@@ -92,10 +89,10 @@ update model data timestamp msg =
                       )
                     increment : Animation.State
                     increment =
-                      ( Animation.queue
+                      ( Animation.interrupt
                         [ Animation.toWith
                           ( Animation.easing
-                            { duration = animationTimeScalar * animationTime
+                            { duration = animationTime
                             , ease = (\x -> x)
                             }
                           )
