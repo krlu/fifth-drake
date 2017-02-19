@@ -3,8 +3,11 @@ module TagCarousel.Types exposing (..)
 import GameModel exposing (GameId, PlayerId, Timestamp)
 import Http
 
+type alias TagCategory = String
 
 type alias TagId = String
+
+type alias Host = String
 
 type Msg
   = TagClick Timestamp
@@ -20,7 +23,7 @@ type Msg
   | TagSaved (Result Http.Error (List Tag))
 
 type alias Model =
-  { host             : String
+  { host             : Host
   , tags             : List Tag
   , tagForm          : TagForm
   , lastClickedTime  : Timestamp
@@ -40,13 +43,10 @@ type alias Tag =
 type alias TagForm =
   { title       : String
   , description : String
-  , category    : String
+  , category    : TagCategory
   , selectedIds : List PlayerId
   , gameId      : GameId
-  , host        : String
+  , host        : Host
   , active      : Bool
   }
 
-type TagCategory
-  = TeamFight
-  | Objective

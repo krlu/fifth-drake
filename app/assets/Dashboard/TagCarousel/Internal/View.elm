@@ -7,7 +7,7 @@ import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick, onMouseLeave, onMouseOver)
 import TagCarousel.Css exposing (CssClass(..), namespace)
 import TagCarousel.Types exposing (Model, Msg(..), TagId)
-import Html.Attributes exposing (href, placeholder, rel, src, style, type_, for)
+import Html.Attributes exposing (href, placeholder, defaultValue, rel, src, style, type_, for)
 import Html.Events exposing (onClick, onInput)
 
 {id, class, classList} = withNamespace namespace
@@ -53,6 +53,7 @@ tagFormHtml model players =
               []
             , select
               [ placeholder "Category"
+              , defaultValue "Objective"
               , onInput CreateCategory
               , class [TagFormTextBox]
               ]
@@ -113,27 +114,25 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
         True -> selectedCss ++ [AltTag]
         False -> selectedCss
   in
-    li [ class selectedAndAltCss
-       , onClick <| TagClick tag.timestamp
-       ]
+    li
+      [ class selectedAndAltCss ]
       [ div
-          []
-          [ p
-              []
-              [text tag.title]
-          , p
-              []
-              [text << toString <| tag.category]
-          , p
-              []
-              [text tag.description]
-          ]
+        [ class [ TagClickableArea ]
+        , onClick <| TagClick tag.timestamp
+        ]
+        [ p []
+          [text tag.title]
+        , p []
+          [text tag.category]
+        , p []
+          [text tag.description]
+        ]
       , p
-          [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
-          [ img
-              [src deleteButton]
-              []
-          ]
+        [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
+        [ img
+          [src deleteButton]
+          []
+        ]
       ]
 
 

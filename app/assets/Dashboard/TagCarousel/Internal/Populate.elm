@@ -2,7 +2,7 @@ module TagCarousel.Internal.Populate exposing (..)
 
 import Http
 import Json.Decode exposing (..)
-import TagCarousel.Types exposing (Msg(..), Tag, TagCategory(..))
+import TagCarousel.Types exposing (Msg(..), Tag, TagCategory)
 import Task exposing (Task)
 import Navigation exposing (Location)
 import Populate exposing (getGameId)
@@ -28,10 +28,4 @@ tag =
     (field "players" <| list string)
 
 tagCategory : Decoder TagCategory
-tagCategory =
-  string
-  |> andThen (\s ->
-    case s of
-      "TeamFight" -> succeed TeamFight
-      "Objective" -> succeed Objective
-      _ -> fail <| s ++ " is not a proper tag type")
+tagCategory = string |> andThen (\s -> succeed s)
