@@ -33,7 +33,7 @@ flywayUrl := {
   val dbName = props.value.getOrElse("climb.pgDbName", "league_analytics")
   s"jdbc:postgresql://$host:$port/$dbName"
 }
-flywaySchemas := Seq("audit", "league")
+flywaySchemas := Seq("audit", "league", "account")
 flywayLocations := Seq("filesystem:postgres/")
 flywayUser := props.value.getProperty("climb.pgUserName")
 flywayPassword := props.value.getProperty("climb.pgPassword")
@@ -53,6 +53,7 @@ libraryDependencies ++= Seq(
 
   "org.postgresql" % "postgresql" % "9.4.1208.jre7",
   "org.slf4j" % "slf4j-api" % "1.7.21",
+  "com.google.apis" % "google-api-services-oauth2" % "v2-rev124-1.22.0",
 
   "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0",
   "org.mongodb.scala" %% "mongo-scala-driver" % "1.0.1",
@@ -68,8 +69,6 @@ libraryDependencies ++= Seq(
 classpathTypes += "maven-plugin"
 
 PlayKeys.playRunHooks <+= baseDirectory.map(Webpack.apply)
-
-fork in run := true
 
 def fileToOption (f : File) : Option[String] =
   if (f.exists) {

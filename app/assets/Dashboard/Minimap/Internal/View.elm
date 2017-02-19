@@ -1,64 +1,49 @@
 module Minimap.Internal.View exposing (..)
 
-import Array
-import Collage exposing (collage, defaultLine, path, toForm, traced)
-import Css exposing (bottom, left, property, px)
-import Element exposing (toHtml)
+import Animation
+import Css exposing (backgroundImage, url)
+import Dict
 import Html exposing (..)
 import Html.Attributes exposing (src, draggable)
-import Html.CssHelpers exposing (withNamespace)
-import Maybe exposing (andThen)
-import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespace)
+import Html.CssHelpers exposing (style, withNamespace)
+import Minimap.Css exposing (CssClass(..), namespace)
 import Minimap.Types exposing (Model)
+import GameModel exposing (..)
 import StyleUtils exposing (styles)
-import GameModel exposing (Data, Team, Timestamp)
-import Types exposing (TimeSelection(..))
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> Data -> TimeSelection -> Html a
-view model data selection =
+view : Model -> Html a
+view model =
   let
-    timestamp : Timestamp
-    timestamp =
-      case selection of
-        Instant t -> t
-        Range (_, end) -> end
-
     playerIcons : List (Html a)
     playerIcons =
-      data
-      |> (\{blueTeam, redTeam} ->
-          let
-            teamToPlayerIcons : Team -> List (Html a)
-            teamToPlayerIcons team =
-              team.players
-              |> Array.toList
-              |> List.filterMap (\player ->
-                player.state
-                |> Array.get timestamp
-                |> Maybe.map (\state ->
-                  div
-                    [ class [PlayerIcon]
-                    , styles
-                      [ left (minimapWidth * (state.position.x / model.mapWidth)|> px)
-                      , bottom (minimapHeight * (state.position.y / model.mapHeight)|> px)
-                      ]
-                    ]
-                    [ img
-                        [ class [ChampionImage]
-                        , src player.championImage
-                        , draggable "false"
-                        ]
-                        []
-                    ]
-                  )
-                )
-          in
-            (teamToPlayerIcons blueTeam) ++
-            (teamToPlayerIcons redTeam)
-          )
---
+      Dict.values model.iconStates
+      |> List.map (\iconState ->
+          div
+            ([ class
+              [ PlayerIcon
+              , IconColor iconState.side
+              ]
+            , styles
+              [ backgroundImage (url iconState.img)
+              ]
+            ]
+            ++ (Animation.render iconState.style))
+            []
+        )
+  in
+    div [ class [Minimap]
+        ]
+      (
+        [ img [ class [Background]
+              , src model.background
+              , draggable "false"
+              ]
+            []
+        ]
+        ++ playerIcons
+      )
 --    playerPaths : List (Html a)
 --    playerPaths =
 --        case selection of
@@ -94,17 +79,3 @@ view model data selection =
 --                  (teamToPlayerPaths blueTeam) ++
 --                  (teamToPlayerPaths redTeam)
 --               )
-
-  in
-    div [ class [Minimap]
-        ]
-      (
-        [ img [ class [Background]
-              , src model.background
-              , draggable "false"
-              ]
-            []
-        ]
-        ++ playerIcons
---        ++ playerPaths
-      )

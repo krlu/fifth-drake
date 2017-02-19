@@ -2,6 +2,7 @@ package gg.climb.fifthdrake.dbhandling
 
 import java.util.concurrent.TimeUnit
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
@@ -9,6 +10,7 @@ import gg.climb.fifthdrake.lolobjects.game.{Champion, GameData, InGameTeam, Meta
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
 import gg.climb.fifthdrake.{Game, Time}
 import gg.climb.ramenx.{Behavior, ListBehavior}
+import play.api.Logger
 
 import scala.collection.mutable
 import scala.concurrent.Await
@@ -53,6 +55,27 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
       val blueTeam = new InGameTeam(blueTeamBehaviors, bluePlayerBehaviors)
       (metadata, new GameData(sideToTeam(redTeam, blueTeam)))
     })
+  }
+
+  def isUserAccountStored(userId: String): Boolean = pdbh.isUserAccountStored(userId)
+  def isUserAuthorized(userId: String): Boolean = pdbh.isUserAuthorized(userId)
+  def getPartialUserAccount(userId: String): (String, String, String) = pdbh.getPartialUserAccount(userId)
+  def storeUserAccount(accessToken: String, refreshToken: String, payload: Payload): Unit = {
+    Logger.info(s"attempting to store account information for user: ${payload.getSubject}")
+    if (!isUserAccountStored(payload.getSubject)) {
+      pdbh.storeUserAccount(
+        payload.get("given_name").toString,
+        payload.get("family_name").toString,
+        payload.getSubject,
+        payload.getEmail,
+        authorized = false,
+        accessToken,
+        refreshToken
+      )
+      Logger.info("successfully stored user account")
+    } else {
+      Logger.info("user account already stored")
+    }
   }
 
   private def behaviorForPlayers(playerStates: Seq[(Time, Set[PlayerState])])

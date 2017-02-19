@@ -36,7 +36,7 @@ view model =
         [ TeamDisplay.view
           (getTeamName side model.game.metadata)
           (getTeam side model.game.data)
-          model.selection
+          model.timestamp
         ]
 
     sideToPlayerDisplay side =
@@ -55,36 +55,30 @@ view model =
       |> List.map
         (\p ->
           widget side
-            [ PlayerDisplay.view model.selection side p
+            [ PlayerDisplay.view side p model.timestamp
             ]
         )
       |> div [ class [PlayerDisplay] ]
 
+    sideToDisplays side = (sideToTeamDisplay side, sideToPlayerDisplay side)
+
     controls =
       Controls.view
-        model.selection
+        model.timestamp
         model.game.metadata.gameLength
         model.controls
       |> Html.map ControlsMsg
 
-    minimap = Minimap.view model.minimap model.game.data model.selection
+    minimap = Minimap.view model.minimap
 
-    tagCarousel =
-      model.game.data.blueTeam.players
-      |> Array.toList
-      |> List.append ( Array.toList model.game.data.redTeam.players )
-      |> List.map (\player -> (player.id, player.ign))
-      |> TagCarousel.view model.tagCarousel
-      |> Html.map TagCarouselMsg
+    bluePlayers = model.game.data.blueTeam.players
+    redPlayers =  model.game.data.redTeam.players
+    allPlayers = getPlayerIdsAndIgns bluePlayers redPlayers
 
-    (blueTeamDisplay, redTeamDisplay)
+    tagCarousel = TagCarousel.view model.tagCarousel allPlayers |> Html.map TagCarouselMsg
+    ((blueTeamDisplay, bluePlayerDisplays), (redTeamDisplay, redPlayerDisplays))
       = (Blue, Red)
-      |> mapBoth sideToTeamDisplay
-
-    (bluePlayerDisplays, redPlayerDisplays)
-      = (Blue, Red)
-      |> mapBoth sideToPlayerDisplay
-
+      |> mapBoth sideToDisplays
   in
     div
       [ class [Dashboard] ]
@@ -105,3 +99,11 @@ view model =
         ]
       , tagCarousel
       ]
+
+getPlayerIdsAndIgns: Array Player -> Array Player -> List (PlayerId, String, String, String)
+getPlayerIdsAndIgns bluePlayers redPlayers =
+  let
+     blueData = bluePlayers |> Array.map (\player -> (player.id, player.ign, player.championName, player.championImage))
+     redData = redPlayers |> Array.map (\player -> (player.id, player.ign, player.championName, player.championImage))
+  in
+      Array.append blueData redData |> Array.toList

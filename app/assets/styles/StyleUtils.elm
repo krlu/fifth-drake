@@ -1,7 +1,7 @@
 module StyleUtils exposing (..)
 
-import Html.Attributes
 import Css exposing (Mixin, property)
+import Html.Attributes
 
 styles = Css.asPairs >> Html.Attributes.style
 
@@ -21,4 +21,3 @@ flexDirection direction =
   , property "-ms-flex-direction" direction
   , property "-webkit-flex-direction" direction
   ]
-

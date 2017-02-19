@@ -4,13 +4,13 @@ import Controls.Internal.Subscriptions as Subscriptions
 import Controls.Internal.Update as Update
 import Controls.Internal.View as View
 import Controls.Types exposing (..)
-import GameModel exposing (GameLength)
+import GameModel exposing (GameLength, Timestamp)
 import Html exposing (Html)
-import Types exposing (TimeSelection)
+import PlaybackTypes exposing (..)
 
 initialModel : String -> String -> Model
 initialModel playButton pauseButton =
-  { mouse = Nothing
+  { lastMousePosition = Nothing
   , status = Pause
   , pauseButton = pauseButton
   , playButton = playButton
@@ -19,10 +19,10 @@ initialModel playButton pauseButton =
 init : String -> String -> Model
 init = initialModel
 
-update : TimeSelection -> GameLength -> Msg -> Model -> (TimeSelection, Model)
+update : Timestamp -> GameLength -> Msg -> Model -> (Timestamp, Model)
 update = Update.update
 
-view : TimeSelection -> GameLength -> Model -> Html Msg
+view : Timestamp -> GameLength -> Model -> Html Msg
 view = View.view
 
 subscriptions : Model -> Sub Msg

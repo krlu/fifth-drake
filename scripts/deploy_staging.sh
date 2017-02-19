@@ -5,7 +5,7 @@ CLIMB_USER=climb
 CLIMB_SERVER=climb.gg
 
 LOCAL_PATH=$CIRCLE_ARTIFACTS
-REMOTE_PATH="/data/fifth-drake"
+REMOTE_PATH="/data/fifth-drake/staging"
 
 # The 141 avoids
 # http://stackoverflow.com/questions/22464786/ignoring-bash-pipefail-for-error-code-141
@@ -32,8 +32,12 @@ ssh $CLIMB_USER@$CLIMB_SERVER \
 	mkdir -p $REMOTE_PATH/logs
 
 echo "Running the new server"
-ssh $CLIMB_USER@$CLIMB_SERVER nohup $EXECUTABLE_REMOTE \
+ssh $CLIMB_USER@$CLIMB_SERVER \
+  cd $REMOTE_PATH \; \
+  nohup $EXECUTABLE_REMOTE \
+    -Dclimb.pgDbName="league_analytics" \
 	-Dclimb.pgUserName="climb" \
+	-Dclimb.pgPassword="fukenny" \
 	-Dplay.crypto.secret="thisissimplystaging" \
 	 \> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.log \
 	2\> $REMOTE_PATH/logs/${ARTIFACT_NAME/.zip/}.err \

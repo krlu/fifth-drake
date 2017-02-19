@@ -47,7 +47,6 @@ init flags location =
       { metadata = metadata
       , data = data
       }
-    , selection = Instant 0
     , timestamp = 0
     } !
     [ Cmd.map TagCarouselMsg tagCarouselCmd

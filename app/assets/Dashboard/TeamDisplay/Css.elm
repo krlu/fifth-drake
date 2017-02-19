@@ -17,10 +17,10 @@ statsFontSize : Float
 statsFontSize = 14
 
 teamDisplayWidth : Float
-teamDisplayWidth = 300
+teamDisplayWidth = 275
 
 teamDisplayHeight : Float
-teamDisplayHeight = 125
+teamDisplayHeight = 100
 
 type CssClass
   = TeamDisplay

@@ -6,45 +6,20 @@ import GameModel exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (draggable, src)
 import Html.CssHelpers exposing (withNamespace)
-import PlayerDisplay.Css exposing (CssClass(..), namespace, Direction(..))
-import PlayerDisplay.Internal.Plots exposing (plotData)
-import Plot
-import StyleUtils exposing (styles)
-import Svg
-import Types exposing (TimeSelection(..))
+import PlayerDisplay.Css exposing (CssClass(..), namespace)
 import String
+import StyleUtils exposing (styles)
 
 {id, class, classList} = withNamespace namespace
 
-getDirection : Side -> Direction
-getDirection side =
-  case side of
-    Blue -> Normal
-    Red -> Reverse
-
-
-view : TimeSelection -> Side -> Player -> Html a
-view selection side player =
+view : Side -> Player -> Timestamp -> Html a
+view side player timestamp =
   let
-    direction = getDirection side
-  in
-    div
-      [ class [PlayerDisplay, Direction direction] ]
-      ( case selection of
-          Instant timestamp ->
-            displayInstant timestamp direction player
-          Range range ->
-            displayRange range player
-      )
+    direction =
+      case side of
+        Blue -> DirNormal
+        Red -> DirReverse
 
-displayRange : (Timestamp, Timestamp) -> Player -> List (Html a)
-displayRange range player = [ plotData range player ]
-
-
-displayInstant : Timestamp -> Direction -> Player -> List (Html a)
-displayInstant timestamp direction player =
-  let
-    dirClass = Direction direction
     kda =
       Array.get timestamp player.state
       |> Maybe.map (\state ->
@@ -74,7 +49,7 @@ displayInstant timestamp direction player =
       ]
       |> List.map (\(cssClass, current, max) ->
           div
-            [ class [ChampStat, dirClass] ]
+            [ class [ChampStat, direction] ]
             [ div
               [ class [cssClass]
               , styles
@@ -94,13 +69,15 @@ displayInstant timestamp direction player =
             ]
           )
   in
+    div
+      [ class [PlayerDisplay, direction] ]
       [ div
-        [ class [ChampDisplay, dirClass] ]
+        [ class [ChampDisplay, direction] ]
         [ p
           [ class [PlayerLevel] ]
           [ text << toString <| level ]
         , div
-          [ class [ChampPortrait, dirClass] ]
+          [ class [ChampPortrait, direction] ]
           [ img
               [ src player.championImage
               , draggable "false"
@@ -112,7 +89,7 @@ displayInstant timestamp direction player =
           champStats
         ]
       , div
-        [ class [PlayerStats, dirClass] ]
+        [ class [PlayerStats, direction] ]
         [ p
           [ class [PlayerIgn] ]
           [ text player.ign ]

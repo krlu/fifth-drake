@@ -1,19 +1,17 @@
 module Controls.Internal.Subscriptions exposing (subscriptions)
 
-import Controls.Types exposing (Msg(..), Model, Status(..))
+import Controls.Types exposing (Msg(..), Model)
 import Mouse
+import PlaybackTypes exposing (..)
 import Time
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ case model.mouse of
+    [ case model.lastMousePosition of
         Nothing -> Sub.none
         Just _ -> Sub.batch
                     [ Mouse.moves KnobMove
                     , Mouse.ups KnobRelease
                     ]
-    , case model.status of
-        Pause -> Sub.none
-        Play -> Time.every Time.second TimerUpdate
     ]

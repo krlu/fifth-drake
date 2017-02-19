@@ -27,7 +27,9 @@ test:
     - ./bin/activator test:compile
     - ./bin/activator test:test
   post:
+    - ./scripts/download_champion_icons.sh -a ${RIOT_API_KEY}
     - sysconfcpus -n 2 npm run compile-css
+    - sysconfcpus -n 2 npm run build
     - sysconfcpus -n 2 ./bin/activator dist
     - cp ./target/universal/*.zip ${CIRCLE_ARTIFACTS}
 
@@ -35,5 +37,4 @@ deployment:
   staging:
     branch: develop
     commands:
-      - ./scripts/download_champion_icons.sh -a ${RIOT_API_KEY}
       - ./scripts/deploy_staging.sh

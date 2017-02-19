@@ -31,6 +31,9 @@ elm-stuff/
 build/
 .gradle
 
+## macOS Stuff
+*.DS_Store
+
 ## Generated things
 logs
 target

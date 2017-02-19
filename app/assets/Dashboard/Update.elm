@@ -2,10 +2,11 @@ module Update exposing (..)
 
 import Array exposing (Array)
 import Controls.Controls as Controls
-import Controls.Types as TimelineT
+import Controls.Types as ControlsT
 import GameModel exposing (Player)
 import Minimap.Minimap as Minimap
 import Minimap.Types as MinimapT
+import PlaybackTypes exposing (..)
 import TagCarousel.TagCarousel as TagCarousel
 import TagCarousel.Types as TagCarouselT
 import Types exposing (..)
@@ -17,32 +18,62 @@ update msg model =
       let
         (timestamp, tmodel, cmd) = TagCarousel.update tmsg model.tagCarousel model.timestamp
       in
-        ( { model
-            | tagCarousel = tmodel
-            , selection =
-              timestamp
-              |> Maybe.map Instant
-              |> Maybe.withDefault model.selection
+        ( { model | tagCarousel = tmodel
+                  , timestamp = Maybe.withDefault model.timestamp timestamp
+                  , minimap = Minimap.update model.minimap model.game.data model.timestamp (MinimapT.MoveIconStates Snap)
           }
         , Cmd.map TagCarouselMsg cmd
         )
-    ControlsMsg controlMsg ->
+    ControlsMsg cmsg ->
       let
-        (selection, cmodel) =
-          Controls.update
-            model.selection
-            model.game.metadata.gameLength
-            controlMsg
-            model.controls
+        (timestamp, cmodel) =
+          Controls.update model.timestamp model.game.metadata.gameLength cmsg model.controls
       in
         ( { model
-            | selection = selection
-            , controls = cmodel
+          | timestamp = timestamp
+          , controls = cmodel
+          , minimap = Minimap.update model.minimap model.game.data model.timestamp (MinimapT.MoveIconStates Snap)
+          }
+        , Cmd.none
+        )
+    TimerUpdate _ ->
+      let
+        controlModel = model.controls
+        --paused controls will be used when the game is over
+        pausedControls =
+          { controlModel
+          | status = Pause
+          }
+      in
+        if model.timestamp >= model.game.metadata.gameLength then
+          ( { model
+            | controls = pausedControls
+            }
+          , Cmd.none
+          )
+        else
+          ( { model
+            | timestamp = model.timestamp + 1
+            , minimap = Minimap.update model.minimap model.game.data (model.timestamp) (MinimapT.MoveIconStates Increment)
+            }
+          , Cmd.none
+          )
+    MinimapMsg mmsg ->
+      let
+        mmodel =
+          Minimap.update model.minimap model.game.data model.timestamp mmsg
+      in
+        ( { model | minimap = mmodel
           }
         , Cmd.none
         )
     SetGame (Ok game) ->
-      ({ model | game = game }, Cmd.none)
+      ( { model
+        | game = game
+        , minimap =  Minimap.update model.minimap game.data model.timestamp MinimapT.GenerateIconStates
+        }
+      , Cmd.none
+      )
     SetGame (Err err) ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
     LocationUpdate loc -> (model, Cmd.none)

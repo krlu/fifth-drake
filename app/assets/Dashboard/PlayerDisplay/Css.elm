@@ -10,26 +10,24 @@ import StyleUtils
 namespace : String
 namespace = "playerDisplay"
 
-playerDisplayWidth = 300
-playerDisplayHeight = 90
+playerDisplayWidth = 275
+playerDisplayHeight = 60
 
 playerIgnFontSize = 16
 
 levelHeight = 30
 levelWidth = levelHeight
+levelMargin = 7
 levelFontSize = 18
 
-portraitHeight = 60
+portraitHeight = 38
 portraitWidth = portraitHeight
 
 champStatsWidth = 100
 champStatsHeight = portraitHeight
+champStatsMargin = 3
 
 champStatHeight = 7
-
-type Direction
-  = Normal
-  | Reverse
 
 type CssClass
   = PlayerDisplay
@@ -44,7 +42,8 @@ type CssClass
   | PlayerIgn
   | PlayerLevel
   | PlayerStats
-  | Direction Direction
+  | DirNormal
+  | DirReverse
 
 css : Stylesheet
 css =
@@ -56,16 +55,16 @@ css =
     , padding (10 |> px)
     , property "justify-content" "space-between"
     , alignItems flexStart
-    , withClass (Direction Normal)
+    , withClass DirNormal
       (StyleUtils.flexDirection "row")
-    , withClass (Direction Reverse)
+    , withClass DirReverse
       (StyleUtils.flexDirection "row-reverse")
     , children
       [ (.) ChampDisplay (
         [ displayFlex
-        , withClass (Direction Normal)
+        , withClass DirNormal
           (StyleUtils.flexDirection "row")
-        , withClass (Direction Reverse)
+        , withClass DirReverse
           (StyleUtils.flexDirection "row-reverse")
         , property "justify-content" "flex-start"
         , alignItems center
@@ -76,6 +75,7 @@ css =
             , height (levelHeight |> px)
             , width (levelWidth |> px)
             , borderRadius (50 |> pct)
+            , margin (levelMargin |> px)
             , fontSize (levelFontSize |> px)
             , displayFlex
             , alignItems center
@@ -87,10 +87,10 @@ css =
             , width (portraitWidth |> px)
             , backgroundColor Color.c_gold
             , property "z-index" "2"
-            , withClass (Direction Normal)
+            , withClass DirNormal
               [ marginLeft (-5 |> px)
               ]
-            , withClass (Direction Reverse)
+            , withClass DirReverse
               [ marginRight (-5 |> px)
               ]
             , children
@@ -113,11 +113,15 @@ css =
                 , height (champStatHeight |> px)
                 , width (100 |> pct)
                 , backgroundColor Color.c_offWhite
-                , margin (3 |> px)
-                , withClass (Direction Normal)
-                  (StyleUtils.flexDirection "row")
-                , withClass (Direction Reverse)
-                  (StyleUtils.flexDirection "row-reverse")
+                , margin (champStatsMargin |> px)
+                , withClass DirNormal
+                  (StyleUtils.flexDirection "row" ++
+                  [ paddingLeft (0 |> px) ]
+                  )
+                , withClass DirReverse
+                  (StyleUtils.flexDirection "row-reverse" ++
+                  [ paddingRight (0 |> px) ]
+                  )
                 , children
                   [ everything
                     [ height (100 |> pct)
@@ -141,10 +145,10 @@ css =
       , (.) PlayerStats (
         [ color Color.c_offWhite
         , displayFlex
-        , withClass (Direction Normal)
+        , withClass DirNormal
           [ alignItems flexEnd
           ]
-        , withClass (Direction Reverse)
+        , withClass DirReverse
           [ alignItems flexStart
           ]
         ] ++ StyleUtils.flexDirection "column" ++
