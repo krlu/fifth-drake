@@ -90,4 +90,4 @@ update msg model =
       let
         (pModel, cmd) = PlayerDisplay.update msg model.playerDisplay
       in
-        ({model | playerDisplay = (Debug.log "" pModel)}, Cmd.none)
+        ({model | playerDisplay = pModel}, Cmd.none)
