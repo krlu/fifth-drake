@@ -48,6 +48,7 @@ init flags location =
       , data = data
       }
     , timestamp = 0
+    , viewType = Map
     } !
     [ Cmd.map TagCarouselMsg tagCarouselCmd
     , Populate.populate location

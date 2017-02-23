@@ -3,6 +3,7 @@ port module Stylesheets exposing (..)
 import Controls.Css
 import Css.File exposing (..)
 import DashboardCss
+import Graph.Css
 import Html exposing (div)
 import MainCss
 import Minimap.Css
@@ -26,6 +27,7 @@ cssFiles =
         , TagCarousel.Css.css
         , PlayerDisplay.Css.css
         , TeamDisplay.Css.css
+        , Graph.Css.css
         ]
       , "navbar.css" => compile
         [ NavbarCss.css

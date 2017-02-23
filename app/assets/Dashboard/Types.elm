@@ -16,6 +16,7 @@ type Msg
   | MinimapMsg Minimap.Msg
   | SetGame (Result Http.Error Game)
   | LocationUpdate Location
+  | SwitchView
 
 type alias Model =
   { controls : Controls.Model
@@ -23,6 +24,7 @@ type alias Model =
   , tagCarousel : TagCarousel.Model
   , game : Game
   , timestamp : Timestamp
+  , viewType : ViewType
   }
 
 type alias Flags =
@@ -32,6 +34,8 @@ type alias Flags =
   , addTagButton      : String
   , deleteTagButton   : String
   }
+
+type ViewType = Map | Stats
 
 type TimeSelection
   = Instant Timestamp

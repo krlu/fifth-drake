@@ -77,3 +77,11 @@ update msg model =
     SetGame (Err err) ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
     LocationUpdate loc -> (model, Cmd.none)
+    SwitchView ->
+      let
+        viewType =
+          case model.viewType of
+            Map -> Stats
+            Stats -> Map
+      in
+        ({model | viewType =  viewType}, Cmd.none)

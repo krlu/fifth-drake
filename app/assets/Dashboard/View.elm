@@ -14,6 +14,8 @@ import PlayerDisplay.PlayerDisplay as PlayerDisplay
 import TeamDisplay.TeamDisplay as TeamDisplay
 import Types exposing (..)
 import Tuple
+import Graph.Graph as Graph
+import Html.Events exposing (onClick)
 
 {id, class, classList} = withNamespace namespace
 
@@ -69,7 +71,9 @@ view model =
         model.controls
       |> Html.map ControlsMsg
 
-    minimap = Minimap.view model.minimap
+    centerView = case model.viewType of
+      Map -> Minimap.view model.minimap
+      Stats -> Graph.view model.game
 
     bluePlayers = model.game.data.blueTeam.players
     redPlayers =  model.game.data.redTeam.players
@@ -82,7 +86,8 @@ view model =
   in
     div
       [ class [Dashboard] ]
-      [ div
+      [ button [onClick SwitchView] [text "switch view"],
+        div
         [ class [TeamDisplays] ]
         [ blueTeamDisplay
         , redTeamDisplay
@@ -92,7 +97,7 @@ view model =
         [ bluePlayerDisplays
         , div
           [ id [CenterContent] ]
-          [ minimap
+          [ centerView
           , controls
           ]
         , redPlayerDisplays
