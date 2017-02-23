@@ -52,6 +52,8 @@ type alias PlayerState =
   , kills             : Int
   , deaths            : Int
   , assists           : Int
+  , currentGold       : Float
+  , totalGold         : Float
   }
 
 type alias Position =

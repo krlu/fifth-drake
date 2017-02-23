@@ -105,12 +105,14 @@ role =
 
 playerState : Decoder PlayerState
 playerState =
-  map5 PlayerState
+  map7 PlayerState
     ("position" ::= position)
     ("championState" ::= championState)
     ("kills" ::= int)
     ("deaths" ::= int)
     ("assists" ::= int)
+    ("currentGold" ::= float)
+    ("totalGold" ::= float)
 
 position : Decoder Position
 position =

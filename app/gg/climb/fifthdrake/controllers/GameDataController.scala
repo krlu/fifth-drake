@@ -79,7 +79,9 @@ class GameDataController(dbh: DataAccessHandler,
             ),
             "kills" -> playerState.kills,
             "deaths" -> playerState.deaths,
-            "assists" -> playerState.assists
+            "assists" -> playerState.assists,
+            "currentGold" -> playerState.currentGold,
+            "totalGold" -> playerState.totalGold
           )
         }
 

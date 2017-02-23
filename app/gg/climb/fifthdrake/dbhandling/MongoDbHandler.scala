@@ -157,13 +157,17 @@ class MongoDbHandler(mongoClient: MongoClient) {
       kills <- playerStat.get("kills").map(_.asInt32().getValue)
       deaths <- playerStat.get("deaths").map(_.asInt32().getValue)
       assists <- playerStat.get("assists").map(_.asInt32().getValue)
+      currentGold <- playerStat.get("cg").map(_.asInt32().getValue)
+      totalGold <- playerStat.get("tg").map(_.asInt32().getValue)
     } yield new PlayerState(
       id = playerId,
       championState = championState,
       location = location,
       kills = kills,
       deaths = deaths,
-      assists = assists
+      assists = assists,
+      currentGold = currentGold,
+      totalGold = totalGold
     )
   }
 

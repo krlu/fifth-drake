@@ -18,8 +18,6 @@ import Tuple
 
 {id, class, classList} = withNamespace namespace
 
-
-
 view : Game -> Set PlayerId -> Html a
 view game selectedPlayers =
   let
@@ -79,3 +77,13 @@ plotPlayerXp player gameLength =
       |> Maybe.map (\state -> (toFloat (i), state))
     )
   |> List.map (Tuple.mapSecond (.xp << .championState))
+
+plotPlayerGold: Player -> GameLength -> List(Float, Float)
+plotPlayerGold player gameLength =
+  uncurry List.range (0, gameLength)
+  |> List.filterMap
+    (\i ->
+      Array.get i player.state
+      |> Maybe.map (\state -> (toFloat (i), state))
+    )
+  |> List.map (Tuple.mapSecond (.totalGold))
