@@ -57,7 +57,7 @@ view model =
       |> List.map
         (\p ->
           widget side
-            [ PlayerDisplay.view side p model.timestamp
+            [ PlayerDisplay.view side p model.timestamp model.playerDisplay |> Html.map PlayerDisplayMsg
             ]
         )
       |> div [ class [PlayerDisplay] ]

@@ -9,6 +9,7 @@ import Minimap.Types as MinimapT
 import PlaybackTypes exposing (..)
 import TagCarousel.TagCarousel as TagCarousel
 import TagCarousel.Types as TagCarouselT
+import PlayerDisplay.PlayerDisplay as PlayerDisplay
 import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -85,3 +86,8 @@ update msg model =
             Stats -> Map
       in
         ({model | viewType =  viewType}, Cmd.none)
+    PlayerDisplayMsg msg ->
+      let
+        (pModel, cmd) = PlayerDisplay.update msg model.playerDisplay
+      in
+        ({model | playerDisplay = (Debug.log "" pModel)}, Cmd.none)

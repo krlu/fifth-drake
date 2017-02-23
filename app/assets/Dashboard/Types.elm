@@ -1,11 +1,12 @@
 module Types exposing (..)
 
 import Controls.Types as Controls
-import GameModel exposing (Game, GameLength, Timestamp)
+import GameModel exposing (Game, GameLength, PlayerId, Timestamp)
 import Http
 import Minimap.Types as Minimap
 import Navigation exposing (Location)
 import TagCarousel.Types as TagCarousel
+import PlayerDisplay.Types as PlayerDisplay
 import Time
 
 
@@ -17,6 +18,7 @@ type Msg
   | SetGame (Result Http.Error Game)
   | LocationUpdate Location
   | SwitchView
+  | PlayerDisplayMsg PlayerDisplay.Msg
 
 type alias Model =
   { controls : Controls.Model
@@ -25,6 +27,7 @@ type alias Model =
   , game : Game
   , timestamp : Timestamp
   , viewType : ViewType
+  , playerDisplay : PlayerDisplay.Model
   }
 
 type alias Flags =
