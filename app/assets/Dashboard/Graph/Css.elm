@@ -19,6 +19,7 @@ graphWidth = 512
 
 type CssClass
   = Graph
+  | DisplayCategories
 
 css : Stylesheet
 css =

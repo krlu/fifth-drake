@@ -3,10 +3,12 @@ module Graph.Graph exposing (..)
 import Array
 import Css exposing (height, pct, width, zero)
 import GameModel exposing (..)
+import Graph.Types exposing (Model, Msg(ChangeStat), Stat(Gold, XP))
 import Html exposing (..)
-import Html.Attributes exposing (draggable, src)
+import Html.Attributes exposing (defaultValue, draggable, placeholder, placeholder, selected, src)
 import Html.CssHelpers exposing (withNamespace)
 import Graph.Css exposing (CssClass(..), namespace)
+import Html.Events exposing (onInput)
 import PlayerDisplay.Internal.Plots exposing (getHpPercent)
 import Plot exposing (..)
 import Plot.Line exposing (stroke, strokeWidth)
@@ -18,17 +20,38 @@ import Tuple
 
 {id, class, classList} = withNamespace namespace
 
-view : Game -> Set PlayerId -> Html a
-view game selectedPlayers =
+init : Model
+init =
+  { selectedStat = XP
+  }
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of
+    ChangeStat stat ->
+      case stat of
+        "XP" -> ( {model | selectedStat = XP}, Cmd.none)
+        "Gold" -> ( {model | selectedStat = Gold}, Cmd.none)
+        _ ->  (model, Cmd.none)
+
+
+view : Model -> Game -> Set PlayerId -> Html Msg
+view model game selectedPlayers =
   let
+    function =
+      case model.selectedStat of
+        XP -> plotPlayerXp
+        Gold -> plotPlayerGold
     bluePlayers =  Array.toList game.data.blueTeam.players
     redPlayers = Array.toList game.data.redTeam.players
-    blueLines = List.map (\player -> createLineForPlayer player Blue game.metadata.gameLength)
+    blueLines = List.map (\player -> createLineForPlayer player Blue game.metadata.gameLength function)
                   <| List.filter (\player -> Set.member player.id selectedPlayers) bluePlayers
-    redLines = List.map (\player -> createLineForPlayer player Red game.metadata.gameLength)
+    redLines = List.map (\player -> createLineForPlayer player Red game.metadata.gameLength function)
                   <| List.filter (\player -> Set.member player.id selectedPlayers) redPlayers
   in
-    div[class [Graph]]
+    div
+    []
+    [ div[class [Graph]]
       [
         plot
         [ size (512, 512)
@@ -45,6 +68,18 @@ view game selectedPlayers =
           ]
         ])
       ]
+      , select
+        [ placeholder "Stat"
+        , onInput ChangeStat
+        ]
+        [ option
+          [id "XP"]
+          [text "XP"]
+        , option
+          [id "Gold"]
+          [text "Gold"]
+        ]
+    ]
 
 getColorString: Side -> Role -> String
 getColorString side role =
@@ -60,13 +95,13 @@ getColorString side role =
     (Red, Bot) -> "#ff1a1a"
     (Red, Support) -> "#cc0000"
 
-createLineForPlayer: Player -> Side -> Int -> Element msg
-createLineForPlayer player side gameLength=
+createLineForPlayer: Player -> Side -> Int -> (Player -> GameLength -> List(Float, Float)) -> Element msg
+createLineForPlayer player side gameLength function=
   line
     [ stroke <| getColorString side player.role
     , strokeWidth 2
     ]
-    (plotPlayerXp player gameLength)
+    (function player gameLength)
 
 plotPlayerXp: Player -> GameLength -> List(Float, Float)
 plotPlayerXp player gameLength =

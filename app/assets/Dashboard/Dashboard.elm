@@ -14,6 +14,7 @@ import View
 import Minimap.Minimap as Minimap
 import TagCarousel.TagCarousel as TagCarousel
 import PlayerDisplay.PlayerDisplay as PlayerDisplay
+import Graph.Graph as Graph
 
 init : Flags -> Location -> (Model, Cmd Msg)
 init flags location =
@@ -21,7 +22,6 @@ init flags location =
     minimapModel = Minimap.init flags.minimapBackground
     (tagCarouselModel, tagCarouselCmd) = TagCarousel.init location flags.addTagButton flags.deleteTagButton
     controlsModel = Controls.init flags.playButton flags.pauseButton
-    playerDisplayModel = PlayerDisplay.init
     metadata : Metadata
     metadata =
       { blueTeamName = ""
@@ -50,6 +50,7 @@ init flags location =
     , timestamp = 0
     , viewType = Map
     , playerDisplay = PlayerDisplay.init
+    , graphStat = Graph.init
     } !
     [ Cmd.map TagCarouselMsg tagCarouselCmd
     , Populate.populate location

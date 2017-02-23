@@ -73,7 +73,7 @@ view model =
 
     centerView = case model.viewType of
       Map -> Minimap.view model.minimap
-      Stats -> Graph.view model.game model.playerDisplay.selectedPlayers
+      Stats -> Graph.view model.graphStat model.game model.playerDisplay.selectedPlayers |> Html.map GraphMsg
 
     bluePlayers = model.game.data.blueTeam.players
     redPlayers =  model.game.data.redTeam.players

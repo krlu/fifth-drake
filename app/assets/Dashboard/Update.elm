@@ -10,6 +10,7 @@ import PlaybackTypes exposing (..)
 import TagCarousel.TagCarousel as TagCarousel
 import TagCarousel.Types as TagCarouselT
 import PlayerDisplay.PlayerDisplay as PlayerDisplay
+import Graph.Graph as Graph
 import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -91,3 +92,9 @@ update msg model =
         (pModel, cmd) = PlayerDisplay.update msg model.playerDisplay
       in
         ({model | playerDisplay = pModel}, Cmd.none)
+    GraphMsg msg ->
+      let
+        (gModel, cmd) = Graph.update msg model.graphStat
+      in
+        ({model | graphStat = gModel}, Cmd.none)
+
