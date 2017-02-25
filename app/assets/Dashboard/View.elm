@@ -72,7 +72,7 @@ view model =
       |> Html.map ControlsMsg
 
     centerView = case model.viewType of
-      Map -> Minimap.view model.minimap
+      Map -> Minimap.view model.minimap model.game.data
       Stats -> Graph.view model.graphStat model.game model.playerDisplay.selectedPlayers |> Html.map GraphMsg
 
     bluePlayers = model.game.data.blueTeam.players
@@ -86,7 +86,7 @@ view model =
   in
     div
       [ class [Dashboard] ]
-      [ button [onClick SwitchView] [text "switch view"],
+      [ button [ class [SwitchCss], onClick SwitchView] [text "switch view"],
         div
         [ class [TeamDisplays] ]
         [ blueTeamDisplay

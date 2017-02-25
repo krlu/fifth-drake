@@ -43,6 +43,7 @@ type CssClass
   | PlayerDisplay
   | Widget
   | WidgetColor Side
+  | SwitchCss
 
 css : Stylesheet
 css =
@@ -118,5 +119,10 @@ css =
       [ color Color.c_redTeam
       , borderColor Color.c_redTeam
       ]
+    ]
+  , (.) SwitchCss
+    [ position relative
+    , right (40 |> pct)
+    , top (10 |> pct)
     ]
   ]
