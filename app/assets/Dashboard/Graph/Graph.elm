@@ -119,6 +119,3 @@ createLineForPlayer player side gameLength statFunction =
     , strokeWidth 2
     ]
     (plotPlayerData player gameLength)
-
-
---  |> Debug.log "" (List.map (Tuple.mapSecond (getHpPercent << .championState)))
