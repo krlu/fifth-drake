@@ -39,4 +39,4 @@ plotData range player =
       ]
 
 getHpPercent : ChampionState -> Float
-getHpPercent championState = 100 * championState.hp/championState.hpMax
+getHpPercent championState = (100 * championState.hp/championState.hpMax)

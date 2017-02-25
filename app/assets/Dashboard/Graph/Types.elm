@@ -6,7 +6,7 @@ import Set exposing (Set)
 
 type Msg = ChangeStat String
 
-type Stat = Gold | XP
+type Stat = Gold | XP | HP
 
 type alias Model =
   { selectedStat: Stat

@@ -3,7 +3,7 @@ module Graph.Graph exposing (..)
 import Array
 import Css exposing (height, pct, width, zero)
 import GameModel exposing (..)
-import Graph.Types exposing (Model, Msg(ChangeStat), Stat(Gold, XP))
+import Graph.Types exposing (Model, Msg(ChangeStat), Stat(Gold, HP, XP))
 import Html exposing (..)
 import Html.Attributes exposing (defaultValue, draggable, placeholder, placeholder, selected, src)
 import Html.CssHelpers exposing (withNamespace)
@@ -32,21 +32,23 @@ update msg model =
       case stat of
         "XP" -> ( {model | selectedStat = XP}, Cmd.none)
         "Gold" -> ( {model | selectedStat = Gold}, Cmd.none)
+        "HP" -> ({model | selectedStat = HP}, Cmd.none)
         _ ->  (model, Cmd.none)
 
 
 view : Model -> Game -> Set PlayerId -> Html Msg
 view model game selectedPlayers =
   let
-    function =
+    (statFunction, highMark) =
       case model.selectedStat of
-        XP -> plotPlayerXp
-        Gold -> plotPlayerGold
+        HP -> (getHpPercent << .championState, 100)
+        Gold -> (.totalGold, 30000)
+        XP -> (.xp << .championState, 30000)
     bluePlayers =  Array.toList game.data.blueTeam.players
     redPlayers = Array.toList game.data.redTeam.players
-    blueLines = List.map (\player -> createLineForPlayer player Blue game.metadata.gameLength function)
+    blueLines = List.map (\player -> createLineForPlayer player Blue game.metadata.gameLength statFunction)
                   <| List.filter (\player -> Set.member player.id selectedPlayers) bluePlayers
-    redLines = List.map (\player -> createLineForPlayer player Red game.metadata.gameLength function)
+    redLines = List.map (\player -> createLineForPlayer player Red game.metadata.gameLength statFunction)
                   <| List.filter (\player -> Set.member player.id selectedPlayers) redPlayers
   in
     div
@@ -57,7 +59,7 @@ view model game selectedPlayers =
         [ size (512, 512)
         , margin (10, 20, 40, 50)
         , domainLowest (always 0)
-        , domainHighest (always 30000)
+        , domainHighest (always highMark)
         ]
         (blueLines ++ redLines ++
         [ xAxis
@@ -78,6 +80,9 @@ view model game selectedPlayers =
         , option
           [id "Gold"]
           [text "Gold"]
+        , option
+          [id "HP"]
+          [text "HP"]
         ]
     ]
 
@@ -95,30 +100,25 @@ getColorString side role =
     (Red, Bot) -> "#ff1a1a"
     (Red, Support) -> "#cc0000"
 
-createLineForPlayer: Player -> Side -> Int -> (Player -> GameLength -> List(Float, Float)) -> Element msg
-createLineForPlayer player side gameLength function=
+createLineForPlayer: Player -> Side -> GameLength -> (PlayerState -> Float) -> Element msg
+createLineForPlayer player side gameLength statFunction =
+  let
+    plotPlayerData: Player -> GameLength -> List(Float, Float)
+    plotPlayerData player gameLength =
+      uncurry List.range (0, gameLength)
+      |> List.filterMap
+        (\i ->
+          Array.get i player.state
+          |> Maybe.map (\state -> (toFloat (i), state))
+        )
+      |> List.map (Tuple.mapSecond statFunction)
+      |> List.filter (\(time,value) -> isNaN value |> not)
+  in
   line
     [ stroke <| getColorString side player.role
     , strokeWidth 2
     ]
-    (function player gameLength)
+    (plotPlayerData player gameLength)
 
-plotPlayerXp: Player -> GameLength -> List(Float, Float)
-plotPlayerXp player gameLength =
-  uncurry List.range (0, gameLength)
-  |> List.filterMap
-    (\i ->
-      Array.get i player.state
-      |> Maybe.map (\state -> (toFloat (i), state))
-    )
-  |> List.map (Tuple.mapSecond (.xp << .championState))
 
-plotPlayerGold: Player -> GameLength -> List(Float, Float)
-plotPlayerGold player gameLength =
-  uncurry List.range (0, gameLength)
-  |> List.filterMap
-    (\i ->
-      Array.get i player.state
-      |> Maybe.map (\state -> (toFloat (i), state))
-    )
-  |> List.map (Tuple.mapSecond (.totalGold))
+--  |> Debug.log "" (List.map (Tuple.mapSecond (getHpPercent << .championState)))

@@ -54,8 +54,8 @@ playerPaths model data start end =
     playerPaths =
       data |>
       (\{blueTeam, redTeam} ->
-        [ Debug.log "" (teamToPlayerPaths blueTeam model start end)
-        , Debug.log "" (teamToPlayerPaths redTeam model start end)
+        [ teamToPlayerPaths blueTeam model start end
+        , teamToPlayerPaths redTeam model start end
         ]
       )
   in
