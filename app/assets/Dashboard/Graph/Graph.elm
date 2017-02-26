@@ -9,9 +9,9 @@ import Html.Attributes exposing (defaultValue, draggable, placeholder, placehold
 import Html.CssHelpers exposing (withNamespace)
 import Graph.Css exposing (CssClass(..), namespace)
 import Html.Events exposing (onInput)
-import PlayerDisplay.Internal.Plots exposing (getHpPercent)
 import Plot exposing (..)
 import Plot.Line exposing (stroke, strokeWidth)
+import Plot.Label as Label
 import Plot.Axis as Axis
 import Set exposing (Set)
 import String
@@ -39,11 +39,11 @@ update msg model =
 view : Model -> Game -> Set PlayerId -> Html Msg
 view model game selectedPlayers =
   let
-    (statFunction, highMark) =
+    (statFunction, highMark, labelName) =
       case model.selectedStat of
-        HP -> (getHpPercent << .championState, 100)
-        Gold -> (.totalGold, 30000)
-        XP -> (.xp << .championState, 30000)
+        HP -> (getHpPercent << .championState, 100, "HP%")
+        Gold -> (.totalGold, 30000, "Total Gold")
+        XP -> (.xp << .championState, 30000, "Total XP")
     bluePlayers =  Array.toList game.data.blueTeam.players
     redPlayers = Array.toList game.data.redTeam.players
     blueLines = List.map (\player -> createLineForPlayer player Blue game.metadata.gameLength statFunction)
@@ -51,39 +51,51 @@ view model game selectedPlayers =
     redLines = List.map (\player -> createLineForPlayer player Red game.metadata.gameLength statFunction)
                   <| List.filter (\player -> Set.member player.id selectedPlayers) redPlayers
   in
-    div
-    []
+    div [class [GraphContainer]]
     [ div[class [Graph]]
-      [
-        plot
+      [ div [class [YAxisLabel]]
+        [ text labelName
+        ]
+      , plot
         [ size (512, 512)
         , margin (10, 20, 40, 50)
         , domainLowest (always 0)
         , domainHighest (always highMark)
+        , rangeLowest (always 0)
+        , rangeHighest (always <| toFloat game.metadata.gameLength)
         ]
         (blueLines ++ redLines ++
         [ xAxis
           [ Axis.line [ stroke "white" ]
+          , Axis.label
+            [ Label.format (\{ value } -> toString value ++ "s")
+            ]
           ]
         , yAxis
           [ Axis.line [ stroke "white" ]
           ]
+        , hint [] Nothing
         ])
       ]
-      , select
-        [ placeholder "Stat"
-        , onInput ChangeStat
-        ]
-        [ option
-          [id "XP"]
-          [text "XP"]
-        , option
-          [id "Gold"]
-          [text "Gold"]
-        , option
-          [id "HP"]
-          [text "HP"]
-        ]
+      , div [ class [GraphControls]]
+        [ select
+          [ placeholder "Stat"
+          , onInput ChangeStat
+          ]
+          [ option
+            [id "XP"]
+            [text "XP"]
+          , option
+            [id "Gold"]
+            [text "Gold"]
+          , option
+            [id "HP"]
+            [text "HP"]
+          ]
+        , div [class [XAxisLabel]]
+          [ text "Timestamp"
+          ]
+      ]
     ]
 
 getColorString: Side -> Role -> String
@@ -119,3 +131,6 @@ createLineForPlayer player side gameLength statFunction =
     , strokeWidth 2
     ]
     (plotPlayerData player gameLength)
+
+getHpPercent : ChampionState -> Float
+getHpPercent championState = (100 * championState.hp/championState.hpMax)

@@ -61,3 +61,6 @@ c_selected = hex "#6f996E"
 
 c_hovering : Color
 c_hovering = hex "#5f796E"
+
+c_slateGrey : Color
+c_slateGrey = hex "708090"
