@@ -18,6 +18,7 @@ GET   /game/:gameKey/tags              gg.climb.fifthdrake.controllers.GameDataC
 POST  /game/:gameKey/saveAudioNote     gg.climb.fifthdrake.controllers.GameDataController.saveAudioNote(gameKey: String)
 GET   /game/:gameKey/findAudioNotes    gg.climb.fifthdrake.controllers.GameDataController.findAudioNotes(gameKey: String)
 GET   /game/:gameKey/getAudioNote      gg.climb.fifthdrake.controllers.GameDataController.getAudioNote(gameKey: String)
+DELETE   /game/:gameKey/deleteAudioNote      gg.climb.fifthdrake.controllers.GameDataController.deleteAudioNotes(gameKey: String)
 
 GET   /champion/:name                  gg.climb.fifthdrake.controllers.GameDataController.loadChampion(name: String)
 

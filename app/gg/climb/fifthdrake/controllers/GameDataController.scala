@@ -15,10 +15,8 @@ import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
 import play.api.libs.Files.TemporaryFile
-import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc.{Action, _}
-import play.api.mvc.
 
 import scala.concurrent.duration.Duration
 
@@ -26,7 +24,8 @@ class GameDataController(dbh: DataAccessHandler,
                          AuthenticatedAction: AuthenticatedAction,
                          AuthorizationFilter: AuthorizationFilter) extends Controller {
 
-  def loadDashboard(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+  def loadDashboard(gameKey: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Ok(views.html.gameDashboard(request.host, gameKey))
   }
 
@@ -235,13 +234,13 @@ class GameDataController(dbh: DataAccessHandler,
 
           request.body.file("audio_note").map { audio =>
             audio.ref.moveTo(new File(s"/data/audio/notes/$filename"))
-            Ok().flashing("success" -> "audio note successfully saved")
+            Ok.flashing("success" -> "audio note successfully saved")
           }.getOrElse(
-            Ok().flashing("error" -> "failed to receive audio file")
+            BadRequest.flashing("error" -> "failed to receive audio file")
           )
         }
         case None => {
-          Ok().flashing("error" -> "no timestamp specified")
+          BadRequest.flashing("error" -> "no timestamp specified")
         }
       }
   }
@@ -285,14 +284,33 @@ class GameDataController(dbh: DataAccessHandler,
         case Some(f) => {
           val file = new File(s"/data/audio/notes/$f")
           if (file.exists && file.isFile) {
-            val content = Enumerator.fromFile(file)
-            Ok(content).withHeaders(CONTENT_LENGTH -> file.length.toString)
+            Ok.sendFile(file, inline = true)
           } else {
-            Ok().flashing("error" -> "file does not exist")
+            BadRequest.flashing("error" -> "file does not exist")
           }
         }
-        case None => Ok().flashing("error" -> "no filename specified")
+        case None => BadRequest.flashing("error" -> "no filename specified")
       }
   }
+
+  /**
+    * Deletes audio notes by file name
+    *
+    * Query string should contain one or more file names "f={filenames}"
+    *
+    * @param gameKey
+    * @return
+    */
+  def deleteAudioNotes(gameKey: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
+      val filenames: Option[Seq[String]] = request.queryString.get("f")
+      filenames match {
+        case Some(files) => {
+          files.map(f => new File(s"/data/audio/notes/$f").delete())
+          Ok.flashing("deleted" -> s"${files.length}")
+        }
+        case None => Ok.flashing("deleted" -> "0")
+      }
+    }
 }
 
