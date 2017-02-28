@@ -33,6 +33,7 @@ type CssClass
   | XAxisLabel
   | GraphContainer
   | YAxisLabel
+  | HintCss
 
 css : Stylesheet
 css =
@@ -63,4 +64,7 @@ css =
     , color c_slateGrey
     , top (yAxisLabelTop |> px)
     ] )
+  , (.) HintCss(
+    [ property "color" "#4d4dff"
+    ])
   ]
