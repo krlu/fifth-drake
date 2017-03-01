@@ -6,6 +6,8 @@ import Set exposing (Set)
 
 type Msg = ChangeStat String  | PlotInteraction (Plot.Interaction Msg)
 
+type alias Color = String
+
 type Stat = Gold | XP | HP
 
 type alias Model =

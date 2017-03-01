@@ -3,7 +3,7 @@ module Graph.Internal.View exposing (..)
 import Array
 import Css exposing (height, pct, width, zero)
 import GameModel exposing (..)
-import Graph.Internal.PlotView exposing (customHint)
+import Graph.Internal.PlotView exposing (customHintCreator)
 import Graph.Types exposing (Model, Msg(ChangeStat, PlotInteraction), Stat(Gold, HP, XP))
 import Html exposing (..)
 import Html.Attributes exposing (defaultValue, draggable, placeholder, placeholder, selected, src)
@@ -29,12 +29,21 @@ view model game selectedPlayers =
         HP -> (getHpPercent << .championState, 100, "HP%")
         Gold -> (.totalGold, 30000, "Total Gold")
         XP -> (.xp << .championState, 30000, "Total XP")
-    bluePlayers =  Array.toList game.data.blueTeam.players
+    bluePlayers = Array.toList game.data.blueTeam.players
+                  |> List.filter (\player -> Set.member player.id selectedPlayers)
     redPlayers = Array.toList game.data.redTeam.players
-    blueLines = List.map (\player -> createLineForPlayer player Blue game.metadata.gameLength statFunction)
-                  <| List.filter (\player -> Set.member player.id selectedPlayers) bluePlayers
-    redLines = List.map (\player -> createLineForPlayer player Red game.metadata.gameLength statFunction)
-                  <| List.filter (\player -> Set.member player.id selectedPlayers) redPlayers
+                  |> List.filter (\player -> Set.member player.id selectedPlayers)
+    blueLines = bluePlayers
+                |> List.map (\player -> createLineForPlayer player Blue game.metadata.gameLength statFunction)
+    redLines = redPlayers
+                |> List.map (\player -> createLineForPlayer player Red game.metadata.gameLength statFunction)
+
+    blueHintData = bluePlayers
+                    |> List.map (\player -> (player.ign, getColorString Blue player.role))
+--                    |> Debug.log ""
+    redHintData = redPlayers
+                    |> List.map (\player -> (player.ign, getColorString Red player.role))
+--                    |> Debug.log ""
   in
     div [class [GraphContainer]]
     [ div[class [Graph]]
@@ -61,7 +70,7 @@ view model game selectedPlayers =
         , yAxis
           [ Axis.line [ stroke "white" ]
           ]
-        , customHint [] (getHoveredValue model.plotState)
+        , (customHintCreator (blueHintData ++ redHintData)) [] (getHoveredValue model.plotState)
         ])) |> Html.map PlotInteraction
       ]
       , div [ class [GraphControls]]
