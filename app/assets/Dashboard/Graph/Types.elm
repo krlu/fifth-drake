@@ -1,6 +1,6 @@
 module Graph.Types exposing (..)
 
-import GameModel exposing (PlayerId)
+import GameModel exposing (PlayerId, Timestamp)
 import Plot
 import Set exposing (Set)
 
@@ -13,4 +13,6 @@ type Stat = Gold | XP | HP
 type alias Model =
   { selectedStat: Stat
   , plotState : Plot.State
+  , start : Timestamp
+  , end : Timestamp
   }

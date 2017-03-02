@@ -10,10 +10,12 @@ import Graph.Internal.Update as Update
 import Plot
 
 
-init : Model
+init :  Model
 init =
   { selectedStat = XP
   , plotState = Plot.initialState
+  , start = 0
+  , end = 0
   }
 
 update : Msg -> Model -> (Model, Cmd Msg)

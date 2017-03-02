@@ -85,8 +85,10 @@ update msg model =
           case model.viewType of
             Map -> Stats
             Stats -> Map
+        graphModel = model.graphStat
+        newGraphModel = {graphModel | end = model.game.metadata.gameLength}
       in
-        ({model | viewType =  viewType}, Cmd.none)
+        ({model | viewType = viewType, graphStat = newGraphModel}, Cmd.none)
     PlayerDisplayMsg msg ->
       let
         (pModel, cmd) = PlayerDisplay.update msg model.playerDisplay
