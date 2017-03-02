@@ -1,4 +1,4 @@
-module Graph.Internal.PlotView exposing (..)
+module Graph.Internal.PlotView exposing (customHintCreator)
 
 import Array
 import Css exposing (height, pct, property, width, zero)
@@ -42,34 +42,56 @@ customViewGenerator playerHintDataList  =
       in
         Html.div
           [ Html.Attributes.classList classes, class [HintCss] ]
-          [ Html.div [] (List.map viewYValues <| zip playerHintDataList yValues)
+          [ Html.div [] [ Html.text ("Timestamp: " ++ toString xValue) ]
+          , Html.div [] (List.map viewYData
+                         <| List.reverse
+                         <| List.sortWith customComparison
+                         <| List.map (\(player, value) -> (player, hintValueDisplayed value))
+                         <| List.filter (\(player, value) -> hasSingleValue value)
+                         <| zip playerHintDataList yValues)
           ]
   in
     customView
 
+customComparison: ((Ign, Graph.Types.Color), Float) -> ((Ign, Graph.Types.Color), Float) -> Order
+customComparison (player1, value1) (player2, value2) = compare value1 value2
 
-viewYValues : ((Ign, Graph.Types.Color), Maybe (List Float)) -> Html.Html msg
-viewYValues ((ign, color), hintValue) =
-  let
-    hintValueDisplayed =
-      case hintValue of
-        Just value ->
-          case value of
-            [ singleY ] ->
-              toString singleY
-            _ ->
-              toString value
-        Nothing ->
-            "~"
-  in
-    Html.div
-      [ Html.Attributes.style
-        [ ("color", color)
-        ]
+-- The two methods below are explicitly for extracting the Value from yValue
+-- Which is a Maybe (List Float). I want all cases where the yValue is a singleton.
+-- The Reason for going through this trouble right now is because elm.plot doesn't
+-- enable customizable hintInfo data structure, so I cannot make the yValues a list of singletons
+-- @krlu 3-1-2017
+
+hasSingleValue : Maybe (List Float) -> Bool
+hasSingleValue hintValue =
+        case hintValue of
+          Just value ->
+            case value of
+              [ singleY ] -> True
+              _ -> False
+          Nothing -> False
+
+hintValueDisplayed: Maybe (List Float) -> Float
+hintValueDisplayed hintValue =
+  case hintValue of
+    Just value ->
+      case value of
+        [ singleY ] -> singleY
+        _ -> 0
+    Nothing -> 0
+
+---------------------------------------------------------------------------------------------------
+
+viewYData : ((Ign, Graph.Types.Color), Float) -> Html.Html msg
+viewYData ((ign, color), hintValue) =
+  Html.div
+    [ Html.Attributes.style
+      [ ("color", color)
       ]
-      [ Html.span [] [ Html.text (ign ++ " : ")]
-      , Html.span [] [ Html.text hintValueDisplayed ]
-      ]
+    ]
+    [ Html.span [] [ Html.text (ign ++ " : ")]
+    , Html.span [] [ Html.text (toString hintValue)]
+    ]
 
 zip : List a -> List b -> List (a,b)
 zip xs ys =

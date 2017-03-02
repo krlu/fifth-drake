@@ -3,7 +3,7 @@ module Graph.Css exposing (..)
 import Css exposing (..)
 import Css.Elements exposing (h1, p, span)
 import Css.Namespace
-import CssColors as Color exposing (c_slateGrey)
+import CssColors as Color exposing (c_lightYellow, c_slateGrey)
 import Color
 import GameModel exposing (Side(..))
 import StyleUtils
@@ -25,6 +25,9 @@ yAxisLabelWidth = 100
 
 yAxisLabelTop : Float
 yAxisLabelTop = 20
+
+opacityValue : String
+opacityValue = "0.2"
 
 type CssClass
   = Graph
@@ -65,6 +68,7 @@ css =
     , top (yAxisLabelTop |> px)
     ] )
   , (.) HintCss(
-    [ property "color" "#4d4dff"
+    [ backgroundColor c_lightYellow
+    , property "opacity" opacityValue
     ])
   ]

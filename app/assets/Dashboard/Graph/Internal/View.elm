@@ -40,10 +40,8 @@ view model game selectedPlayers =
 
     blueHintData = bluePlayers
                     |> List.map (\player -> (player.ign, getColorString Blue player.role))
---                    |> Debug.log ""
     redHintData = redPlayers
                     |> List.map (\player -> (player.ign, getColorString Red player.role))
---                    |> Debug.log ""
   in
     div [class [GraphContainer]]
     [ div[class [Graph]]
@@ -57,7 +55,6 @@ view model game selectedPlayers =
         , domainHighest (always highMark)
         , rangeLowest (always 0)
         , rangeHighest (always <| toFloat game.metadata.gameLength)
---        , id "PlotHint"
         , style [ ( "position", "relative" ) ]
         ]
         (blueLines ++ redLines ++
