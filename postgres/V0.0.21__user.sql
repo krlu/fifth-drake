@@ -1,5 +1,5 @@
 CREATE TABLE account.user(
-  id SERIAL PRIMARY KEY,
+  id UUID PRIMARY KEY,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   user_id TEXT NOT NULL,
