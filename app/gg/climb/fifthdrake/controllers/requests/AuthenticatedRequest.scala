@@ -28,15 +28,15 @@ class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[Authenti
       case Some(id) => {
         dbh.getUser(id) match {
           case Some(user) =>
-            Logger.info(s"user account successfully logged in: $id")
+            Logger.info(s"user account successfully logged in: $id\nrequest: ${request.toString()}")
             block(new AuthenticatedRequest[A](user, request))
           case None =>
-            Logger.info(s"user account not found: $id")
+            Logger.info(s"user account not found: $id\nrequest: ${request.toString()}")
             defaultResult
         }
       }
       case None =>
-        Logger.info("no user logged in while trying to authenticate")
+        Logger.info(s"no user logged in while trying to authenticate: ${request.toString()}")
         defaultResult
     }
   }
@@ -49,10 +49,10 @@ class AuthorizationFilter(dbh: DataAccessHandler) extends ActionFilter[Authentic
 
     authorized match {
       case Some(Some(true)) =>
-        Logger.info(s"user [${request.user.userId}] is authorized for: ${request.toString()}")
+        Logger.info(s"user [${request.user.userId}] is authorized: ${request.toString()}")
         None
       case _ =>
-        Logger.info(s"user [${request.user.userId}] is not authorized for: ${request.toString()}")
+        Logger.info(s"user [${request.user.userId}] is not authorized: ${request.toString()}")
         Some(Unauthorized("You are not authorized to access this URL"))
     }
   }

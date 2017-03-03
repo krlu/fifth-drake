@@ -62,7 +62,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def isUserAuthorized(userId: String): Option[Boolean] = pdbh.isUserAuthorized(userId)
   def getUser(userId: String): Option[User] = pdbh.getUser(userId)
   def storeUserAccount(accessToken: String, refreshToken: String, payload: Payload): Unit = {
-    Logger.info(s"attempting to store account information for user: ${payload.getSubject}")
+    Logger.info(s"attempting to store user account information: ${payload.getSubject}")
     if (!isUserAccountStored(payload.getSubject)) {
       pdbh.storeUser(
         payload.get("given_name").toString,
@@ -73,9 +73,9 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
         accessToken,
         refreshToken
       )
-      Logger.info("successfully stored user account")
+      Logger.info(s"successfully stored user account: ${payload.getSubject}")
     } else {
-      Logger.info("user account already stored")
+      Logger.info(s"user account already stored: ${payload.getSubject}")
     }
   }
 

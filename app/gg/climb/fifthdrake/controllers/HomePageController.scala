@@ -22,7 +22,7 @@ class HomePageController(dbh: DataAccessHandler,
                          AuthenticatedAction: AuthenticatedAction) extends Controller {
 
   def loadLandingPage: Action[AnyContent] = Action { request =>
-    Logger.info("loading landing page")
+    Logger.info(s"loading landing page: ${request.toString()}")
     val userId = request.session.get(UserId.name)
     val validId = userId.map(id => dbh.isUserAccountStored(id))
 
@@ -33,12 +33,12 @@ class HomePageController(dbh: DataAccessHandler,
   }
 
   def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>
-    Logger.info("loading home page")
+    Logger.info(s"loading home page: ${request.toString()}")
     Ok(s"${request.user.firstName}'s Home Page")
   }
 
   def logIn(): Action[AnyContent] = Action { request =>
-    Logger.info("saving user account information upon log in")
+    Logger.info(s"saving user account information upon log in: ${request.toString()}")
 
     def exchangeAuthorizationCode(code: String, redirectUrl: String): GoogleTokenResponse = {
       new GoogleAuthorizationCodeTokenRequest(
@@ -55,7 +55,7 @@ class HomePageController(dbh: DataAccessHandler,
     val form = request.body.asFormUrlEncoded
     val code = form.map(f => f("code").head)
 
-    Logger.info(s"body: $form")
+    Logger.info(s"log in form body: $form\nrequest: ${request.toString()}")
 
     (form, code) match {
       case (_, Some(c)) =>
