@@ -33,6 +33,11 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def getPlayer(id: InternalId[Player]) = pdbh.getPlayer(id)
   def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
 
+  def getAllGames: Seq[MetaData] = {
+    val TIMEOUT = Duration(30, TimeUnit.SECONDS)
+    Await.result(mdbh.getAllGames, TIMEOUT)
+  }
+
   def getGame(gameKey: RiotId[Game]): Option[Game] ={
 
     val TIMEOUT = Duration(30, TimeUnit.SECONDS)

@@ -7,7 +7,9 @@ import gg.climb.fifthdrake.{GoogleClientId, GoogleClientSecret}
 import gg.climb.fifthdrake.browser.UserId
 import gg.climb.fifthdrake.controllers.requests.AuthenticatedAction
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
+import gg.climb.fifthdrake.lolobjects.game.MetaData
 import play.api.Logger
+import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
 
 /**
@@ -34,7 +36,20 @@ class HomePageController(dbh: DataAccessHandler,
 
   def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>
     Logger.info("loading home page")
-    Ok(s"${request.firstName}'s Home Page")
+    implicit val metaDataWrites = new Writes[MetaData] {
+      override def writes(o: MetaData): JsValue = Json.obj(
+        "gameLength" -> o.gameDuration.toSeconds,
+        "blueTeamName" -> o.blueTeamName,
+        "redTeamName" -> o.redTeamName,
+        "gameDate" -> o.gameDate,
+        "vodURL" -> o.vodURL.toString,
+        "gameKey" -> o.gameKey.id
+      )
+    }
+    val games: Seq[JsValue] = dbh.getAllGames.map((game: MetaData) =>
+      Json.toJson(game)
+    )
+    Ok(Json.toJson(games))
   }
 
   def logIn(): Action[AnyContent] = Action { request =>

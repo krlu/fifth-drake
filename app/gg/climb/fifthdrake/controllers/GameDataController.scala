@@ -112,7 +112,6 @@ class GameDataController(dbh: DataAccessHandler,
             "blueTeamName" -> o.blueTeamName,
             "redTeamName" -> o.redTeamName
           )
-
         }
 
         implicit val gameDataWrites = new Writes[GameData] {
