@@ -3,6 +3,7 @@ package gg.climb.fifthdrake.dbhandling
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
+import gg.climb.fifthdrake.dbhandling.dbobjects.User
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
 import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
@@ -294,7 +295,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     ids.map(id => new InternalId[Team](id))
   }
 
-  def isUserAccountStored(userId: String): Boolean = {
+  def userExists(userId: String): Boolean = {
     DB readOnly { implicit session =>
       sql"SELECT id FROM account.user WHERE user_id = $userId"
         .map(rs => rs.string("id"))
@@ -304,34 +305,44 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def isUserAuthorized(userId: String): Boolean = {
+  def isUserAuthorized(userId: String): Option[Boolean] = {
     DB readOnly { implicit session =>
       sql"SELECT authorized FROM account.user WHERE user_id = $userId"
         .map(rs => rs.boolean("authorized"))
         .list()
         .apply()
         .headOption
-        .getOrElse(false)
     }
   }
 
-  def getPartialUserAccount(userId: String): (String, String, String) = {
+  def getUser(userId: String): Option[User] = {
     DB readOnly { implicit session =>
-      sql"SELECT first_name, last_name, email FROM account.user WHERE user_id = $userId"
-        .map(rs => (rs.string("first_name"), rs.string("last_name"), rs.string("email")))
+      sql"SELECT * FROM account.user WHERE user_id = $userId"
+        .map(rs => {
+          new User(
+            rs.string("id"),
+            rs.string("first_name"),
+            rs.string("last_name"),
+            rs.string("user_id"),
+            rs.string("email"),
+            rs.boolean("authorized"),
+            rs.string("access_token"),
+            rs.string("refresh_token")
+          )
+        })
         .list()
         .apply()
-        .head
+        .headOption
     }
   }
 
-  def storeUserAccount(firstName: String,
-                       lastName: String,
-                       userId: String,
-                       email: String,
-                       authorized: Boolean,
-                       accessToken: String,
-                       refreshToken: String): Unit = {
+  def storeUser(firstName: String,
+                lastName: String,
+                userId: String,
+                email: String,
+                authorized: Boolean,
+                accessToken: String,
+                refreshToken: String): Unit = {
     DB localTx { implicit session =>
       sql"""INSERT INTO account.user (
               first_name,

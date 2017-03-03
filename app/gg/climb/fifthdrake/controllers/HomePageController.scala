@@ -28,13 +28,13 @@ class HomePageController(dbh: DataAccessHandler,
 
     validId match {
       case Some(v) => Ok(views.html.landingPage(googleClientId, v))
-      case None => Ok(views.html.landingPage(googleClientId, false))
+      case None => Ok(views.html.landingPage(googleClientId, loggedIn = false))
     }
   }
 
   def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>
     Logger.info("loading home page")
-    Ok(s"${request.firstName}'s Home Page")
+    Ok(s"${request.user.firstName}'s Home Page")
   }
 
   def logIn(): Action[AnyContent] = Action { request =>
