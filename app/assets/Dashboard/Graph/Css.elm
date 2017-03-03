@@ -18,7 +18,7 @@ graphWidth : Float
 graphWidth = 512
 
 xAxisLabelLeft : Float
-xAxisLabelLeft = 37 -- Percent
+xAxisLabelLeft = 48 -- Percent
 
 yAxisLabelWidth : Float
 yAxisLabelWidth = 100
@@ -28,6 +28,12 @@ yAxisLabelTop = 20
 
 opacityValue : String
 opacityValue = "0.2"
+
+graphControlMarginTop : Float
+graphControlMarginTop = 32
+
+graphControlLeft : Float
+graphControlLeft = 90
 
 type CssClass
   = Graph
@@ -56,11 +62,17 @@ css =
   , (.)GraphControls(
     [ displayFlex
     , width (100 |> pct)
+    , position relative
+    , marginTop (graphControlMarginTop |> px )
+    , left (graphControlLeft |> px)
     ])
   , (.) XAxisLabel(
     [ position relative
     , left (xAxisLabelLeft |> pct)
     , color c_slateGrey
+    , width (100 |> px)
+    , height (10 |> px)
+    , left (48 |> pct)
     ] )
   , (.) YAxisLabel(
     [ position relative

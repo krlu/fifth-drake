@@ -4,12 +4,12 @@ import Array
 import Css exposing (height, pct, width, zero)
 import GameModel exposing (..)
 import Graph.Internal.PlotView exposing (customHintCreator)
-import Graph.Types exposing (Model, Msg(ChangeStat, PlotInteraction), Stat(Gold, HP, XP))
+import Graph.Types exposing (Model, Msg(ChangeStat, PlotInteraction, SubmitRange, UpdateEnd, UpdateStart), Stat(Gold, HP, XP))
 import Html exposing (..)
 import Html.Attributes exposing (defaultValue, draggable, placeholder, placeholder, selected, src)
 import Html.CssHelpers exposing (withNamespace)
 import Graph.Css exposing (CssClass(..), namespace)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onClick, onInput)
 import Plot exposing (..)
 import Plot.Line exposing (stroke, strokeWidth)
 import Plot.Label as Label
@@ -44,18 +44,18 @@ view model game selectedPlayers =
     blueHintData = bluePlayers |> List.map (\player -> (player.ign, getColorString Blue player.role))
     redHintData = redPlayers |> List.map (\player -> (player.ign, getColorString Red player.role))
   in
-    div [class [GraphContainer]]
+    div [class [GraphContainer] ]
     [ div[class [Graph]]
-      [ div [class [YAxisLabel]]
+      [ div [class [YAxisLabel] ]
         [ text labelName
         ]
       , (plotInteractive
         [ size (512, 512)
         , margin (10, 20, 40, 50)
         , domainLowest (always 0)
-        , domainHighest (always highMark)
+        , domainHighest (always (max highMark 10))
         , rangeLowest (always <| toFloat start)
-        , rangeHighest (always <| toFloat end)
+        , rangeHighest (always <| max 10 <| toFloat end)
         , style [ ( "position", "relative" ) ]
         ]
         (blueLines ++ redLines ++
@@ -71,24 +71,37 @@ view model game selectedPlayers =
         , (customHintCreator (blueHintData ++ redHintData)) [] (getHoveredValue model.plotState)
         ])) |> Html.map PlotInteraction
       ]
-      , div [ class [GraphControls]]
-        [ select
-          [ placeholder "Stat"
-          , onInput ChangeStat
-          ]
-          [ option
-            [id "XP"]
-            [text "XP"]
-          , option
-            [id "Gold"]
-            [text "Gold"]
-          , option
-            [id "HP"]
-            [text "HP"]
-          ]
-        , div [class [XAxisLabel]]
-          [ text "Timestamp"
-          ]
+    , div [class [XAxisLabel]]
+      [ text "Timestamp"
+      ]
+    , div [ class [GraphControls] ]
+      [  select
+        [ placeholder "Stat"
+        , onInput ChangeStat
+        ]
+        [ option
+          [id "XP"]
+          [text "XP"]
+        , option
+          [id "Gold"]
+          [text "Gold"]
+        , option
+          [id "HP"]
+          [text "HP"]
+        ]
+      , input
+        [ placeholder "Start Time"
+        , onInput UpdateStart
+        ]
+        []
+      , input
+        [ placeholder "End Time"
+        , onInput UpdateEnd
+        ]
+        []
+      , button [ onClick <| SubmitRange (model.rangeForm.start, model.rangeForm.end) ]
+        [text "submit"
+        ]
       ]
     ]
 
