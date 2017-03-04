@@ -1,4 +1,4 @@
-module HomePopulate exposing (..)
+module HomePopulate exposing (populate)
 
 import HomeTypes exposing (..)
 import GameModel exposing (GameLength)
@@ -22,9 +22,12 @@ metadata =
     ( field "gameLength" gameLength )
     ( field "blueTeamName" string )
     ( field "redTeamName" string )
-    ( field "gameDate" float )
+    ( field "gameDate" gameDate )
     ( field "vodURL" string )
-    ( field "gameKey" string)
+    ( field "gameKey" string )
 
 gameLength : Decoder GameLength
 gameLength = int
+
+gameDate : Decoder GameDateEpoch
+gameDate = float

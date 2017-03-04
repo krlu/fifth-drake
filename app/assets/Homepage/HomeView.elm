@@ -1,26 +1,73 @@
 module HomeView exposing (view)
 
+import DashboardCss exposing (CssClass(Dashboard))
+import HomeCss exposing (CssClass(Home), namespace)
 import HomeTypes exposing (..)
 import Date exposing (Date, Month(..), day, fromTime, month, year)
-import Html exposing (Html, a, div, text)
-import Html.Attributes exposing (href, style)
+import Html exposing (Html, a, div, input, text)
+import Html.Attributes exposing (href, placeholder, style)
+import Html.CssHelpers exposing (withNamespace)
+import Html.Events exposing (onInput)
 import Navigation exposing (Location)
+import String exposing (contains, toLower, split)
+
+{id, class, classList} = withNamespace namespace
 
 view : Model -> Html Msg
 view model =
   let
     gamesHtml =
-      List.map (metaDataView model.location) model.games
+      List.filter (isQueriedGame model.query) model.games
+      |> List.map (metadataView model.location)
   in
     div
     [ style
-     [ ("overflow-y", "scroll")
-     , ("width", "100%")
-     ]
-    ] gamesHtml
+      [ ("width", "100%")
+      , ("overflow-y", "scroll")
+      ]
+    ]
+    [ input
+      [ placeholder "Search Games"
+      , onInput SearchGame
+      , style
+        [ ("margin-top", "50px")
+        , ("margin-left", "50px")
+        , ("font-size", "25px")
+        ]
+      ]
+      []
+    , div
+      [
+      ] gamesHtml
+    ]
 
-metaDataView : Location -> MetaData -> Html Msg
-metaDataView loc metadata =
+isQueriedGame : Query -> MetaData -> Bool
+isQueriedGame query metadata =
+  split " " query
+  |> List.map (\q -> checkQuery q metadata)
+  |> List.member False
+  |> not
+
+checkQuery : Query -> MetaData -> Bool
+checkQuery query metadata =
+  let
+    date = fromTime metadata.gameDate
+  in
+    List.member True
+    [ contains (toLower metadata.blueTeamName) <| toLower query
+    , contains (toLower metadata.redTeamName) <| toLower query
+    , contains (toLower query) <| toLower metadata.blueTeamName
+    , contains (toLower query) <| toLower metadata.redTeamName
+    , contains (toLower query) <| toLower (toString <| day date)
+    , contains (toLower <| toString <| day date) (toLower query)
+    , contains (toLower query) <| toLower (toString <| month date)
+    , contains (toLower <| toString <| month date) (toLower query)
+    , contains (toLower query) <| toLower (toString <| year date)
+    , contains (toLower <| toString <| year date) (toLower query)
+    ]
+
+metadataView : Location -> MetaData -> Html Msg
+metadataView loc metadata =
   let
     date = fromTime metadata.gameDate
   in

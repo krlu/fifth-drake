@@ -4,14 +4,15 @@ import GameModel exposing (GameLength)
 import Http
 import Json.Decode exposing (..)
 import Navigation exposing (Location)
-import Set exposing (Set)
 
 type Msg
-  = SearchGame
+  = SearchGame String
   | LocationUpdate Location
   | GetGames (Result Http.Error (List MetaData))
 
 type alias GameKey = String
+type alias GameDateEpoch = Float
+type alias Query = String
 
 type alias Flags =
   {
@@ -29,6 +30,6 @@ type alias MetaData =
 
 type alias Model =
   { games : List MetaData
-  , selectedGames : Set GameKey
+  , query : String
   , location : Location
   }
