@@ -9,13 +9,18 @@ namespace = "home"
 
 type CssClass
   = Home
+  | ListElement
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [(.) Home(
-    [ width (200 |> px)
-    , height (30 |> px)
+    [ width (100 |> pct)
+    , overflowY scroll
+    ])
+  ,(.) ListElement(
+    [ marginTop (50 |> px)
+    , marginLeft (50 |> px)
     , fontSize (25 |> px)
     ])
   ]

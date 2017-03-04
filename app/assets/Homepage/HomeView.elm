@@ -1,7 +1,7 @@
 module HomeView exposing (view)
 
 import DashboardCss exposing (CssClass(Dashboard))
-import HomeCss exposing (CssClass(Home), namespace)
+import HomeCss exposing (CssClass(..), namespace)
 import HomeTypes exposing (..)
 import Date exposing (Date, Month(..), day, fromTime, month, year)
 import Html exposing (Html, a, div, input, text)
@@ -21,19 +21,12 @@ view model =
       |> List.map (metadataView model.location)
   in
     div
-    [ style
-      [ ("width", "100%")
-      , ("overflow-y", "scroll")
-      ]
+    [ class [Home]
     ]
     [ input
       [ placeholder "Search Games"
       , onInput SearchGame
-      , style
-        [ ("margin-top", "50px")
-        , ("margin-left", "50px")
-        , ("font-size", "25px")
-        ]
+      , class [ListElement]
       ]
       []
     , div
@@ -72,11 +65,7 @@ metadataView loc metadata =
     date = fromTime metadata.gameDate
   in
   div
-  [ style
-    [ ("margin", "50px")
-    , ("font-size", "20px")
-    ]
-  ]
+  [ class [ListElement] ]
   [ a
     [ href <| ("/game/"++ metadata.gameKey)
     ]
