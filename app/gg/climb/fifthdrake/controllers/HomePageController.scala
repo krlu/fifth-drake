@@ -3,11 +3,11 @@ package gg.climb.fifthdrake.controllers
 import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeTokenRequest, GoogleTokenResponse}
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
-import gg.climb.fifthdrake.{GoogleClientId, GoogleClientSecret}
 import gg.climb.fifthdrake.browser.UserId
 import gg.climb.fifthdrake.controllers.requests.AuthenticatedAction
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.game.MetaData
+import gg.climb.fifthdrake.{GoogleClientId, GoogleClientSecret}
 import play.api.Logger
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
@@ -36,6 +36,10 @@ class HomePageController(dbh: DataAccessHandler,
 
   def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>
     Logger.info("loading home page")
+    Ok(views.html.homePage(googleClientId, false))
+  }
+
+  def loadAllGames(): Action[AnyContent] = AuthenticatedAction { request =>
     implicit val metaDataWrites = new Writes[MetaData] {
       override def writes(o: MetaData): JsValue = Json.obj(
         "gameLength" -> o.gameDuration.toSeconds,
