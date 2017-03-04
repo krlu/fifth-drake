@@ -13,13 +13,12 @@ import Html.Attributes exposing (href, style)
 import Http
 import Json.Decode exposing (..)
 import Navigation exposing (Location)
-import Set exposing (Set)
-
 
 init : Flags -> Location -> (Model, Cmd Msg)
+
 init flags location =
   ( { games = []
-    , selectedGames = Set.empty
+    , query = ""
     , location = location
     }
   , Populate.populate location

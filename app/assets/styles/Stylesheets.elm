@@ -7,6 +7,7 @@ import Html exposing (div)
 import MainCss
 import Minimap.Css
 import NavbarCss
+import HomeCss
 import TagCarousel.Css
 import Platform
 import PlayerDisplay.Css
@@ -32,6 +33,9 @@ cssFiles =
         ]
       , "index.css" => compile
         [ MainCss.css
+        ]
+      , "homepage.css" => compile
+        [ HomeCss.css
         ]
       ]
 
