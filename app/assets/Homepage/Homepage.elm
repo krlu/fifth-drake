@@ -2,9 +2,10 @@ module Homepage exposing (..)
 
 import Array exposing (Array, set)
 import Dict
-import Date exposing (Date)
+import Date exposing (Date, Month(..), day, fromTime, month, year)
 import GameModel exposing (GameLength)
-import Html exposing (Html, div, text)
+import Html exposing (Html, a, div, text)
+import Html.Attributes exposing (href, style)
 import Http
 import Json.Decode exposing (..)
 import Navigation exposing (Location)
@@ -26,20 +27,22 @@ type alias MetaData =
   { gameLength : GameLength
   , blueTeamName : String
   , redTeamName : String
-  , gameDate : Int
-  , voURL: String
+  , gameDate : Float
+  , voURL : String
   , gameKey : GameKey
   }
 
 type alias Model =
   { games : List MetaData
   , selectedGames : Set GameKey
+  , location : Location
   }
 
 init : Flags -> Location -> (Model, Cmd Msg)
 init flags location =
   ( { games = []
     , selectedGames = Set.empty
+    , location = location
     }
   , populate location
   )
@@ -47,9 +50,51 @@ init flags location =
 view : Model -> Html Msg
 view model =
   let
-    games = Debug.log "" model.games
+    gamesHtml =
+      List.map (metaDataView model.location) model.games
   in
-    div [] [ text "hello world"]
+    div
+    [ style
+     [ ("overflow-y", "scroll")
+     , ("width", "100%")
+     ]
+    ] gamesHtml
+
+metaDataView : Location -> MetaData -> Html Msg
+metaDataView loc metadata =
+  let
+    date = fromTime metadata.gameDate
+  in
+  div
+  [ style
+    [ ("margin", "50px")
+    , ("font-size", "20px")
+    ]
+  ]
+  [ a
+    [ href <| ("/game/"++ metadata.gameKey)
+    ]
+    [ text <| (monthToString <| month date) ++ " " ++ (toString <| day date) ++ " " ++ (toString <| year date)
+    , text <| " " ++ metadata.redTeamName
+    , text <| " " ++ metadata.blueTeamName
+    ]
+  ]
+
+monthToString : Month -> String
+monthToString month =
+  case month of
+     Jan -> "Jan"
+     Feb -> "Feb"
+     Mar -> "Mar"
+     Apr -> "Apr"
+     May -> "May"
+     Jun -> "Jun"
+     Jul -> "Jul"
+     Aug -> "Aug"
+     Sep -> "Sep"
+     Oct -> "Oct"
+     Nov -> "Nov"
+     Dec -> "Dec"
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -77,7 +122,7 @@ metadata =
     ( field "gameLength" gameLength )
     ( field "blueTeamName" string )
     ( field "redTeamName" string )
-    ( field "gameDate" int )
+    ( field "gameDate" float )
     ( field "vodURL" string )
     ( field "gameKey" string)
 

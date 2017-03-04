@@ -7,5 +7,5 @@
 	const mountNode = document.getElementById('Content');
 
 	Elm.Homepage.embed(mountNode, {
-  	});
+  });
 })();
