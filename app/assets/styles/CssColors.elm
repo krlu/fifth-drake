@@ -61,3 +61,9 @@ c_selected = hex "#6f996E"
 
 c_hovering : Color
 c_hovering = hex "#5f796E"
+
+c_games_table : Color
+c_games_table = hex "#414b4b"
+
+c_games_table_header : Color
+c_games_table_header = hex "#8e9fbb"
