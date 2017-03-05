@@ -24,7 +24,7 @@ type alias MetaData =
   , blueTeamName : String
   , redTeamName : String
   , gameDate : Float
-  , voURL : String
+  , vodURL : String
   , gameKey : GameKey
   }
 

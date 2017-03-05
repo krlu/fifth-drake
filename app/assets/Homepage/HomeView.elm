@@ -26,7 +26,7 @@ view model =
     [ input
       [ placeholder "Search Games"
       , onInput SearchGame
-      , class [ListElement]
+      , class [ListItem]
       ]
       []
     , div
@@ -65,7 +65,7 @@ metadataView loc metadata =
     date = fromTime metadata.gameDate
   in
   div
-  [ class [ListElement] ]
+  [ class [ListItem] ]
   [ a
     [ href <| ("/game/"++ metadata.gameKey)
     ]
@@ -73,6 +73,7 @@ metadataView loc metadata =
     , text <| " " ++ metadata.redTeamName
     , text <| " " ++ metadata.blueTeamName
     ]
+  , a [ href metadata.vodURL, class [VodItem] ] [text "Video Link"]
   ]
 
 monthToString : Month -> String
