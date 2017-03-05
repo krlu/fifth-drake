@@ -9,7 +9,8 @@ namespace = "home"
 
 type CssClass
   = Home
-  | ListElement
+  | ListItem
+  | VodItem
 
 css : Stylesheet
 css =
@@ -18,9 +19,13 @@ css =
     [ width (100 |> pct)
     , overflowY scroll
     ])
-  ,(.) ListElement(
+  ,(.) ListItem(
     [ marginTop (50 |> px)
     , marginLeft (50 |> px)
     , fontSize (25 |> px)
     ])
+  ,(.) VodItem(
+    [ marginLeft (50 |> px)
+    ]
+  )
   ]
