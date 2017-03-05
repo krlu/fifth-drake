@@ -1,5 +1,6 @@
 package gg.climb.fifthdrake.lolobjects.tagging
 
+import gg.climb.fifthdrake.lolobjects.accounts.UserGroup
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.{Game, Time}
@@ -11,21 +12,28 @@ class Tag(val id: Option[InternalId[Tag]],
           val description: String,
           val category: Category,
           val timestamp: Time,
-          val players: Set[Player]) {
+          val players: Set[Player],
+          val author: String,
+          val authorizedGroups: List[UserGroup]) {
 
   def this(gameKey: RiotId[Game],
            title: String,
            description: String,
            category: Category,
            timestamp: Time,
-           players: Set[Player]) {
+           players: Set[Player],
+           author: String,
+           authorizedGroups: List[UserGroup]) {
     this(Option.empty,
          gameKey,
          title,
          description,
          category,
          timestamp,
-         players)
+         players,
+         author,
+         authorizedGroups
+    )
   }
 
   override def toString: String = s"id=$id, gameKey=${

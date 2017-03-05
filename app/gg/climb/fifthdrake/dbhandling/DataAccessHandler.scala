@@ -3,7 +3,7 @@ package gg.climb.fifthdrake.dbhandling
 import java.util.concurrent.TimeUnit
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
-import gg.climb.fifthdrake.dbhandling.dbobjects.User
+import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
@@ -58,12 +58,12 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
     })
   }
 
-  def isUserAccountStored(userId: String): Boolean = pdbh.userExists(userId)
+  def userExists(userId: String): Boolean = pdbh.userExists(userId)
   def isUserAuthorized(userId: String): Option[Boolean] = pdbh.isUserAuthorized(userId)
   def getUser(userId: String): Option[User] = pdbh.getUser(userId)
-  def storeUserAccount(accessToken: String, refreshToken: String, payload: Payload): Unit = {
+  def storeUser(accessToken: String, refreshToken: String, payload: Payload): Unit = {
     Logger.info(s"attempting to store user account information: ${payload.getSubject}")
-    if (!isUserAccountStored(payload.getSubject)) {
+    if (!userExists(payload.getSubject)) {
       pdbh.storeUser(
         payload.get("given_name").toString,
         payload.get("family_name").toString,
@@ -76,6 +76,15 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
       Logger.info(s"successfully stored user account: ${payload.getSubject}")
     } else {
       Logger.info(s"user account already stored: ${payload.getSubject}")
+    }
+  }
+
+  def getUserGroup(user: User): Option[UserGroup] = {
+    pdbh.findUserGroupId(user.uuid) match {
+      case Some(userGroupId) =>
+        val memberList = pdbh.buildUserGroupMemberList(userGroupId)
+        Some(new UserGroup(userGroupId, memberList))
+      case None => None
     }
   }
 

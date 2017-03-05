@@ -1,9 +1,10 @@
 package gg.climb.fifthdrake.dbhandling
 
+import java.sql.Array
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
-import gg.climb.fifthdrake.dbhandling.dbobjects.User
+import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
 import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
@@ -12,6 +13,7 @@ import org.joda.time.DateTime
 import scalikejdbc._
 
 import scala.collection.immutable.Seq
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
 
 //noinspection RedundantBlock
@@ -34,26 +36,68 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   ConnectionPool.singleton(url, user, password)
 
   def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
-    val tagData: List[(Int, String, String, String, String, Long)] =
+    val tagData: List[(Int, String, String, String, String, Long, String, List[UserGroup])] =
       DB readOnly { implicit session =>
         sql"SELECT * FROM league.tag WHERE game_key = ${gameKey.id}".map(rs => {
-          (rs.int("id"), rs.string("game_key"), rs.string("title"),
-            rs.string("description"), rs.string("category"), rs.long("timestamp"))
+          (rs.int("id"),rs.string("game_key"), rs.string("title"),
+            rs.string("description"), rs.string("category"), rs.long("timestamp"),
+            rs.string("author"), buildUserGroupList(rs.array("authorized_groups")))
         }).list.apply()
       }
     tagData.map(data => buildTag(data))
+  }
+
+  def buildUserGroupMemberList(userGroupId: String): List[String] = {
+    DB readOnly { implicit  session =>
+      sql"SELECT users FROM account.user_group WHERE id=$userGroupId"
+        .map(rs => rs.array("users"))
+        .list()
+        .apply()
+        .headOption
+      match {
+        case Some(users) => {
+          val rs = users.getResultSet
+          val count = rs.getMetaData.getColumnCount
+          var userList = new ListBuffer[String]
+          for (i <- 1 to count) {
+            userList += rs.getString(i)
+          }
+          userList.toList
+        }
+        case None => List.empty
+      }
+    }
+  }
+
+  private def buildUserGroupList(authorizedUsers: Array): List[UserGroup] = {
+    val rs = authorizedUsers.getResultSet
+    val count = rs.getMetaData.getColumnCount
+    var userGroups = new ListBuffer[UserGroup]
+    for (i <- 1 to count) {
+      val userGroupId = rs.getString(i)
+      userGroups += new UserGroup(userGroupId, buildUserGroupMemberList(userGroupId))
+    }
+    userGroups.toList
+  }
+
+  def findUserGroupId(userUuid: String): Option[String] = {
+    DB readOnly { implicit session =>
+      sql"SELECT id FROM account.user_group WHERE $userUuid = ANY (users);"
+        .map(rs => rs.string("id"))
+        .list()
+        .apply()
+        .headOption
+    }
   }
 
   /**
     * @param data tuple of (internalId, riotGameId, title, description, category timestamp)
     * @return
     */
-  private def buildTag(data: (Int, String, String, String, String, Long)): Tag = data match {
-    case data: (Int, String, String, String, String, Long) =>
-      val tagId = new InternalId[Tag](data._1.toString)
-      new Tag(Some(tagId), new RiotId[Game](data._2), data._3, data._4, new Category(data._5),
-              Duration(data._6, TimeUnit.MILLISECONDS), getPlayersForTag(tagId))
-    case _ => throw new IllegalArgumentException("")
+  private def buildTag(data: (Int, String, String, String, String, Long, String, List[UserGroup])): Tag = {
+    val tagId = new InternalId[Tag](data._1.toString)
+    new Tag(Some(tagId), new RiotId[Game](data._2), data._3, data._4, new Category(data._5),
+              Duration(data._6, TimeUnit.MILLISECONDS), getPlayersForTag(tagId), data._7, data._8)
   }
 
   private def getPlayersForTag(tagId: InternalId[Tag]): Set[Player] = {
@@ -89,12 +133,14 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
       s"check that this Tag already exists in DB! Id is $tag")
     DB localTx { implicit session => {
       val tag_id: Long =
-        sql"""insert into league.tag (game_key, title, description, category, timestamp)
+        sql"""insert into league.tag (game_key, title, description, category, timestamp, author, authorized_groups)
               values (${tag.gameKey.id},
                       ${tag.title},
                       ${tag.description},
                       ${tag.category.name},
-                      ${tag.timestamp.toMillis})
+                      ${tag.timestamp.toMillis},
+                      ${tag.author},
+                      ${tag.authorizedGroups})
              """.updateAndReturnGeneratedKey().apply()
       tag.players.foreach((id: Player) => {
         sql"""INSERT INTO league.player_to_tag (tag_id, player_id)

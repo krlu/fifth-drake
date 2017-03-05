@@ -24,7 +24,7 @@ class HomePageController(dbh: DataAccessHandler,
   def loadLandingPage: Action[AnyContent] = Action { request =>
     Logger.info(s"loading landing page: ${request.toString()}")
     val userId = request.session.get(UserId.name)
-    val validId = userId.map(id => dbh.isUserAccountStored(id))
+    val validId = userId.map(id => dbh.userExists(id))
 
     validId match {
       case Some(v) => Ok(views.html.landingPage(googleClientId, v))
@@ -64,7 +64,7 @@ class HomePageController(dbh: DataAccessHandler,
         val refreshToken = tokenResponse.getRefreshToken
         val idToken = tokenResponse.parseIdToken()
         val payload = idToken.getPayload
-        dbh.storeUserAccount(accessToken, refreshToken, payload)
+        dbh.storeUser(accessToken, refreshToken, payload)
         Ok("").withSession(UserId.name -> payload.getSubject)
       case (_, _) => BadRequest("Missing authorization code")
     }

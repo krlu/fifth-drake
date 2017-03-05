@@ -3,7 +3,7 @@ package gg.climb.fifthdrake.controllers.requests
 import gg.climb.fifthdrake.browser.UserId
 import gg.climb.fifthdrake.controllers.routes
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.dbhandling.dbobjects.User
+import gg.climb.fifthdrake.lolobjects.accounts.User
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -20,8 +20,7 @@ class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[Authenti
                               block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
     val userId = request.session.get(UserId.name)
     val defaultResult = Future.successful(
-      Redirect(routes.HomePageController.loadLandingPage())
-        .withSession(request.session - UserId.name)
+      Redirect(routes.HomePageController.loadLandingPage()).withSession(request.session - UserId.name)
     )
 
     userId match {
@@ -44,11 +43,8 @@ class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[Authenti
 
 class AuthorizationFilter(dbh: DataAccessHandler) extends ActionFilter[AuthenticatedRequest] {
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = Future.successful {
-    val userId = request.session.get(UserId.name)
-    val authorized = userId.map(id => dbh.isUserAuthorized(id))
-
-    authorized match {
-      case Some(Some(true)) =>
+    dbh.isUserAuthorized(request.user.userId) match {
+      case Some(true) =>
         Logger.info(s"user [${request.user.userId}] is authorized: ${request.toString()}")
         None
       case _ =>

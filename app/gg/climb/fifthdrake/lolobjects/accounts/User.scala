@@ -1,4 +1,4 @@
-package gg.climb.fifthdrake.dbhandling.dbobjects
+package gg.climb.fifthdrake.lolobjects.accounts
 
 /**
   * Data object for user account information
