@@ -18,16 +18,35 @@ gamesUrl loc =  loc.origin ++ "/games"
 
 metadata : Decoder MetaData
 metadata =
-  map6 MetaData
+  map8 MetaData
     ( field "gameLength" gameLength )
     ( field "blueTeamName" string )
     ( field "redTeamName" string )
-    ( field "gameDate" gameDate )
     ( field "vodURL" string )
     ( field "gameKey" string )
+    ( field "gameNumber" int)
+    ( field "timeFrame" timeFrame )
+    ( field "tournament" tournament )
+
+
+timeFrame : Decoder TimeFrame
+timeFrame =
+  map2 TimeFrame
+    ( field "gameDate" gameDate)
+    ( field "week" int)
+
+tournament : Decoder Tournament
+tournament =
+  map4 Tournament
+    ( field "year" int)
+    ( field "split" string)
+    ( field "phase" string)
+    ( field "league" string)
 
 gameLength : Decoder GameLength
 gameLength = int
 
 gameDate : Decoder GameDateEpoch
 gameDate = float
+
+

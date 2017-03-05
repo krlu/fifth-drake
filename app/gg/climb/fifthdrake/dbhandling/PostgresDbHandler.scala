@@ -8,6 +8,7 @@ import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import scalikejdbc._
 
 import scala.collection.immutable.Seq
@@ -31,6 +32,42 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   val url = "jdbc:postgresql://%s:%d/%s".format(host, port, db)
 
   ConnectionPool.singleton(url, user, password)
+
+  def getAllGameIdentifiers: Seq[GameIdentifier] = DB readOnly { implicit session =>
+    sql"SELECT * FROM league.game_identifier"
+      .map(rs =>
+        new GameIdentifier(
+          new InternalId[GameIdentifier](rs.string("id")),
+          new RiotId[GameIdentifier](rs.string("game_key")),
+          rs.string("blue_team"),
+          rs.string("red_team"),
+          getTourneyById(new InternalId[Tournament](rs.string("tournament_id"))),
+          rs.int("week"),
+          rs.int("game_number"))
+      ).list().apply()
+  }
+
+  private def formatDate(s : String): DateTime = {
+    println(s)
+    val formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
+    formatter.parseDateTime(s)
+  }
+
+  private def getTourneyById(id : InternalId[Tournament]) : Tournament =  DB readOnly { implicit session =>
+    sql"SELECT * FROM league.tournament WHERE id = ${id.id}::uuid"
+      .map(rs => new Tournament(
+        id, rs.int("year"), rs.string("split"),
+        getLeagueById(new InternalId[League](rs.string("league_id"))),
+        rs.string("phase")))
+      .single().apply().orNull
+  }
+
+  private def getLeagueById(id : InternalId[League]): League = DB readOnly { implicit session =>
+    sql"SELECT * FROM league.league WHERE id = ${id.id.toInt}"
+      .map(rs => new League(id, rs.string("name"), new RiotId[League](rs.string("riot_id"))))
+      .single().apply().orNull
+  }
+
 
   def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
     val tagData: List[(Int, String, String, String, String, Long)] =

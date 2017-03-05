@@ -23,9 +23,22 @@ type alias MetaData =
   { gameLength : GameLength
   , blueTeamName : String
   , redTeamName : String
-  , gameDate : Float
   , vodURL : String
   , gameKey : GameKey
+  , gameNumber : Int
+  , timeFrame : TimeFrame
+  , tournament : Tournament
+  }
+
+type alias TimeFrame =
+  { gameDate : GameDateEpoch
+  , week : Int
+  }
+type alias Tournament =
+  { year : Int
+  , split : String
+  , phase : String
+  , league : String
   }
 
 type alias Model =
