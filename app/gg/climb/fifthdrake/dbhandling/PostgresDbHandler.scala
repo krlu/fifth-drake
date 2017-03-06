@@ -1,6 +1,6 @@
 package gg.climb.fifthdrake.dbhandling
 
-import java.sql.Array
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
@@ -13,7 +13,6 @@ import org.joda.time.DateTime
 import scalikejdbc._
 
 import scala.collection.immutable.Seq
-import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
 
 //noinspection RedundantBlock
@@ -49,40 +48,27 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   def buildUserGroupMemberList(userGroupId: String): List[String] = {
     DB readOnly { implicit  session =>
-      sql"SELECT users FROM account.user_group WHERE id=$userGroupId"
+      sql"SELECT users FROM account.user_group WHERE id=${userGroupId}::uuid"
         .map(rs => rs.array("users"))
         .list()
         .apply()
         .headOption
       match {
-        case Some(users) => {
-          val rs = users.getResultSet
-          val count = rs.getMetaData.getColumnCount
-          var userList = new ListBuffer[String]
-          for (i <- 1 to count) {
-            userList += rs.getString(i)
-          }
-          userList.toList
-        }
+        case Some(users) => users.getArray.asInstanceOf[Array[UUID]].map(_.toString).toList
         case None => List.empty
       }
     }
   }
 
-  private def buildUserGroupList(authorizedUsers: Array): List[UserGroup] = {
-    val rs = authorizedUsers.getResultSet
-    val count = rs.getMetaData.getColumnCount
-    var userGroups = new ListBuffer[UserGroup]
-    for (i <- 1 to count) {
-      val userGroupId = rs.getString(i)
-      userGroups += new UserGroup(userGroupId, buildUserGroupMemberList(userGroupId))
-    }
-    userGroups.toList
+  private def buildUserGroupList(authorizedGroups: java.sql.Array): List[UserGroup] = {
+    authorizedGroups.getArray.asInstanceOf[Array[UUID]].map(uuid => {
+      new UserGroup(uuid.toString, buildUserGroupMemberList(uuid.toString))
+    }).toList
   }
 
   def findUserGroupId(userUuid: String): Option[String] = {
     DB readOnly { implicit session =>
-      sql"SELECT id FROM account.user_group WHERE $userUuid = ANY (users);"
+      sql"SELECT id FROM account.user_group WHERE ${userUuid}::uuid = ANY (users);"
         .map(rs => rs.string("id"))
         .list()
         .apply()
@@ -132,6 +118,9 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
     DB localTx { implicit session => {
+      var groupUuids = "{"
+      tag.authorizedGroups.foreach(groupUuids += _.uuid)
+      groupUuids += "}"
       val tag_id: Long =
         sql"""insert into league.tag (game_key, title, description, category, timestamp, author, authorized_groups)
               values (${tag.gameKey.id},
@@ -139,8 +128,8 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
                       ${tag.description},
                       ${tag.category.name},
                       ${tag.timestamp.toMillis},
-                      ${tag.author},
-                      ${tag.authorizedGroups})
+                      ${tag.author}::uuid,
+                      ${groupUuids}::uuid[])
              """.updateAndReturnGeneratedKey().apply()
       tag.players.foreach((id: Player) => {
         sql"""INSERT INTO league.player_to_tag (tag_id, player_id)
@@ -407,7 +396,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
               $accessToken,
               $refreshToken
             )"""
-        .updateAndReturnGeneratedKey()
+        .update()
         .apply()
     }
   }
