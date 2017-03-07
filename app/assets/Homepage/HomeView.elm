@@ -18,6 +18,7 @@ view model =
   let
     gamesHtml =
       List.filter (isQueriedGame model.query) model.games
+      |> List.sortBy (\model -> model.timeFrame.gameDate)
       |> List.map (metadataView model.location)
   in
     div
@@ -39,13 +40,12 @@ header =
   [ td [ ]
     [ text <| "Date"
     ]
+  , td [] [ text "League" ]
+  , td [] [ text "Tournament" ]
+  , td [] [ text "Week" ]
   , td [] [ text "Blue Team" ]
   , td [] [ text "Red Team" ]
-  , td [] [ text "Game Number" ]
-  , td [] [ text "League" ]
-  , td [] [ text "Year" ]
-  , td [] [ text "Split" ]
-  , td [] [ text "Phase"]
+  , td [] [ text "Game #" ]
   , td [] [ text "Video" ]
   , td [] [ text "DashBoard"]
   ]
@@ -82,13 +82,16 @@ metadataView loc metadata =
     [ td [ ]
       [ text <| (monthToString <| month date) ++ " " ++ (toString <| day date) ++ " " ++ (toString <| year date)
       ]
-    , td [] [ text <| " " ++ metadata.blueTeamName ]
-    , td [] [ text <| " " ++ metadata.redTeamName ]
-    , td [] [ text <| "Game " ++ (toString metadata.gameNumber) ]
     , td [] [ text metadata.tournament.league ]
-    , td [] [ text <| toString metadata.tournament.year ]
-    , td [] [ text metadata.tournament.split ]
-    , td [] [ text metadata.tournament.phase ]
+    , td [] [ text
+              ( (toString metadata.tournament.year)
+                ++ " " ++ metadata.tournament.split
+                ++ " " ++ metadata.tournament.phase)
+            ]
+    , td [] [ text <| toString metadata.timeFrame.week ]
+    , td [] [ text <| metadata.blueTeamName ]
+    , td [] [ text <| metadata.redTeamName ]
+    , td [] [ text <| "Game " ++ (toString metadata.gameNumber) ]
     , td [] [a [ href metadata.vodURL ] [ text "VOD" ]]
     , td []
       [ a
