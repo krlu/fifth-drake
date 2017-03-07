@@ -3,11 +3,13 @@ package gg.climb.fifthdrake.controllers
 import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeTokenRequest, GoogleTokenResponse}
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
-import gg.climb.fifthdrake.{GoogleClientId, GoogleClientSecret}
 import gg.climb.fifthdrake.browser.UserId
 import gg.climb.fifthdrake.controllers.requests.AuthenticatedAction
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
+import gg.climb.fifthdrake.lolobjects.game.{GameIdentifier, MetaData}
+import gg.climb.fifthdrake.{GoogleClientId, GoogleClientSecret}
 import play.api.Logger
+import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
 
 /**
@@ -34,7 +36,37 @@ class HomePageController(dbh: DataAccessHandler,
 
   def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>
     Logger.info("loading home page")
-    Ok(s"${request.firstName}'s Home Page")
+    Ok(views.html.homePage(googleClientId, true))
+  }
+
+  def loadAllGames(): Action[AnyContent] = AuthenticatedAction { request =>
+    implicit val metaDataWrites = new Writes[(MetaData, GameIdentifier)] {
+      override def writes(o: (MetaData, GameIdentifier)): JsValue = Json.obj(
+        "gameLength" -> o._1.gameDuration.toSeconds,
+        "blueTeamName" -> o._1.blueTeamName,
+        "redTeamName" -> o._1.redTeamName,
+        "vodURL" -> o._1.vodURL.toString,
+        "gameKey" -> o._1.gameKey.id,
+        "gameNumber" -> o._2.gameNumber,
+        "timeFrame" -> Json.obj(
+          "gameDate" -> o._1.gameDate,
+          "week" -> o._2.week),
+        "tournament" -> Json.obj(
+          "year" -> o._2.tournament.year,
+          "split" -> o._2.tournament.split,
+          "phase" -> o._2.tournament.phase,
+          "league" -> o._2.tournament.league.name)
+      )
+    }
+    val gidMap: Map[String, GameIdentifier] = dbh.getAllGameIdentifiers.map{
+      gid => (gid.gameKey.id -> gid)
+    }.toMap
+
+    val allData: Seq[JsValue] = dbh.getAllGames.map{ md =>
+      Json.toJson((md, gidMap(md.gameKey.id)))
+    }
+
+    Ok(Json.toJson(allData))
   }
 
   def logIn(): Action[AnyContent] = Action { request =>

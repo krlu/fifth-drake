@@ -6,6 +6,7 @@
     "source-directories": [
         "app/assets/Dashboard",
         "app/assets/Navbar",
+        "app/assets/Homepage",
         "app/assets/styles"
     ],
     "exposed-modules": [],
