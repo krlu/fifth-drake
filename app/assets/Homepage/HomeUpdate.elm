@@ -9,3 +9,11 @@ update msg model =
     SearchGame query -> ({ model | query = query }, Cmd.none)
     GetGames (Ok games) ->({ model | games = games }, Cmd.none)
     GetGames (Err err) -> (Debug.log "Games failed to fetch!" model, Cmd.none)
+    SwitchOrder ->
+      let
+        newOrder =
+          case model.order of
+           Ascending -> Descending
+           Descending -> Ascending
+      in
+        ({model | order = newOrder}, Cmd.none)

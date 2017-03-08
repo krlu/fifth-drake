@@ -20,6 +20,9 @@ init flags location =
   ( { games = []
     , query = ""
     , location = location
+    , order = Descending
+    , upArrow = flags.upArrow
+    , downArrow = flags.downArrow
     }
   , Populate.populate location
   )

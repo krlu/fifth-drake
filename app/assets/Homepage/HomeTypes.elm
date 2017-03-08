@@ -9,14 +9,17 @@ type Msg
   = SearchGame String
   | LocationUpdate Location
   | GetGames (Result Http.Error (List MetaData))
+  | SwitchOrder
 
 type alias GameKey = String
 type alias GameDateEpoch = Float
 type alias Query = String
 
-type alias Flags =
-  {
+type Order = Ascending | Descending
 
+type alias Flags =
+  { upArrow : String
+  , downArrow : String
   }
 
 type alias MetaData =
@@ -45,4 +48,7 @@ type alias Model =
   { games : List MetaData
   , query : String
   , location : Location
+  , order : Order
+  , upArrow : String
+  , downArrow : String
   }

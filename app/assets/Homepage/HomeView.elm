@@ -4,10 +4,10 @@ import DashboardCss exposing (CssClass(Dashboard))
 import HomeCss exposing (CssClass(..), namespace)
 import HomeTypes exposing (..)
 import Date exposing (Date, Month(..), day, fromTime, month, year)
-import Html exposing (Html, a, div, input, table, td, text, tr)
-import Html.Attributes exposing (href, placeholder, style)
+import Html exposing (Html, a, button, div, img, input, table, td, text, tr)
+import Html.Attributes exposing (href, placeholder, src, style)
 import Html.CssHelpers exposing (withNamespace)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onClick, onInput)
 import Navigation exposing (Location)
 import String exposing (contains, toLower, split)
 
@@ -16,10 +16,12 @@ import String exposing (contains, toLower, split)
 view : Model -> Html Msg
 view model =
   let
-    gamesHtml =
-      List.filter (isQueriedGame model.query) model.games
-      |> List.sortBy (\model -> model.timeFrame.gameDate)
-      |> List.map (metadataView model.location)
+    gamesList = List.filter (isQueriedGame model.query) model.games
+                |> List.sortBy (\model -> model.timeFrame.gameDate)
+    sortedList = case model.order of
+                  Ascending -> gamesList
+                  Descending -> List.reverse gamesList
+    gamesHtml = sortedList |> List.map (metadataView model.location)
   in
     div
     [ class [Home]
@@ -31,14 +33,22 @@ view model =
       ]
       []
     , table []
-      ( [header] ++ gamesHtml )
+      ( [header model] ++ gamesHtml )
     ]
 
-header : Html Msg
-header =
+header : Model -> Html Msg
+header model =
+  let
+    orderArrow =
+      case model.order of
+        Ascending -> img [ src model.downArrow ] []
+        Descending -> img [ src model.upArrow ] []
+  in
   tr [ class [TableHeader] ]
-  [ td [ ]
-    [ text <| "Date"
+  [ td [onClick SwitchOrder, class [DateHeader]]
+    [ text ("Date (")
+    , orderArrow
+    , text ")"
     ]
   , td [] [ text "League" ]
   , td [] [ text "Tournament" ]
@@ -78,7 +88,7 @@ metadataView loc metadata =
   let
     date = fromTime metadata.timeFrame.gameDate
   in
-    tr [ class [TableBody] ]
+    tr [ class [RowItem] ]
     [ td [ ]
       [ text <| (monthToString <| month date) ++ " " ++ (toString <| day date) ++ " " ++ (toString <| year date)
       ]
