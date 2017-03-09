@@ -57,7 +57,6 @@ header model =
   , td [] [ text "Red Team" ]
   , td [] [ text "Game #" ]
   , td [] [ text "Video" ]
-  , td [] [ text "DashBoard"]
   ]
 
 isQueriedGame : Query -> MetaData -> Bool
@@ -101,15 +100,8 @@ metadataView loc metadata =
     , td [] [ text <| toString metadata.timeFrame.week ]
     , td [] [ text <| metadata.blueTeamName ]
     , td [] [ text <| metadata.redTeamName ]
-    , td [] [ text <| "Game " ++ (toString metadata.gameNumber) ]
-    , td [] [a [ href metadata.vodURL ] [ text "VOD" ]]
-    , td []
-      [ a
-        [ href <| ("/game/"++ metadata.gameKey)
-        ]
-        [ text <| "DB"
-        ]
-      ]
+    , td [] [ a [ href <| ("/game/"++ metadata.gameKey)] [text <| "Game " ++ (toString metadata.gameNumber)] ]
+    , td [] [ a [ href metadata.vodURL ] [ text "VOD" ]]
     ]
 
 monthToString : Month -> String

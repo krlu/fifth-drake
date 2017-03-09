@@ -35,7 +35,7 @@ css =
     , backgroundColor Color.c_games_table
     ])
   , table(
-    [ width (100 |> pct)
+    [ width (90 |> pct)
     , fontSize (tableFontSize |> px)
     ])
   ,(.) TableHeader(
