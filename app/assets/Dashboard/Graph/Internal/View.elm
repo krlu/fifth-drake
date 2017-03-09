@@ -170,5 +170,5 @@ getMaxOfPlayer function (start ,end) player =
   in
     case maxMaybe of
       Just val -> val
-      _ -> 0
+      Nothing -> 0
 

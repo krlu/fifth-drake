@@ -60,7 +60,10 @@ css =
       (StyleUtils.flexDirection "row")
     , withClass DirReverse
       (StyleUtils.flexDirection "row-reverse")
-    , hover [backgroundColor Color.c_hovering]
+    , hover
+      [ backgroundColor Color.c_hovering
+      , cursor pointer
+      ]
     , children
       [ (.) ChampDisplay (
         [ displayFlex
@@ -167,9 +170,7 @@ css =
     ])
   , (.) SelectedPlayer
     [ backgroundColor Color.c_selected
-    , hover
-      [ backgroundColor Color.c_selected
-      ]
+    , hover [ cursor pointer ]
     , displayFlex
     , width (playerDisplayWidth |> px)
     , height (playerDisplayHeight |> px)

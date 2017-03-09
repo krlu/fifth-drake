@@ -103,7 +103,7 @@ view model =
       , tagCarousel
       ]
 
-getPlayerIdsAndIgns: Array Player -> Array Player -> List (PlayerId, String, String, String)
+getPlayerIdsAndIgns: Array Player -> Array Player -> List (PlayerId, Ign, Name, Image)
 getPlayerIdsAndIgns bluePlayers redPlayers =
   let
      blueData = bluePlayers |> Array.map (\player -> (player.id, player.ign, player.championName, player.championImage))

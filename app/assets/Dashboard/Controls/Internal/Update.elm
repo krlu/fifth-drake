@@ -4,7 +4,6 @@ import Controls.Internal.ModelUtils exposing(..)
 import Controls.Types exposing (..)
 import GameModel exposing (..)
 import PlaybackTypes exposing (..)
-import Tuple
 
 update : Timestamp -> GameLength -> Msg -> Model -> (Timestamp, Model)
 update timestamp gameLength msg ({lastMousePosition} as model) =
