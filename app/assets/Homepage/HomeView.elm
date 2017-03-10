@@ -52,6 +52,7 @@ header model =
     ]
   , td [] [ text "League" ]
   , td [] [ text "Tournament" ]
+  , td [] [ text "patch" ]
   , td [] [ text "Week" ]
   , td [] [ text "Blue Team" ]
   , td [] [ text "Red Team" ]
@@ -86,6 +87,15 @@ metadataView : Location -> MetaData -> Html Msg
 metadataView loc metadata =
   let
     date = fromTime metadata.timeFrame.gameDate
+    patchComponents = split "." metadata.timeFrame.patch |> List.take 2
+    extractStr : Maybe String -> String
+    extractStr str =
+      case str of
+        Just s -> s
+        Nothing -> ""
+    part1 = extractStr <| List.head patchComponents
+    part2 = extractStr <| List.head <| List.reverse patchComponents
+    patch = part1 ++ "." ++ part2
   in
     tr [ class [RowItem] ]
     [ td [ ]
@@ -97,6 +107,7 @@ metadataView loc metadata =
                 ++ " " ++ metadata.tournament.split
                 ++ " " ++ metadata.tournament.phase)
             ]
+    , td [] [ text patch ]
     , td [] [ text <| toString metadata.timeFrame.week ]
     , td [] [ text <| metadata.blueTeamName ]
     , td [] [ text <| metadata.redTeamName ]

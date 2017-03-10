@@ -35,9 +35,7 @@ customViewGenerator playerHintDataList  =
     customView { xValue, yValues } isLeftSide  =
       let
         classes =
-          [ ( "elm-plot__hint__default-view", True )
-          , ( "elm-plot__hint__default-view--left", isLeftSide )
-          , ( "elm-plot__hint__default-view--right", not isLeftSide )
+          [
           ]
       in
         Html.div

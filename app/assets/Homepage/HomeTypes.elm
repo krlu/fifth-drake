@@ -36,7 +36,9 @@ type alias MetaData =
 type alias TimeFrame =
   { gameDate : GameDateEpoch
   , week : Int
+  , patch : String
   }
+
 type alias Tournament =
   { year : Int
   , split : String

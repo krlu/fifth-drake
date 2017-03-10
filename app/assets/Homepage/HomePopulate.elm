@@ -31,9 +31,10 @@ metadata =
 
 timeFrame : Decoder TimeFrame
 timeFrame =
-  map2 TimeFrame
+  map3 TimeFrame
     ( field "gameDate" gameDate)
     ( field "week" int)
+    ( field "patch" string)
 
 tournament : Decoder Tournament
 tournament =

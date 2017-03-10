@@ -43,7 +43,6 @@ css =
     , children
       [ (.) DateHeader(
         [ hover [backgroundColor Color.c_hovering, cursor pointer]
---        , width (250 |> px)
         ])
       ]
     ])
