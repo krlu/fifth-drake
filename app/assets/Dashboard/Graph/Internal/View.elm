@@ -156,7 +156,8 @@ getMax function (start, end) players =
   in
     case maxMaybe of
       Just val -> val
-      _ -> 0
+      Nothing -> 0
+
 getMaxOfPlayer :(PlayerState -> Float) -> (Timestamp, Timestamp) -> Player -> Float
 getMaxOfPlayer function (start ,end) player =
   let
