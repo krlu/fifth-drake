@@ -35,18 +35,24 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   ConnectionPool.singleton(url, user, password)
 
   def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
-    val tagData: List[(Int, String, String, String, String, Long, String, List[UserGroup])] =
-      DB readOnly { implicit session =>
-        sql"SELECT * FROM league.tag WHERE game_key = ${gameKey.id}".map(rs => {
-          (rs.int("id"),rs.string("game_key"), rs.string("title"),
-            rs.string("description"), rs.string("category"), rs.long("timestamp"),
-            rs.string("author"), buildUserGroupList(rs.array("authorized_groups")))
-        }).list.apply()
-      }
-    tagData.map(data => buildTag(data))
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM league.tag WHERE game_key = ${gameKey.id}".map(rs => {
+        val tagId = new InternalId[Tag](rs.int("id").toString)
+        new Tag(
+          Some(tagId),
+          new RiotId[Game](rs.string("game_key")),
+          rs.string("title"), rs.string("description"),
+          new Category(rs.string("category")),
+          Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
+          getPlayersForTag(tagId),
+          UUID.fromString(rs.string("author")),
+          buildUserGroupList(rs.array("authorized_groups"))
+        )
+      }).list.apply()
+    }
   }
 
-  def buildUserGroupMemberList(userGroupId: String): List[String] = {
+  def buildUserGroupMemberList(userGroupId: UUID): List[UUID] = {
     DB readOnly { implicit  session =>
       sql"SELECT users FROM account.user_group WHERE id=${userGroupId}::uuid"
         .map(rs => rs.array("users"))
@@ -54,7 +60,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
         .apply()
         .headOption
       match {
-        case Some(users) => users.getArray.asInstanceOf[Array[UUID]].map(_.toString).toList
+        case Some(users) => users.getArray.asInstanceOf[Array[UUID]].toList
         case None => List.empty
       }
     }
@@ -62,29 +68,20 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   private def buildUserGroupList(authorizedGroups: java.sql.Array): List[UserGroup] = {
     authorizedGroups.getArray.asInstanceOf[Array[UUID]].map(uuid => {
-      new UserGroup(uuid.toString, buildUserGroupMemberList(uuid.toString))
+      new UserGroup(uuid, buildUserGroupMemberList(uuid))
     }).toList
   }
 
-  def findUserGroupId(userUuid: String): Option[String] = {
+  def findUserGroupId(userUuid: UUID): Option[UUID] = {
     DB readOnly { implicit session =>
       sql"SELECT id FROM account.user_group WHERE ${userUuid}::uuid = ANY (users);"
-        .map(rs => rs.string("id"))
+        .map(rs => UUID.fromString(rs.string("id")))
         .list()
         .apply()
         .headOption
     }
   }
 
-  /**
-    * @param data tuple of (internalId, riotGameId, title, description, category timestamp)
-    * @return
-    */
-  private def buildTag(data: (Int, String, String, String, String, Long, String, List[UserGroup])): Tag = {
-    val tagId = new InternalId[Tag](data._1.toString)
-    new Tag(Some(tagId), new RiotId[Game](data._2), data._3, data._4, new Category(data._5),
-              Duration(data._6, TimeUnit.MILLISECONDS), getPlayersForTag(tagId), data._7, data._8)
-  }
 
   private def getPlayersForTag(tagId: InternalId[Tag]): Set[Player] = {
     val ids = getPlayerIdsForTag(tagId)
@@ -114,10 +111,10 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     new Player(playerId, ign, Role.interpret(role), getPlayerRiotId(playerId))
   }
 
-  def insertTag(tag: Tag): Unit = {
+  def insertTag(tag: Tag): Long = {
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
-    DB localTx { implicit session => {
+    DB localTx { implicit session =>
       var groupUuids = "{"
       tag.authorizedGroups.foreach(groupUuids += _.uuid)
       groupUuids += "}"
@@ -135,7 +132,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
         sql"""INSERT INTO league.player_to_tag (tag_id, player_id)
              values (${tag_id}, ${id.id.id.toInt})""".update.apply()
       })
-    }
+      tag_id
     }
   }
 
@@ -199,7 +196,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def deleteTag(tagId: InternalId[Tag]): Unit = {
+  def deleteTag(tagId: InternalId[Tag]): Int = {
     getPlayerIdsForTag(tagId).foreach(riotId => deletePlayerToTag(riotId))
     DB localTx { implicit session =>
       sql"DELETE FROM league.tag WHERE id=${tagId.id.toInt}".update().apply()
@@ -355,7 +352,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
       sql"SELECT * FROM account.user WHERE user_id = $userId"
         .map(rs => {
           new User(
-            rs.string("id"),
+            UUID.fromString(rs.string("id")),
             rs.string("first_name"),
             rs.string("last_name"),
             rs.string("user_id"),

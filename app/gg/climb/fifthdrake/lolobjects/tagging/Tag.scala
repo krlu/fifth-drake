@@ -1,5 +1,7 @@
 package gg.climb.fifthdrake.lolobjects.tagging
 
+import java.util.UUID
+
 import gg.climb.fifthdrake.lolobjects.accounts.UserGroup
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
@@ -13,7 +15,7 @@ class Tag(val id: Option[InternalId[Tag]],
           val category: Category,
           val timestamp: Time,
           val players: Set[Player],
-          val author: String,
+          val author: UUID,
           val authorizedGroups: List[UserGroup]) {
 
   def this(gameKey: RiotId[Game],
@@ -22,7 +24,7 @@ class Tag(val id: Option[InternalId[Tag]],
            category: Category,
            timestamp: Time,
            players: Set[Player],
-           author: String,
+           author: UUID,
            authorizedGroups: List[UserGroup]) {
     this(Option.empty,
          gameKey,

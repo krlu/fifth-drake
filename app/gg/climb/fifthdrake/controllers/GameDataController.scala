@@ -1,5 +1,6 @@
 package gg.climb.fifthdrake.controllers
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter, TagAction, TagRequest}
@@ -142,28 +143,25 @@ class GameDataController(dbh: DataAccessHandler,
 
   def getTags(gameKey: String): Action[AnyContent] =
     (AuthenticatedAction andThen AuthorizationFilter andThen TagAction.refiner(gameKey, dbh)) { request =>
-    Ok(convertTagsToJson(request.gameTags))
+      implicit val tagWrites = new Writes[Tag] {
+        def writes(tag: Tag): JsObject =
+          if (tag.hasInternalId) {
+            Json.obj(
+              "id" -> tag.id.get.id,
+              "title" -> tag.title,
+              "description" -> tag.description,
+              "category" -> tag.category.name,
+              "timestamp" -> tag.timestamp.toSeconds,
+              "players" -> Json.toJson(tag.players.map(_.id.id)),
+              "author" -> tag.author
+            )
+          } else {
+            Json.obj("error:" -> "Error, tag does not have Id!")
+          }
+      }
+      Ok(Json.toJson(request.gameTags))
   }
 
-  private def convertTagsToJson(tags: Seq[Tag]): JsValue = {
-    implicit val tagWrites = new Writes[Tag] {
-      def writes(tag: Tag): JsObject =
-        if (tag.hasInternalId) {
-          Json.obj(
-            "id" -> tag.id.get.id,
-            "title" -> tag.title,
-            "description" -> tag.description,
-            "category" -> tag.category.name,
-            "timestamp" -> tag.timestamp.toSeconds,
-            "players" -> Json.toJson(tag.players.map(_.id.id)),
-            "author" -> tag.author
-          )
-        } else {
-          Json.obj("error:" -> "Error, tag does not have Id!")
-        }
-    }
-    Json.toJson(tags)
-  }
   /**
     * Request body MultiFormData should resemble:
     * Map(
