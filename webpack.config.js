@@ -11,8 +11,11 @@ module.exports = {
 			path.join(srcPath, "dashboard.js")
 		],
 		navbar: [
-		path.join(srcPath, "navbar.js")
-		]
+		  path.join(srcPath, "navbar.js")
+		],
+    homepage: [
+      path.join(srcPath, "homepage.js")
+    ]
 	},
 
 	output: {

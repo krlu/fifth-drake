@@ -7,7 +7,7 @@ import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
-import gg.climb.fifthdrake.lolobjects.game.{Champion, GameData, InGameTeam, MetaData}
+import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
 import gg.climb.fifthdrake.{Game, Time}
 import gg.climb.ramenx.{Behavior, ListBehavior}
@@ -33,6 +33,13 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
 
   def getPlayer(id: InternalId[Player]): Player = pdbh.getPlayer(id)
   def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
+
+  def getAllGameIdentifiers: Seq[GameIdentifier] = pdbh.getAllGameIdentifiers
+
+  def getAllGames: Seq[MetaData] = {
+    val TIMEOUT = Duration(30, TimeUnit.SECONDS)
+    Await.result(mdbh.getAllGames, TIMEOUT)
+  }
 
   def getGame(gameKey: RiotId[Game]): Option[Game] ={
 
