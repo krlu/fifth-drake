@@ -24,18 +24,18 @@ class HomePageController(dbh: DataAccessHandler,
                          AuthenticatedAction: AuthenticatedAction) extends Controller {
 
   def loadLandingPage: Action[AnyContent] = Action { request =>
-    Logger.info("loading landing page")
+    Logger.info(s"loading landing page: ${request.toString()}")
     val userId = request.session.get(UserId.name)
-    val validId = userId.map(id => dbh.isUserAccountStored(id))
+    val validId = userId.map(id => dbh.userExists(id))
 
     validId match {
       case Some(v) => Ok(views.html.landingPage(googleClientId, v))
-      case None => Ok(views.html.landingPage(googleClientId, false))
+      case None => Ok(views.html.landingPage(googleClientId, loggedIn = false))
     }
   }
 
   def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>
-    Logger.info("loading home page")
+    Logger.info(s"loading home page: ${request.toString()}")
     Ok(views.html.homePage(googleClientId, true))
   }
 
@@ -59,9 +59,7 @@ class HomePageController(dbh: DataAccessHandler,
           "league" -> o._2.tournament.league.name)
       )
     }
-    val gidMap: Map[String, GameIdentifier] = dbh.getAllGameIdentifiers.map{
-      gid => (gid.gameKey.id -> gid)
-    }.toMap
+    val gidMap: Map[String, GameIdentifier] = dbh.getAllGameIdentifiers.map(gid => gid.gameKey.id -> gid).toMap
 
     val allData: Seq[JsValue] = dbh.getAllGames.map{ md =>
       Json.toJson((md, gidMap(md.gameKey.id)))
@@ -71,7 +69,7 @@ class HomePageController(dbh: DataAccessHandler,
   }
 
   def logIn(): Action[AnyContent] = Action { request =>
-    Logger.info("saving user account information upon log in")
+    Logger.info(s"saving user account information upon log in: ${request.toString()}")
 
     def exchangeAuthorizationCode(code: String, redirectUrl: String): GoogleTokenResponse = {
       new GoogleAuthorizationCodeTokenRequest(
@@ -88,7 +86,7 @@ class HomePageController(dbh: DataAccessHandler,
     val form = request.body.asFormUrlEncoded
     val code = form.map(f => f("code").head)
 
-    Logger.info(s"body: $form")
+    Logger.info(s"log in form body: $form\nrequest: ${request.toString()}")
 
     (form, code) match {
       case (_, Some(c)) =>
@@ -97,7 +95,7 @@ class HomePageController(dbh: DataAccessHandler,
         val refreshToken = tokenResponse.getRefreshToken
         val idToken = tokenResponse.parseIdToken()
         val payload = idToken.getPayload
-        dbh.storeUserAccount(accessToken, refreshToken, payload)
+        dbh.storeUser(accessToken, refreshToken, payload)
         Ok("").withSession(UserId.name -> payload.getSubject)
       case (_, _) => BadRequest("Missing authorization code")
     }

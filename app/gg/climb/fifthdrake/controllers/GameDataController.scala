@@ -1,9 +1,11 @@
 package gg.climb.fifthdrake.controllers
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter}
+import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter, TagAction, TagRequest}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
+import gg.climb.fifthdrake.lolobjects.accounts.UserGroup
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
@@ -144,55 +146,27 @@ class GameDataController(dbh: DataAccessHandler,
   }
   // scalastyle:on method.length
 
-  def getTags(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
-    Ok(loadTagData(gameKey))
-  }
-
-  def loadParsedTags(gameKey: String): List[Tag] ={
-    val game = dbh.getGame(new RiotId[Game](gameKey)).orNull
-    val eventFinder = new EventFinder()
-     eventFinder.getAllEventsForGame(game).getAll
-      .flatMap { case (timestamp: Time, events: Set[GameEvent]) => {
-        events.flatMap( event => {
-          event match {
-            case fight : FightEvent =>
-              fight.fight match {
-                case tf : Teamfight =>
-                  val locStr = s"(${fight.fight.location.x}, ${fight.fight.location.y})"
-                  Some(new Tag(Some(new InternalId[Tag]("-1")), new RiotId[Game](gameKey),
-                    "TimeFight at: " + locStr, "", new Category("TeamFight"), timestamp, fight.fight.playersInvolved))
-                case _ => None
-              }
-            case objective : ObjectiveEvent =>
-              val locStr = s"(${objective.objective.location.x}, ${objective.objective.location.y})"
-              Some(new Tag(Some(new InternalId[Tag]("-1")),new RiotId[Game](gameKey),
-                "Objective Taken at: " + locStr, "", new Category("Objective"), timestamp, Set()))
+  def getTags(gameKey: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter andThen TagAction.refiner(gameKey, dbh)) { request =>
+      implicit val tagWrites = new Writes[Tag] {
+        def writes(tag: Tag): JsObject =
+          if (tag.hasInternalId) {
+            Json.obj(
+              "id" -> tag.id.get.id,
+              "title" -> tag.title,
+              "description" -> tag.description,
+              "category" -> tag.category.name,
+              "timestamp" -> tag.timestamp.toSeconds,
+              "players" -> Json.toJson(tag.players.map(_.id.id)),
+              "author" -> tag.author
+            )
+          } else {
+            Json.obj("error:" -> "Error, tag does not have Id!")
           }
-        })
       }
-    }
+      Ok(Json.toJson(request.gameTags))
   }
-
-  private def loadTagData(gameKey: String): JsValue = {
-//    val parsedTags = loadParsedTags(gameKey).drop(9).grouped(10).map(_.head).toList
-    val tags = dbh.getTags(new RiotId[Game](gameKey ))
-    implicit val tagWrites = new Writes[Tag] {
-      def writes(tag: Tag): JsObject =
-        if(tag.hasInternalId) {
-          Json.obj(
-            "id" -> tag.id.get.id,
-            "title" -> tag.title,
-            "description" -> tag.description,
-            "category" -> tag.category.name,
-            "timestamp" -> tag.timestamp.toSeconds,
-            "players" -> Json.toJson(tag.players.map(_.id.id))
-          )
-        }
-        else
-          Json.obj("error:" -> "Error, tag does not have Id!")
-    }
-    Json.toJson(tags)
-  }
+  
   /**
     * Request body MultiFormData should resemble:
     * Map(
@@ -208,7 +182,7 @@ class GameDataController(dbh: DataAccessHandler,
     *
     * @return Ok if successful, otherwise BadRequest
     */
-  def saveTag(): Action[AnyContent] = Action { request =>
+  def saveTag(): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
     val body: AnyContent = request.body
     body.asJson.map{ jsonValue =>
       val data = jsonValue.as[JsObject].value
@@ -221,15 +195,24 @@ class GameDataController(dbh: DataAccessHandler,
         val id = jsVal.as[String]
         dbh.getPlayer(new InternalId[Player](id))
       }.toSet
-      dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description,
-        new Category(category), Duration(timeStamp, TimeUnit.SECONDS), players))
-      Ok(loadTagData(gameKey))
+      val userGroup = dbh.getUserGroup(request.user)
+
+      userGroup match {
+        case Some(group) =>
+          dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
+            Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List(group)))
+        case None =>
+          dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
+            Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]))
+      }
+
+      Ok("")
     }.getOrElse{
       BadRequest("Failed to insert tag")
     }
   }
 
-  def deleteTag(tagId: String): Action[AnyContent] = Action {
+  def deleteTag(tagId: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
     dbh.deleteTag(new InternalId[Tag](tagId))
     Ok(tagId)
   }

@@ -1,8 +1,10 @@
 package gg.climb.fifthdrake.dbhandling
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
+import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
 import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
@@ -70,27 +72,53 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
 
   def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
-    val tagData: List[(Int, String, String, String, String, Long)] =
-      DB readOnly { implicit session =>
-        sql"SELECT * FROM league.tag WHERE game_key = ${gameKey.id}".map(rs => {
-          (rs.int("id"), rs.string("game_key"), rs.string("title"),
-            rs.string("description"), rs.string("category"), rs.long("timestamp"))
-        }).list.apply()
-      }
-    tagData.map(data => buildTag(data))
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM league.tag WHERE game_key = ${gameKey.id}".map(rs => {
+        val tagId = new InternalId[Tag](rs.int("id").toString)
+        new Tag(
+          Some(tagId),
+          new RiotId[Game](rs.string("game_key")),
+          rs.string("title"), rs.string("description"),
+          new Category(rs.string("category")),
+          Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
+          getPlayersForTag(tagId),
+          UUID.fromString(rs.string("author")),
+          buildUserGroupList(rs.array("authorized_groups"))
+        )
+      }).list.apply()
+    }
   }
 
-  /**
-    * @param data tuple of (internalId, riotGameId, title, description, category timestamp)
-    * @return
-    */
-  private def buildTag(data: (Int, String, String, String, String, Long)): Tag = data match {
-    case data: (Int, String, String, String, String, Long) =>
-      val tagId = new InternalId[Tag](data._1.toString)
-      new Tag(Some(tagId), new RiotId[Game](data._2), data._3, data._4, new Category(data._5),
-              Duration(data._6, TimeUnit.MILLISECONDS), getPlayersForTag(tagId))
-    case _ => throw new IllegalArgumentException("")
+  def buildUserGroupMemberList(userGroupId: UUID): List[UUID] = {
+    DB readOnly { implicit  session =>
+      sql"SELECT users FROM account.user_group WHERE id=${userGroupId}::uuid"
+        .map(rs => rs.array("users"))
+        .list()
+        .apply()
+        .headOption
+      match {
+        case Some(users) => users.getArray.asInstanceOf[Array[UUID]].toList
+        case None => List.empty
+      }
+    }
   }
+
+  private def buildUserGroupList(authorizedGroups: java.sql.Array): List[UserGroup] = {
+    authorizedGroups.getArray.asInstanceOf[Array[UUID]].map(uuid => {
+      new UserGroup(uuid, buildUserGroupMemberList(uuid))
+    }).toList
+  }
+
+  def findUserGroupId(userUuid: UUID): Option[UUID] = {
+    DB readOnly { implicit session =>
+      sql"SELECT id FROM account.user_group WHERE ${userUuid}::uuid = ANY (users);"
+        .map(rs => UUID.fromString(rs.string("id")))
+        .list()
+        .apply()
+        .headOption
+    }
+  }
+
 
   private def getPlayersForTag(tagId: InternalId[Tag]): Set[Player] = {
     val ids = getPlayerIdsForTag(tagId)
@@ -120,23 +148,28 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     new Player(playerId, ign, Role.interpret(role), getPlayerRiotId(playerId))
   }
 
-  def insertTag(tag: Tag): Unit = {
+  def insertTag(tag: Tag): Long = {
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
-    DB localTx { implicit session => {
+    DB localTx { implicit session =>
+      var groupUuids = "{"
+      tag.authorizedGroups.foreach(groupUuids += _.uuid)
+      groupUuids += "}"
       val tag_id: Long =
-        sql"""insert into league.tag (game_key, title, description, category, timestamp)
+        sql"""insert into league.tag (game_key, title, description, category, timestamp, author, authorized_groups)
               values (${tag.gameKey.id},
                       ${tag.title},
                       ${tag.description},
                       ${tag.category.name},
-                      ${tag.timestamp.toMillis})
+                      ${tag.timestamp.toMillis},
+                      ${tag.author}::uuid,
+                      ${groupUuids}::uuid[])
              """.updateAndReturnGeneratedKey().apply()
       tag.players.foreach((id: Player) => {
         sql"""INSERT INTO league.player_to_tag (tag_id, player_id)
              values (${tag_id}, ${id.id.id.toInt})""".update.apply()
       })
-    }
+      tag_id
     }
   }
 
@@ -200,7 +233,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def deleteTag(tagId: InternalId[Tag]): Unit = {
+  def deleteTag(tagId: InternalId[Tag]): Int = {
     getPlayerIdsForTag(tagId).foreach(riotId => deletePlayerToTag(riotId))
     DB localTx { implicit session =>
       sql"DELETE FROM league.tag WHERE id=${tagId.id.toInt}".update().apply()
@@ -331,7 +364,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     ids.map(id => new InternalId[Team](id))
   }
 
-  def isUserAccountStored(userId: String): Boolean = {
+  def userExists(userId: String): Boolean = {
     DB readOnly { implicit session =>
       sql"SELECT id FROM account.user WHERE user_id = $userId"
         .map(rs => rs.string("id"))
@@ -341,34 +374,44 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def isUserAuthorized(userId: String): Boolean = {
+  def isUserAuthorized(userId: String): Option[Boolean] = {
     DB readOnly { implicit session =>
       sql"SELECT authorized FROM account.user WHERE user_id = $userId"
         .map(rs => rs.boolean("authorized"))
         .list()
         .apply()
         .headOption
-        .getOrElse(false)
     }
   }
 
-  def getPartialUserAccount(userId: String): (String, String, String) = {
+  def getUser(userId: String): Option[User] = {
     DB readOnly { implicit session =>
-      sql"SELECT first_name, last_name, email FROM account.user WHERE user_id = $userId"
-        .map(rs => (rs.string("first_name"), rs.string("last_name"), rs.string("email")))
+      sql"SELECT * FROM account.user WHERE user_id = $userId"
+        .map(rs => {
+          new User(
+            UUID.fromString(rs.string("id")),
+            rs.string("first_name"),
+            rs.string("last_name"),
+            rs.string("user_id"),
+            rs.string("email"),
+            rs.boolean("authorized"),
+            rs.string("access_token"),
+            rs.string("refresh_token")
+          )
+        })
         .list()
         .apply()
-        .head
+        .headOption
     }
   }
 
-  def storeUserAccount(firstName: String,
-                       lastName: String,
-                       userId: String,
-                       email: String,
-                       authorized: Boolean,
-                       accessToken: String,
-                       refreshToken: String): Unit = {
+  def storeUser(firstName: String,
+                lastName: String,
+                userId: String,
+                email: String,
+                authorized: Boolean,
+                accessToken: String,
+                refreshToken: String): Unit = {
     DB localTx { implicit session =>
       sql"""INSERT INTO account.user (
               first_name,
@@ -387,7 +430,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
               $accessToken,
               $refreshToken
             )"""
-        .updateAndReturnGeneratedKey()
+        .update()
         .apply()
     }
   }
