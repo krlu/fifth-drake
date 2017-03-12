@@ -9,6 +9,7 @@ import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamSt
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
+import gg.climb.fifthdrake.reasoning._
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
 import gg.climb.ramenx.Behavior
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
@@ -21,7 +22,11 @@ class GameDataController(dbh: DataAccessHandler,
                          AuthorizationFilter: AuthorizationFilter) extends Controller {
 
   def loadDashboard(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
-    Ok(views.html.gameDashboard(request.host, gameKey))
+    val allGames = dbh.getAllGameIdentifiers.map(identifier => identifier.gameKey.id)
+    if(allGames.contains(gameKey))
+      Ok(views.html.gameDashboard(request.host, gameKey))
+    else
+      NotFound
   }
 
   def loadChampion(name: String): Action[AnyContent] = Action {
@@ -131,7 +136,6 @@ class GameDataController(dbh: DataAccessHandler,
             )
           }
         }
-
         Ok(Json.toJson(game))
       case None =>
         NotFound
@@ -144,8 +148,34 @@ class GameDataController(dbh: DataAccessHandler,
     Ok(loadTagData(gameKey))
   }
 
+  def loadParsedTags(gameKey: String): List[Tag] ={
+    val game = dbh.getGame(new RiotId[Game](gameKey)).orNull
+    val eventFinder = new EventFinder()
+     eventFinder.getAllEventsForGame(game).getAll
+      .flatMap { case (timestamp: Time, events: Set[GameEvent]) => {
+        events.flatMap( event => {
+          event match {
+            case fight : FightEvent =>
+              fight.fight match {
+                case tf : Teamfight =>
+                  val locStr = s"(${fight.fight.location.x}, ${fight.fight.location.y})"
+                  Some(new Tag(Some(new InternalId[Tag]("-1")), new RiotId[Game](gameKey),
+                    "TimeFight at: " + locStr, "", new Category("TeamFight"), timestamp, fight.fight.playersInvolved))
+                case _ => None
+              }
+            case objective : ObjectiveEvent =>
+              val locStr = s"(${objective.objective.location.x}, ${objective.objective.location.y})"
+              Some(new Tag(Some(new InternalId[Tag]("-1")),new RiotId[Game](gameKey),
+                "Objective Taken at: " + locStr, "", new Category("Objective"), timestamp, Set()))
+          }
+        })
+      }
+    }
+  }
+
   private def loadTagData(gameKey: String): JsValue = {
-    val tags = dbh.getTags(new RiotId[Game](gameKey))
+//    val parsedTags = loadParsedTags(gameKey).drop(9).grouped(10).map(_.head).toList
+    val tags = dbh.getTags(new RiotId[Game](gameKey ))
     implicit val tagWrites = new Writes[Tag] {
       def writes(tag: Tag): JsObject =
         if(tag.hasInternalId) {

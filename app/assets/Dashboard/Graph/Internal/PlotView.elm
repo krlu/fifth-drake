@@ -33,21 +33,16 @@ customViewGenerator playerHintDataList  =
   let
     customView : HintInfo -> Bool -> Html.Html msg
     customView { xValue, yValues } isLeftSide  =
-      let
-        classes =
-          [
-          ]
-      in
-        Html.div
-          [ Html.Attributes.classList classes, class [HintCss] ]
-          [ Html.div [] [ Html.text ("Timestamp: " ++ toString xValue) ]
-          , Html.div [] (List.map viewYData
-                         <| List.reverse
-                         <| List.sortWith customComparison
-                         <| List.map (\(player, value) -> (player, hintValueDisplayed value))
-                         <| List.filter (\(player, value) -> hasSingleValue value)
-                         <| zip playerHintDataList yValues)
-          ]
+      Html.div
+        [ class [HintCss] ]
+        [ Html.div [] [ Html.text ("Timestamp: " ++ toString xValue) ]
+        , Html.div [] (List.map viewYData
+                       <| List.reverse
+                       <| List.sortWith customComparison
+                       <| List.map (\(player, value) -> (player, hintValueDisplayed value))
+                       <| List.filter (\(player, value) -> hasSingleValue value)
+                       <| zip playerHintDataList yValues)
+        ]
   in
     customView
 

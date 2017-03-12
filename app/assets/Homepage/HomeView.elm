@@ -1,5 +1,6 @@
 module HomeView exposing (view)
 
+import Array
 import DashboardCss exposing (CssClass(Dashboard))
 import HomeCss exposing (CssClass(..), namespace)
 import HomeTypes exposing (..)
@@ -87,14 +88,14 @@ metadataView : Location -> MetaData -> Html Msg
 metadataView loc metadata =
   let
     date = fromTime metadata.timeFrame.gameDate
-    patchComponents = split "." metadata.timeFrame.patch |> List.take 2
+    patchComponents = split "." metadata.timeFrame.patch |> Array.fromList
     extractStr : Maybe String -> String
     extractStr str =
       case str of
         Just s -> s
         Nothing -> ""
-    part1 = extractStr <| List.head patchComponents
-    part2 = extractStr <| List.head <| List.reverse patchComponents
+    part1 = extractStr <| Array.get 0 patchComponents
+    part2 = extractStr <| Array.get 1 patchComponents
     patch = part1 ++ "." ++ part2
   in
     tr [ class [RowItem] ]

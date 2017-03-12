@@ -26,14 +26,17 @@ yAxisLabelWidth = 100
 yAxisLabelTop : Float
 yAxisLabelTop = 20
 
-opacityValue : String
-opacityValue = "0.2"
+opacityValue : Float
+opacityValue = 0.2
 
 graphControlMarginTop : Float
 graphControlMarginTop = 32
 
 graphControlLeft : Float
 graphControlLeft = 90
+
+hintFontSize : Float
+hintFontSize = 18
 
 type CssClass
   = Graph
@@ -81,6 +84,7 @@ css =
     ] )
   , (.) HintCss(
     [ backgroundColor c_lightYellow
-    , property "opacity" opacityValue
+    , opacity (opacityValue |> num)
+    , fontSize (hintFontSize |> px)
     ])
   ]
