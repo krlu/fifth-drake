@@ -50,7 +50,8 @@ class HomePageController(dbh: DataAccessHandler,
         "gameNumber" -> o._2.gameNumber,
         "timeFrame" -> Json.obj(
           "gameDate" -> o._1.gameDate,
-          "week" -> o._2.week),
+          "week" -> o._2.week,
+          "patch" -> o._1.patch),
         "tournament" -> Json.obj(
           "year" -> o._2.tournament.year,
           "split" -> o._2.tournament.split,

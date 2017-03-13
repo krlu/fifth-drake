@@ -21,4 +21,3 @@ type alias Model =
   }
 
 type alias Drag = Mouse.Position
-

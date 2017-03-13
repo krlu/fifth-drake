@@ -6,6 +6,9 @@ type alias GameId = Int
 type alias PlayerId = String
 type alias GameLength = Timestamp
 type alias Timestamp = Int
+type alias Ign = String
+type alias Name = String
+type alias Image = String
 
 type alias Game =
   { metadata : Metadata
@@ -40,9 +43,9 @@ type alias TeamState =
 type alias Player =
   { id                : PlayerId
   , role              : Role
-  , ign               : String
-  , championName      : String
-  , championImage     : String
+  , ign               : Ign
+  , championName      : Name
+  , championImage     : Image
   , state             : Array PlayerState
   }
 
@@ -52,6 +55,8 @@ type alias PlayerState =
   , kills             : Int
   , deaths            : Int
   , assists           : Int
+  , currentGold       : Float
+  , totalGold         : Float
   }
 
 type alias Position =

@@ -6,14 +6,30 @@ import GameModel exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (draggable, src)
 import Html.CssHelpers exposing (withNamespace)
+import Html.Events exposing (onClick)
 import PlayerDisplay.Css exposing (CssClass(..), namespace)
+import PlayerDisplay.Types exposing (Model, Msg(PlayerDisplayClicked))
+import Set
+import String
 import StyleUtils exposing (styles)
+import PlayerDisplay.Internal.Update as Update
 
 {id, class, classList} = withNamespace namespace
 
-view : Side -> Player -> Timestamp -> Html a
-view side player timestamp =
+init : Model
+init =
+  { selectedPlayers = Set.empty
+  }
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update = Update.update
+
+view : Side -> Player -> Timestamp -> Model -> Html Msg
+view side player timestamp model =
   let
+    displayCss = case Set.member player.id model.selectedPlayers of
+      True -> SelectedPlayer
+      False -> PlayerDisplay
     direction =
       case side of
         Blue -> DirNormal
@@ -69,9 +85,12 @@ view side player timestamp =
           )
   in
     div
-      [ class [PlayerDisplay, direction] ]
+      [ class [displayCss, direction]
+      , onClick (PlayerDisplayClicked player.id)
+      ]
       [ div
-        [ class [ChampDisplay, direction] ]
+        [ class [ChampDisplay, direction]
+        ]
         [ p
           [ class [PlayerLevel] ]
           [ text << toString <| level ]

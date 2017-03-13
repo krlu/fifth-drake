@@ -1,7 +1,7 @@
 module HomeCss exposing (..)
 
 import Css exposing (..)
-import Css.Elements exposing (table, td)
+import Css.Elements exposing (table, td, tr)
 import Css.Namespace
 import CssColors as Color
 
@@ -17,6 +17,7 @@ type CssClass
   | RowItem
   | TableHeader
   | TableBody
+  | DateHeader
 
 css : Stylesheet
 css =
@@ -28,19 +29,21 @@ css =
   ,(.) Searchbar(
     [ fontSize (25 |> px)
     ])
-  , td(
-    [ marginLeft (50 |> px)
-    , borderStyle solid
+  ,(.) RowItem(
+    [ hover [backgroundColor Color.c_hovering]
+    , backgroundColor Color.c_games_table_header
+    , backgroundColor Color.c_games_table
     ])
   , table(
-    [ width (100 |> pct)
+    [ width (90 |> pct)
     , fontSize (tableFontSize |> px)
     ])
   ,(.) TableHeader(
     [ backgroundColor Color.c_games_table_header
-    ])
-  ,(.) TableBody(
-    [ backgroundColor Color.c_games_table_header
-    , backgroundColor Color.c_games_table
+    , children
+      [ (.) DateHeader(
+        [ hover [backgroundColor Color.c_hovering, cursor pointer]
+        ])
+      ]
     ])
   ]

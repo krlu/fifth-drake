@@ -14,6 +14,8 @@ import PlayerDisplay.PlayerDisplay as PlayerDisplay
 import TeamDisplay.TeamDisplay as TeamDisplay
 import Types exposing (..)
 import Tuple
+import Graph.Graph as Graph
+import Html.Events exposing (onClick)
 
 {id, class, classList} = withNamespace namespace
 
@@ -55,7 +57,7 @@ view model =
       |> List.map
         (\p ->
           widget side
-            [ PlayerDisplay.view side p model.timestamp
+            [ PlayerDisplay.view side p model.timestamp model.playerDisplay |> Html.map PlayerDisplayMsg
             ]
         )
       |> div [ class [PlayerDisplay] ]
@@ -69,7 +71,9 @@ view model =
         model.controls
       |> Html.map ControlsMsg
 
-    minimap = Minimap.view model.minimap
+    centerView = case model.viewType of
+      Map -> [Minimap.view model.minimap model.game.data, controls]
+      Stats -> [Graph.view model.graphStat model.game model.playerDisplay.selectedPlayers |> Html.map GraphMsg]
 
     bluePlayers = model.game.data.blueTeam.players
     redPlayers =  model.game.data.redTeam.players
@@ -82,7 +86,8 @@ view model =
   in
     div
       [ class [Dashboard] ]
-      [ div
+      [ button [ class [SwitchCss], onClick SwitchView] [text "switch view"],
+        div
         [ class [TeamDisplays] ]
         [ blueTeamDisplay
         , redTeamDisplay
@@ -92,15 +97,13 @@ view model =
         [ bluePlayerDisplays
         , div
           [ id [CenterContent] ]
-          [ minimap
-          , controls
-          ]
+          centerView
         , redPlayerDisplays
         ]
       , tagCarousel
       ]
 
-getPlayerIdsAndIgns: Array Player -> Array Player -> List (PlayerId, String, String, String)
+getPlayerIdsAndIgns: Array Player -> Array Player -> List (PlayerId, Ign, Name, Image)
 getPlayerIdsAndIgns bluePlayers redPlayers =
   let
      blueData = bluePlayers |> Array.map (\player -> (player.id, player.ign, player.championName, player.championImage))

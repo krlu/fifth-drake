@@ -9,6 +9,8 @@ import Minimap.Types as MinimapT
 import PlaybackTypes exposing (..)
 import TagCarousel.TagCarousel as TagCarousel
 import TagCarousel.Types as TagCarouselT
+import PlayerDisplay.PlayerDisplay as PlayerDisplay
+import Graph.Graph as Graph
 import Types exposing (..)
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -77,3 +79,22 @@ update msg model =
     SetGame (Err err) ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
     LocationUpdate loc -> (model, Cmd.none)
+    SwitchView ->
+      let
+        viewType =
+          case model.viewType of
+            Map -> Stats
+            Stats -> Map
+      in
+        ({model | viewType = viewType}, Cmd.none)
+    PlayerDisplayMsg msg ->
+      let
+        (pModel, cmd) = PlayerDisplay.update msg model.playerDisplay
+      in
+        ({model | playerDisplay = pModel}, Cmd.none)
+    GraphMsg msg ->
+      let
+        (gModel, cmd) = Graph.update msg model.graphStat model.game.metadata.gameLength
+      in
+        ({model | graphStat = gModel}, Cmd.none)
+

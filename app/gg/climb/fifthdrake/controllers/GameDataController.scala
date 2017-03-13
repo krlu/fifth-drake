@@ -1,9 +1,8 @@
 package gg.climb.fifthdrake.controllers
 
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter, TagAction, TagRequest}
+import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter, TagAction}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.accounts.UserGroup
 import gg.climb.fifthdrake.lolobjects.esports.Player
@@ -23,7 +22,11 @@ class GameDataController(dbh: DataAccessHandler,
                          AuthorizationFilter: AuthorizationFilter) extends Controller {
 
   def loadDashboard(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
-    Ok(views.html.gameDashboard(request.host, gameKey))
+    val allGames = dbh.getAllGameIdentifiers.map(identifier => identifier.gameKey.id)
+    if(allGames.contains(gameKey))
+      Ok(views.html.gameDashboard(request.host, gameKey))
+    else
+      NotFound
   }
 
   def loadChampion(name: String): Action[AnyContent] = Action {
@@ -81,7 +84,9 @@ class GameDataController(dbh: DataAccessHandler,
             ),
             "kills" -> playerState.kills,
             "deaths" -> playerState.deaths,
-            "assists" -> playerState.assists
+            "assists" -> playerState.assists,
+            "currentGold" -> playerState.currentGold,
+            "totalGold" -> playerState.totalGold
           )
         }
 
@@ -131,7 +136,6 @@ class GameDataController(dbh: DataAccessHandler,
             )
           }
         }
-
         Ok(Json.toJson(game))
       case None =>
         NotFound
@@ -142,23 +146,23 @@ class GameDataController(dbh: DataAccessHandler,
 
   def getTags(gameKey: String): Action[AnyContent] =
     (AuthenticatedAction andThen AuthorizationFilter andThen TagAction.refiner(gameKey, dbh)) { request =>
-      implicit val tagWrites = new Writes[Tag] {
-        def writes(tag: Tag): JsObject =
-          if (tag.hasInternalId) {
-            Json.obj(
-              "id" -> tag.id.get.id,
-              "title" -> tag.title,
-              "description" -> tag.description,
-              "category" -> tag.category.name,
-              "timestamp" -> tag.timestamp.toSeconds,
-              "players" -> Json.toJson(tag.players.map(_.id.id)),
-              "author" -> tag.author
-            )
-          } else {
-            Json.obj("error:" -> "Error, tag does not have Id!")
-          }
-      }
       Ok(Json.toJson(request.gameTags))
+  }
+
+  private implicit val tagWrites = new Writes[Tag] {
+    def writes(tag: Tag): JsObject =
+      if(tag.hasInternalId) {
+        Json.obj(
+          "id" -> tag.id.get.id,
+          "title" -> tag.title,
+          "description" -> tag.description,
+          "category" -> tag.category.name,
+          "timestamp" -> tag.timestamp.toSeconds,
+          "players" -> Json.toJson(tag.players.map(_.id.id))
+        )
+      }
+      else
+        Json.obj("error:" -> "Error, tag does not have Id!")
   }
 
   /**
@@ -190,7 +194,6 @@ class GameDataController(dbh: DataAccessHandler,
         dbh.getPlayer(new InternalId[Player](id))
       }.toSet
       val userGroup = dbh.getUserGroup(request.user)
-
       userGroup match {
         case Some(group) =>
           dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
@@ -199,8 +202,7 @@ class GameDataController(dbh: DataAccessHandler,
           dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
             Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]))
       }
-
-      Ok("")
+      Ok(Json.toJson(dbh.getTags(new RiotId[Game](gameKey ))))
     }.getOrElse{
       BadRequest("Failed to insert tag")
     }

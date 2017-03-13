@@ -131,7 +131,10 @@ css =
         , width (addTagButtonHeight |> px)
         , borderRadius (50 |> pct)
         , backgroundColor Color.c_carousel
-        , hover [backgroundColor Color.c_hovering]
+        , hover
+          [ backgroundColor Color.c_hovering
+          , cursor pointer
+          ]
         , children
           [ (.) PlusImage
               [ width (100 |> pct)
@@ -213,6 +216,7 @@ css =
             , width (tagWidth |> pct)
             , backgroundColor Color.c_navBar
             , border2 (tagBorderSize |> px) solid
+            , border2 (tagBorderSize |> px) solid
             , color Color.c_blackText
             , float left
             , listStyleType none
@@ -222,6 +226,7 @@ css =
             , position relative
             , hover
               [ backgroundColor Color.c_hovering
+              , cursor pointer
               , children
                 [ (.) DeleteButtonCss
                   [ position absolute

@@ -22,6 +22,9 @@ Session.vim
 *~
 tags
 
+# Mac Stuff
+.DS_Store
+
 ## Modules Stuff
 node_modules/
 elm-stuff/
