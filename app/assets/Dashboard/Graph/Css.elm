@@ -50,26 +50,26 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) GraphContainer(
+  [ class GraphContainer(
     [ width (100 |> pct)
     , height (100 |> pct)
     ]
     )
-  , (.) Graph (
+  , class Graph (
     [ displayFlex
     , alignItems center
     , height (graphHeight |> px)
     , width (graphWidth |> px)
     , property "justify-content" "space-around"
     ] ++ StyleUtils.userSelect "none")
-  , (.)GraphControls(
+  , class GraphControls(
     [ displayFlex
     , width (100 |> pct)
     , position relative
     , marginTop (graphControlMarginTop |> px )
     , left (graphControlLeft |> px)
     ])
-  , (.) XAxisLabel(
+  , class XAxisLabel(
     [ position relative
     , left (xAxisLabelLeft |> pct)
     , color c_slateGrey
@@ -77,12 +77,12 @@ css =
     , height (10 |> px)
     , left (48 |> pct)
     ] )
-  , (.) YAxisLabel(
+  , class YAxisLabel(
     [ position relative
     , color c_slateGrey
     , top (yAxisLabelTop |> px)
     ] )
-  , (.) HintCss(
+  , class HintCss(
     [ backgroundColor c_lightYellow
     , opacity (opacityValue |> num)
     , fontSize (hintFontSize |> px)

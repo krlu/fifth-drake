@@ -30,7 +30,7 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) TeamDisplay (
+  [ class TeamDisplay (
     [ displayFlex
     , alignItems center
     , property "justify-content" "space-around"
@@ -43,7 +43,7 @@ css =
         [ fontSize (teamNameSize |> px)
         , whiteSpace noWrap
         ]
-      , (.) TeamStats (
+      , class TeamStats (
         [ displayFlex
         , property "justify-content" "space-around"
         , width (100 |> pct)

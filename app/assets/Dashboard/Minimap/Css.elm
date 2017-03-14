@@ -31,14 +31,14 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) Minimap (
+  [ class Minimap (
     [ position relative
     , height (minimapHeight |> px)
     , width (minimapWidth |> px)
     ] ++
     StyleUtils.userSelect "none" ++
     [ children
-      [ (.) PlayerIcon (
+      [ class PlayerIcon (
         [ position absolute
         , width (playerIconSize |> px)
         , height (playerIconSize |> px)
@@ -53,14 +53,14 @@ css =
           ]
         , backgroundSize cover
         , children
-          [ (.) ChampionImage
+          [ class ChampionImage
             [ width (100 |> pct)
             , height (100 |> pct)
             , borderRadius (50 |> pct)
             ]
           ]
         ])
-      , (.) Background
+      , class Background
         [ height (100 |> pct)
         , width (100 |> pct)
         ]
