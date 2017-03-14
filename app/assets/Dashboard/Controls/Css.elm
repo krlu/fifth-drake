@@ -49,7 +49,7 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) Controls (
+  [ class Controls (
     [ displayFlex
     , height (controlsHeight |> px)
     , width (controlsWidth |> px)
@@ -58,7 +58,7 @@ css =
     StyleUtils.userSelect "none" ++
     [ alignItems center
     , children
-      [ (.) TimelineAndDisplay (
+      [ class TimelineAndDisplay (
         [ displayFlex
         , position relative
         , height (100 |> pct)
@@ -66,27 +66,27 @@ css =
         [ property "justify-content" "space-between"
         , alignItems flexEnd
         , children
-          [ (.) Timeline
+          [ class Timeline
             [ position relative
             , height (barHeight |> px)
             , width (timelineWidth |> px)
             , backgroundColor Color.c_lightGray
             , textAlign right
             , children
-              [ (.) BarSeen
+              [ class BarSeen
                 [ property "pointer-events" "none"
                 , backgroundColor Color.c_darkerGray
                 , height (100 |> pct)
                 ]
               ]
             ]
-          , (.) TimeDisplay
+          , class TimeDisplay
             [ color Color.c_white
             , withClass Hidden
               [ property "visibility" "hidden"
               ]
             ]
-          , (.) Knob
+          , class Knob
             [ position absolute
             , bottom (knobBottom |> px)
             , left zero
@@ -97,14 +97,14 @@ css =
             ]
           ]
         ])
-      , (.) PlayButton
+      , class PlayButton
         [ height (100 |> pct)
         , property "border" "none"
         , property "background" "none"
         , padding zero
         , width (buttonWidth |> px)
         , children
-          [ (.) PlayPauseImg
+          [ class PlayPauseImg
             [ height (100 |> pct)
             , width (100 |> pct)
             ]

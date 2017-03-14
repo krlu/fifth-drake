@@ -26,19 +26,19 @@ css =
     [ fontSize Css.small
     , overflow hidden
     ]
-  , (#) Container (
+  , id Container (
     [ displayFlex
     , backgroundColor Color.c_backgroundDark
     ] ++ StyleUtils.flexDirection "row" ++
     [ alignItems stretch
     , flexWrap noWrap
     , children
-      [ (#) Navbar
+      [ id Navbar
         [ order (1 |> int)
         , flex (0 |> int)
         , height (100 |> vh)
         ]
-      , (#) Content
+      , id Content
         [ order (2 |> int)
         , flex (1 |> int)
         , height (100 |> vh)

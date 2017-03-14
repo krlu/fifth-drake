@@ -22,26 +22,26 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [(.) Home(
+  [class Home(
     [ width (100 |> pct)
     , overflowY scroll
     ])
-  ,(.) Searchbar(
+  ,class Searchbar(
     [ fontSize (25 |> px)
     ])
-  ,(.) RowItem(
+  ,class RowItem(
     [ hover [backgroundColor Color.c_hovering]
     , backgroundColor Color.c_games_table_header
     , backgroundColor Color.c_games_table
     ])
-  , table(
+  ,Css.Elements.table(
     [ width (90 |> pct)
     , fontSize (tableFontSize |> px)
     ])
-  ,(.) TableHeader(
+  ,class TableHeader(
     [ backgroundColor Color.c_games_table_header
     , children
-      [ (.) DateHeader(
+      [ class DateHeader(
         [ hover [backgroundColor Color.c_hovering, cursor pointer]
         ])
       ]

@@ -49,7 +49,7 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) PlayerDisplay (
+  [ class PlayerDisplay (
     [ displayFlex
     , width (playerDisplayWidth |> px)
     , height (playerDisplayHeight |> px)
@@ -65,7 +65,7 @@ css =
       , cursor pointer
       ]
     , children
-      [ (.) ChampDisplay (
+      [ class ChampDisplay (
         [ displayFlex
         , withClass DirNormal
           (StyleUtils.flexDirection "row")
@@ -74,7 +74,7 @@ css =
         , property "justify-content" "flex-start"
         , alignItems center
         , children
-          [ (.) PlayerLevel
+          [ class PlayerLevel
             [ backgroundColor Color.c_darkerGray
             , color Color.c_offWhite
             , height (levelHeight |> px)
@@ -85,13 +85,13 @@ css =
             , displayFlex
             , alignItems center
             , property "justify-content" "center"
-            , property "z-index" "1"
+            , zIndex (1 |> int)
             ]
-          , (.) ChampPortrait
+          , class ChampPortrait
             [ height (portraitHeight |> px)
             , width (portraitWidth |> px)
             , backgroundColor Color.c_gold
-            , property "z-index" "2"
+            , zIndex (2 |> int)
             , withClass DirNormal
               [ marginLeft (-5 |> px)
               ]
@@ -105,15 +105,15 @@ css =
                 ]
               ]
             ]
-          , (.) ChampStats (
+          , class ChampStats (
             [ displayFlex
             , width (champStatsWidth |> px)
             , height (champStatsHeight |> px)
             , property "justify-content" "center"
-            , property "z-index" "0"
+            , zIndex (0 |> int)
             ] ++ StyleUtils.flexDirection "column" ++
             [ children
-              [ (.) ChampStat
+              [ class ChampStat
                 [ displayFlex
                 , height (champStatHeight |> px)
                 , width (100 |> pct)
@@ -131,13 +131,13 @@ css =
                   [ everything
                     [ height (100 |> pct)
                     ]
-                  , (.) CurrentHp
+                  , class CurrentHp
                     [ backgroundColor Color.c_hp
                     ]
-                  , (.) CurrentPower
+                  , class CurrentPower
                     [ backgroundColor Color.c_mp
                     ]
-                  , (.) CurrentXp
+                  , class CurrentXp
                     [ backgroundColor Color.c_exp
                     ]
                   ]
@@ -147,7 +147,7 @@ css =
           ]
         ]
         )
-      , (.) PlayerStats (
+      , class PlayerStats (
         [ color Color.c_offWhite
         , displayFlex
         , withClass DirNormal
@@ -161,14 +161,14 @@ css =
           [ p
             [ margin (5 |> px)
             ]
-          , (.) PlayerIgn
+          , class PlayerIgn
             [ fontSize (playerIgnFontSize |> px)
             ]
           ]
         ])
       ]
     ])
-  , (.) SelectedPlayer
+  , class SelectedPlayer
     [ backgroundColor Color.c_selected
     , hover [ cursor pointer ]
     , displayFlex
@@ -182,7 +182,7 @@ css =
     , withClass DirReverse
       (StyleUtils.flexDirection "row-reverse")
     , children
-      [ (.) ChampDisplay (
+      [ class ChampDisplay (
         [ displayFlex
         , withClass DirNormal
           (StyleUtils.flexDirection "row")
@@ -191,7 +191,7 @@ css =
         , property "justify-content" "flex-start"
         , alignItems center
         , children
-          [ (.) PlayerLevel
+          [ class PlayerLevel
             [ backgroundColor Color.c_darkerGray
             , color Color.c_offWhite
             , height (levelHeight |> px)
@@ -202,13 +202,13 @@ css =
             , displayFlex
             , alignItems center
             , property "justify-content" "center"
-            , property "z-index" "1"
+            , zIndex (1 |> int)
             ]
-          , (.) ChampPortrait
+          , class ChampPortrait
             [ height (portraitHeight |> px)
             , width (portraitWidth |> px)
             , backgroundColor Color.c_gold
-            , property "z-index" "2"
+            , zIndex (2 |> int)
             , withClass DirNormal
               [ marginLeft (-5 |> px)
               ]
@@ -222,15 +222,15 @@ css =
                 ]
               ]
             ]
-          , (.) ChampStats (
+          , class ChampStats (
             [ displayFlex
             , width (champStatsWidth |> px)
             , height (champStatsHeight |> px)
             , property "justify-content" "center"
-            , property "z-index" "0"
+            , zIndex (0 |> int)
             ] ++ StyleUtils.flexDirection "column" ++
             [ children
-              [ (.) ChampStat
+              [ class ChampStat
                 [ displayFlex
                 , height (champStatHeight |> px)
                 , width (100 |> pct)
@@ -248,13 +248,13 @@ css =
                   [ everything
                     [ height (100 |> pct)
                     ]
-                  , (.) CurrentHp
+                  , class CurrentHp
                     [ backgroundColor Color.c_hp
                     ]
-                  , (.) CurrentPower
+                  , class CurrentPower
                     [ backgroundColor Color.c_mp
                     ]
-                  , (.) CurrentXp
+                  , class CurrentXp
                     [ backgroundColor Color.c_exp
                     ]
                   ]
@@ -264,7 +264,7 @@ css =
           ]
         ]
         )
-      , (.) PlayerStats (
+      , class PlayerStats (
         [ color Color.c_offWhite
         , displayFlex
         , withClass DirNormal
@@ -278,7 +278,7 @@ css =
           [ p
             [ margin (5 |> px)
             ]
-          , (.) PlayerIgn
+          , class PlayerIgn
             [ fontSize (playerIgnFontSize |> px)
             ]
           ]

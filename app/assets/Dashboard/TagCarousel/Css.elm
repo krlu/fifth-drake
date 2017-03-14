@@ -119,14 +119,14 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (#) TagDisplay
+  [ id TagDisplay
     [ property "float" "left"
     , width (tagDisplayWidth |> pct)
     , height (tagDisplayHeight |> px)
     , marginTop (tagDisplayMarginTop |> px)
     , displayFlex
     , children
-      [ (#) AddTagButton
+      [ id AddTagButton
         [ height (addTagButtonHeight |> px)
         , width (addTagButtonHeight |> px)
         , borderRadius (50 |> pct)
@@ -136,12 +136,12 @@ css =
           , cursor pointer
           ]
         , children
-          [ (.) PlusImage
+          [ class PlusImage
               [ width (100 |> pct)
               ]
           ]
         ]
-      , (.) TagFormCss (
+      , class TagFormCss (
         [ width (tagFormWidth |> pct)
         , height (tagFormHeight |> pct)
         , overflowY auto
@@ -151,23 +151,23 @@ css =
         , displayFlex
         , flexWrap wrap
         , children
-          [ (.) PlayerCheckboxes
+          [ class PlayerCheckboxes
             [ width (playerCheckBoxesWidth |> px)
             , height (playerCheckBoxesHeight |> pct)
             , displayFlex
             , flexWrap wrap
             , children
-              [ (.) CheckboxItem
+              [ class CheckboxItem
                 [ flexDirection column
                 , children
-                  [ (.) CheckboxLabel
+                  [ class CheckboxLabel
                     [ children
                       [ (img)
                         [ float left
                         ]
                       ]
                     ]
-                  , (.) PlayersInvolved
+                  , class PlayersInvolved
                     [ fontSize (playersInvolvedFontSize |> px)
                     , backgroundColor Color.c_lightGray
                     , height (playersInvolvedHeight |> pct)
@@ -177,31 +177,31 @@ css =
                 ]
               ]
             ]
-          , (#) TagFormTextInput
+          , id TagFormTextInput
             [ displayFlex
             , flexWrap wrap
             , width auto
             , height (tagFormTextInputHeight |> pct)
             , children
-              [ (.) TagFormTextBox
+              [ class TagFormTextBox
                 [ width (tagFormTextBoxWidth |> pct)
                 , height (tagFormTextBoxHeight |> pct)
                 , flexDirection column
                 ]
-              , (.) TagFormTextArea
+              , class TagFormTextArea
                 [ width (tagFormTextAreaWidth |> pct)
                 , height (tagFormTextAreaHeight |> pct)
                 , flexDirection column
               ]
               ]
             ]
-          , (#) SaveOrCancelForm
+          , id SaveOrCancelForm
             [ position absolute
             , bottom (saveOrCancelFormDistFromBottom |> px)
             ]
           ]
         ] ++ StyleUtils.userSelect "none" )
-      , (.) TagCarousel (
+      , class TagCarousel (
         [ width (tagCarouselWidth |> pct)
         , displayFlex
         , height (tagCarouselHeight |> pct)
@@ -211,7 +211,7 @@ css =
         , flexDirection row
         , flexWrap noWrap
         , children
-          [ (.) Tag
+          [ class Tag
             [ height (tagHeight |> pct)
             , width (tagWidth |> pct)
             , backgroundColor Color.c_navBar
@@ -228,7 +228,7 @@ css =
               [ backgroundColor Color.c_hovering
               , cursor pointer
               , children
-                [ (.) DeleteButtonCss
+                [ class DeleteButtonCss
                   [ position absolute
                   , bottom zero
                   , hover
@@ -239,12 +239,12 @@ css =
                 ]
               ]
             , children
-              [ (.) DeleteButtonCss
+              [ class DeleteButtonCss
                 [ display none
                 ]
               ]
             ]
-          , (.) SelectedTag
+          , class SelectedTag
             [ backgroundColor Color.c_selected
             , hover
               [ backgroundColor Color.c_selected
@@ -252,21 +252,21 @@ css =
             ]
           ]
         ] ++ StyleUtils.userSelect "none")
-      , (.) MinimizedCarousel
+      , class MinimizedCarousel
         [ width (minimizedCarouselWidth |> pct)
         , children
-          [ (.) AltTag
+          [ class AltTag
             [ width (altTagWidth |> pct)
             ]
           ]
         ]
       ]
     ]
-  , (.) LabelImage
+  , class LabelImage
     [ height (labelImageSize |> px)
     , width (labelImageSize |> px)
     ]
-  , (.) TagClickableArea
+  , class TagClickableArea
     [ height (100 |> pct)
     , width (100 |> pct)
     , overflow hidden

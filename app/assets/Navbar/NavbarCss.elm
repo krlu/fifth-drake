@@ -26,13 +26,13 @@ type CssIds
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) NavbarLeft (
+  [ class NavbarLeft (
     [ backgroundColor Color.c_navBar
     , height (100 |> pct)
     , width (navbarWidth |> px)
     ] ++ StyleUtils.userSelect "none" ++
     [ children
-      [ (#) NavbarLeftLogo
+      [ id NavbarLeftLogo
         [ displayFlex
         , alignItems center
         , property "justify-content" "center"
@@ -48,7 +48,7 @@ css =
             ]
           ]
         ]
-      , (#) NavbarLinks (
+      , id NavbarLinks (
         [ displayFlex
         ] ++ StyleUtils.flexDirection "column" ++
         [ property "justify-content" "center"
@@ -70,7 +70,7 @@ css =
                 ]
               ]
             ]
-          , (.) Selected
+          , class Selected
             [ backgroundColor Color.c_navBarSelected
             ]
           ]

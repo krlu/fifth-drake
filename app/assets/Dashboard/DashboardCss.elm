@@ -48,24 +48,24 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ (.) Dashboard (
+  [ class Dashboard (
     [ width (100 |> pct)
     , displayFlex
     , alignItems center
     ] ++ StyleUtils.flexDirection "column" ++
     [ children
-      [ (.) TeamDisplays (
+      [ class TeamDisplays (
         [ displayFlex
         , width (teamDisplaysWidth |> px)
         , property "justify-content" "space-between"
         , marginBottom (teamDisplayGap |> px)
         ] ++ StyleUtils.flexDirection "row")
-      , (#) MainContent (
+      , id MainContent (
         [ displayFlex
         , property "justify-content" "flex-start"
         ] ++ StyleUtils.flexDirection "row" ++
         [ children
-          [ (#) CenterContent (
+          [ id CenterContent (
             [ displayFlex
             , alignItems center
             , marginLeft (contentGap |> px)
@@ -79,7 +79,7 @@ css =
                 ]
               ]
             ])
-          , (.) PlayerDisplay (
+          , class PlayerDisplay (
             [ displayFlex
             , property "justify-content" "flex-start"
             ] ++ StyleUtils.flexDirection "column" ++
@@ -97,15 +97,15 @@ css =
         )
       ]
     ])
-  , (#) TeamDisplayDivider
+  , id TeamDisplayDivider
     [ width auto
     , height (30 |> px)
     ]
-  , (#) ControlsDivider
+  , id ControlsDivider
     [ width auto
     , height (50 |> px)
     ]
-  , (.) Widget
+  , class Widget
     [ display inlineBlock
     , backgroundColor (hex "#3b4047")
     , borderBottom2 (3 |> px) solid
@@ -120,7 +120,7 @@ css =
       , borderColor Color.c_redTeam
       ]
     ]
-  , (.) SwitchCss
+  , class SwitchCss
     [ position relative
     , right (40 |> pct)
     , top (10 |> pct)
