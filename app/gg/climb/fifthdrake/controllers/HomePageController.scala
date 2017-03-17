@@ -36,7 +36,7 @@ class HomePageController(dbh: DataAccessHandler,
 
   def loadHomePage: Action[AnyContent] = AuthenticatedAction { request =>
     Logger.info(s"loading home page: ${request.toString()}")
-    Ok(views.html.homePage(googleClientId, true))
+    Ok(views.html.homePage(googleClientId, loggedIn = true))
   }
 
   def loadAllGames(): Action[AnyContent] = AuthenticatedAction { request =>
@@ -99,5 +99,9 @@ class HomePageController(dbh: DataAccessHandler,
         Ok("").withSession(UserId.name -> payload.getSubject)
       case (_, _) => BadRequest("Missing authorization code")
     }
+  }
+
+  def logOut(): Action[AnyContent] = AuthenticatedAction { request =>
+    Redirect(routes.HomePageController.loadLandingPage()).withSession(request.session - UserId.name)
   }
 }
