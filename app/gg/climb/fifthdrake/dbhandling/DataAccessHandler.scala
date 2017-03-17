@@ -1,5 +1,6 @@
 package gg.climb.fifthdrake.dbhandling
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
@@ -67,7 +68,8 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
 
   def userExists(userId: String): Boolean = pdbh.userExists(userId)
   def isUserAuthorized(userId: String): Option[Boolean] = pdbh.isUserAuthorized(userId)
-  def getUser(userId: String): Option[User] = pdbh.getUser(userId)
+  def getUserByGoogleId(userId: String): Option[User] = pdbh.getUserByGoogleId(userId)
+  def getUserByUuid(uuid: UUID): Option[User] = pdbh.getUserByUuid(uuid)
   def storeUser(accessToken: String, refreshToken: String, payload: Payload): Unit = {
     Logger.info(s"attempting to store user account information: ${payload.getSubject}")
     if (!userExists(payload.getSubject)) {
@@ -86,13 +88,21 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
     }
   }
 
+  def createUserGroup(owner: User): Int = {
+    pdbh.insertUserGroup(owner)
+  }
+
   def getUserGroup(user: User): Option[UserGroup] = {
-    pdbh.findUserGroupId(user.uuid) match {
+    pdbh.findUserGroupByUserUuid(user.uuid) match {
       case Some(userGroupId) =>
         val memberList = pdbh.buildUserGroupMemberList(userGroupId)
         Some(new UserGroup(userGroupId, memberList))
       case None => None
     }
+  }
+
+  def getUserGroupByUserEmail(email: String): Option[UserGroup] = {
+    ???
   }
 
   private def behaviorForPlayers(playerStates: Seq[(Time, Set[PlayerState])])

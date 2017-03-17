@@ -50,7 +50,6 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   }
 
   private def formatDate(s : String): DateTime = {
-    println(s)
     val formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
     formatter.parseDateTime(s)
   }
@@ -109,7 +108,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }).toList
   }
 
-  def findUserGroupId(userUuid: UUID): Option[UUID] = {
+  def findUserGroupByUserUuid(userUuid: UUID): Option[UUID] = {
     DB readOnly { implicit session =>
       sql"SELECT id FROM account.user_group WHERE ${userUuid}::uuid = ANY (users);"
         .map(rs => UUID.fromString(rs.string("id")))
@@ -119,6 +118,13 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
+  def insertUserGroup(user: User): Int = {
+    DB localTx { implicit session =>
+      sql"INSERT INTO account.user_group (users) VALUES ({${user.uuid}}::uuid[])"
+        .update()
+        .apply()
+    }
+  }
 
   private def getPlayersForTag(tagId: InternalId[Tag]): Set[Player] = {
     val ids = getPlayerIdsForTag(tagId)
@@ -384,21 +390,43 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def getUser(userId: String): Option[User] = {
+  private def buildUser(rs: WrappedResultSet): User = {
+    new User(
+      UUID.fromString(rs.string("id")),
+      rs.string("first_name"),
+      rs.string("last_name"),
+      rs.string("user_id"),
+      rs.string("email"),
+      rs.boolean("authorized"),
+      rs.string("access_token"),
+      rs.string("refresh_token")
+    )
+  }
+
+  def getUserByGoogleId(userId: String): Option[User] = {
     DB readOnly { implicit session =>
       sql"SELECT * FROM account.user WHERE user_id = $userId"
-        .map(rs => {
-          new User(
-            UUID.fromString(rs.string("id")),
-            rs.string("first_name"),
-            rs.string("last_name"),
-            rs.string("user_id"),
-            rs.string("email"),
-            rs.boolean("authorized"),
-            rs.string("access_token"),
-            rs.string("refresh_token")
-          )
-        })
+        .map(buildUser)
+        .list()
+        .apply()
+        .headOption
+    }
+  }
+
+  def getUserByUuid(uuid: UUID): Option[User] = {
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM account.user WHERE id = ${uuid}::uuid"
+        .map(buildUser)
+        .list()
+        .apply()
+        .headOption
+    }
+  }
+
+  def getUserByEmail(email: String): Option[User] = {
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM account.user WHERE email = $email"
+        .map(buildUser)
         .list()
         .apply()
         .headOption

@@ -39,7 +39,7 @@ class HomePageController(dbh: DataAccessHandler,
     Ok(views.html.homePage(googleClientId, loggedIn = true))
   }
 
-  def loadAllGames(): Action[AnyContent] = AuthenticatedAction { request =>
+  def loadAllGames: Action[AnyContent] = AuthenticatedAction { request =>
     implicit val metaDataWrites = new Writes[(MetaData, GameIdentifier)] {
       override def writes(o: (MetaData, GameIdentifier)): JsValue = Json.obj(
         "gameLength" -> o._1.gameDuration.toSeconds,
@@ -68,7 +68,7 @@ class HomePageController(dbh: DataAccessHandler,
     Ok(Json.toJson(allData))
   }
 
-  def logIn(): Action[AnyContent] = Action { request =>
+  def logIn: Action[AnyContent] = Action { request =>
     Logger.info(s"saving user account information upon log in: ${request.toString()}")
 
     def exchangeAuthorizationCode(code: String, redirectUrl: String): GoogleTokenResponse = {
@@ -101,7 +101,7 @@ class HomePageController(dbh: DataAccessHandler,
     }
   }
 
-  def logOut(): Action[AnyContent] = AuthenticatedAction { request =>
+  def logOut: Action[AnyContent] = AuthenticatedAction { request =>
     Redirect(routes.HomePageController.loadLandingPage()).withSession(request.session - UserId.name)
   }
 }
