@@ -4,9 +4,9 @@
 
 GET   /                           gg.climb.fifthdrake.controllers.HomePageController.loadLandingPage
 GET   /home                       gg.climb.fifthdrake.controllers.HomePageController.loadHomePage
-POST  /auth                       gg.climb.fifthdrake.controllers.HomePageController.logIn()
-GET   /games                      gg.climb.fifthdrake.controllers.HomePageController.loadAllGames()
-GET   /logout                     gg.climb.fifthdrake.controllers.HomePageController.logOut()
+POST  /auth                       gg.climb.fifthdrake.controllers.HomePageController.logIn
+GET   /games                      gg.climb.fifthdrake.controllers.HomePageController.loadAllGames
+GET   /logout                     gg.climb.fifthdrake.controllers.HomePageController.logOut
 
 # Map static resources from the /public folder to the /static URL path
 GET   /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")
@@ -22,3 +22,8 @@ GET   /champion/:name             gg.climb.fifthdrake.controllers.GameDataContro
 
 PUT      /saveTag                 gg.climb.fifthdrake.controllers.GameDataController.saveTag
 DELETE   /deleteTag/:id           gg.climb.fifthdrake.controllers.GameDataController.deleteTag(id: String)
+
+GET      /a/createGroup           gg.climb.fifthdrake.controllers.AppDataController.createNewUserGroup
+GET      /a/getGroup              gg.climb.fifthdrake.controllers.AppDataController.getSelfUserGroup
+DELETE   /a/deleteGroup           gg.climb.fifthdrake.controllers.AppDataController.deleteUserGroup
+DELETE   /a/removeUserFromGroup   gg.climb.fifthdrake.controllers.AppDataController.removeUserFromGroup
