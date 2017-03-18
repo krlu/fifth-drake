@@ -137,7 +137,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   def insertUserGroup(user: User): Int = {
     DB localTx { implicit session =>
-      sql"INSERT INTO account.user_group (users) VALUES ({${user.uuid}}::uuid[])"
+      sql"INSERT INTO account.user_group (users) VALUES (${"{" + user.uuid + "}"}::uuid[])"
         .update()
         .apply()
     }
