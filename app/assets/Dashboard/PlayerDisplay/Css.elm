@@ -54,7 +54,7 @@ css =
     , width (playerDisplayWidth |> px)
     , height (playerDisplayHeight |> px)
     , padding (10 |> px)
-    , property "justify-content" "space-between"
+    , justifyContent spaceBetween
     , alignItems flexStart
     , withClass DirNormal
       (StyleUtils.flexDirection "row")
@@ -71,7 +71,7 @@ css =
           (StyleUtils.flexDirection "row")
         , withClass DirReverse
           (StyleUtils.flexDirection "row-reverse")
-        , property "justify-content" "flex-start"
+        , justifyContent flexStart
         , alignItems center
         , children
           [ class PlayerLevel
@@ -84,7 +84,7 @@ css =
             , fontSize (levelFontSize |> px)
             , displayFlex
             , alignItems center
-            , property "justify-content" "center"
+            , justifyContent center
             , zIndex (1 |> int)
             ]
           , class ChampPortrait
@@ -109,7 +109,7 @@ css =
             [ displayFlex
             , width (champStatsWidth |> px)
             , height (champStatsHeight |> px)
-            , property "justify-content" "center"
+            , justifyContent center
             , zIndex (0 |> int)
             ] ++ StyleUtils.flexDirection "column" ++
             [ children
@@ -175,7 +175,7 @@ css =
     , width (playerDisplayWidth |> px)
     , height (playerDisplayHeight |> px)
     , padding (10 |> px)
-    , property "justify-content" "space-between"
+    , justifyContent spaceBetween
     , alignItems flexStart
     , withClass DirNormal
       (StyleUtils.flexDirection "row")
@@ -188,7 +188,7 @@ css =
           (StyleUtils.flexDirection "row")
         , withClass DirReverse
           (StyleUtils.flexDirection "row-reverse")
-        , property "justify-content" "flex-start"
+        , justifyContent flexStart
         , alignItems center
         , children
           [ class PlayerLevel
@@ -201,7 +201,7 @@ css =
             , fontSize (levelFontSize |> px)
             , displayFlex
             , alignItems center
-            , property "justify-content" "center"
+            , justifyContent center
             , zIndex (1 |> int)
             ]
           , class ChampPortrait
@@ -226,7 +226,7 @@ css =
             [ displayFlex
             , width (champStatsWidth |> px)
             , height (champStatsHeight |> px)
-            , property "justify-content" "center"
+            , justifyContent center
             , zIndex (0 |> int)
             ] ++ StyleUtils.flexDirection "column" ++
             [ children

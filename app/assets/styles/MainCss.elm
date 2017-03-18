@@ -43,7 +43,7 @@ css =
         , flex (1 |> int)
         , height (100 |> vh)
         , displayFlex
-        , property "justify-content" "center"
+        , justifyContent center
         ]
       ]
     ])

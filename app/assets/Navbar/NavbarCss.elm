@@ -35,7 +35,7 @@ css =
       [ id NavbarLeftLogo
         [ displayFlex
         , alignItems center
-        , property "justify-content" "center"
+        , justifyContent center
         , height (buttonHeight |> px)
         , hover
           [ cursor pointer
@@ -51,14 +51,14 @@ css =
       , id NavbarLinks (
         [ displayFlex
         ] ++ StyleUtils.flexDirection "column" ++
-        [ property "justify-content" "center"
+        [ justifyContent center
         , width (navbarWidth |> px)
         , height (100 |> pct)
         , children
           [ a
             [ displayFlex
             , alignItems center
-            , property "justify-content" "center"
+            , justifyContent center
             , height (buttonHeight |> px)
             , hover
               [ color Color.c_navBarSelected
@@ -66,7 +66,7 @@ css =
               ]
             , children
               [ span
-                [ property "display" "table-cell"
+                [ display tableCell
                 ]
               ]
             ]

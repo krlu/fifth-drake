@@ -63,7 +63,7 @@ css =
         , position relative
         , height (100 |> pct)
         ] ++ StyleUtils.flexDirection "column" ++
-        [ property "justify-content" "space-between"
+        [ justifyContent spaceBetween
         , alignItems flexEnd
         , children
           [ class Timeline
