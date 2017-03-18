@@ -151,9 +151,11 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def updateUserGroup(users: List[UUID]): Int = {
+  def updateUserGroup(userGroupId: UUID, users: List[UUID]): Int = {
     DB localTx { implicit session =>
-      sql"UPDATE account.user_group SET users = ${users.mkString("{", ",", "}")}::uuid[]"
+      sql"""UPDATE account.user_group
+            SET users = ${users.mkString("{", ",", "}")}::uuid[]
+            WHERE id = ${userGroupId}::uuid"""
         .update()
         .apply()
     }

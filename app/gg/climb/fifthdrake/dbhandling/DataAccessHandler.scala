@@ -91,7 +91,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
 
   def deleteUserGroup(userGroupId: UUID): Int = pdbh.deleteUserGroup(userGroupId)
   def createUserGroup(owner: User): Int = pdbh.insertUserGroup(owner)
-  def updateUserGroup(users: List[UUID]): Int = pdbh.updateUserGroup(users)
+  def updateUserGroup(userGroupId: UUID, users: List[UUID]): Int = pdbh.updateUserGroup(userGroupId, users)
   def getUserGroupByUser(user: User): Option[UserGroup] = pdbh.findUserGroupByUserUuid(user.uuid)
   def getUserGroupByUuid(userGroupUuid: UUID): Option[UserGroup] = pdbh.findUserGroupByGroupUuid(userGroupUuid)
 

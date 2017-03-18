@@ -49,8 +49,10 @@ class AppDataController(dbh: DataAccessHandler,
     request.queryString
       .get("email")
       .map(emails => dbh.getUserByEmail(emails.head)) match {
-        case Some(user) => Ok(Json.toJson(user))
-        case None => Ok(Json.toJson("{}"))
+        case Some(user) =>
+          Ok(Json.toJson(user))
+        case None =>
+          Ok
     }
   }
 
@@ -72,8 +74,10 @@ class AppDataController(dbh: DataAccessHandler,
     */
   def getSelfUserGroup: Action[AnyContent] = AuthenticatedAction { request =>
     dbh.getUserGroupByUser(request.user) match {
-      case Some(userGroup) => Ok(Json.toJson(userGroup))
-      case None => Ok(Json.toJson("{}"))
+      case Some(userGroup) =>
+        Ok(Json.toJson(userGroup))
+      case None =>
+        Ok
     }
   }
 
@@ -88,8 +92,39 @@ class AppDataController(dbh: DataAccessHandler,
     request.queryString
       .get("id")
       .map(ids => ids.head) match {
-        case Some(id) => Ok(dbh.deleteUserGroup(UUID.fromString(id)).toString)
-        case None => BadRequest.flashing("error" -> "missing 'id' query string parameter")
+        case Some(id) =>
+          dbh.deleteUserGroup(UUID.fromString(id))
+          Ok
+        case None =>
+          BadRequest.flashing("error" -> "missing 'id' query string parameter")
+    }
+  }
+
+  /**
+    * Add a user to a user group
+    *
+    * query string parameters:
+    * user -> user uuid (String)
+    * group -> group uuid to add user to (String)
+    */
+  def addUserToGroup: Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+    Logger.info(s"adding user to group with query string parameters: ${request.queryString}")
+    val userUuid = request.queryString.get("user").map(_.head)
+    val userGroupUuid = request.queryString.get("group").map(_.head)
+    (userUuid, userGroupUuid) match {
+      case (Some(user), Some(group)) =>
+        dbh.getUserGroupByUuid(UUID.fromString(group)) match {
+          case Some(userGroup) =>
+            val uuid = UUID.fromString(user)
+            if (!userGroup.users.contains(uuid)) {
+              dbh.updateUserGroup(userGroup.uuid, userGroup.users.::(uuid))
+            }
+            Ok
+          case None =>
+            Ok
+        }
+      case (_, _) =>
+        BadRequest.flashing("error" -> "missing either 'user' or 'group' query string parameters")
     }
   }
 
@@ -107,10 +142,14 @@ class AppDataController(dbh: DataAccessHandler,
     (userUuid, userGroupUuid) match {
       case (Some(user), Some(group)) =>
         dbh.getUserGroupByUuid(UUID.fromString(group)) match {
-          case Some(userGroup) => Ok(dbh.updateUserGroup(userGroup.users.filter(_ != UUID.fromString(user))).toString)
-          case None => Ok
+          case Some(userGroup) =>
+            dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != UUID.fromString(user)))
+            Ok
+          case None =>
+            Ok
         }
-      case (_, _) => BadRequest.flashing("error" -> "missing either 'user' or 'group' query string parameters")
+      case (_, _) =>
+        BadRequest.flashing("error" -> "missing either 'user' or 'group' query string parameters")
     }
   }
 }
