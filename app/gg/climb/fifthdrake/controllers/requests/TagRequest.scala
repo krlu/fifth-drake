@@ -25,7 +25,7 @@ object TagAction {
     new ActionRefiner[AuthenticatedRequest, TagRequest] {
       override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, TagRequest[A]]] =
         Future.successful {
-          dbh.getUserGroup(request.user) match {
+          dbh.getUserGroupByUser(request.user) match {
             case Some(userGroup) =>
               val tags = dbh.getTags(new RiotId[(MetaData, GameData)](gameKey))
                 .filter(t => t.authorizedGroups.map(g => g.uuid).contains(userGroup.uuid))

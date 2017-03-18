@@ -70,6 +70,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def isUserAuthorized(userId: String): Option[Boolean] = pdbh.isUserAuthorized(userId)
   def getUserByGoogleId(userId: String): Option[User] = pdbh.getUserByGoogleId(userId)
   def getUserByUuid(uuid: UUID): Option[User] = pdbh.getUserByUuid(uuid)
+  def getUserByEmail(email: String): Option[User] = pdbh.getUserByEmail(email)
   def storeUser(accessToken: String, refreshToken: String, payload: Payload): Unit = {
     Logger.info(s"attempting to store user account information: ${payload.getSubject}")
     if (!userExists(payload.getSubject)) {
@@ -88,22 +89,11 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
     }
   }
 
-  def createUserGroup(owner: User): Int = {
-    pdbh.insertUserGroup(owner)
-  }
-
-  def getUserGroup(user: User): Option[UserGroup] = {
-    pdbh.findUserGroupByUserUuid(user.uuid) match {
-      case Some(userGroupId) =>
-        val memberList = pdbh.buildUserGroupMemberList(userGroupId)
-        Some(new UserGroup(userGroupId, memberList))
-      case None => None
-    }
-  }
-
-  def getUserGroupByUserEmail(email: String): Option[UserGroup] = {
-    ???
-  }
+  def deleteUserGroup(userGroupId: UUID): Int = pdbh.deleteUserGroup(userGroupId)
+  def createUserGroup(owner: User): Int = pdbh.insertUserGroup(owner)
+  def updateUserGroup(users: List[UUID]): Int = pdbh.updateUserGroup(users)
+  def getUserGroupByUser(user: User): Option[UserGroup] = pdbh.findUserGroupByUserUuid(user.uuid)
+  def getUserGroupByUuid(userGroupUuid: UUID): Option[UserGroup] = pdbh.findUserGroupByGroupUuid(userGroupUuid)
 
   private def behaviorForPlayers(playerStates: Seq[(Time, Set[PlayerState])])
   : Map[Player, Behavior[Time, PlayerState]] = separateStatesForPlayers(playerStates).map{ case (player, seq) =>

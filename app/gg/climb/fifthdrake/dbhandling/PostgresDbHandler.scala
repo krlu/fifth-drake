@@ -88,7 +88,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def buildUserGroupMemberList(userGroupId: UUID): List[UUID] = {
+  private def buildUserGroupMemberList(userGroupId: UUID): List[UUID] = {
     DB readOnly { implicit  session =>
       sql"SELECT users FROM account.user_group WHERE id=${userGroupId}::uuid"
         .map(rs => rs.array("users"))
@@ -108,10 +108,27 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }).toList
   }
 
-  def findUserGroupByUserUuid(userUuid: UUID): Option[UUID] = {
+  private def buildUserGroup(rs: WrappedResultSet): UserGroup = {
+    new UserGroup(
+      UUID.fromString(rs.string("id")),
+      buildUserGroupMemberList(UUID.fromString(rs.string("id")))
+    )
+  }
+
+  def findUserGroupByUserUuid(userUuid: UUID): Option[UserGroup] = {
     DB readOnly { implicit session =>
-      sql"SELECT id FROM account.user_group WHERE ${userUuid}::uuid = ANY (users);"
-        .map(rs => UUID.fromString(rs.string("id")))
+      sql"SELECT * FROM account.user_group WHERE ${userUuid}::uuid = ANY (users)"
+        .map(buildUserGroup)
+        .list()
+        .apply()
+        .headOption
+    }
+  }
+
+  def findUserGroupByGroupUuid(userGroupUuid: UUID): Option[UserGroup] = {
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM account.user_group WHERE id = ${userGroupUuid}::uuid"
+        .map(buildUserGroup)
         .list()
         .apply()
         .headOption
@@ -121,6 +138,22 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   def insertUserGroup(user: User): Int = {
     DB localTx { implicit session =>
       sql"INSERT INTO account.user_group (users) VALUES ({${user.uuid}}::uuid[])"
+        .update()
+        .apply()
+    }
+  }
+
+  def deleteUserGroup(userGroupId: UUID): Int = {
+    DB localTx { implicit session =>
+      sql"DELETE FROM account.user_group WHERE id = ${userGroupId}::uuid"
+        .update()
+        .apply()
+    }
+  }
+
+  def updateUserGroup(users: List[UUID]): Int = {
+    DB localTx { implicit session =>
+      sql"UPDATE account.user_group SET users = ${users.mkString("{", ",", "}")}::uuid[]"
         .update()
         .apply()
     }
@@ -158,9 +191,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
     DB localTx { implicit session =>
-      var groupUuids = "{"
-      tag.authorizedGroups.foreach(groupUuids += _.uuid)
-      groupUuids += "}"
+      val groupUuids = tag.authorizedGroups.mkString("{", ",", "}")
       val tag_id: Long =
         sql"""insert into league.tag (game_key, title, description, category, timestamp, author, authorized_groups)
               values (${tag.gameKey.id},
