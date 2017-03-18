@@ -8,13 +8,13 @@ import scala.concurrent.duration.Duration
 
 sealed trait GameEvent
 case class FightEvent(fight: Fight) extends GameEvent
-class Objective(location : LocationData, timestamp: Duration) extends GameEvent
 
 sealed class Fight(val playersInvolved: Set[Player], val location: LocationData)
 case class Gank(players: Set[Player], loc: LocationData) extends Fight(players, loc)
 case class Teamfight(players: Set[Player], loc: LocationData) extends Fight(players, loc)
 case class Skirmish(players: Set[Player], loc: LocationData) extends Fight(players, loc)
 
+class Objective(location : LocationData, timestamp: Duration) extends GameEvent
 case class DragonKill(loc: LocationData, dragonType: Dragon, time: Duration) extends Objective(loc, time)
 case class BaronKill(loc: LocationData, time: Duration) extends Objective(loc, time)
 case class BuildingKill(loc: LocationData, buildingType: Building,
@@ -25,16 +25,19 @@ sealed trait Dragon{
 }
 
 case object FireDragon extends Dragon{
-  override val name = "Fire Dragon"
+  override val name = "FireDragon"
 }
 case object EarthDragon extends Dragon{
-  override val name = "Mountain Dragon"
+  override val name = "MountainDragon"
 }
 case object WaterDragon extends Dragon{
-  override val name = "Water Dragon"
+  override val name = "WaterDragon"
 }
 case object AirDragon extends Dragon{
-  override val name = "Air Dragon"
+  override val name = "AirDragon"
+}
+case object ElderDragon extends Dragon{
+  override val name = "ElderDragon"
 }
 
 sealed trait Building{

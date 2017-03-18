@@ -215,10 +215,50 @@ class MongoDbHandler(mongoClient: MongoClient) {
     for {
       events: util.List[BsonValue] <- doc.get("events").map(_.asArray().getValues)
     } yield events.flatMap { bson: BsonValue =>
-      Document(bson.asDocument()).get("type").map(_.asString().getValue).getOrElse("") match {
-        case "BUILDING_KILL" => parseBuildingKill(Document(bson.asDocument()))
+      val eventDoc = Document(bson.asDocument())
+      val eventType = eventDoc.get("type").map(_.asString().getValue).getOrElse("")
+      eventType match {
+        case "BUILDING_KILL" => parseBuildingKill(eventDoc)
+        case "ELITE_MONSTER_KILL" => {
+          val monsterType = eventDoc.get("monsterType").map(_.asString().getValue).getOrElse("")
+          monsterType match {
+            case "DRAGON" => parseDragonKill(eventDoc)
+            case "BARON_NASHOR" => parseBaronKill(eventDoc)
+            case _ => None
+          }
+        }
         case _ => None
       }
+    }
+  }
+
+  private def parseBaronKill(doc : Document) : Option[BaronKill] = {
+    for {
+      locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
+      location <- parseLocationData(locationDoc)
+      timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
+        .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
+    } yield {
+      BaronKill(location,timestamp)
+    }
+  }
+
+  private def parseDragonKill(doc : Document) : Option[DragonKill] = {
+    for {
+      dragTypeStr <- doc.get("monsterSubType").map(_.asString().getValue)
+      locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
+      location <- parseLocationData(locationDoc)
+      timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
+        .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
+    } yield {
+      val dragType = dragTypeStr match {
+        case "AIR_DRAGON" => AirDragon
+        case "EARTH_DRAGON" => EarthDragon
+        case "ELDER_DRAGON" => ElderDragon
+        case "FIRE_DRAGON" => FireDragon
+        case "WATER_DRAGON" => WaterDragon
+      }
+      DragonKill(location, dragType, timestamp)
     }
   }
 
@@ -229,9 +269,9 @@ class MongoDbHandler(mongoClient: MongoClient) {
       killingTeam <- doc.get("teamId").map(_.asInt32().getValue)
       buildingTypeStr <- doc.get("buildingType").map(_.asString().getValue)
       locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
+      location <- parseLocationData(locationDoc)
       timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
         .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
-      location <- parseLocationData(locationDoc)
     } yield {
       val building = buildingTypeStr match {
         case "INHIBITOR_BUILDING" => Inhibitor

@@ -47,32 +47,60 @@ class GameDataController(dbh: DataAccessHandler,
 
   def loadTimelineData(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
     val timeline: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
-    implicit val gameEventWrite = new Writes[GameEvent] {
-      override def writes(teamState: GameEvent): JsValue = {
-        val (loc, lane, side, time, eventType) = teamState match {
-          case x : BuildingKill => {
-            (x.loc, x.lane, x.side, x.time, "buildingKill")
-          }
-        }
-        val laneStr = lane match {
+    implicit val buildingKillWrite = new Writes[BuildingKill] {
+      override def writes(event: BuildingKill): JsValue = {
+        val laneStr = event.lane match {
           case Top => "Top"
           case Middle => "Mid"
           case Bottom => "Bot"
         }
-        val sideStr = side match {
+        val sideStr = event.side match {
           case Blue => "Blue"
           case Red => "Red"
         }
         Json.obj(
-          "eventType" -> eventType,
+          "eventType" -> "BuildingKill",
           "location" -> Json.obj(
-            "x" -> loc.x,
-            "y" -> loc.y
+            "x" -> event.loc.x,
+            "y" -> event.loc.y
           ),
           "lane" -> laneStr,
           "side" -> sideStr,
-          "time" -> time.toSeconds
+          "time" -> event.time.toSeconds
         )
+      }
+    }
+    implicit val baronKillWrite = new Writes[BaronKill] {
+      override def writes(event: BaronKill): JsValue = {
+        Json.obj(
+          "eventType" -> "BaronKill",
+          "location" -> Json.obj(
+            "x" -> event.loc.x,
+            "y" -> event.loc.y
+          ),
+          "time" -> event.time.toSeconds
+        )
+      }
+    }
+    implicit val dragonKillWrite = new Writes[DragonKill] {
+      override def writes(event: DragonKill): JsValue = {
+        Json.obj(
+          "eventType" -> "DragonKill",
+          "location" -> Json.obj(
+            "x" -> event.loc.x,
+            "y" -> event.loc.y
+          ),
+          "dragonType" -> event.dragonType.toString,
+          "time" -> event.time.toSeconds
+        )
+      }
+    }
+    implicit val gameEventWrite = new Writes[GameEvent] {
+      override def writes(teamState: GameEvent): JsValue = teamState match {
+        case building : BuildingKill => Json.toJson(building)
+        case dragon : DragonKill => Json.toJson(dragon)
+        case baron : BaronKill => Json.toJson(baron)
+        case _ => Json.obj()
       }
     }
     val listOfEventsJson = timeline.map(event => Json.toJson(event))
