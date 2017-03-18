@@ -9,7 +9,8 @@ import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
-import gg.climb.fifthdrake.{Game, Time}
+import gg.climb.fifthdrake.reasoning.GameEvent
+import gg.climb.fifthdrake.{Game, Time, Timeline}
 import gg.climb.ramenx.{Behavior, ListBehavior}
 import play.api.Logger
 
@@ -39,6 +40,11 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def getAllGames: Seq[MetaData] = {
     val TIMEOUT = Duration(30, TimeUnit.SECONDS)
     Await.result(mdbh.getAllGames, TIMEOUT)
+  }
+
+  def getTimelineForGame(gameKey: RiotId[Timeline]): Seq[GameEvent] = {
+    val TIMEOUT = Duration(30, TimeUnit.SECONDS)
+    Await.result(mdbh.getTimelineForGame(gameKey), TIMEOUT).orNull
   }
 
   def getGame(gameKey: RiotId[Game]): Option[Game] ={

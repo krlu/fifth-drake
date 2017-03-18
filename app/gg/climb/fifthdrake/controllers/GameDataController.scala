@@ -6,11 +6,12 @@ import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, Authorizat
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.accounts.UserGroup
 import gg.climb.fifthdrake.lolobjects.esports.Player
-import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
+import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
-import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
+import gg.climb.fifthdrake.reasoning._
+import gg.climb.fifthdrake.{Game, Time, TimeMonoid, Timeline}
 import gg.climb.ramenx.Behavior
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc.{Action, _}
@@ -42,6 +43,40 @@ class GameDataController(dbh: DataAccessHandler,
         )
       }
     result.getOrElse(InternalServerError(s"Could not find champion $name"))
+  }
+
+  def loadTimelineData(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
+    val timeline: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
+    implicit val gameEventWrite = new Writes[GameEvent] {
+      override def writes(teamState: GameEvent): JsValue = {
+        val (loc, lane, side, time, eventType) = teamState match {
+          case x : BuildingKill => {
+            (x.loc, x.lane, x.side, x.time, "buildingKill")
+          }
+        }
+        val laneStr = lane match {
+          case Top => "Top"
+          case Middle => "Mid"
+          case Bottom => "Bot"
+        }
+        val sideStr = side match {
+          case Blue => "Blue"
+          case Red => "Red"
+        }
+        Json.obj(
+          "eventType" -> eventType,
+          "location" -> Json.obj(
+            "x" -> loc.x,
+            "y" -> loc.y
+          ),
+          "lane" -> laneStr,
+          "side" -> sideStr,
+          "time" -> time.toSeconds
+        )
+      }
+    }
+    val listOfEventsJson = timeline.map(event => Json.toJson(event))
+    Ok(JsArray(listOfEventsJson))
   }
 
   // scalastyle:off method.length
