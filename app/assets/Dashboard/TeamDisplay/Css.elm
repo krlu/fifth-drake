@@ -33,7 +33,7 @@ css =
   [ class TeamDisplay (
     [ displayFlex
     , alignItems center
-    , property "justify-content" "space-around"
+    , justifyContent spaceAround
     ] ++ StyleUtils.flexDirection "column" ++
     [ width (teamDisplayWidth |> px)
     , height (teamDisplayHeight |> px)
@@ -45,7 +45,7 @@ css =
         ]
       , class TeamStats (
         [ displayFlex
-        , property "justify-content" "space-around"
+        , justifyContent spaceAround
         , width (100 |> pct)
         ] ++ StyleUtils.flexDirection "row" ++
         [ children

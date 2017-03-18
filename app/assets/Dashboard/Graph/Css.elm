@@ -60,7 +60,7 @@ css =
     , alignItems center
     , height (graphHeight |> px)
     , width (graphWidth |> px)
-    , property "justify-content" "space-around"
+    , justifyContent spaceAround
     ] ++ StyleUtils.userSelect "none")
   , class GraphControls(
     [ displayFlex
