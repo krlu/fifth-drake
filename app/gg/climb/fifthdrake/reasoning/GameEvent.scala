@@ -45,19 +45,19 @@ sealed trait Building{
 }
 
 case object OuterTurret extends Building{
-  override val name = "Outer Turret"
+  override val name = "OuterTurret"
 }
 
 case object InnerTurret extends Building{
-  override val name = "Inner Turret"
+  override val name = "InnerTurret"
 }
 
 case object BaseTurret extends Building{
-  override val name = "Base Turret"
+  override val name = "BaseTurret"
 }
 
 case object NexusTurret extends Building{
-  override val name = "Nexus Turret"
+  override val name = "NexusTurret"
 }
 
 case object Inhibitor extends Building{

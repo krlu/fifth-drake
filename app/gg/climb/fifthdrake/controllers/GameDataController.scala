@@ -49,27 +49,20 @@ class GameDataController(dbh: DataAccessHandler,
     val timeline: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
     implicit val buildingKillWrite = new Writes[BuildingKill] {
       override def writes(event: BuildingKill): JsValue = {
-        val laneStr = event.lane match {
-          case Top => "Top"
-          case Middle => "Mid"
-          case Bottom => "Bot"
-        }
-        val sideStr = event.side match {
-          case Blue => "Blue"
-          case Red => "Red"
-        }
         Json.obj(
           "eventType" -> "BuildingKill",
+          "buildingType" -> event.buildingType.name,
           "location" -> Json.obj(
             "x" -> event.loc.x,
             "y" -> event.loc.y
           ),
-          "lane" -> laneStr,
-          "side" -> sideStr,
+          "lane" -> event.lane.name,
+          "side" -> event.side.name,
           "time" -> event.time.toSeconds
         )
       }
     }
+
     implicit val baronKillWrite = new Writes[BaronKill] {
       override def writes(event: BaronKill): JsValue = {
         Json.obj(
@@ -82,6 +75,7 @@ class GameDataController(dbh: DataAccessHandler,
         )
       }
     }
+
     implicit val dragonKillWrite = new Writes[DragonKill] {
       override def writes(event: DragonKill): JsValue = {
         Json.obj(
@@ -90,11 +84,12 @@ class GameDataController(dbh: DataAccessHandler,
             "x" -> event.loc.x,
             "y" -> event.loc.y
           ),
-          "dragonType" -> event.dragonType.toString,
+          "dragonType" -> event.dragonType.name,
           "time" -> event.time.toSeconds
         )
       }
     }
+
     implicit val gameEventWrite = new Writes[GameEvent] {
       override def writes(teamState: GameEvent): JsValue = teamState match {
         case building : BuildingKill => Json.toJson(building)
@@ -103,6 +98,7 @@ class GameDataController(dbh: DataAccessHandler,
         case _ => Json.obj()
       }
     }
+
     val listOfEventsJson = timeline.map(event => Json.toJson(event))
     Ok(JsArray(listOfEventsJson))
   }
