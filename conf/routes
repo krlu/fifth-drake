@@ -23,6 +23,7 @@ GET   /champion/:name             gg.climb.fifthdrake.controllers.GameDataContro
 PUT      /saveTag                 gg.climb.fifthdrake.controllers.GameDataController.saveTag
 DELETE   /deleteTag/:id           gg.climb.fifthdrake.controllers.GameDataController.deleteTag(id: String)
 
+GET      /a/getUser               gg.climb.fifthdrake.controllers.AppDataController.findUser
 GET      /a/createGroup           gg.climb.fifthdrake.controllers.AppDataController.createNewUserGroup
 GET      /a/getGroup              gg.climb.fifthdrake.controllers.AppDataController.getSelfUserGroup
 DELETE   /a/deleteGroup           gg.climb.fifthdrake.controllers.AppDataController.deleteUserGroup
