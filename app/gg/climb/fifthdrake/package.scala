@@ -1,6 +1,7 @@
 package gg.climb
 
 import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
+import gg.climb.fifthdrake.reasoning.GameEvent
 
 import scala.concurrent.duration.Duration
 import scalaz.Monoid
@@ -13,6 +14,7 @@ package object fifthdrake {
   type Game = (MetaData, GameData)
   type GoogleClientId = String
   type GoogleClientSecret = String
+  type Timeline = Seq[GameEvent]
 
   implicit object TimeMonoid extends Monoid[Time] {
     override def zero: Time = Duration.Zero
