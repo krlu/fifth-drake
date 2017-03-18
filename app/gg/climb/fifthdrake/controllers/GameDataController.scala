@@ -193,7 +193,7 @@ class GameDataController(dbh: DataAccessHandler,
         val id = jsVal.as[String]
         dbh.getPlayer(new InternalId[Player](id))
       }.toSet
-      val userGroup = dbh.getUserGroup(request.user)
+      val userGroup = dbh.getUserGroupByUser(request.user)
       userGroup match {
         case Some(group) =>
           dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
