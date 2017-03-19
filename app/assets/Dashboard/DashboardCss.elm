@@ -57,12 +57,12 @@ css =
       [ class TeamDisplays (
         [ displayFlex
         , width (teamDisplaysWidth |> px)
-        , property "justify-content" "space-between"
+        , justifyContent spaceBetween
         , marginBottom (teamDisplayGap |> px)
         ] ++ StyleUtils.flexDirection "row")
       , id MainContent (
         [ displayFlex
-        , property "justify-content" "flex-start"
+        , justifyContent flexStart
         ] ++ StyleUtils.flexDirection "row" ++
         [ children
           [ id CenterContent (
@@ -81,7 +81,7 @@ css =
             ])
           , class PlayerDisplay (
             [ displayFlex
-            , property "justify-content" "flex-start"
+            , justifyContent flexStart
             ] ++ StyleUtils.flexDirection "column" ++
             [ children
               [ everything
