@@ -15,6 +15,9 @@ module.exports = {
 		],
     homepage: [
       path.join(srcPath, "homepage.js")
+    ],
+    settings: [
+      path.join(srcPath, "settings.js")
     ]
 	},
 

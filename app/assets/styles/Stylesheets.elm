@@ -9,6 +9,7 @@ import MainCss
 import Minimap.Css
 import NavbarCss
 import HomeCss
+import SettingsCss
 import TagCarousel.Css
 import Platform
 import PlayerDisplay.Css
@@ -38,6 +39,9 @@ cssFiles =
         ]
       , "homepage.css" => compile
         [ HomeCss.css
+        ]
+      , "settings.css" => compile
+        [ SettingsCss.css
         ]
       ]
 
