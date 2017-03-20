@@ -38,6 +38,12 @@ class AppDataController(dbh: DataAccessHandler,
     }
   }
 
+  def loadSettings: Action[AnyContent] =  AuthenticatedAction { request =>
+    Logger.info(s"loading home page: ${request.toString()}")
+    Ok(views.html.userSettings())
+  }
+
+
   /**
     * Search for users
     *
