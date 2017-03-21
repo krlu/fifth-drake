@@ -66,6 +66,7 @@ class AppDataController(dbh: DataAccessHandler,
     * Create a new user group with the currently logged in user as the only member
     */
   def createNewUserGroup: Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+    println(request.user)
     dbh.getUserGroupByUser(request.user) match {
       case Some(userGroup) =>
         BadRequest(Json.toJson(userGroup)).flashing("error" -> "already member of a user group")
