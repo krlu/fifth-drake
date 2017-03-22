@@ -6,7 +6,7 @@ import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick, onInput)
 import Http
 import NavbarCss exposing (CssClass(..), namespace)
-import Internal.UserQuery exposing (sendRequest)
+import Internal.UserQuery exposing (populate, sendRequestUser)
 import Navigation exposing (Location)
 import SettingsTypes exposing (..)
 
@@ -14,14 +14,14 @@ import SettingsTypes exposing (..)
 
 init : Flags -> Location -> ( Model, Cmd Msg )
 init flags location =
-  ( { users = []
+  ( { group = Nothing
     , form =
       { email = ""
       }
     , location = location
     , foundUser = Nothing
     }
-  , Cmd.none
+  , populate location
   )
 
 view : Model -> Html Msg
@@ -47,9 +47,13 @@ update msg model =
         newForm = { oldForm | email = email}
      in
       ( {model | form = newForm }, Cmd.none)
-    SendGetUserRequest -> ( model, sendRequest model.form model.location)
+    SendGetUserRequest -> ( model, sendRequestUser model.form model.location)
     GetUser(Ok user) ->({model| foundUser = Just user}, Cmd.none)
     GetUser (Err err) -> (Debug.log "User failed to fetch!" {model | foundUser = Nothing}, Cmd.none)
+    GetGroupForUser (Ok group) ->
+      ({ model | group = Just <| Debug.log "" group }, Cmd.none)
+    GetGroupForUser (Err err) ->
+      (Debug.log "Group failed to fetch!" model, Cmd.none)
 
 
 subscriptions : Model -> Sub Msg

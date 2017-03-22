@@ -8,9 +8,11 @@ type Msg
   | GetUser (Result Http.Error User)
   | LocationUpdate Location
   | UpdateSearchForm String
+  | GetGroupForUser (Result Http.Error UserGroup)
 
 type alias Email = String
 type alias UserId = String
+type alias GroupId = String
 
 type alias UserForm =
   { email : Email
@@ -23,8 +25,13 @@ type alias User =
   , lastName : String
   }
 
+type alias UserGroup =
+  { id : GroupId
+  , members : List User
+  }
+
 type alias Model =
-  { users : List User
+  { group : Maybe UserGroup
   , form : UserForm
   , location : Location
   , foundUser : Maybe User

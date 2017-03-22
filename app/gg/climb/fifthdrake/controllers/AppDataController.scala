@@ -29,11 +29,9 @@ class AppDataController(dbh: DataAccessHandler,
     override def writes(userGroup: UserGroup): JsValue = {
       Json.obj(
         "id" -> userGroup.uuid.toString,
-        "users" -> Json.arr(
-          userGroup.users
-            .flatMap(uuid => dbh.getUserByUuid(uuid))
-            .map(user => Json.toJson(user))
-        )
+        "users" -> userGroup.users
+              .flatMap(uuid => dbh.getUserByUuid(uuid))
+              .map(user => Json.toJson(user))
       )
     }
   }
