@@ -35,8 +35,9 @@ type alias Model =
   , form : UserForm
   , location : Location
   , foundUser : Maybe User
+  , searchIcon : String
   }
 
 type alias Flags =
-  {
+  { searchIcon : String
   }

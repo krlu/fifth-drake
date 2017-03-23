@@ -71,5 +71,5 @@ c_lightYellow = hex "ffffe0"
 c_games_table : Color
 c_games_table = hex "#414b4b"
 
-c_games_table_header : Color
-c_games_table_header = hex "#8e9fbb"
+c_table_header : Color
+c_table_header = hex "#8e9fbb"
