@@ -19,7 +19,9 @@ view model =
     resultsHtml =
       case model.foundUser of
         Just user ->
-          div [class [SearchResult]]
+          div [ class [SearchResult]
+              , onClick (AddUserToGroup user)
+              ]
             [ div [class [UserContent]] [text (user.firstName ++ " " ++ user.lastName)]
             , div [class [AddUser]] [ img [src model.addUserIcon] [] ]
             ]
@@ -58,7 +60,7 @@ viewUserGroup group =
 
 viewUserInGroup : User -> Html Msg
 viewUserInGroup user =
-  tr []
-    [ td [] [ text user.email ]
-    , td [] [ text <| user.firstName ++ " " ++ user.lastName ]
-    ]
+  tr [ ]
+  [ td [onClick (RemoveUser user)] [ text user.email ]
+  , td [] [ text <| user.firstName ++ " " ++ user.lastName ]
+  ]
