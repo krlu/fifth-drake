@@ -36,8 +36,10 @@ type alias Model =
   , location : Location
   , foundUser : Maybe User
   , searchIcon : String
+  , addUserIcon : String
   }
 
 type alias Flags =
   { searchIcon : String
+  , addUserIcon : String
   }

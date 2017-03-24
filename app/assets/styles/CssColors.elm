@@ -73,3 +73,6 @@ c_games_table = hex "#414b4b"
 
 c_table_header : Color
 c_table_header = hex "#8e9fbb"
+
+c_search_result : Color
+c_search_result = hex "75878d"
