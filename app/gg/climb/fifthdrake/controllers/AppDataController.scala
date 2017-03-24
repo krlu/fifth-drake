@@ -124,7 +124,8 @@ class AppDataController(dbh: DataAccessHandler,
             if (!userGroup.users.contains(uuid)) {
               dbh.updateUserGroup(userGroup.uuid, userGroup.users.::(uuid))
             }
-            Ok
+            val newGroup = dbh.getUserGroupByUser(request.user)
+            Ok(Json.toJson(newGroup))
           case None =>
             Ok
         }
@@ -149,7 +150,8 @@ class AppDataController(dbh: DataAccessHandler,
         dbh.getUserGroupByUuid(UUID.fromString(group)) match {
           case Some(userGroup) =>
             dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != UUID.fromString(user)))
-            Ok
+            val newGroup = dbh.getUserGroupByUser(request.user)
+            Ok(Json.toJson(newGroup))
           case None =>
             Ok
         }

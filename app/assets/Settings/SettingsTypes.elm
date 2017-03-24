@@ -9,6 +9,10 @@ type Msg
   | LocationUpdate Location
   | UpdateSearchForm String
   | GetGroupForUser (Result Http.Error UserGroup)
+  | AddUserToGroup User
+  | SendAddUserRequest (Result Http.Error UserGroup)
+  | RemoveUser User
+  | SendRemoveUserRequest (Result Http.Error UserGroup)
 
 type alias Email = String
 type alias UserId = String
