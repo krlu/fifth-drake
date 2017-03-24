@@ -16,6 +16,15 @@ view model =
       case model.group of
         Just group -> viewUserGroup group
         Nothing -> div [] [text "Create New Group"]
+    resultsHtml =
+      case model.foundUser of
+        Just user ->
+          div [class [SearchResult]]
+            [ div [class [UserContent]] [text (user.firstName ++ " " ++ user.lastName)]
+            , div [class [AddUser]] [ img [src model.addUserIcon] [] ]
+            ]
+        Nothing ->
+          text "No user found"
   in
     div [ class [Settings] ]
       [ div [ class [GroupCss] ]
@@ -36,6 +45,7 @@ view model =
           , class [Button]
           ]
           [ img [src model.searchIcon] [] ]
+        , div [class [UsersBackgroundPane]] [resultsHtml]
         ]
       ]
 
@@ -44,11 +54,11 @@ viewUserGroup group =
   let
      membersHtml = List.map viewUserInGroup group.members
   in
-    table [] membersHtml
+    div [class [UsersBackgroundPane]] [table [] membersHtml]
 
 viewUserInGroup : User -> Html Msg
 viewUserInGroup user =
-  tr [class [RowItem]]
+  tr []
     [ td [] [ text user.email ]
     , td [] [ text <| user.firstName ++ " " ++ user.lastName ]
     ]

@@ -16,6 +16,7 @@ init flags location =
     , location = location
     , foundUser = Nothing
     , searchIcon = flags.searchIcon
+    , addUserIcon = flags.addUserIcon
     }
   , populate location
   )
