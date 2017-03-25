@@ -4,7 +4,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
-import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts.{Permission, User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
@@ -94,6 +94,9 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def updateUserGroup(userGroupId: UUID, users: List[UUID]): Int = pdbh.updateUserGroup(userGroupId, users)
   def getUserGroupByUser(user: User): Option[UserGroup] = pdbh.findUserGroupByUserUuid(user.uuid)
   def getUserGroupByUuid(userGroupUuid: UUID): Option[UserGroup] = pdbh.findUserGroupByGroupUuid(userGroupUuid)
+  def insertPermissionForUser(userUuid: UUID, groupUuid: UUID, permission: Permission) =
+    pdbh.insertPermissionForUser(userUuid, groupUuid, permission)
+  def removePermissionForUser(userUuid: UUID, groupUuid: UUID) = pdbh.removePermissionForUser(userUuid, groupUuid)
 
   private def behaviorForPlayers(playerStates: Seq[(Time, Set[PlayerState])])
   : Map[Player, Behavior[Time, PlayerState]] = separateStatesForPlayers(playerStates).map{ case (player, seq) =>

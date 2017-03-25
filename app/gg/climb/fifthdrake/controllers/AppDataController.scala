@@ -4,7 +4,7 @@ import java.util.UUID
 
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts.{Member, User, UserGroup}
 import play.Logger
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
@@ -92,7 +92,7 @@ class AppDataController(dbh: DataAccessHandler,
     * query string parameters:
     * id -> user group uuid (String)
     */
-  def deleteUserGroup: Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+  def deleteUserGroup(): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Logger.info(s"deleting user group with query string parameters: ${request.queryString}")
     request.queryString
       .get("id")
@@ -112,17 +112,19 @@ class AppDataController(dbh: DataAccessHandler,
     * user -> user uuid (String)
     * group -> group uuid to add user to (String)
     */
-  def addUserToGroup: Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+  def addUserToGroup(): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Logger.info(s"adding user to group with query string parameters: ${request.queryString}")
-    val userUuid = request.queryString.get("user").map(_.head)
-    val userGroupUuid = request.queryString.get("group").map(_.head)
-    (userUuid, userGroupUuid) match {
+    val userUuidStr = request.queryString.get("user").map(_.head)
+    val userGroupUuidStr = request.queryString.get("group").map(_.head)
+    (userUuidStr, userGroupUuidStr) match {
       case (Some(user), Some(group)) =>
         dbh.getUserGroupByUuid(UUID.fromString(group)) match {
           case Some(userGroup) =>
-            val uuid = UUID.fromString(user)
-            if (!userGroup.users.contains(uuid)) {
-              dbh.updateUserGroup(userGroup.uuid, userGroup.users.::(uuid))
+            val userUuid = UUID.fromString(user)
+            val groupUuid = userGroup.uuid
+            if (!userGroup.users.contains(userUuid)) {
+              dbh.insertPermissionForUser(userUuid, groupUuid, Member)
+              dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
             }
             val newGroup = dbh.getUserGroupByUser(request.user)
             Ok(Json.toJson(newGroup))
@@ -141,14 +143,15 @@ class AppDataController(dbh: DataAccessHandler,
     * user -> removed user's uuid (String)
     * group -> group uuid of which user is currently a member (String)
     */
-  def removeUserFromGroup: Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+  def removeUserFromGroup(): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Logger.info(s"removing user from user group with query string parameters: ${request.queryString}")
-    val userUuid = request.queryString.get("user").map(_.head)
-    val userGroupUuid = request.queryString.get("group").map(_.head)
-    (userUuid, userGroupUuid) match {
+    val userUuidStr = request.queryString.get("user").map(_.head)
+    val userGroupUuidStr = request.queryString.get("group").map(_.head)
+    (userUuidStr, userGroupUuidStr) match {
       case (Some(user), Some(group)) =>
         dbh.getUserGroupByUuid(UUID.fromString(group)) match {
           case Some(userGroup) =>
+            dbh.removePermissionForUser(UUID.fromString(user), UUID.fromString(group))
             dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != UUID.fromString(user)))
             val newGroup = dbh.getUserGroupByUser(request.user)
             Ok(Json.toJson(newGroup))

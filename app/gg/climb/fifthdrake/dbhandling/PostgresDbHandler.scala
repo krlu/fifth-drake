@@ -4,7 +4,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
-import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts.{Permission, User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
 import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
@@ -491,6 +491,33 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
               $accessToken,
               $refreshToken
             )"""
+        .update()
+        .apply()
+    }
+  }
+
+  def insertPermissionForUser(userId: UUID, groupID: UUID, permission: Permission): Unit ={
+    DB localTx { implicit session =>
+      sql"""INSERT INTO account.user_to_permission(
+              user_id,
+              group_id,
+              permission
+            ) VALUES (
+              $userId,
+              $groupID,
+              ${permission.name}::account.permission_level
+            )"""
+        .update()
+        .apply()
+    }
+  }
+
+  def removePermissionForUser(userId: UUID, groupID: UUID): Unit ={
+    DB localTx { implicit session =>
+      sql"""DELETE FROM account.user_to_permission WHERE (
+            user_id = $userId AND
+            group_id = $groupID
+          )"""
         .update()
         .apply()
     }
