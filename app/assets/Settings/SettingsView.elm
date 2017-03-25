@@ -24,7 +24,7 @@ view model =
         Just group ->
           case (model.permissions, model.currentUser) of
             (Just permissions, Just currentUser) ->
-              ( viewUserGroup group model.removeUserIcon permissions currentUser
+              ( viewUserGroup group model.removeUserIcon model.updatePermissionIcon permissions currentUser group.id
               , getSearchHtml (getPermissionLevelOfUser currentUser permissions) model.addUserIcon
               )
             _ ->
@@ -66,11 +66,11 @@ getSearchHtml level addUserIcon =
         [ img [src addUserIcon] [] ]
       ]
 
-viewUserGroup : UserGroup -> Icon -> List Permission -> User -> Html Msg
-viewUserGroup group removeIcon permissions currentUser=
+viewUserGroup : UserGroup -> Icon -> Icon -> List Permission -> User -> GroupId -> Html Msg
+viewUserGroup group removeIcon updatePermissionsIcon permissions currentUser groupId =
   let
      membersHtml =
-      List.map (viewUserInGroup removeIcon permissions currentUser) group.members
+      List.map (viewUserInGroup removeIcon updatePermissionsIcon permissions currentUser groupId) group.members
   in
     div [class [UsersBackgroundPane]] membersHtml
 
@@ -85,8 +85,8 @@ onEnter msg =
   in
     on "keydown" (Json.andThen isEnter keyCode)
 
-viewUserInGroup : Icon -> List Permission -> User -> User -> Html Msg
-viewUserInGroup removeIcon permissions currentUser user =
+viewUserInGroup : Icon -> Icon -> List Permission -> User -> GroupId -> User -> Html Msg
+viewUserInGroup removeIcon updatePermissionsIcons permissions currentUser groupId user =
   let
     currentLevel = getPermissionLevelOfUser currentUser permissions
     userLevel = getPermissionLevelOfUser user permissions
@@ -103,13 +103,32 @@ viewUserInGroup removeIcon permissions currentUser user =
             ]
             [ img [src removeIcon] [] ]
           ]
+    makeAdminHtml =
+      case (currentLevel, userLevel) of
+        ("owner", "member")  ->
+          [ img
+            [ src updatePermissionsIcons
+            , onClick (UpdatePermission (user.id, groupId, "admin"))
+            , class[PermissionCell]
+            ]
+            []
+          ]
+        ("owner", "admin") ->
+          [ img
+            [ src updatePermissionsIcons
+            , onClick (UpdatePermission (user.id, groupId, "member"))
+            , class[PermissionCell]
+            ]
+            []
+          ]
+        (_, _) -> []
   in
     div [class [GroupRow] ]
     (
     [ div [class[GroupCell]] [ text user.email ]
     , div [class[GroupCell]] [ text <| user.firstName ++ " " ++ user.lastName]
     , div [class[MemberCell]] [ text <| userLevel]
-    ] ++ deleteHtml)
+    ] ++ makeAdminHtml ++ deleteHtml)
 
 getPermissionLevelOfUser : User -> List Permission -> PermissionLevel
 getPermissionLevelOfUser user permissions =

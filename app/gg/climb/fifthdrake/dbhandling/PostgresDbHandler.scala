@@ -512,11 +512,11 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def removePermissionForUser(userId: UUID, groupID: UUID): Unit ={
+  def removePermissionForUser(userId: UUID, groupId: UUID): Unit ={
     DB localTx { implicit session =>
       sql"""DELETE FROM account.user_to_permission WHERE (
             user_id = $userId AND
-            group_id = $groupID
+            group_id = $groupId
           )"""
         .update()
         .apply()
@@ -552,6 +552,17 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
           }
           (userId, permission)
         }).list().apply()
+    }
+  }
+
+  def updateUserPermissionForGroup(userId: UUID, groupId: UUID, permission: Permission): Int = {
+    DB localTx { implicit session =>
+      sql"""UPDATE  account.user_to_permission
+            SET permission = ${permission.name}::account.permission_level WHERE (
+          group_id = ${groupId} AND
+          user_id = ${userId}
+        )"""
+        .update().apply()
     }
   }
 }

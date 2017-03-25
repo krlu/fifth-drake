@@ -36,7 +36,7 @@ backgroundPaneHeight : Float
 backgroundPaneHeight = 500
 
 groupContainerWidth : Float
-groupContainerWidth = 700
+groupContainerWidth = 750
 
 groupLeftMargin : Float
 groupLeftMargin = 50
@@ -51,13 +51,13 @@ rowBottomBorderWidth : Float
 rowBottomBorderWidth = 1
 
 cellWidth : Float
-cellWidth = 40 -- pct
+cellWidth = 38 -- pct
 
 cellFontSize : Float
 cellFontSize = 18
 
 memberCellWidth : Float
-memberCellWidth = 16 --pct
+memberCellWidth = 10 --pct
 
 createButtonWidth : Float
 createButtonWidth = 51
@@ -71,6 +71,9 @@ createButtonFontSize = 18
 createButtonBorderRadius : Float
 createButtonBorderRadius = 6
 
+permissionCellMargin : Float
+permissionCellMargin = 20
+
 type CssClass
   = Settings
   | GroupTitle
@@ -83,6 +86,7 @@ type CssClass
   | GroupCell
   | MemberCell
   | CreateButton
+  | PermissionCell
 
 css : Stylesheet
 css =
@@ -130,6 +134,12 @@ css =
           , float right
           , width (0 |> pct)
           ]
+        , class PermissionCell
+          [ cursor pointer
+          , displayFlex
+          , marginLeft (permissionCellMargin |> px)
+          , marginRight (permissionCellMargin |> px)
+          ]
         ]
       ]
     , backgroundColor Color.c_games_table
@@ -155,5 +165,8 @@ css =
     , cursor pointer
     , textAlign center
     , lineHeight (createButtonHeight |> px)
+    ])
+  , class PermissionCell(
+    [display none
     ])
   ]

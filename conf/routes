@@ -28,3 +28,4 @@ PUT      /a/addUserToGroup        gg.climb.fifthdrake.controllers.AppDataControl
 DELETE   /a/deleteGroup           gg.climb.fifthdrake.controllers.AppDataController.deleteUserGroup
 DELETE   /a/removeUserFromGroup   gg.climb.fifthdrake.controllers.AppDataController.removeUserFromGroup
 GET      /settings                gg.climb.fifthdrake.controllers.AppDataController.loadSettings
+PUT      /a/updateUserPermission  gg.climb.fifthdrake.controllers.AppDataController.updateUserPermission
