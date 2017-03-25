@@ -21,10 +21,10 @@ buttonTopPosition : Float
 buttonTopPosition = 1
 
 buttonSize : Float
-buttonSize = 32
+buttonSize = 34
 
 searchBarWidth : Float
-searchBarWidth = 94 -- pct
+searchBarWidth = 562
 
 searchResultFont : Float
 searchResultFont = 25
@@ -32,14 +32,14 @@ searchResultFont = 25
 searchResultHeight : Float
 searchResultHeight = 6 -- pct
 
-backgroundPaneWidth : Float
-backgroundPaneWidth = 90 -- pct
+backgroundPaneHeight : Float
+backgroundPaneHeight = 500
 
 groupContainerWidth : Float
-groupContainerWidth = 50 -- pct
+groupContainerWidth = 600
 
 groupLeftMargin : Float
-groupLeftMargin = groupContainerWidth/100 * (100 - backgroundPaneWidth) --pct
+groupLeftMargin = 50
 
 rowWidth : Float
 rowWidth = 6 -- pct
@@ -55,11 +55,12 @@ type CssClass
   | GroupTitle
   | GroupCss
   | Searchbar
-  | Button
+  | AddButton
   | UsersBackgroundPane
   | DeleteButtonCss
   | GroupRow
   | GroupCell
+  | CreateButton
 
 css : Stylesheet
 css =
@@ -69,8 +70,8 @@ css =
     , color Color.c_offWhite
     ])
   , class GroupCss(
-    [ width (groupContainerWidth |> pct)
-    , marginLeft (groupLeftMargin |> pct)
+    [ width (groupContainerWidth |> px)
+    , marginLeft (groupLeftMargin |> px)
     ])
   , class Settings(
     [ width (100 |> pct)
@@ -78,9 +79,9 @@ css =
     ])
   , class Searchbar(
     [ fontSize (searchBarFont |> px)
-    , width (searchBarWidth |> pct)
+    , width (searchBarWidth |> px)
     ])
-  , class Button(
+  , class AddButton(
     [ position relative
     , top (buttonTopPosition |> px)
     , width (buttonSize |> px)
@@ -88,8 +89,8 @@ css =
     ])
   , class UsersBackgroundPane(
     [ backgroundColor Color.c_navBar
-    , width (backgroundPaneWidth |> pct)
-    , height (50 |> pct)
+    , width (100 |> pct)
+    , height (backgroundPaneHeight |> px)
     ])
   , class DeleteButtonCss(
     [ display none
@@ -114,5 +115,16 @@ css =
     ])
   , class GroupCell(
     [ width (cellWidth |> pct)
+    ])
+  , class CreateButton(
+    [ width (51 |> px)
+    , height (26 |> px)
+    , fontSize (18 |> px)
+    , borderRadius (6 |> px)
+    , backgroundColor Color.c_create_button
+    , hover [ backgroundColor Color.c_hovering ]
+    , cursor pointer
+    , textAlign center
+    , lineHeight (26 |> px)
     ])
   ]

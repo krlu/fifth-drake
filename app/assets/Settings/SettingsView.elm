@@ -16,7 +16,12 @@ view model =
     groupHtml =
       case model.group of
         Just group -> viewUserGroup group model.addUserIcon model.removeUserIcon
-        Nothing -> div [] [text "Create New Group"]
+        Nothing ->
+          div
+          [ onClick SendCreateGroupRequest
+          , class [CreateButton]
+          ]
+          [text "New"]
   in
     div [ class [Settings] ]
       [ div [ class [GroupCss] ]
@@ -42,7 +47,7 @@ viewUserGroup group addIcon removeIcon =
         []
       , button
         [ onClick SendGetUserRequest
-        , class [Button]
+        , class [AddButton]
         ]
         [ img [src addIcon] [] ]
       ] ++ membersHtml)

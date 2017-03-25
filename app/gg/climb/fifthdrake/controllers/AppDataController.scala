@@ -4,7 +4,7 @@ import java.util.UUID
 
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.accounts.{Member, User, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts.{Member, Owner, User, UserGroup}
 import play.Logger
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
@@ -64,12 +64,13 @@ class AppDataController(dbh: DataAccessHandler,
     * Create a new user group with the currently logged in user as the only member
     */
   def createNewUserGroup: Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
-    println(request.user)
     dbh.getUserGroupByUser(request.user) match {
       case Some(userGroup) =>
         BadRequest(Json.toJson(userGroup)).flashing("error" -> "already member of a user group")
       case None =>
         dbh.createUserGroup(request.user)
+        val newGroup =  dbh.getUserGroupByUser(request.user).orNull
+        dbh.insertPermissionForUser(request.user.uuid, newGroup.uuid, Owner)
         Redirect(routes.AppDataController.getSelfUserGroup())
     }
   }
