@@ -76,3 +76,6 @@ c_table_header = hex "#8e9fbb"
 
 c_search_result : Color
 c_search_result = hex "75878d"
+
+c_create_button : Color
+c_create_button = hex "#94a3de"

@@ -12,6 +12,7 @@ type Msg
   | SendAddUserRequest (Result Http.Error UserGroup)
   | RemoveUser User
   | SendRemoveUserRequest (Result Http.Error UserGroup)
+  | SendCreateGroupRequest
 
 type alias Email = String
 type alias UserId = String

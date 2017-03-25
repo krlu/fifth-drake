@@ -31,3 +31,4 @@ update msg model =
         Just group -> (model, sendRemoveUserRequest user group model.location)
     SendRemoveUserRequest (Ok group) -> ({ model | group = Just group} , Cmd.none)
     SendRemoveUserRequest (Err err) -> (Debug.log "Failed to remove user from group!" model, Cmd.none)
+    SendCreateGroupRequest -> (model, sendCreateGroupRequest model.location)

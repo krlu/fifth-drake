@@ -1,4 +1,10 @@
-module Internal.UserQuery exposing (sendGetUserRequest, populate, sendAddUserRequest, sendRemoveUserRequest)
+module Internal.UserQuery exposing
+  ( sendGetUserRequest
+  , populate
+  , sendAddUserRequest
+  , sendRemoveUserRequest
+  , sendCreateGroupRequest
+  )
 
 import Http exposing (Request, emptyBody, expectJson, jsonBody, request)
 import Json.Decode as Decoder exposing (Decoder, field, list, map2, map4, string)
@@ -16,6 +22,9 @@ userUrl host = "http://" ++ host ++ "/a/getUser"
 groupUrl : String -> String
 groupUrl host = "http://" ++ host ++ "/a/getGroup"
 
+createGroupUrl : String -> String
+createGroupUrl host = "http://" ++ host ++ "/a/createGroup"
+
 addUserUrl : String -> String
 addUserUrl host = "http://" ++ host ++ "/a/addUserToGroup"
 
@@ -24,6 +33,22 @@ removeUserUrl host = "http://" ++ host ++ "/a/removeUserFromGroup"
 
 
 -- Request senders and formatters
+
+sendCreateGroupRequest : Location -> Cmd Msg
+sendCreateGroupRequest location =
+  let
+    req =
+      request
+       {  method = "GET"
+        , headers = []
+        , url = createGroupUrl location.host
+        , body = emptyBody
+        , expect = expectJson group
+        , timeout = Nothing
+        , withCredentials = False
+       }
+  in
+    Http.send GetGroupForUser <| req
 
 sendRemoveUserRequest : User -> UserGroup -> Location -> Cmd Msg
 sendRemoveUserRequest user group location = Http.send SendRemoveUserRequest (removeUser user.id group.id location)
