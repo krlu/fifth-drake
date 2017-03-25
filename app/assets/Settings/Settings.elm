@@ -14,9 +14,9 @@ init flags location =
       { email = ""
       }
     , location = location
-    , foundUser = Nothing
     , searchIcon = flags.searchIcon
     , addUserIcon = flags.addUserIcon
+    , removeUserIcon = flags.removeUserIcon
     }
   , populate location
   )

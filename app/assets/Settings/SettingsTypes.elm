@@ -9,7 +9,6 @@ type Msg
   | LocationUpdate Location
   | UpdateSearchForm String
   | GetGroupForUser (Result Http.Error UserGroup)
-  | AddUserToGroup User
   | SendAddUserRequest (Result Http.Error UserGroup)
   | RemoveUser User
   | SendRemoveUserRequest (Result Http.Error UserGroup)
@@ -17,6 +16,7 @@ type Msg
 type alias Email = String
 type alias UserId = String
 type alias GroupId = String
+type alias Icon = String
 
 type alias UserForm =
   { email : Email
@@ -38,12 +38,13 @@ type alias Model =
   { group : Maybe UserGroup
   , form : UserForm
   , location : Location
-  , foundUser : Maybe User
-  , searchIcon : String
-  , addUserIcon : String
+  , searchIcon : Icon
+  , addUserIcon : Icon
+  , removeUserIcon : Icon
   }
 
 type alias Flags =
-  { searchIcon : String
-  , addUserIcon : String
+  { searchIcon : Icon
+  , addUserIcon : Icon
+  , removeUserIcon : Icon
   }
