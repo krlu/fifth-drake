@@ -14,16 +14,15 @@ update msg model =
      in
       ( {model | form = newForm }, Cmd.none)
     SendGetUserRequest -> ( model, sendGetUserRequest model.form model.location)
-    GetUser(Ok user) ->({model| foundUser = Just user}, Cmd.none)
-    GetUser (Err err) -> (Debug.log "User failed to fetch!" {model | foundUser = Nothing}, Cmd.none)
+    GetUser(Ok user) ->
+      case model.group of
+        Nothing -> (model, Cmd.none)
+        Just group -> (model, sendAddUserRequest user group model.location)
+    GetUser (Err err) -> (Debug.log "User failed to fetch!" model, Cmd.none)
     GetGroupForUser (Ok group) ->
       ({ model | group = Just group }, Cmd.none)
     GetGroupForUser (Err err) ->
       (Debug.log "Group failed to fetch!" model, Cmd.none)
-    AddUserToGroup user ->
-      case model.group of
-        Nothing -> (model, Cmd.none)
-        Just group -> (model, sendAddUserRequest user group model.location)
     SendAddUserRequest (Ok group) -> ({ model | group = Debug.log "" (Just group)} , Cmd.none)
     SendAddUserRequest (Err err) -> (Debug.log "Failed to add user to group!" model, Cmd.none)
     RemoveUser user ->

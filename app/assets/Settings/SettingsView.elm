@@ -3,7 +3,8 @@ module SettingsView exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (placeholder, src)
 import Html.CssHelpers exposing (withNamespace)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (keyCode, on, onClick, onInput)
+import Json.Decode as Json
 import SettingsCss exposing (CssClass(..), namespace)
 import SettingsTypes exposing (..)
 
@@ -14,19 +15,8 @@ view model =
   let
     groupHtml =
       case model.group of
-        Just group -> viewUserGroup group
+        Just group -> viewUserGroup group model.addUserIcon model.removeUserIcon
         Nothing -> div [] [text "Create New Group"]
-    resultsHtml =
-      case model.foundUser of
-        Just user ->
-          div [ class [SearchResult]
-              , onClick (AddUserToGroup user)
-              ]
-            [ div [class [UserContent]] [text (user.firstName ++ " " ++ user.lastName)]
-            , div [class [AddUser]] [ img [src model.addUserIcon] [] ]
-            ]
-        Nothing ->
-          text "No user found"
   in
     div [ class [Settings] ]
       [ div [ class [GroupCss] ]
@@ -35,32 +25,48 @@ view model =
           ]
         , groupHtml
         ]
-      , div [ class [Search] ]
-        [ input
-          [ placeholder "Search user"
-          , onInput UpdateSearchForm
-          , class [Searchbar]
-          ]
-          []
-        , button
-          [ onClick SendGetUserRequest
-          , class [Button]
-          ]
-          [ img [src model.searchIcon] [] ]
-        , div [class [UsersBackgroundPane]] [resultsHtml]
-        ]
       ]
 
-viewUserGroup :  UserGroup -> Html Msg
-viewUserGroup group =
+viewUserGroup : UserGroup -> Icon -> Icon -> Html Msg
+viewUserGroup group addIcon removeIcon =
   let
-     membersHtml = List.map viewUserInGroup group.members
+     membersHtml = List.map (viewUserInGroup removeIcon) group.members
   in
-    div [class [UsersBackgroundPane]] [table [] membersHtml]
+    div [class [UsersBackgroundPane]]
+    (membersHtml ++
+    [ input
+      [ placeholder "Add user"
+      , onInput UpdateSearchForm
+      , class [Searchbar]
+      , onEnter SendGetUserRequest
+      ]
+      []
+    , button
+      [ onClick SendGetUserRequest
+      , class [Button]
+      ]
+      [ img [src addIcon] [] ]
+    ])
 
-viewUserInGroup : User -> Html Msg
-viewUserInGroup user =
-  tr [ ]
-  [ td [onClick (RemoveUser user)] [ text user.email ]
-  , td [] [ text <| user.firstName ++ " " ++ user.lastName ]
+onEnter : Msg -> Attribute Msg
+onEnter msg =
+  let
+    isEnter code =
+      if code == 13 then
+        Json.succeed msg
+      else
+        Json.fail "not ENTER"
+  in
+    on "keydown" (Json.andThen isEnter keyCode)
+
+viewUserInGroup : Icon -> User -> Html Msg
+viewUserInGroup removeIcon user =
+  div [class [GroupRow] ]
+  [ div [class[GroupCell]] [ text user.email ]
+  , div [class[GroupCell]] [ text <| user.firstName ++ " " ++ user.lastName]
+  , div
+    [ onClick (RemoveUser user)
+    , class [DeleteButtonCss]
+    ]
+    [ img [src removeIcon] [] ]
   ]

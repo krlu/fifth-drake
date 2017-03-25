@@ -7,6 +7,9 @@ import Navigation exposing (Location)
 import SettingsTypes exposing (..)
 import String
 
+
+-- URLS for data sources
+
 userUrl : String -> String
 userUrl host = "http://" ++ host ++ "/a/getUser"
 
@@ -19,36 +22,30 @@ addUserUrl host = "http://" ++ host ++ "/a/addUserToGroup"
 removeUserUrl : String -> String
 removeUserUrl host = "http://" ++ host ++ "/a/removeUserFromGroup"
 
+
+-- Request senders and formatters
+
 sendRemoveUserRequest : User -> UserGroup -> Location -> Cmd Msg
 sendRemoveUserRequest user group location = Http.send SendRemoveUserRequest (removeUser user.id group.id location)
 
-removeUser: UserId -> GroupId -> Location -> Request UserGroup
-removeUser userId groupId location =
-  let
-    queryString =  (removeUserUrl location.host) ++ "?user=" ++ userId ++ ";group=" ++ groupId
-  in
-    request
-     {  method = "DELETE"
-      , headers = []
-      , url = Debug.log "" queryString
-      , body = emptyBody
-      , expect = expectJson group
-      , timeout = Nothing
-      , withCredentials = False
-     }
+removeUser : UserId -> GroupId -> Location -> Request UserGroup
+removeUser userId groupId location = userReqHelper userId groupId location "DELETE" removeUserUrl
 
 sendAddUserRequest : User -> UserGroup -> Location -> Cmd Msg
 sendAddUserRequest user group location = Http.send SendAddUserRequest (addUser user.id group.id location)
 
 addUser: UserId -> GroupId -> Location -> Request UserGroup
-addUser userId groupId location =
+addUser userId groupId location = userReqHelper userId groupId location "PUT" addUserUrl
+
+userReqHelper : UserId -> GroupId -> Location -> String -> (String -> String) -> Request UserGroup
+userReqHelper userId groupId location method url =
   let
-    queryString =  (addUserUrl location.host) ++ "?user=" ++ userId ++ ";group=" ++ groupId
+    queryString =  (url location.host) ++ "?user=" ++ userId ++ ";group=" ++ groupId
   in
     request
-     {  method = "PUT"
+     {  method = method
       , headers = []
-      , url = queryString
+      , url = Debug.log "" queryString
       , body = emptyBody
       , expect = expectJson group
       , timeout = Nothing
@@ -64,6 +61,9 @@ getUser userForm location =
     queryString = (userUrl location.host) ++ "?email=" ++ userForm.email
   in
     Http.get queryString user
+
+
+-- Data Encoding/Decoding
 
 populate : Location -> Cmd Msg
 populate loc = Http.send GetGroupForUser <| getGroup loc

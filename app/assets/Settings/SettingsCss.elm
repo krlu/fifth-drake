@@ -8,9 +8,6 @@ import CssColors as Color
 namespace : String
 namespace = "settings"
 
-tableFontSize : Float
-tableFontSize = 25
-
 groupTitleSize : Float
 groupTitleSize = 40
 
@@ -26,14 +23,32 @@ buttonTopPosition = 1
 buttonSize : Float
 buttonSize = 32
 
+searchBarWidth : Float
+searchBarWidth = 94 -- pct
+
 searchResultFont : Float
 searchResultFont = 25
 
 searchResultHeight : Float
 searchResultHeight = 6 -- pct
 
+backgroundPaneWidth : Float
+backgroundPaneWidth = 90 -- pct
+
+groupContainerWidth : Float
+groupContainerWidth = 50 -- pct
+
 groupLeftMargin : Float
-groupLeftMargin = 50/100 * (100 - 90) --pct
+groupLeftMargin = groupContainerWidth/100 * (100 - backgroundPaneWidth) --pct
+
+rowWidth : Float
+rowWidth = 6 -- pct
+
+cellWidth : Float
+cellWidth = 48 -- pct
+
+cellFontSize : Float
+cellFontSize = 25
 
 type CssClass
   = Settings
@@ -41,11 +56,10 @@ type CssClass
   | GroupCss
   | Searchbar
   | Button
-  | Search
   | UsersBackgroundPane
-  | SearchResult
-  | AddUser
-  | UserContent
+  | DeleteButtonCss
+  | GroupRow
+  | GroupCell
 
 css : Stylesheet
 css =
@@ -55,28 +69,16 @@ css =
     , color Color.c_offWhite
     ])
   , class GroupCss(
-    [ width (50 |> pct)
+    [ width (groupContainerWidth |> pct)
     , marginLeft (groupLeftMargin |> pct)
-    ])
-  , Css.Elements.tr(
-    [ hover [backgroundColor Color.c_hovering]
-    , backgroundColor Color.c_games_table
     ])
   , class Settings(
     [ width (100 |> pct)
     , displayFlex
     ])
-  , Css.Elements.table(
-    [ width (100 |> pct)
-    , fontSize (tableFontSize |> px)
-    ])
-  , class Search (
-    [ width (50 |> pct)
-    , top (searchMargin |> px)
-    , position relative
-    ])
   , class Searchbar(
     [ fontSize (searchBarFont |> px)
+    , width (searchBarWidth |> pct)
     ])
   , class Button(
     [ position relative
@@ -86,22 +88,31 @@ css =
     ])
   , class UsersBackgroundPane(
     [ backgroundColor Color.c_navBar
-    , width (90 |> pct)
+    , width (backgroundPaneWidth |> pct)
     , height (50 |> pct)
     ])
-  , class SearchResult(
-    [ hover [backgroundColor Color.c_hovering]
-    , backgroundColor Color.c_search_result
-    , width (100 |> pct)
-    , height (searchResultHeight |> pct)
-    , fontSize (searchResultFont |> px)
+  , class DeleteButtonCss(
+    [ display none
     ])
-  , class AddUser(
-    [ position relative
-    , float right
+  , class GroupRow(
+    [ width (100 |> pct)
+    , height (rowWidth |> pct)
+    , hover
+      [ backgroundColor Color.c_hovering
+      , children
+        [ class DeleteButtonCss
+          [ cursor pointer
+          , displayFlex
+          , float right
+          , width (0 |> pct)
+          ]
+        ]
+      ]
+    , backgroundColor Color.c_games_table
+    , displayFlex
+    , fontSize (cellFontSize |> px)
     ])
-  , class UserContent(
-    [ position relative
-    , float left
+  , class GroupCell(
+    [ width (cellWidth |> pct)
     ])
   ]
