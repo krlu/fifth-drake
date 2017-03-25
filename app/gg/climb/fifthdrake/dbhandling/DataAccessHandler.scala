@@ -97,6 +97,9 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def insertPermissionForUser(userUuid: UUID, groupUuid: UUID, permission: Permission) =
     pdbh.insertPermissionForUser(userUuid, groupUuid, permission)
   def removePermissionForUser(userUuid: UUID, groupUuid: UUID) = pdbh.removePermissionForUser(userUuid, groupUuid)
+  def getPermissionsForGroup(groupUuid: UUID) = pdbh.getPermissionsForGroup(groupUuid)
+  def getUserPermissionForGroup(userId: UUID, groupId : UUID): Option[Permission] =
+    pdbh.getUserPermissionForGroup(userId, groupId)
 
   private def behaviorForPlayers(playerStates: Seq[(Time, Set[PlayerState])])
   : Map[Player, Behavior[Time, PlayerState]] = separateStatesForPlayers(playerStates).map{ case (player, seq) =>

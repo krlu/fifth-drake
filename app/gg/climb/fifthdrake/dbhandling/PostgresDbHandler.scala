@@ -4,7 +4,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
-import gg.climb.fifthdrake.lolobjects.accounts.{Permission, User, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts._
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
 import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
@@ -520,6 +520,38 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
           )"""
         .update()
         .apply()
+    }
+  }
+
+  def getUserPermissionForGroup(userId: UUID, groupId : UUID): Option[Permission] = {
+    DB readOnly { implicit session =>
+      sql"""SELECT permission FROM account.user_to_permission WHERE (
+           group_id = ${groupId} AND
+           user_id = ${userId}
+         )"""
+        .map(rs => {
+          val level = rs.string("permission") match {
+            case "owner" => Owner
+            case "admin" => Admin
+            case "member" => Member
+          }
+          level
+        }).single().apply()
+    }
+  }
+
+  def getPermissionsForGroup(groupId : UUID): Seq[(UUID, Permission)] = {
+    DB readOnly { implicit session =>
+      sql"SELECT user_id, permission FROM account.user_to_permission WHERE group_id = ${groupId}"
+        .map(rs => {
+          val userId = UUID.fromString(rs.string("user_id"))
+          val permission = rs.string("permission") match {
+            case "owner" => Owner
+            case "admin" => Admin
+            case "member" => Member
+          }
+          (userId, permission)
+        }).list().apply()
     }
   }
 }

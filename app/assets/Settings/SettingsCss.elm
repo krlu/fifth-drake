@@ -24,7 +24,7 @@ buttonSize : Float
 buttonSize = 34
 
 searchBarWidth : Float
-searchBarWidth = 562
+searchBarWidth = 500
 
 searchResultFont : Float
 searchResultFont = 25
@@ -36,19 +36,40 @@ backgroundPaneHeight : Float
 backgroundPaneHeight = 500
 
 groupContainerWidth : Float
-groupContainerWidth = 600
+groupContainerWidth = 700
 
 groupLeftMargin : Float
 groupLeftMargin = 50
 
-rowWidth : Float
-rowWidth = 6 -- pct
+rowHeight : Float
+rowHeight = 30
+
+rowLineHeight : Float
+rowLineHeight = 40
+
+rowBottomBorderWidth : Float
+rowBottomBorderWidth = 1
 
 cellWidth : Float
-cellWidth = 48 -- pct
+cellWidth = 40 -- pct
 
 cellFontSize : Float
-cellFontSize = 25
+cellFontSize = 18
+
+memberCellWidth : Float
+memberCellWidth = 16 --pct
+
+createButtonWidth : Float
+createButtonWidth = 51
+
+createButtonHeight : Float
+createButtonHeight = 26
+
+createButtonFontSize : Float
+createButtonFontSize = 18
+
+createButtonBorderRadius : Float
+createButtonBorderRadius = 6
 
 type CssClass
   = Settings
@@ -60,6 +81,7 @@ type CssClass
   | DeleteButtonCss
   | GroupRow
   | GroupCell
+  | MemberCell
   | CreateButton
 
 css : Stylesheet
@@ -91,13 +113,14 @@ css =
     [ backgroundColor Color.c_navBar
     , width (100 |> pct)
     , height (backgroundPaneHeight |> px)
+    , overflowY scroll
     ])
   , class DeleteButtonCss(
     [ display none
     ])
   , class GroupRow(
     [ width (100 |> pct)
-    , height (rowWidth |> pct)
+    , height (rowHeight |> px)
     , hover
       [ backgroundColor Color.c_hovering
       , children
@@ -112,19 +135,25 @@ css =
     , backgroundColor Color.c_games_table
     , displayFlex
     , fontSize (cellFontSize |> px)
+    , borderBottomStyle solid
+    , borderBottomWidth (rowBottomBorderWidth |> px)
+    , lineHeight (rowLineHeight |> px)
     ])
   , class GroupCell(
     [ width (cellWidth |> pct)
     ])
+  , class MemberCell(
+    [ width (memberCellWidth |> pct)
+    ])
   , class CreateButton(
-    [ width (51 |> px)
-    , height (26 |> px)
-    , fontSize (18 |> px)
-    , borderRadius (6 |> px)
+    [ width (createButtonWidth |> px)
+    , height (createButtonHeight |> px)
+    , fontSize (createButtonFontSize |> px)
+    , borderRadius (createButtonBorderRadius |> px)
     , backgroundColor Color.c_create_button
     , hover [ backgroundColor Color.c_hovering ]
     , cursor pointer
     , textAlign center
-    , lineHeight (26 |> px)
+    , lineHeight (createButtonHeight |> px)
     ])
   ]

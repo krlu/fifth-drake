@@ -13,11 +13,13 @@ type Msg
   | RemoveUser User
   | SendRemoveUserRequest (Result Http.Error UserGroup)
   | SendCreateGroupRequest
+  | GetDataForUser (Result Http.Error Data)
 
 type alias Email = String
 type alias UserId = String
 type alias GroupId = String
 type alias Icon = String
+type alias PermissionLevel = String
 
 type alias UserForm =
   { email : Email
@@ -35,8 +37,21 @@ type alias UserGroup =
   , members : List User
   }
 
+type alias Permission =
+  { userId : UserId
+  , level : PermissionLevel
+  }
+
+type alias Data =
+  { group : UserGroup
+  , permissions : List Permission
+  , currentUser : User
+  }
+
 type alias Model =
   { group : Maybe UserGroup
+  , permissions : Maybe (List Permission)
+  , currentUser : Maybe User
   , form : UserForm
   , location : Location
   , searchIcon : Icon

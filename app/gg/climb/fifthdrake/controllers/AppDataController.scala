@@ -4,10 +4,12 @@ import java.util.UUID
 
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.accounts.{Member, Owner, User, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts._
 import play.Logger
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
+
+import scala.collection.immutable.Seq
 
 /**
   * Created by michael on 3/17/17.
@@ -25,6 +27,7 @@ class AppDataController(dbh: DataAccessHandler,
     )
   }
 
+
   private implicit val userGroupWrites = new Writes[UserGroup] {
     override def writes(userGroup: UserGroup): JsValue = {
       Json.obj(
@@ -40,7 +43,6 @@ class AppDataController(dbh: DataAccessHandler,
     Logger.info(s"loading home page: ${request.toString()}")
     Ok(views.html.userSettings())
   }
-
 
   /**
     * Search for users
@@ -81,7 +83,15 @@ class AppDataController(dbh: DataAccessHandler,
   def getSelfUserGroup: Action[AnyContent] = AuthenticatedAction { request =>
     dbh.getUserGroupByUser(request.user) match {
       case Some(userGroup) =>
-        Ok(Json.toJson(userGroup))
+        val permissions: Seq[(UUID, Permission)] = dbh.getPermissionsForGroup(userGroup.uuid)
+        val permJson = permissions.map{case (userId, permission) =>
+          Json.obj("userId" -> userId.toString, "level" -> permission.name)
+        }
+        Ok(Json.obj(
+            "group" -> Json.toJson(userGroup),
+            "permissions" -> Json.toJson(permJson),
+            "currentUser" -> Json.toJson(request.user))
+        )
       case None =>
         Ok
     }
@@ -123,12 +133,17 @@ class AppDataController(dbh: DataAccessHandler,
           case Some(userGroup) =>
             val userUuid = UUID.fromString(user)
             val groupUuid = userGroup.uuid
-            if (!userGroup.users.contains(userUuid)) {
-              dbh.insertPermissionForUser(userUuid, groupUuid, Member)
-              dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
+            // Check if user doing the adding is has admin or owner access
+            dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
+              case Some(Member) => Forbidden("Members cannot modify groups!!")
+              case _ =>
+                if (!userGroup.users.contains(userUuid)) {
+                  dbh.insertPermissionForUser(userUuid, groupUuid, Member)
+                  dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
+                }
+                val newGroup = dbh.getUserGroupByUser(request.user)
+                Ok(Json.toJson(newGroup))
             }
-            val newGroup = dbh.getUserGroupByUser(request.user)
-            Ok(Json.toJson(newGroup))
           case None =>
             Ok
         }
@@ -150,14 +165,18 @@ class AppDataController(dbh: DataAccessHandler,
     val userGroupUuidStr = request.queryString.get("group").map(_.head)
     (userUuidStr, userGroupUuidStr) match {
       case (Some(user), Some(group)) =>
-        dbh.getUserGroupByUuid(UUID.fromString(group)) match {
-          case Some(userGroup) =>
-            dbh.removePermissionForUser(UUID.fromString(user), UUID.fromString(group))
-            dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != UUID.fromString(user)))
-            val newGroup = dbh.getUserGroupByUser(request.user)
-            Ok(Json.toJson(newGroup))
-          case None =>
-            Ok
+        val groupUuid = UUID.fromString(group)
+        dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
+          case Some(Member) => Forbidden("Members cannot modify groups!!")
+          case _ => dbh.getUserGroupByUuid(UUID.fromString(group)) match {
+            case Some(userGroup) =>
+              dbh.removePermissionForUser(UUID.fromString(user), UUID.fromString(group))
+              dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != UUID.fromString(user)))
+              val newGroup = dbh.getUserGroupByUser(request.user)
+              Ok(Json.toJson(newGroup))
+            case None =>
+              Ok
+          }
         }
       case (_, _) =>
         BadRequest.flashing("error" -> "missing either 'user' or 'group' query string parameters")

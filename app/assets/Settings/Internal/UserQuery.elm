@@ -7,7 +7,7 @@ module Internal.UserQuery exposing
   )
 
 import Http exposing (Request, emptyBody, expectJson, jsonBody, request)
-import Json.Decode as Decoder exposing (Decoder, field, list, map2, map4, string)
+import Json.Decode as Decoder exposing (Decoder, field, list, map2, map3, map4, string)
 import Json.Encode exposing (Value, int, object)
 import Navigation exposing (Location)
 import SettingsTypes exposing (..)
@@ -91,10 +91,23 @@ getUser userForm location =
 -- Data Encoding/Decoding
 
 populate : Location -> Cmd Msg
-populate loc = Http.send GetGroupForUser <| getGroup loc
+populate loc = Http.send GetDataForUser <| getGroup loc
 
-getGroup : Location -> Request UserGroup
-getGroup loc = Http.get (groupUrl loc.host) group
+getGroup : Location -> Request Data
+getGroup loc = Http.get (groupUrl loc.host) pair
+
+pair : Decoder Data
+pair =
+  map3 SettingsTypes.Data
+    (field "group" group)
+    (field "permissions" <| list permission)
+    (field "currentUser" user)
+
+permission : Decoder Permission
+permission =
+  map2 Permission
+    (field "userId" string)
+    (field "level" string)
 
 group : Decoder UserGroup
 group =
