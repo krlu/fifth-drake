@@ -23,6 +23,12 @@ update msg model =
       ({ model | group = Just group }, Cmd.none)
     GetGroupForUser (Err err) ->
       (Debug.log "Group failed to fetch!" model, Cmd.none)
+    GetDataForUser (Ok data) ->
+      ({ model | group = Just data.group
+      , permissions = Just data.permissions 
+      , currentUser = Just data.currentUser}, Cmd.none)
+    GetDataForUser (Err err) ->
+      (Debug.log "Group failed to fetch!" model, Cmd.none)
     SendAddUserRequest (Ok group) -> ({ model | group = Debug.log "" (Just group)} , Cmd.none)
     SendAddUserRequest (Err err) -> (Debug.log "Failed to add user to group!" model, Cmd.none)
     RemoveUser user ->

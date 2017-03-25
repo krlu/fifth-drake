@@ -10,6 +10,8 @@ import SettingsUpdate as Update
 init : Flags -> Location -> ( Model, Cmd Msg )
 init flags location =
   ( { group = Nothing
+    , permissions = Nothing
+    , currentUser = Nothing
     , form =
       { email = ""
       }
