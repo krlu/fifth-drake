@@ -152,6 +152,51 @@ class AppDataController(dbh: DataAccessHandler,
     }
   }
 
+
+  /**
+    * Update Users permissions in a group
+    * Only owners can do this!
+    *
+    * query string parameters:
+    * user -> user uuid (String)
+    * group -> group uuid to add user to (String)
+    * level -> Permission level (Owner, Member, Admin)
+    */
+  def updateUserPermission(): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+    Logger.info(s"adding user to group with query string parameters: ${request.queryString}")
+    val userUuidStr = request.queryString.get("user").map(_.head)
+    val userGroupUuidStr = request.queryString.get("group").map(_.head)
+    val permissionLevelStr = request.queryString.get("level").map(_.head)
+    (userUuidStr, userGroupUuidStr, permissionLevelStr) match {
+      case (Some(user), Some(group), Some(levelStr)) =>
+        dbh.getUserGroupByUuid(UUID.fromString(group)) match {
+          case Some(userGroup) =>
+            val userUuid = UUID.fromString(user)
+            val groupUuid = userGroup.uuid
+            dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
+              case Some(Owner) =>
+                if (userGroup.users.contains(userUuid)) {
+                  levelStr match {
+                    case "owner" => Logger.error("Illegal attempt to make an owner!!")
+                    case "member" => dbh.updateUserPermissionForGroup(userUuid, groupUuid, Member)
+                    case "admin" => dbh.updateUserPermissionForGroup(userUuid, groupUuid, Admin)
+                  }
+                }
+                val permissions = dbh.getPermissionsForGroup(groupUuid)
+                val permJson = permissions.map{case (userId, permission) =>
+                  Json.obj("userId" -> userId.toString, "level" -> permission.name)
+                }
+                Ok(Json.toJson(permJson))
+              case Some(_) => Forbidden("Only owners can change permission levels!!")
+            }
+          case None =>
+            Ok
+        }
+      case (_, _, _) =>
+        BadRequest.flashing("error" -> "missing either 'user' or 'group' or 'level' query string parameters")
+    }
+  }
+
   /**
     * Kick a user out of the club
     *
@@ -166,12 +211,13 @@ class AppDataController(dbh: DataAccessHandler,
     (userUuidStr, userGroupUuidStr) match {
       case (Some(user), Some(group)) =>
         val groupUuid = UUID.fromString(group)
+        val userUuid = UUID.fromString(user)
         dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
           case Some(Member) => Forbidden("Members cannot modify groups!!")
           case _ => dbh.getUserGroupByUuid(UUID.fromString(group)) match {
             case Some(userGroup) =>
-              dbh.removePermissionForUser(UUID.fromString(user), UUID.fromString(group))
-              dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != UUID.fromString(user)))
+              dbh.removePermissionForUser(userUuid, UUID.fromString(group))
+              dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != userUuid))
               val newGroup = dbh.getUserGroupByUser(request.user)
               Ok(Json.toJson(newGroup))
             case None =>

@@ -3,6 +3,12 @@ module SettingsTypes exposing (..)
 import Http
 import Navigation exposing (Location)
 
+type alias Email = String
+type alias UserId = String
+type alias GroupId = String
+type alias Icon = String
+type alias PermissionLevel = String
+
 type Msg
   = SendGetUserRequest
   | GetUser (Result Http.Error User)
@@ -14,12 +20,8 @@ type Msg
   | SendRemoveUserRequest (Result Http.Error UserGroup)
   | SendCreateGroupRequest
   | GetDataForUser (Result Http.Error Data)
-
-type alias Email = String
-type alias UserId = String
-type alias GroupId = String
-type alias Icon = String
-type alias PermissionLevel = String
+  | UpdatePermission (UserId, GroupId, PermissionLevel)
+  | SendPermissionsRequest (Result Http.Error (List Permission))
 
 type alias UserForm =
   { email : Email
@@ -57,10 +59,12 @@ type alias Model =
   , searchIcon : Icon
   , addUserIcon : Icon
   , removeUserIcon : Icon
+  , updatePermissionIcon : Icon
   }
 
 type alias Flags =
   { searchIcon : Icon
   , addUserIcon : Icon
   , removeUserIcon : Icon
+  , updatePermissionIcon : Icon
   }

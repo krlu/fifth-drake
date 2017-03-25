@@ -4,6 +4,7 @@ module Internal.UserQuery exposing
   , sendAddUserRequest
   , sendRemoveUserRequest
   , sendCreateGroupRequest
+  , sendUpdatePermissionRequest
   )
 
 import Http exposing (Request, emptyBody, expectJson, jsonBody, request)
@@ -28,6 +29,9 @@ createGroupUrl host = "http://" ++ host ++ "/a/createGroup"
 addUserUrl : String -> String
 addUserUrl host = "http://" ++ host ++ "/a/addUserToGroup"
 
+updatePermissionUrl : String -> String
+updatePermissionUrl host = "http://" ++ host ++ "/a/updateUserPermission"
+
 removeUserUrl : String -> String
 removeUserUrl host = "http://" ++ host ++ "/a/removeUserFromGroup"
 
@@ -49,6 +53,28 @@ sendCreateGroupRequest location =
        }
   in
     Http.send GetGroupForUser <| req
+
+sendUpdatePermissionRequest : UserId -> GroupId-> PermissionLevel -> Location -> Cmd Msg
+sendUpdatePermissionRequest userId groupId permissionLevel location =
+  Http.send SendPermissionsRequest (updatePermission userId groupId permissionLevel location)
+
+updatePermission : UserId -> GroupId -> PermissionLevel -> Location -> Request (List Permission)
+updatePermission userId groupId permissionLevel location =
+  let
+    queryString = (updatePermissionUrl location.host)
+      ++ "?user=" ++ userId
+      ++ ";group=" ++ groupId
+      ++ ";level=" ++ permissionLevel
+  in
+    request
+     {  method = "PUT"
+      , headers = []
+      , url = Debug.log "" queryString
+      , body = emptyBody
+      , expect = expectJson (list permission)
+      , timeout = Nothing
+      , withCredentials = False
+     }
 
 sendRemoveUserRequest : User -> UserGroup -> Location -> Cmd Msg
 sendRemoveUserRequest user group location = Http.send SendRemoveUserRequest (removeUser user.id group.id location)

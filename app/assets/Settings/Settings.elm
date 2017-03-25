@@ -19,6 +19,7 @@ init flags location =
     , searchIcon = flags.searchIcon
     , addUserIcon = flags.addUserIcon
     , removeUserIcon = flags.removeUserIcon
+    , updatePermissionIcon = flags.updatePermissionIcon
     }
   , populate location
   )

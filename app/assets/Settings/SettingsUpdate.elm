@@ -38,3 +38,7 @@ update msg model =
     SendRemoveUserRequest (Ok group) -> ({ model | group = Just group} , Cmd.none)
     SendRemoveUserRequest (Err err) -> (Debug.log "Failed to remove user from group!" model, Cmd.none)
     SendCreateGroupRequest -> (model, sendCreateGroupRequest model.location)
+    UpdatePermission (userId, groupId, level) ->
+      (model, sendUpdatePermissionRequest userId groupId level model.location)
+    SendPermissionsRequest (Ok permissions) -> ({ model | permissions = Just permissions} , Cmd.none)
+    SendPermissionsRequest (Err err) -> (Debug.log "Failed to add user to group!" model, Cmd.none)
