@@ -33,20 +33,19 @@ viewUserGroup group addIcon removeIcon =
      membersHtml = List.map (viewUserInGroup removeIcon) group.members
   in
     div [class [UsersBackgroundPane]]
-    (membersHtml ++
-    [ input
-      [ placeholder "Add user"
-      , onInput UpdateSearchForm
-      , class [Searchbar]
-      , onEnter SendGetUserRequest
-      ]
-      []
-    , button
-      [ onClick SendGetUserRequest
-      , class [Button]
-      ]
-      [ img [src addIcon] [] ]
-    ])
+      ([ input
+        [ placeholder "Add user"
+        , onInput UpdateSearchForm
+        , class [Searchbar]
+        , onEnter SendGetUserRequest
+        ]
+        []
+      , button
+        [ onClick SendGetUserRequest
+        , class [Button]
+        ]
+        [ img [src addIcon] [] ]
+      ] ++ membersHtml)
 
 onEnter : Msg -> Attribute Msg
 onEnter msg =
