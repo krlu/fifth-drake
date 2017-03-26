@@ -62,68 +62,61 @@ sendUpdatePermissionRequest userId groupId permissionLevel location =
 updatePermission : UserId -> GroupId -> PermissionLevel -> Location -> Request (List Permission)
 updatePermission userId groupId permissionLevel location =
   let
-    queryString = (updatePermissionUrl location.host)
+    queryString =
+      (updatePermissionUrl location.host)
       ++ "?user=" ++ userId
       ++ ";group=" ++ groupId
       ++ ";level=" ++ permissionLevel
   in
-    request
-     {  method = "PUT"
-      , headers = []
-      , url = Debug.log "" queryString
-      , body = emptyBody
-      , expect = expectJson (list permission)
-      , timeout = Nothing
-      , withCredentials = False
-     }
+    buildRequest "PUT" queryString (list permission)
 
 sendRemoveUserRequest : User -> UserGroup -> Location -> Cmd Msg
-sendRemoveUserRequest user group location = Http.send SendRemoveUserRequest (removeUser user.id group.id location)
+sendRemoveUserRequest user group location =
+  Http.send SendRemoveUserRequest (removeUser user.id group.id location)
 
 removeUser : UserId -> GroupId -> Location -> Request UserGroup
 removeUser userId groupId location =
   let
-    queryString =  (removeUserUrl location.host) ++ "?user=" ++ userId ++ ";group=" ++ groupId
+    queryString =
+      (removeUserUrl location.host)
+       ++ "?user=" ++ userId
+       ++ ";group=" ++ groupId
   in
-    request
-     {  method = "DELETE"
-      , headers = []
-      , url = Debug.log "" queryString
-      , body = emptyBody
-      , expect = expectJson group
-      , timeout = Nothing
-      , withCredentials = False
-     }
+    buildRequest "DELETE" queryString group
 
 sendAddUserRequest : User -> UserGroup -> Location -> Cmd Msg
-sendAddUserRequest user group location = Http.send GetDataForUser (addUser user.id group.id location)
+sendAddUserRequest user group location =
+  Http.send GetDataForUser (addUser user.id group.id location)
 
 addUser: UserId -> GroupId -> Location -> Request Data
 addUser userId groupId location =
-    let
-      queryString =  (addUserUrl location.host) ++ "?user=" ++ userId ++ ";group=" ++ groupId
-    in
-      request
-       {  method = "PUT"
-        , headers = []
-        , url = Debug.log "" queryString
-        , body = emptyBody
-        , expect = expectJson data
-        , timeout = Nothing
-        , withCredentials = False
-       }
+  let
+    queryString =
+      (addUserUrl location.host)
+       ++ "?user=" ++ userId
+       ++ ";group=" ++ groupId
+  in
+    buildRequest "PUT" queryString data
+
+buildRequest : String -> String -> (Decoder a) -> Request a
+buildRequest method queryString decoder =
+  request
+   {  method = method
+    , headers = []
+    , url = queryString
+    , body = emptyBody
+    , expect = expectJson decoder
+    , timeout = Nothing
+    , withCredentials = False
+   }
 
 sendGetUserRequest: UserForm -> Location -> Cmd Msg
-sendGetUserRequest userForm location = Http.send GetUser (getUser userForm location)
+sendGetUserRequest userForm location =
+  Http.send GetUser (getUser userForm location)
 
 getUser: UserForm -> Location -> Request User
 getUser userForm location =
-  let
-    queryString = (userUrl location.host) ++ "?email=" ++ userForm.email
-  in
-    Http.get queryString user
-
-
+  Http.get ((userUrl location.host) ++ "?email=" ++ userForm.email) user
 
 
 -- Data Encoding/Decoding
