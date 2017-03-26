@@ -193,7 +193,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
     DB localTx { implicit session =>
-      val groupUuids = tag.authorizedGroups.mkString("{", ",", "}")
+      val groupUuids = tag.authorizedGroups.map(_.uuid).mkString("{", ",", "}")
       val tag_id: Long =
         sql"""insert into league.tag (game_key, title, description, category, timestamp, author, authorized_groups)
               values (${tag.gameKey.id},
