@@ -114,7 +114,7 @@ viewUserInGroup removeIcon updatePermissionsIcon permissions currentUser groupId
             ]
             [ img [src removeIcon] [] ]
           ]
-    makeAdminHtml =
+    changePermissionHtml =
       case (currentLevel, userLevel) of
         ("owner", "member")  -> [permissionHtml "admin"]
         ("owner", "admin") -> [permissionHtml "member"]
@@ -125,7 +125,7 @@ viewUserInGroup removeIcon updatePermissionsIcon permissions currentUser groupId
     [ div [class[GroupCell]] [ text user.email ]
     , div [class[GroupCell]] [ text <| user.firstName ++ " " ++ user.lastName ++ you]
     , div [class[MemberCell]] [ text <| userLevel]
-    ] ++ makeAdminHtml ++ deleteHtml)
+    ] ++ changePermissionHtml ++ deleteHtml)
 
 getPermissionLevelOfUser : User -> List Permission -> PermissionLevel
 getPermissionLevelOfUser user permissions =

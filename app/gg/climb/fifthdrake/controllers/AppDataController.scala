@@ -138,8 +138,8 @@ class AppDataController(dbh: DataAccessHandler,
               case Some(Member) => Forbidden("Members cannot modify groups!!")
               case _ =>
                 if (!userGroup.users.contains(userUuid)) {
-                  dbh.insertPermissionForUser(userUuid, groupUuid, Member)
                   dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
+                  dbh.insertPermissionForUser(userUuid, groupUuid, Member)
                 }
                 val newGroup = dbh.getUserGroupByUser(request.user)
                 val permissions = dbh.getPermissionsForGroup(groupUuid)
@@ -220,8 +220,13 @@ class AppDataController(dbh: DataAccessHandler,
       case (Some(user), Some(group)) =>
         val groupUuid = UUID.fromString(group)
         val userUuid = UUID.fromString(user)
-        dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
-          case Some(Member) => Forbidden("Members cannot modify groups!!")
+        val myPermission = dbh.getUserPermissionForGroup(request.user.uuid, groupUuid)
+        val theirPermission = dbh.getUserPermissionForGroup(userUuid, groupUuid)
+        (myPermission, theirPermission) match {
+          case (Some(Member), _) => Forbidden("Members cannot modify groups!!")
+          case (Some(Admin), Some(Admin)) => Forbidden("Can only remove those of lower rank!!")
+          case (Some(Admin), Some(Owner)) => Forbidden("Can only remove those of lower rank!!")
+          case (Some(Owner), Some(Owner)) => Forbidden("Can only remove those of lower rank!!")
           case _ => dbh.getUserGroupByUuid(UUID.fromString(group)) match {
             case Some(userGroup) =>
               dbh.removePermissionForUser(userUuid, UUID.fromString(group))
