@@ -142,7 +142,15 @@ class AppDataController(dbh: DataAccessHandler,
                   dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
                 }
                 val newGroup = dbh.getUserGroupByUser(request.user)
-                Ok(Json.toJson(newGroup))
+                val permissions = dbh.getPermissionsForGroup(groupUuid)
+                val permJson = permissions.map{case (userId, permission) =>
+                  Json.obj("userId" -> userId.toString, "level" -> permission.name)
+                }
+                Ok(Json.obj(
+                  "group" -> Json.toJson(newGroup),
+                  "permissions" -> Json.toJson(permJson),
+                  "currentUser" -> Json.toJson(request.user))
+                )
             }
           case None =>
             Ok
