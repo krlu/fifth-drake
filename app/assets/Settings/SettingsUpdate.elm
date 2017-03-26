@@ -29,8 +29,6 @@ update msg model =
       , currentUser = Just data.currentUser}, Cmd.none)
     GetDataForUser (Err err) ->
       (Debug.log "Group failed to fetch!" model, Cmd.none)
-    SendAddUserRequest (Ok group) -> ({ model | group = Debug.log "" (Just group)} , Cmd.none)
-    SendAddUserRequest (Err err) -> (Debug.log "Failed to add user to group!" model, Cmd.none)
     RemoveUser user ->
       case model.group of
         Nothing -> (model, Cmd.none)

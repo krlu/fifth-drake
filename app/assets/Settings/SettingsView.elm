@@ -22,7 +22,7 @@ view model =
     (groupHtml, searchHtml) =
       case model.group of
         Just group ->
-          case (model.permissions, model.currentUser) of
+          case (Debug.log "" model.permissions, model.currentUser) of
             (Just permissions, Just currentUser) ->
               ( viewUserGroup group model.removeUserIcon model.updatePermissionIcon permissions currentUser group.id
               , getSearchHtml (getPermissionLevelOfUser currentUser permissions) model.addUserIcon
@@ -66,14 +66,6 @@ getSearchHtml level addUserIcon =
         [ img [src addUserIcon] [] ]
       ]
 
-viewUserGroup : UserGroup -> Icon -> Icon -> List Permission -> User -> GroupId -> Html Msg
-viewUserGroup group removeIcon updatePermissionsIcon permissions currentUser groupId =
-  let
-     membersHtml =
-      List.map (viewUserInGroup removeIcon updatePermissionsIcon permissions currentUser groupId) group.members
-  in
-    div [class [UsersBackgroundPane]] membersHtml
-
 onEnter : Msg -> Attribute Msg
 onEnter msg =
   let
@@ -85,9 +77,28 @@ onEnter msg =
   in
     on "keydown" (Json.andThen isEnter keyCode)
 
-viewUserInGroup : Icon -> Icon -> List Permission -> User -> GroupId -> User -> Html Msg
-viewUserInGroup removeIcon updatePermissionsIcons permissions currentUser groupId user =
+viewUserGroup : UserGroup -> Icon -> Icon -> List Permission -> User -> GroupId -> Html Msg
+viewUserGroup group removeIcon updatePermissionsIcon permissions currentUser groupId =
   let
+     membersHtml =
+      List.map (viewUserInGroup removeIcon updatePermissionsIcon permissions currentUser groupId) group.members
+  in
+    div [class [UsersBackgroundPane]] membersHtml
+
+viewUserInGroup : Icon -> Icon -> List Permission -> User -> GroupId -> User -> Html Msg
+viewUserInGroup removeIcon updatePermissionsIcon permissions currentUser groupId user =
+  let
+    permissionHtml : PermissionLevel -> Html Msg
+    permissionHtml level  =
+     img
+      [ src updatePermissionsIcon
+      , onClick (UpdatePermission (user.id, groupId, level))
+      , class[PermissionCell]
+      ]
+      []
+    you = case currentUser.id == user.id of
+            True -> "(you)"
+            False -> ""
     currentLevel = getPermissionLevelOfUser currentUser permissions
     userLevel = getPermissionLevelOfUser user permissions
     deleteHtml =
@@ -97,7 +108,7 @@ viewUserInGroup removeIcon updatePermissionsIcons permissions currentUser groupI
         ("admin", "owner") -> []
         ("owner", "owner") -> []
         _ ->
-          [div
+          [ div
             [ onClick (RemoveUser user)
             , class [DeleteButtonCss]
             ]
@@ -105,28 +116,14 @@ viewUserInGroup removeIcon updatePermissionsIcons permissions currentUser groupI
           ]
     makeAdminHtml =
       case (currentLevel, userLevel) of
-        ("owner", "member")  ->
-          [ img
-            [ src updatePermissionsIcons
-            , onClick (UpdatePermission (user.id, groupId, "admin"))
-            , class[PermissionCell]
-            ]
-            []
-          ]
-        ("owner", "admin") ->
-          [ img
-            [ src updatePermissionsIcons
-            , onClick (UpdatePermission (user.id, groupId, "member"))
-            , class[PermissionCell]
-            ]
-            []
-          ]
-        (_, _) -> []
+        ("owner", "member")  -> [permissionHtml "admin"]
+        ("owner", "admin") -> [permissionHtml "member"]
+        (_ , _) -> [ div [class [PermissionCell]] [] ]
   in
-    div [class [GroupRow] ]
+    div [ class [GroupRow] ]
     (
     [ div [class[GroupCell]] [ text user.email ]
-    , div [class[GroupCell]] [ text <| user.firstName ++ " " ++ user.lastName]
+    , div [class[GroupCell]] [ text <| user.firstName ++ " " ++ user.lastName ++ you]
     , div [class[MemberCell]] [ text <| userLevel]
     ] ++ makeAdminHtml ++ deleteHtml)
 

@@ -45,7 +45,7 @@ rowHeight : Float
 rowHeight = 30
 
 rowLineHeight : Float
-rowLineHeight = 40
+rowLineHeight = 34
 
 rowBottomBorderWidth : Float
 rowBottomBorderWidth = 1

@@ -36,6 +36,7 @@ removeUserUrl : String -> String
 removeUserUrl host = "http://" ++ host ++ "/a/removeUserFromGroup"
 
 
+
 -- Request senders and formatters
 
 sendCreateGroupRequest : Location -> Cmd Msg
@@ -80,21 +81,12 @@ sendRemoveUserRequest : User -> UserGroup -> Location -> Cmd Msg
 sendRemoveUserRequest user group location = Http.send SendRemoveUserRequest (removeUser user.id group.id location)
 
 removeUser : UserId -> GroupId -> Location -> Request UserGroup
-removeUser userId groupId location = userReqHelper userId groupId location "DELETE" removeUserUrl
-
-sendAddUserRequest : User -> UserGroup -> Location -> Cmd Msg
-sendAddUserRequest user group location = Http.send SendAddUserRequest (addUser user.id group.id location)
-
-addUser: UserId -> GroupId -> Location -> Request UserGroup
-addUser userId groupId location = userReqHelper userId groupId location "PUT" addUserUrl
-
-userReqHelper : UserId -> GroupId -> Location -> String -> (String -> String) -> Request UserGroup
-userReqHelper userId groupId location method url =
+removeUser userId groupId location =
   let
-    queryString =  (url location.host) ++ "?user=" ++ userId ++ ";group=" ++ groupId
+    queryString =  (removeUserUrl location.host) ++ "?user=" ++ userId ++ ";group=" ++ groupId
   in
     request
-     {  method = method
+     {  method = "DELETE"
       , headers = []
       , url = Debug.log "" queryString
       , body = emptyBody
@@ -102,6 +94,24 @@ userReqHelper userId groupId location method url =
       , timeout = Nothing
       , withCredentials = False
      }
+
+sendAddUserRequest : User -> UserGroup -> Location -> Cmd Msg
+sendAddUserRequest user group location = Http.send GetDataForUser (addUser user.id group.id location)
+
+addUser: UserId -> GroupId -> Location -> Request Data
+addUser userId groupId location =
+    let
+      queryString =  (addUserUrl location.host) ++ "?user=" ++ userId ++ ";group=" ++ groupId
+    in
+      request
+       {  method = "PUT"
+        , headers = []
+        , url = Debug.log "" queryString
+        , body = emptyBody
+        , expect = expectJson data
+        , timeout = Nothing
+        , withCredentials = False
+       }
 
 sendGetUserRequest: UserForm -> Location -> Cmd Msg
 sendGetUserRequest userForm location = Http.send GetUser (getUser userForm location)
@@ -114,16 +124,18 @@ getUser userForm location =
     Http.get queryString user
 
 
+
+
 -- Data Encoding/Decoding
 
 populate : Location -> Cmd Msg
 populate loc = Http.send GetDataForUser <| getGroup loc
 
 getGroup : Location -> Request Data
-getGroup loc = Http.get (groupUrl loc.host) pair
+getGroup loc = Http.get (groupUrl loc.host) data
 
-pair : Decoder Data
-pair =
+data : Decoder Data
+data =
   map3 SettingsTypes.Data
     (field "group" group)
     (field "permissions" <| list permission)

@@ -9,13 +9,13 @@ type alias GroupId = String
 type alias Icon = String
 type alias PermissionLevel = String
 
+
 type Msg
   = SendGetUserRequest
   | GetUser (Result Http.Error User)
   | LocationUpdate Location
   | UpdateSearchForm String
   | GetGroupForUser (Result Http.Error UserGroup)
-  | SendAddUserRequest (Result Http.Error UserGroup)
   | RemoveUser User
   | SendRemoveUserRequest (Result Http.Error UserGroup)
   | SendCreateGroupRequest
