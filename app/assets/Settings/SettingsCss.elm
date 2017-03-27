@@ -9,70 +9,70 @@ namespace : String
 namespace = "settings"
 
 groupTitleSize : Float
-groupTitleSize = 40
+groupTitleSize = 40  -- px
 
 searchMargin : Float
-searchMargin = 14
+searchMargin = 14 -- px
 
 searchBarFont : Float
-searchBarFont = 25
+searchBarFont = 25 -- px
 
 buttonTopPosition : Float
-buttonTopPosition = 1
+buttonTopPosition = 1 -- px
 
 buttonSize : Float
-buttonSize = 34
+buttonSize = 34 -- px
 
 searchBarWidth : Float
-searchBarWidth = 500
+searchBarWidth = 500 -- px
 
 searchResultFont : Float
-searchResultFont = 25
+searchResultFont = 25 -- px
 
 searchResultHeight : Float
 searchResultHeight = 6 -- pct
 
 backgroundPaneHeight : Float
-backgroundPaneHeight = 500
+backgroundPaneHeight = 500 -- px
 
 groupContainerWidth : Float
-groupContainerWidth = 750
+groupContainerWidth = 750 -- px
 
 groupLeftMargin : Float
-groupLeftMargin = 50
+groupLeftMargin = 50 -- px
 
 rowHeight : Float
-rowHeight = 30
+rowHeight = 30 -- px
 
 rowLineHeight : Float
-rowLineHeight = 34
+rowLineHeight = 34 -- px
 
 rowBottomBorderWidth : Float
-rowBottomBorderWidth = 1
+rowBottomBorderWidth = 1 -- px
 
 cellWidth : Float
 cellWidth = 38 -- pct
 
 cellFontSize : Float
-cellFontSize = 18
+cellFontSize = 18 -- px
 
 memberCellWidth : Float
 memberCellWidth = 10 --pct
 
 createButtonWidth : Float
-createButtonWidth = 51
+createButtonWidth = 51 -- px
 
 createButtonHeight : Float
-createButtonHeight = 26
+createButtonHeight = 26 -- px
 
 createButtonFontSize : Float
-createButtonFontSize = 18
+createButtonFontSize = 18 -- px
 
 createButtonBorderRadius : Float
-createButtonBorderRadius = 6
+createButtonBorderRadius = 6 -- px
 
 permissionCellMargin : Float
-permissionCellMargin = 20
+permissionCellMargin = 20 -- px
 
 type CssClass
   = Settings
