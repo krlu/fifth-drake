@@ -38,6 +38,21 @@ class Tag(val id: Option[InternalId[Tag]],
     )
   }
 
+  override def equals(that: Any) = that match {
+    case that : Tag => {
+      (this.id, that.id) match {
+        case (Some(id1), Some(id2))=>  this.id.get.id.equals(that.id.get.id)
+        case (_, _) => false
+      }
+    }
+    case _ => false
+  }
+
+  override def hashCode = this.id match{
+    case Some(id) => id.id.hashCode
+    case None => this.hashCode
+  }
+
   override def toString: String = s"id=$id, gameKey=${
     gameKey
     .id

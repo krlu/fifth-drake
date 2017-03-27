@@ -31,20 +31,11 @@ object TagAction {
           case Some(userGroup) =>
             val tags = dbh.getTags(new RiotId[(MetaData, GameData)](gameKey))
               .filter(t => t.authorizedGroups.map(g => g.uuid).contains(userGroup.uuid))
-            val visibleTags = addAuthoredTags(tags, authoredTags)
-            Right(new TagRequest[A](visibleTags, request))
+            val visibleTags = tags ++ authoredTags
+            Right(new TagRequest[A](visibleTags.distinct, request))
           case None =>
             Right(new TagRequest[A](authoredTags, request))
         }
       }
-    def addAuthoredTags(groupTags: Seq[Tag], authoredTags: Seq[Tag]): Seq[Tag] ={
-      var allTags = groupTags
-      authoredTags.foreach{tag =>
-        if(!allTags.map(_.id.get.id).contains(tag.id.get.id)){
-          allTags = allTags ++ Seq(tag)
-        }
-      }
-      allTags
     }
-  }
 }
