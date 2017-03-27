@@ -180,7 +180,8 @@ class GameDataController(dbh: DataAccessHandler,
     *
     * @return Ok if successful, otherwise BadRequest
     */
-  def saveTag(): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+  def saveTag(gameKey: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
     val body: AnyContent = request.body
     body.asJson.map{ jsonValue =>
       val data = jsonValue.as[JsObject].value
@@ -202,7 +203,7 @@ class GameDataController(dbh: DataAccessHandler,
           dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
             Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]))
       }
-      Ok(Json.toJson(dbh.getTags(new RiotId[Game](gameKey ))))
+      Redirect(routes.GameDataController.getTags(gameKey))
     }.getOrElse{
       BadRequest("Failed to insert tag")
     }

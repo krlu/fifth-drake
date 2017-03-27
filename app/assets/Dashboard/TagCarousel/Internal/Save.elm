@@ -31,7 +31,7 @@ createRequest model ts =
     request
      {  method = "PUT"
       , headers = []
-      , url = url model.host
+      , url = (url model.host) ++ "/" ++ (toString model.gameId)
       , body = body
       , expect = expectJson (Decoder.list tag)
       , timeout = Nothing
