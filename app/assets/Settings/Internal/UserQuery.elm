@@ -21,7 +21,7 @@ userUrl : String -> String
 userUrl host = "http://" ++ host ++ "/a/getUser"
 
 groupUrl : String -> String
-groupUrl host = "http://" ++ host ++ "/a/getGroup"
+groupUrl host = "http://" ++ host ++ "/a/getSettingsData"
 
 createGroupUrl : String -> String
 createGroupUrl host = "http://" ++ host ++ "/a/createGroup"

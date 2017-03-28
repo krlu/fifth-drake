@@ -6,7 +6,7 @@ import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, Authorizat
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.accounts._
 import play.Logger
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsObject, JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
 
 import scala.collection.immutable.Seq
@@ -73,27 +73,29 @@ class AppDataController(dbh: DataAccessHandler,
         dbh.createUserGroup(request.user)
         val newGroup =  dbh.getUserGroupByUser(request.user).orNull
         dbh.insertPermissionForUser(request.user.uuid, newGroup.uuid, Owner)
-        Redirect(routes.AppDataController.getSelfUserGroup())
+        Redirect(routes.AppDataController.getSettingsPageData())
     }
   }
 
   /**
-    * Get the user group associated with the currently logged in user if it exists
+    * Get the personal data and
+    * user group associated with the currently logged in user if it exists
     */
-  def getSelfUserGroup: Action[AnyContent] = AuthenticatedAction { request =>
-    dbh.getUserGroupByUser(request.user) match {
-      case Some(userGroup) =>
-        val permissions: Seq[(UUID, Permission)] = dbh.getPermissionsForGroup(userGroup.uuid)
-        val permJson = permissions.map{case (userId, permission) =>
-          Json.obj("userId" -> userId.toString, "level" -> permission.name)
-        }
-        Ok(Json.obj(
-            "group" -> Json.toJson(userGroup),
-            "permissions" -> Json.toJson(permJson),
-            "currentUser" -> Json.toJson(request.user))
-        )
-      case None =>
-        Ok
+  def getSettingsPageData: Action[AnyContent] = AuthenticatedAction { request =>
+    def getSelfUserGroup(user : User): (Option[JsValue], Option[Seq[JsObject]]) =
+      dbh.getUserGroupByUser(user) match {
+        case Some(userGroup) =>
+          val permissions: Seq[(UUID, Permission)] = dbh.getPermissionsForGroup(userGroup.uuid)
+          val permJson = permissions.map{case (userId, permission) =>
+            Json.obj("userId" -> userId.toString, "level" -> permission.name)
+          }
+          (Some(Json.toJson(userGroup)), Some(permJson))
+        case None => (None, None)
+      }
+    getSelfUserGroup(request.user) match {
+      case (Some(group), Some(permJson)) =>
+        Ok(Json.obj("group" -> group, "permissions" -> permJson, "currentUser" -> request.user))
+      case _ => Ok
     }
   }
 
