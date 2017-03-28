@@ -9,70 +9,70 @@ namespace : String
 namespace = "settings"
 
 groupTitleSize : Float
-groupTitleSize = 40  -- px
+groupTitleSize = 4  -- vw
 
 searchMargin : Float
-searchMargin = 14 -- px
+searchMargin = 1 -- vw
 
 searchBarFont : Float
-searchBarFont = 25 -- px
+searchBarFont = 2 -- vw
 
 buttonTopPosition : Float
-buttonTopPosition = 1 -- px
+buttonTopPosition = 0.1 -- vw
 
 buttonSize : Float
-buttonSize = 34 -- px
+buttonSize = 2.6 -- vw
 
 searchBarWidth : Float
-searchBarWidth = 500 -- px
+searchBarWidth = 50 -- vw
 
 searchResultFont : Float
-searchResultFont = 25 -- px
+searchResultFont = 2 -- vw
 
 searchResultHeight : Float
 searchResultHeight = 6 -- pct
 
 backgroundPaneHeight : Float
-backgroundPaneHeight = 500 -- px
+backgroundPaneHeight = 50 -- vw
 
 groupContainerWidth : Float
-groupContainerWidth = 750 -- px
+groupContainerWidth = 60 -- vw
 
 groupLeftMargin : Float
-groupLeftMargin = 50 -- px
+groupLeftMargin = 5 -- vw
 
 rowHeight : Float
-rowHeight = 30 -- px
+rowHeight = 3 -- vw
 
 rowLineHeight : Float
-rowLineHeight = 34 -- px
+rowLineHeight = 3 -- vw
 
 rowBottomBorderWidth : Float
-rowBottomBorderWidth = 1 -- px
+rowBottomBorderWidth = 0.1 -- vw
 
 cellWidth : Float
 cellWidth = 38 -- pct
 
 cellFontSize : Float
-cellFontSize = 18 -- px
+cellFontSize = 1.5 -- vw
 
 memberCellWidth : Float
 memberCellWidth = 10 --pct
 
 createButtonWidth : Float
-createButtonWidth = 51 -- px
+createButtonWidth = 5 -- vw
 
 createButtonHeight : Float
-createButtonHeight = 26 -- px
+createButtonHeight = 2 -- vw
 
 createButtonFontSize : Float
-createButtonFontSize = 18 -- px
+createButtonFontSize = 2 -- vw
 
 createButtonBorderRadius : Float
-createButtonBorderRadius = 6 -- px
+createButtonBorderRadius = 1 -- vw
 
 permissionCellMargin : Float
-permissionCellMargin = 20 -- px
+permissionCellMargin = 2 -- vw
 
 type CssClass
   = Settings
@@ -92,31 +92,31 @@ css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ class GroupTitle(
-    [ fontSize (groupTitleSize |> px)
+    [ fontSize (groupTitleSize |> vw)
     , color Color.c_offWhite
     ])
   , class GroupCss(
-    [ width (groupContainerWidth |> px)
-    , marginLeft (groupLeftMargin |> px)
+    [ width (groupContainerWidth |> vw)
+    , marginLeft (groupLeftMargin |> vw)
     ])
   , class Settings(
     [ width (100 |> pct)
     , displayFlex
     ])
   , class Searchbar(
-    [ fontSize (searchBarFont |> px)
-    , width (searchBarWidth |> px)
+    [ fontSize (searchBarFont |> vw)
+    , width (searchBarWidth |> vw)
     ])
   , class AddButton(
     [ position relative
-    , top (buttonTopPosition |> px)
-    , width (buttonSize |> px)
-    , height (buttonSize |> px)
+    , top (buttonTopPosition |> vw)
+    , width (buttonSize |> vw)
+    , height (buttonSize |> vw)
     ])
   , class UsersBackgroundPane(
     [ backgroundColor Color.c_navBar
     , width (100 |> pct)
-    , height (backgroundPaneHeight |> px)
+    , height (backgroundPaneHeight |> vw)
     , overflowY scroll
     ])
   , class DeleteButtonCss(
@@ -124,7 +124,7 @@ css =
     ])
   , class GroupRow(
     [ width (100 |> pct)
-    , height (rowHeight |> px)
+    , height (rowHeight |> vw)
     , hover
       [ backgroundColor Color.c_hovering
       , children
@@ -137,17 +137,17 @@ css =
         , class PermissionCell
           [ cursor pointer
           , displayFlex
-          , marginLeft (permissionCellMargin |> px)
-          , marginRight (permissionCellMargin |> px)
+          , marginLeft (permissionCellMargin |> vw)
+          , marginRight (permissionCellMargin |> vw)
           ]
         ]
       ]
     , backgroundColor Color.c_games_table
     , displayFlex
-    , fontSize (cellFontSize |> px)
+    , fontSize (cellFontSize |> vw)
     , borderBottomStyle solid
-    , borderBottomWidth (rowBottomBorderWidth |> px)
-    , lineHeight (rowLineHeight |> px)
+    , borderBottomWidth (rowBottomBorderWidth |> vw)
+    , lineHeight (rowLineHeight |> vw)
     ])
   , class GroupCell(
     [ width (cellWidth |> pct)
@@ -156,15 +156,15 @@ css =
     [ width (memberCellWidth |> pct)
     ])
   , class CreateButton(
-    [ width (createButtonWidth |> px)
-    , height (createButtonHeight |> px)
-    , fontSize (createButtonFontSize |> px)
-    , borderRadius (createButtonBorderRadius |> px)
+    [ width (createButtonWidth |> vw)
+    , height (createButtonHeight |> vw)
+    , fontSize (createButtonFontSize |> vw)
+    , borderRadius (createButtonBorderRadius |> vw)
     , backgroundColor Color.c_create_button
     , hover [ backgroundColor Color.c_hovering ]
     , cursor pointer
     , textAlign center
-    , lineHeight (createButtonHeight |> px)
+    , lineHeight (createButtonHeight |> vw)
     ])
   , class PermissionCell(
     [display none
