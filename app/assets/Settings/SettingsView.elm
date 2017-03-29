@@ -22,11 +22,11 @@ view model =
     (groupHtml, searchHtml, deleteHtml) =
       case model.group of
         Just group ->
-          case (Debug.log "" model.permissions, model.currentUser) of
+          case (model.permissions, model.currentUser) of
             (Just permissions, Just currentUser) ->
               ( viewUserGroup group model.removeUserIcon model.updatePermissionIcon permissions currentUser group.id
               , getSearchHtml (getPermissionLevelOfUser currentUser permissions) model.addUserIcon
-              , [ getDeleteHtml group.id ]
+              , getDeleteHtml (getPermissionLevelOfUser currentUser permissions) group.id
               )
             _ ->
               (div [] [text <| Debug.log "PERMISSIONS OR CURRENT USER MISSING!!" "N/A"], [], [])
@@ -49,14 +49,18 @@ view model =
         )
       ]
 
-getDeleteHtml: GroupId -> Html Msg
-getDeleteHtml groupId =
-  div
-  [ onClick (DeleteGroup groupId)
-  , class [DeleteGroupButton]
-  ]
-  [ text "DELETE"
-  ]
+getDeleteHtml: PermissionLevel -> GroupId -> List(Html Msg)
+getDeleteHtml level groupId =
+  case level of
+    "owner" ->
+      [ div
+        [ onClick (DeleteGroup groupId)
+        , class [DeleteGroupButton]
+        ]
+        [ text "DELETE"
+        ]
+      ]
+    _ -> []
 
 getSearchHtml : PermissionLevel -> Icon -> List (Html Msg)
 getSearchHtml level addUserIcon =
