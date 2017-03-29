@@ -1,13 +1,17 @@
 package gg.climb.fifthdrake.dbhandling
 
 import java.net.URL
+import java.util
 import java.util.concurrent.TimeUnit
 
+import scala.collection.JavaConversions._
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Team}
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
-import gg.climb.fifthdrake.{Game, Time}
+import gg.climb.fifthdrake.reasoning._
+import gg.climb.fifthdrake.{Game, Time, Timeline}
+import org.bson.BsonValue
 import org.joda.time.DateTime
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.bson.conversions.Bson
@@ -194,5 +198,101 @@ class MongoDbHandler(mongoClient: MongoClient) {
       powerMax = powerMax,
       hpMax = hpMax
     )
+  }
+
+  def getTimelineForGame(gameKey : RiotId[Timeline]): Future[Option[Seq[GameEvent]]] =
+    getOne("timelines", Some(equal("gameId", gameKey.id.toInt)), parseEventFrames)
+
+  private def parseEventFrames(doc : Document) : Option[Seq[GameEvent]] = {
+    for {
+      events: util.List[BsonValue] <- doc.get("frames").map(_.asArray().getValues)
+    } yield events.flatMap { bson: BsonValue =>
+        parseSingleFrame(Document(bson.asDocument()))
+    }.flatten
+  }
+
+  private def parseSingleFrame(doc : Document) : Option[Seq[GameEvent]] = {
+    for {
+      events: util.List[BsonValue] <- doc.get("events").map(_.asArray().getValues)
+    } yield events.flatMap { bson: BsonValue =>
+      val eventDoc = Document(bson.asDocument())
+      val eventType = eventDoc.get("type").map(_.asString().getValue).getOrElse("")
+      eventType match {
+        case "BUILDING_KILL" => parseBuildingKill(eventDoc)
+        case "ELITE_MONSTER_KILL" => {
+          val monsterType = eventDoc.get("monsterType").map(_.asString().getValue).getOrElse("")
+          monsterType match {
+            case "DRAGON" => parseDragonKill(eventDoc)
+            case "BARON_NASHOR" => parseBaronKill(eventDoc)
+            case _ => None
+          }
+        }
+        case _ => None
+      }
+    }
+  }
+
+  private def parseBaronKill(doc : Document) : Option[BaronKill] = {
+    for {
+      locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
+      location <- parseLocationData(locationDoc)
+      timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
+        .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
+    } yield {
+      BaronKill(location,timestamp)
+    }
+  }
+
+  private def parseDragonKill(doc : Document) : Option[DragonKill] = {
+    for {
+      dragTypeStr <- doc.get("monsterSubType").map(_.asString().getValue)
+      locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
+      location <- parseLocationData(locationDoc)
+      timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
+        .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
+    } yield {
+      val dragType = dragTypeStr match {
+        case "AIR_DRAGON" => AirDragon
+        case "EARTH_DRAGON" => EarthDragon
+        case "ELDER_DRAGON" => ElderDragon
+        case "FIRE_DRAGON" => FireDragon
+        case "WATER_DRAGON" => WaterDragon
+      }
+      DragonKill(location, dragType, timestamp)
+    }
+  }
+
+  private def parseBuildingKill(doc: Document) : Option[BuildingKill] = {
+    for {
+      laneStr <- doc.get("laneType").map(_.asString().getValue)
+      towerTypeStr <- doc.get("towerType").map(_.asString().getValue)
+      killingTeam <- doc.get("teamId").map(_.asInt32().getValue)
+      buildingTypeStr <- doc.get("buildingType").map(_.asString().getValue)
+      locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
+      location <- parseLocationData(locationDoc)
+      timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
+        .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
+    } yield {
+      val building = buildingTypeStr match {
+        case "INHIBITOR_BUILDING" => Inhibitor
+        case "TOWER_BUILDING" =>
+          towerTypeStr match {
+            case "OUTER_TURRET" => OuterTurret
+            case "INNER_TURRET" => InnerTurret
+            case "BASE_TURRET" => BaseTurret
+            case "NEXUS_TURRET" => NexusTurret
+          }
+      }
+      val lane = laneStr match {
+        case "TOP_LANE" => Top
+        case "MID_LANE" => Middle
+        case "BOT_LANE" => Bottom
+      }
+      val turretColor = killingTeam.toString match {
+        case Red.riotId.id => Blue
+        case Blue.riotId.id => Red
+      }
+      BuildingKill(location, building, lane, turretColor, timestamp)
+    }
   }
 }
