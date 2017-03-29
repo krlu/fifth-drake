@@ -79,3 +79,9 @@ c_search_result = hex "75878d"
 
 c_create_button : Color
 c_create_button = hex "#94a3de"
+
+c_delete_button : Color
+c_delete_button = hex "#985656"
+
+c_delete_button_hover : Color
+c_delete_button_hover = hex "#ec6060"

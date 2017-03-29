@@ -71,6 +71,18 @@ createButtonFontSize = 2 -- vw
 createButtonBorderRadius : Float
 createButtonBorderRadius = 1 -- vw
 
+deleteButtonWidth : Float
+deleteButtonWidth = 10 -- vw
+
+deleteButtonHeight : Float
+deleteButtonHeight = 4 -- vh
+
+deleteButtonFontSize : Float
+deleteButtonFontSize = 1.5 -- vw
+
+deleteButtonBorderRadius : Float
+deleteButtonBorderRadius = 1 -- vw
+
 permissionCellMargin : Float
 permissionCellMargin = 2 -- vw
 
@@ -81,11 +93,12 @@ type CssClass
   | Searchbar
   | AddButton
   | UsersBackgroundPane
-  | DeleteButtonCss
+  | DeleteUserButton
   | GroupRow
   | GroupCell
   | MemberCell
   | CreateButton
+  | DeleteGroupButton
   | PermissionCell
 
 css : Stylesheet
@@ -119,7 +132,7 @@ css =
     , height (backgroundPaneHeight |> vw)
     , overflowY scroll
     ])
-  , class DeleteButtonCss(
+  , class DeleteUserButton(
     [ display none
     ])
   , class GroupRow(
@@ -128,7 +141,7 @@ css =
     , hover
       [ backgroundColor Color.c_hovering
       , children
-        [ class DeleteButtonCss
+        [ class DeleteUserButton
           [ cursor pointer
           , displayFlex
           , float right
@@ -166,6 +179,17 @@ css =
     , textAlign center
     , lineHeight (createButtonHeight |> vw)
     ])
+  , class DeleteGroupButton(
+    [ width (deleteButtonWidth |> vw)
+    , height (deleteButtonHeight |> vw)
+    , fontSize (deleteButtonFontSize |> vw)
+    , borderRadius (deleteButtonBorderRadius |> vw)
+    , backgroundColor Color.c_delete_button
+    , hover [ backgroundColor Color.c_delete_button_hover]
+    , cursor pointer
+    , textAlign center
+    , lineHeight (deleteButtonHeight |> vw)
+    ])    
   , class PermissionCell(
     [display none
     ])

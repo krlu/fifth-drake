@@ -70,6 +70,7 @@ class AppDataController(dbh: DataAccessHandler,
       case Some(userGroup) =>
         BadRequest(Json.toJson(userGroup)).flashing("error" -> "already member of a user group")
       case None =>
+        println("hi")
         dbh.createUserGroup(request.user)
         val newGroup =  dbh.getUserGroupByUser(request.user).orNull
         dbh.insertPermissionForUser(request.user.uuid, newGroup.uuid, Owner)
@@ -111,8 +112,13 @@ class AppDataController(dbh: DataAccessHandler,
       .get("id")
       .map(ids => ids.head) match {
         case Some(id) =>
+          val groupUuid = UUID.fromString(id)
+          val perms = dbh.getPermissionsForGroup(groupUuid)
+          perms.foreach{ case(userId, perm) =>
+            dbh.removePermissionForUser(userId, groupUuid)
+          }
           dbh.deleteUserGroup(UUID.fromString(id))
-          Ok
+          Ok("Group successfully deleted!")
         case None =>
           BadRequest("error: missing 'id' query string parameter")
     }

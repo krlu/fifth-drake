@@ -15,13 +15,14 @@ type Msg
   | GetUser (Result Http.Error User)
   | LocationUpdate Location
   | UpdateSearchForm String
-  | GetGroupForUser (Result Http.Error UserGroup)
   | RemoveUser User
   | SendRemoveUserRequest (Result Http.Error UserGroup)
   | SendCreateGroupRequest
   | GetDataForUser (Result Http.Error Data)
   | UpdatePermission (UserId, GroupId, PermissionLevel)
   | SendPermissionsRequest (Result Http.Error (List Permission))
+  | DeleteGroup GroupId
+  | SendDeleteGroupRequest (Result Http.Error String)
 
 type alias UserForm =
   { email : Email
