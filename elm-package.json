@@ -7,7 +7,8 @@
         "app/assets/Dashboard",
         "app/assets/Navbar",
         "app/assets/Homepage",
-        "app/assets/styles"
+        "app/assets/styles",
+        "app/assets/Settings"
     ],
     "exposed-modules": [],
     "dependencies": {

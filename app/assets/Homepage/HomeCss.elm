@@ -31,7 +31,6 @@ css =
     ])
   ,class RowItem(
     [ hover [backgroundColor Color.c_hovering]
-    , backgroundColor Color.c_games_table_header
     , backgroundColor Color.c_games_table
     ])
   ,Css.Elements.table(
@@ -39,7 +38,7 @@ css =
     , fontSize (tableFontSize |> px)
     ])
   ,class TableHeader(
-    [ backgroundColor Color.c_games_table_header
+    [ backgroundColor Color.c_table_header
     , children
       [ class DateHeader(
         [ hover [backgroundColor Color.c_hovering, cursor pointer]

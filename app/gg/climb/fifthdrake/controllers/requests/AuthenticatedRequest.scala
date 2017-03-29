@@ -25,7 +25,7 @@ class AuthenticatedAction(dbh: DataAccessHandler) extends ActionBuilder[Authenti
 
     userId match {
       case Some(id) => {
-        dbh.getUser(id) match {
+        dbh.getUserByGoogleId(id) match {
           case Some(user) =>
             Logger.info(s"user account successfully logged in: $id\nrequest: ${request.toString()}")
             block(new AuthenticatedRequest[A](user, request))

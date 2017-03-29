@@ -1,4 +1,4 @@
-package gg.climb.fifthdrake.lolobjects.game
+package gg.climb.fifthdrake.lolobjects.esports
 
 import gg.climb.fifthdrake.lolobjects.InternalId
 

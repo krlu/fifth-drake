@@ -1,9 +1,10 @@
 package gg.climb.fifthdrake.dbhandling
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
-import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts.{Permission, User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
@@ -73,7 +74,9 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
 
   def userExists(userId: String): Boolean = pdbh.userExists(userId)
   def isUserAuthorized(userId: String): Option[Boolean] = pdbh.isUserAuthorized(userId)
-  def getUser(userId: String): Option[User] = pdbh.getUser(userId)
+  def getUserByGoogleId(userId: String): Option[User] = pdbh.getUserByGoogleId(userId)
+  def getUserByUuid(uuid: UUID): Option[User] = pdbh.getUserByUuid(uuid)
+  def getUserByEmail(email: String): Option[User] = pdbh.getUserByEmail(email)
   def storeUser(accessToken: String, refreshToken: String, payload: Payload): Unit = {
     Logger.info(s"attempting to store user account information: ${payload.getSubject}")
     if (!userExists(payload.getSubject)) {
@@ -92,14 +95,19 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
     }
   }
 
-  def getUserGroup(user: User): Option[UserGroup] = {
-    pdbh.findUserGroupId(user.uuid) match {
-      case Some(userGroupId) =>
-        val memberList = pdbh.buildUserGroupMemberList(userGroupId)
-        Some(new UserGroup(userGroupId, memberList))
-      case None => None
-    }
-  }
+  def deleteUserGroup(userGroupId: UUID): Int = pdbh.deleteUserGroup(userGroupId)
+  def createUserGroup(owner: User): Int = pdbh.insertUserGroup(owner)
+  def updateUserGroup(userGroupId: UUID, users: List[UUID]): Int = pdbh.updateUserGroup(userGroupId, users)
+  def getUserGroupByUser(user: User): Option[UserGroup] = pdbh.findUserGroupByUserUuid(user.uuid)
+  def getUserGroupByUuid(userGroupUuid: UUID): Option[UserGroup] = pdbh.findUserGroupByGroupUuid(userGroupUuid)
+  def insertPermissionForUser(userUuid: UUID, groupUuid: UUID, permission: Permission) =
+    pdbh.insertPermissionForUser(userUuid, groupUuid, permission)
+  def removePermissionForUser(userUuid: UUID, groupUuid: UUID) = pdbh.removePermissionForUser(userUuid, groupUuid)
+  def getPermissionsForGroup(groupUuid: UUID) = pdbh.getPermissionsForGroup(groupUuid)
+  def getUserPermissionForGroup(userId: UUID, groupId : UUID): Option[Permission] =
+    pdbh.getUserPermissionForGroup(userId, groupId)
+  def updateUserPermissionForGroup(userUuid: UUID, groupUuid: UUID, permission: Permission) =
+    pdbh.updateUserPermissionForGroup(userUuid, groupUuid, permission)
 
   private def behaviorForPlayers(playerStates: Seq[(Time, Set[PlayerState])])
   : Map[Player, Behavior[Time, PlayerState]] = separateStatesForPlayers(playerStates).map{ case (player, seq) =>

@@ -1,5 +1,5 @@
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter}
-import gg.climb.fifthdrake.controllers.{GameDataController, HealthController, HomePageController}
+import gg.climb.fifthdrake.controllers.{AppDataController, GameDataController, HealthController, HomePageController}
 import gg.climb.fifthdrake.dbhandling.{DataAccessHandler, MongoDbHandler, PostgresDbHandler}
 import org.mongodb.scala.MongoClient
 import play.api.ApplicationLoader.Context
@@ -42,12 +42,14 @@ class FifthDrakeApp(context: Context) extends BuiltInComponentsFromContext(conte
   lazy val homePageController = new HomePageController(dbh, googleClientId, googleClientSecret, AuthenticatedAction)
   lazy val gameDataController = new GameDataController(dbh, AuthenticatedAction, AuthorizationFilter)
   lazy val healthController = new HealthController()
+  lazy val appDataController = new AppDataController(dbh, AuthenticatedAction, AuthorizationFilter)
   lazy val assets = new controllers.Assets(httpErrorHandler)
   lazy val router: Router = new Routes(
     httpErrorHandler,
     homePageController,
     assets,
     healthController,
-    gameDataController
+    gameDataController,
+    appDataController
   )
 }

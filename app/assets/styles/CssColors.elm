@@ -71,5 +71,17 @@ c_lightYellow = hex "ffffe0"
 c_games_table : Color
 c_games_table = hex "#414b4b"
 
-c_games_table_header : Color
-c_games_table_header = hex "#8e9fbb"
+c_table_header : Color
+c_table_header = hex "#8e9fbb"
+
+c_search_result : Color
+c_search_result = hex "75878d"
+
+c_create_button : Color
+c_create_button = hex "#94a3de"
+
+c_delete_button : Color
+c_delete_button = hex "#985656"
+
+c_delete_button_hover : Color
+c_delete_button_hover = hex "#ec6060"

@@ -1,5 +1,6 @@
 package gg.climb.fifthdrake.lolobjects.game
 
+import gg.climb.fifthdrake.lolobjects.esports.Tournament
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 
 class GameIdentifier(val id: InternalId[GameIdentifier],

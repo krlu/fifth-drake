@@ -4,9 +4,9 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
-import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
-import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
-import gg.climb.fifthdrake.lolobjects.game._
+import gg.climb.fifthdrake.lolobjects.accounts._
+import gg.climb.fifthdrake.lolobjects.esports._
+import gg.climb.fifthdrake.lolobjects.game.{Champion, ChampionImage, ChampionStats, GameIdentifier}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import org.joda.time.DateTime
@@ -50,7 +50,6 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
   }
 
   private def formatDate(s : String): DateTime = {
-    println(s)
     val formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
     formatter.parseDateTime(s)
   }
@@ -89,7 +88,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def buildUserGroupMemberList(userGroupId: UUID): List[UUID] = {
+  private def buildUserGroupMemberList(userGroupId: UUID): List[UUID] = {
     DB readOnly { implicit  session =>
       sql"SELECT users FROM account.user_group WHERE id=${userGroupId}::uuid"
         .map(rs => rs.array("users"))
@@ -109,16 +108,58 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }).toList
   }
 
-  def findUserGroupId(userUuid: UUID): Option[UUID] = {
+  private def buildUserGroup(rs: WrappedResultSet): UserGroup = {
+    new UserGroup(
+      UUID.fromString(rs.string("id")),
+      buildUserGroupMemberList(UUID.fromString(rs.string("id")))
+    )
+  }
+
+  def findUserGroupByUserUuid(userUuid: UUID): Option[UserGroup] = {
     DB readOnly { implicit session =>
-      sql"SELECT id FROM account.user_group WHERE ${userUuid}::uuid = ANY (users);"
-        .map(rs => UUID.fromString(rs.string("id")))
+      sql"SELECT * FROM account.user_group WHERE ${userUuid}::uuid = ANY (users)"
+        .map(buildUserGroup)
         .list()
         .apply()
         .headOption
     }
   }
 
+  def findUserGroupByGroupUuid(userGroupUuid: UUID): Option[UserGroup] = {
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM account.user_group WHERE id = ${userGroupUuid}::uuid"
+        .map(buildUserGroup)
+        .list()
+        .apply()
+        .headOption
+    }
+  }
+
+  def insertUserGroup(user: User): Int = {
+    DB localTx { implicit session =>
+      sql"INSERT INTO account.user_group (users) VALUES (${"{" + user.uuid + "}"}::uuid[])"
+        .update()
+        .apply()
+    }
+  }
+
+  def deleteUserGroup(userGroupId: UUID): Int = {
+    DB localTx { implicit session =>
+      sql"DELETE FROM account.user_group WHERE id = ${userGroupId}::uuid"
+        .update()
+        .apply()
+    }
+  }
+
+  def updateUserGroup(userGroupId: UUID, users: List[UUID]): Int = {
+    DB localTx { implicit session =>
+      sql"""UPDATE account.user_group
+            SET users = ${users.mkString("{", ",", "}")}::uuid[]
+            WHERE id = ${userGroupId}::uuid"""
+        .update()
+        .apply()
+    }
+  }
 
   private def getPlayersForTag(tagId: InternalId[Tag]): Set[Player] = {
     val ids = getPlayerIdsForTag(tagId)
@@ -152,9 +193,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
     DB localTx { implicit session =>
-      var groupUuids = "{"
-      tag.authorizedGroups.foreach(groupUuids += _.uuid)
-      groupUuids += "}"
+      val groupUuids = tag.authorizedGroups.map(_.uuid).mkString("{", ",", "}")
       val tag_id: Long =
         sql"""insert into league.tag (game_key, title, description, category, timestamp, author, authorized_groups)
               values (${tag.gameKey.id},
@@ -384,21 +423,43 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def getUser(userId: String): Option[User] = {
+  private def buildUser(rs: WrappedResultSet): User = {
+    new User(
+      UUID.fromString(rs.string("id")),
+      rs.string("first_name"),
+      rs.string("last_name"),
+      rs.string("user_id"),
+      rs.string("email"),
+      rs.boolean("authorized"),
+      rs.string("access_token"),
+      rs.string("refresh_token")
+    )
+  }
+
+  def getUserByGoogleId(userId: String): Option[User] = {
     DB readOnly { implicit session =>
       sql"SELECT * FROM account.user WHERE user_id = $userId"
-        .map(rs => {
-          new User(
-            UUID.fromString(rs.string("id")),
-            rs.string("first_name"),
-            rs.string("last_name"),
-            rs.string("user_id"),
-            rs.string("email"),
-            rs.boolean("authorized"),
-            rs.string("access_token"),
-            rs.string("refresh_token")
-          )
-        })
+        .map(buildUser)
+        .list()
+        .apply()
+        .headOption
+    }
+  }
+
+  def getUserByUuid(uuid: UUID): Option[User] = {
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM account.user WHERE id = ${uuid}::uuid"
+        .map(buildUser)
+        .list()
+        .apply()
+        .headOption
+    }
+  }
+
+  def getUserByEmail(email: String): Option[User] = {
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM account.user WHERE email = $email"
+        .map(buildUser)
         .list()
         .apply()
         .headOption
@@ -432,6 +493,76 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
             )"""
         .update()
         .apply()
+    }
+  }
+
+  def insertPermissionForUser(userId: UUID, groupID: UUID, permission: Permission): Unit ={
+    DB localTx { implicit session =>
+      sql"""INSERT INTO account.user_to_permission(
+              user_id,
+              group_id,
+              permission
+            ) VALUES (
+              $userId,
+              $groupID,
+              ${permission.name}::account.permission_level
+            )"""
+        .update()
+        .apply()
+    }
+  }
+
+  def removePermissionForUser(userId: UUID, groupId: UUID): Unit ={
+    DB localTx { implicit session =>
+      sql"""DELETE FROM account.user_to_permission WHERE (
+            user_id = $userId AND
+            group_id = $groupId
+          )"""
+        .update()
+        .apply()
+    }
+  }
+
+  def getUserPermissionForGroup(userId: UUID, groupId : UUID): Option[Permission] = {
+    DB readOnly { implicit session =>
+      sql"""SELECT permission FROM account.user_to_permission WHERE (
+           group_id = ${groupId} AND
+           user_id = ${userId}
+         )"""
+        .map(rs => {
+          val level = rs.string("permission") match {
+            case "owner" => Owner
+            case "admin" => Admin
+            case "member" => Member
+          }
+          level
+        }).single().apply()
+    }
+  }
+
+  def getPermissionsForGroup(groupId : UUID): Seq[(UUID, Permission)] = {
+    DB readOnly { implicit session =>
+      sql"SELECT user_id, permission FROM account.user_to_permission WHERE group_id = ${groupId}"
+        .map(rs => {
+          val userId = UUID.fromString(rs.string("user_id"))
+          val permission = rs.string("permission") match {
+            case "owner" => Owner
+            case "admin" => Admin
+            case "member" => Member
+          }
+          (userId, permission)
+        }).list().apply()
+    }
+  }
+
+  def updateUserPermissionForGroup(userId: UUID, groupId: UUID, permission: Permission): Int = {
+    DB localTx { implicit session =>
+      sql"""UPDATE  account.user_to_permission
+            SET permission = ${permission.name}::account.permission_level WHERE (
+          group_id = ${groupId} AND
+          user_id = ${userId}
+        )"""
+        .update().apply()
     }
   }
 }

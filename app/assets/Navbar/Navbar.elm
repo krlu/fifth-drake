@@ -14,6 +14,7 @@ type Page
   | Games
   | Settings
   | Problem
+  | Logout
 
 type alias UserID = String
 
@@ -27,6 +28,7 @@ type alias Model =
   , gamesIcon : Icon
   , settingsIcon : Icon
   , problemIcon : Icon
+  , logoutIcon : Icon
   }
 
 type alias Flags =
@@ -34,6 +36,7 @@ type alias Flags =
   , gamesIcon : Icon
   , settingsIcon : Icon
   , problemIcon : Icon
+  , logoutIcon : Icon
   }
 
 init : Flags -> ( Model, Cmd Msg )
@@ -45,6 +48,7 @@ init flags =
     , gamesIcon = flags.gamesIcon
     , settingsIcon = flags.settingsIcon
     , problemIcon = flags.problemIcon
+    , logoutIcon = flags.logoutIcon
     }
   , Cmd.none
   )
@@ -56,14 +60,16 @@ pageToIcon model page =
     Games -> model.gamesIcon
     Settings -> model.settingsIcon
     Problem -> model.problemIcon
+    Logout -> model.logoutIcon
 
 pageUrl : Page -> String
 pageUrl page =
   case page of
     Home -> "/"
     Games -> "/game"
-    Settings -> "/setting"
+    Settings -> "/settings"
     Problem -> "/problem"
+    Logout -> "/logout"
 
 -- MESSAGES
 
@@ -93,7 +99,7 @@ view model =
           ]
 
     links =
-      [ Games, Settings, Problem ]
+      [ Games, Settings, Problem, Logout ]
       |> List.map link
   in
     div
