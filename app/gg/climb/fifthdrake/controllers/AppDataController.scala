@@ -141,31 +141,35 @@ class AppDataController(dbh: DataAccessHandler,
     val userGroupUuidStr = request.queryString.get("group").map(_.head)
     (userUuidStr, userGroupUuidStr) match {
       case (Some(user), Some(group)) =>
-        dbh.getUserGroupByUuid(UUID.fromString(group)) match {
-          case Some(userGroup) =>
-            val userUuid = UUID.fromString(user)
-            val groupUuid = userGroup.uuid
-            // Check if user doing the adding is has admin or owner access
-            dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
-              case Some(Member) => BadRequest("Members cannot modify groups!!")
-              case _ =>
-                if (!userGroup.users.contains(userUuid)) {
-                  dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
-                  dbh.insertPermissionForUser(userUuid, groupUuid, Member)
+        val userUuid = UUID.fromString(user)
+        dbh.getUserGroupByUserUuid(userUuid) match {
+          case Some(userGroup) => BadRequest("User already member of a user group")
+          case _ =>
+            dbh.getUserGroupByUuid(UUID.fromString(group)) match {
+              case Some(userGroup) =>
+                val groupUuid = userGroup.uuid
+                // Check if user doing the adding is has admin or owner access
+                dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
+                  case Some(Member) => BadRequest("Members cannot modify groups!!")
+                  case _ =>
+                    if (!userGroup.users.contains(userUuid)) {
+                      dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
+                      dbh.insertPermissionForUser(userUuid, groupUuid, Member)
+                    }
+                    val newGroup = dbh.getUserGroupByUser(request.user)
+                    val permissions = dbh.getPermissionsForGroup(groupUuid)
+                    val permJson = permissions.map{case (userId, permission) =>
+                      Json.obj("userId" -> userId.toString, "level" -> permission.name)
+                    }
+                    Ok(Json.obj(
+                      "group" -> Json.toJson(newGroup),
+                      "permissions" -> Json.toJson(permJson),
+                      "currentUser" -> Json.toJson(request.user))
+                    )
                 }
-                val newGroup = dbh.getUserGroupByUser(request.user)
-                val permissions = dbh.getPermissionsForGroup(groupUuid)
-                val permJson = permissions.map{case (userId, permission) =>
-                  Json.obj("userId" -> userId.toString, "level" -> permission.name)
-                }
-                Ok(Json.obj(
-                  "group" -> Json.toJson(newGroup),
-                  "permissions" -> Json.toJson(permJson),
-                  "currentUser" -> Json.toJson(request.user))
-                )
+              case None =>
+                Ok
             }
-          case None =>
-            Ok
         }
       case (_, _) =>
         BadRequest("error: missing either 'user' or 'group' query string parameters")

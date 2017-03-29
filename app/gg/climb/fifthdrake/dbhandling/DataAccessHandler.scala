@@ -93,6 +93,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def createUserGroup(owner: User): Int = pdbh.insertUserGroup(owner)
   def updateUserGroup(userGroupId: UUID, users: List[UUID]): Int = pdbh.updateUserGroup(userGroupId, users)
   def getUserGroupByUser(user: User): Option[UserGroup] = pdbh.findUserGroupByUserUuid(user.uuid)
+  def getUserGroupByUserUuid(uuid: UUID): Option[UserGroup] = pdbh.findUserGroupByUserUuid(uuid)
   def getUserGroupByUuid(userGroupUuid: UUID): Option[UserGroup] = pdbh.findUserGroupByGroupUuid(userGroupUuid)
   def insertPermissionForUser(userUuid: UUID, groupUuid: UUID, permission: Permission) =
     pdbh.insertPermissionForUser(userUuid, groupUuid, permission)
