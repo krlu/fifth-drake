@@ -5,9 +5,10 @@ module Internal.UserQuery exposing
   , sendRemoveUserRequest
   , sendCreateGroupRequest
   , sendUpdatePermissionRequest
+  , sendDeleteGroupRequest
   )
 
-import Http exposing (Request, emptyBody, expectJson, jsonBody, request)
+import Http exposing (Request, emptyBody, expectJson, expectString, jsonBody, request)
 import Json.Decode as Decoder exposing (Decoder, field, list, map2, map3, map4, string)
 import Json.Encode exposing (Value, int, object)
 import Navigation exposing (Location)
@@ -21,7 +22,7 @@ userUrl : String -> String
 userUrl host = "http://" ++ host ++ "/a/getUser"
 
 groupUrl : String -> String
-groupUrl host = "http://" ++ host ++ "/a/getGroup"
+groupUrl host = "http://" ++ host ++ "/a/getSettingsData"
 
 createGroupUrl : String -> String
 createGroupUrl host = "http://" ++ host ++ "/a/createGroup"
@@ -35,25 +36,32 @@ updatePermissionUrl host = "http://" ++ host ++ "/a/updateUserPermission"
 removeUserUrl : String -> String
 removeUserUrl host = "http://" ++ host ++ "/a/removeUserFromGroup"
 
-
+deleteGroupUrl : String -> String
+deleteGroupUrl host = "http://" ++ host ++ "/a/deleteGroup"
 
 -- Request senders and formatters
 
+
 sendCreateGroupRequest : Location -> Cmd Msg
-sendCreateGroupRequest location =
+sendCreateGroupRequest location = Http.send GetDataForUser <| buildRequest "GET" (createGroupUrl location.host) data
+
+sendDeleteGroupRequest: GroupId -> Location -> Cmd Msg
+sendDeleteGroupRequest groupId location = Http.send SendDeleteGroupRequest <| deleteGroup groupId location
+
+deleteGroup: GroupId -> Location -> Request GroupId
+deleteGroup groupId location=
   let
-    req =
-      request
-       {  method = "GET"
-        , headers = []
-        , url = createGroupUrl location.host
-        , body = emptyBody
-        , expect = expectJson group
-        , timeout = Nothing
-        , withCredentials = False
-       }
+    queryString = (deleteGroupUrl location.host) ++ "?id=" ++ groupId
   in
-    Http.send GetGroupForUser <| req
+  request
+   {  method = "DELETE"
+    , headers = []
+    , url = queryString
+    , body = emptyBody
+    , expect = expectString
+    , timeout = Nothing
+    , withCredentials = False
+   }
 
 sendUpdatePermissionRequest : UserId -> GroupId-> PermissionLevel -> Location -> Cmd Msg
 sendUpdatePermissionRequest userId groupId permissionLevel location =

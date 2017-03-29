@@ -19,10 +19,6 @@ update msg model =
         Nothing -> (model, Cmd.none)
         Just group -> (model, sendAddUserRequest user group model.location)
     GetUser (Err err) -> (Debug.log "User failed to fetch!" model, Cmd.none)
-    GetGroupForUser (Ok group) ->
-      ({ model | group = Just group }, Cmd.none)
-    GetGroupForUser (Err err) ->
-      (Debug.log "Group failed to fetch!" model, Cmd.none)
     GetDataForUser (Ok data) ->
       ({ model | group = Just data.group
       , permissions = Just data.permissions 
@@ -40,3 +36,7 @@ update msg model =
       (model, sendUpdatePermissionRequest userId groupId level model.location)
     SendPermissionsRequest (Ok permissions) -> ({ model | permissions = Just permissions} , Cmd.none)
     SendPermissionsRequest (Err err) -> (Debug.log "Failed to add user to group!" model, Cmd.none)
+    DeleteGroup groupId ->
+     (model, sendDeleteGroupRequest groupId model.location)
+    SendDeleteGroupRequest (Ok msg) -> (Debug.log msg { model | group = Nothing, permissions = Nothing} , Cmd.none)
+    SendDeleteGroupRequest (Err err) -> (Debug.log "Failed to delete group!" model, Cmd.none)

@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.Game
 import gg.climb.fifthdrake.lolobjects.accounts._
-import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
-import gg.climb.fifthdrake.lolobjects.game._
+import gg.climb.fifthdrake.lolobjects.esports._
+import gg.climb.fifthdrake.lolobjects.game.{Champion, ChampionImage, ChampionStats, GameIdentifier}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import org.joda.time.DateTime

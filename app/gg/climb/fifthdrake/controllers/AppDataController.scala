@@ -6,7 +6,7 @@ import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, Authorizat
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
 import gg.climb.fifthdrake.lolobjects.accounts._
 import play.Logger
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsObject, JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
 
 import scala.collection.immutable.Seq
@@ -33,8 +33,8 @@ class AppDataController(dbh: DataAccessHandler,
       Json.obj(
         "id" -> userGroup.uuid.toString,
         "users" -> userGroup.users
-              .flatMap(uuid => dbh.getUserByUuid(uuid))
-              .map(user => Json.toJson(user))
+          .flatMap(uuid => dbh.getUserByUuid(uuid))
+          .map(user => Json.toJson(user))
       )
     }
   }
@@ -55,10 +55,10 @@ class AppDataController(dbh: DataAccessHandler,
     request.queryString
       .get("email")
       .map(emails => dbh.getUserByEmail(emails.head)) match {
-        case Some(user) =>
-          Ok(Json.toJson(user))
-        case None =>
-          Ok
+      case Some(user) =>
+        Ok(Json.toJson(user))
+      case None =>
+        Ok
     }
   }
 
@@ -70,30 +70,33 @@ class AppDataController(dbh: DataAccessHandler,
       case Some(userGroup) =>
         BadRequest(Json.toJson(userGroup)).flashing("error" -> "already member of a user group")
       case None =>
+        println("hi")
         dbh.createUserGroup(request.user)
         val newGroup =  dbh.getUserGroupByUser(request.user).orNull
         dbh.insertPermissionForUser(request.user.uuid, newGroup.uuid, Owner)
-        Redirect(routes.AppDataController.getSelfUserGroup())
+        Redirect(routes.AppDataController.getSettingsPageData())
     }
   }
 
   /**
-    * Get the user group associated with the currently logged in user if it exists
+    * Get the personal data and
+    * user group associated with the currently logged in user if it exists
     */
-  def getSelfUserGroup: Action[AnyContent] = AuthenticatedAction { request =>
-    dbh.getUserGroupByUser(request.user) match {
-      case Some(userGroup) =>
-        val permissions: Seq[(UUID, Permission)] = dbh.getPermissionsForGroup(userGroup.uuid)
-        val permJson = permissions.map{case (userId, permission) =>
-          Json.obj("userId" -> userId.toString, "level" -> permission.name)
-        }
-        Ok(Json.obj(
-            "group" -> Json.toJson(userGroup),
-            "permissions" -> Json.toJson(permJson),
-            "currentUser" -> Json.toJson(request.user))
-        )
-      case None =>
-        Ok
+  def getSettingsPageData: Action[AnyContent] = AuthenticatedAction { request =>
+    def getSelfUserGroup(user : User): (Option[JsValue], Option[Seq[JsObject]]) =
+      dbh.getUserGroupByUser(user) match {
+        case Some(userGroup) =>
+          val permissions: Seq[(UUID, Permission)] = dbh.getPermissionsForGroup(userGroup.uuid)
+          val permJson = permissions.map{case (userId, permission) =>
+            Json.obj("userId" -> userId.toString, "level" -> permission.name)
+          }
+          (Some(Json.toJson(userGroup)), Some(permJson))
+        case None => (None, None)
+      }
+    getSelfUserGroup(request.user) match {
+      case (Some(group), Some(permJson)) =>
+        Ok(Json.obj("group" -> group, "permissions" -> permJson, "currentUser" -> request.user))
+      case _ => Ok
     }
   }
 
@@ -108,11 +111,16 @@ class AppDataController(dbh: DataAccessHandler,
     request.queryString
       .get("id")
       .map(ids => ids.head) match {
-        case Some(id) =>
-          dbh.deleteUserGroup(UUID.fromString(id))
-          Ok
-        case None =>
-          BadRequest.flashing("error" -> "missing 'id' query string parameter")
+      case Some(id) =>
+        val groupUuid = UUID.fromString(id)
+        val perms = dbh.getPermissionsForGroup(groupUuid)
+        perms.foreach{ case(userId, perm) =>
+          dbh.removePermissionForUser(userId, groupUuid)
+        }
+        dbh.deleteUserGroup(UUID.fromString(id))
+        Ok("Group successfully deleted!")
+      case None =>
+        BadRequest("error: missing 'id' query string parameter")
     }
   }
 
@@ -135,7 +143,7 @@ class AppDataController(dbh: DataAccessHandler,
             val groupUuid = userGroup.uuid
             // Check if user doing the adding is has admin or owner access
             dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
-              case Some(Member) => Forbidden("Members cannot modify groups!!")
+              case Some(Member) => BadRequest("Members cannot modify groups!!")
               case _ =>
                 if (!userGroup.users.contains(userUuid)) {
                   dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
@@ -156,7 +164,7 @@ class AppDataController(dbh: DataAccessHandler,
             Ok
         }
       case (_, _) =>
-        BadRequest.flashing("error" -> "missing either 'user' or 'group' query string parameters")
+        BadRequest("error: missing either 'user' or 'group' query string parameters")
     }
   }
 
@@ -195,13 +203,14 @@ class AppDataController(dbh: DataAccessHandler,
                   Json.obj("userId" -> userId.toString, "level" -> permission.name)
                 }
                 Ok(Json.toJson(permJson))
-              case Some(_) => Forbidden("Only owners can change permission levels!!")
+              case Some(_) => BadRequest("Only owners can change permission levels!")
+              case None => BadRequest("Could not find user!")
             }
           case None =>
             Ok
         }
       case (_, _, _) =>
-        BadRequest.flashing("error" -> "missing either 'user' or 'group' or 'level' query string parameters")
+        BadRequest("error: missing either 'user' or 'group' or 'level' query string parameters")
     }
   }
 
@@ -214,6 +223,15 @@ class AppDataController(dbh: DataAccessHandler,
     */
   def removeUserFromGroup(): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Logger.info(s"removing user from user group with query string parameters: ${request.queryString}")
+    def updatePermission(groupUuid : UUID, userUuid: UUID) = dbh.getUserGroupByUuid(groupUuid)match {
+      case Some(userGroup) =>
+        dbh.removePermissionForUser(userUuid, groupUuid)
+        dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != userUuid))
+        val newGroup = dbh.getUserGroupByUser(request.user)
+        Ok(Json.toJson(newGroup))
+      case None =>
+        Ok
+    }
     val userUuidStr = request.queryString.get("user").map(_.head)
     val userGroupUuidStr = request.queryString.get("group").map(_.head)
     (userUuidStr, userGroupUuidStr) match {
@@ -223,22 +241,13 @@ class AppDataController(dbh: DataAccessHandler,
         val myPermission = dbh.getUserPermissionForGroup(request.user.uuid, groupUuid)
         val theirPermission = dbh.getUserPermissionForGroup(userUuid, groupUuid)
         (myPermission, theirPermission) match {
-          case (Some(Member), _) => Forbidden("Members cannot modify groups!!")
-          case (Some(Admin), Some(Admin)) => Forbidden("Can only remove those of lower rank!!")
-          case (Some(Admin), Some(Owner)) => Forbidden("Can only remove those of lower rank!!")
-          case (Some(Owner), Some(Owner)) => Forbidden("Can only remove those of lower rank!!")
-          case _ => dbh.getUserGroupByUuid(UUID.fromString(group)) match {
-            case Some(userGroup) =>
-              dbh.removePermissionForUser(userUuid, UUID.fromString(group))
-              dbh.updateUserGroup(userGroup.uuid, userGroup.users.filter(_ != userUuid))
-              val newGroup = dbh.getUserGroupByUser(request.user)
-              Ok(Json.toJson(newGroup))
-            case None =>
-              Ok
-          }
+          case (Some(Admin), Some(Member)) => updatePermission(groupUuid, userUuid)
+          case (Some(Owner), Some(Admin) | Some(Member)) => updatePermission(groupUuid, userUuid)
+          case (None, _) | (_, None) => BadRequest("Cannot find Users!")
+          case _ => BadRequest("Can only remove those of lower rank!")
         }
       case (_, _) =>
-        BadRequest.flashing("error" -> "missing either 'user' or 'group' query string parameters")
+        BadRequest("error: missing either 'user' or 'group' query string parameters")
     }
   }
 }
