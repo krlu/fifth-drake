@@ -15,6 +15,7 @@ type Page
   | Settings
   | Problem
   | Logout
+  | Landing
 
 type alias UserID = String
 
@@ -57,19 +58,22 @@ pageToIcon : Model -> Page -> Icon
 pageToIcon model page =
   case page of
     Home -> model.homeIcon
+    Landing -> "" -- LOGO FAVICON GOES HERE!!!!!!
     Games -> model.gamesIcon
     Settings -> model.settingsIcon
     Problem -> model.problemIcon
     Logout -> model.logoutIcon
 
+
 pageUrl : Page -> String
 pageUrl page =
   case page of
-    Home -> "/"
+    Home -> "/home"
     Games -> "/game"
     Settings -> "/settings"
     Problem -> "/problem"
     Logout -> "/logout"
+    Landing -> "/"
 
 -- MESSAGES
 
@@ -99,7 +103,7 @@ view model =
           ]
 
     links =
-      [ Games, Settings, Problem, Logout ]
+      [ Home, Games, Settings, Problem, Logout]
       |> List.map link
   in
     div
@@ -108,8 +112,8 @@ view model =
         [ id NavbarCss.NavbarLeftLogo
         ]
         [ a
-          [ href <| pageUrl Home ]
-          [ text "C"
+          [ href <| pageUrl Landing ]
+          [ text "C" -- LOGO FAVICON GOES HERE!!!!!!
           ]
         ]
       , div
