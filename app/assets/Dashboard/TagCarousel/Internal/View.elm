@@ -17,7 +17,6 @@ view model players =
   let
     tags = List.sortBy .timestamp model.tags
          |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active model.deleteTagButton )
---    checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
     tagFormView = tagFormHtml model players
     carouselCss =
       if model.tagForm.active then
@@ -126,6 +125,8 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
           [text tag.category]
         , p []
           [text tag.description]
+        , p []
+          [text ("- " ++ tag.author.firstName ++ " " ++ tag.author.lastName)]
         ]
       , p
         [class [DeleteButtonCss], onClick (DeleteTag tag.id)]

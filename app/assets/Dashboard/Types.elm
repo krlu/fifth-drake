@@ -5,6 +5,7 @@ import GameModel exposing (Game, GameLength, PlayerId, Timestamp)
 import Http
 import Minimap.Types as Minimap
 import Navigation exposing (Location)
+import SettingsTypes exposing (User, UserId)
 import TagCarousel.Types as TagCarousel
 import PlayerDisplay.Types as PlayerDisplay
 import Graph.Types as Graph
@@ -31,6 +32,7 @@ type alias Model =
   , viewType : ViewType
   , playerDisplay : PlayerDisplay.Model
   , graphStat : Graph.Model
+  , currentUser : User
   }
 
 type alias Flags =
@@ -46,4 +48,3 @@ type ViewType = Map | Stats
 type TimeSelection
   = Instant Timestamp
   | Range (Timestamp, Timestamp)
-

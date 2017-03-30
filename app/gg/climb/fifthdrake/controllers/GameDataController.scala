@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter, TagAction}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.accounts.{Admin, Owner, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts.{Admin, Owner, User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
@@ -208,6 +208,16 @@ class GameDataController(dbh: DataAccessHandler,
       Ok(Json.toJson(request.gameTags))
   }
 
+  private implicit val userWrites = new Writes[User] {
+    override def writes(user: User): JsValue = Json.obj(
+      "id" -> user.uuid.toString,
+      "email" -> user.email,
+      "firstName" -> user.firstName,
+      "lastName" -> user.lastName
+    )
+  }
+
+
   private implicit val tagWrites = new Writes[Tag] {
     def writes(tag: Tag): JsObject =
       if(tag.hasInternalId) {
@@ -217,13 +227,14 @@ class GameDataController(dbh: DataAccessHandler,
           "description" -> tag.description,
           "category" -> tag.category.name,
           "timestamp" -> tag.timestamp.toSeconds,
-          "players" -> Json.toJson(tag.players.map(_.id.id))
+          "players" -> Json.toJson(tag.players.map(_.id.id)),
+          "author" -> Json.toJson(dbh.getUserByUuid(tag.author)),
+          "authorizedGroups" -> tag.authorizedGroups.map(_.uuid.toString)
         )
       }
       else
         Json.obj("error:" -> "Error, tag does not have Id!")
   }
-
   /**
     * Request body MultiFormData should resemble:
     * Map(

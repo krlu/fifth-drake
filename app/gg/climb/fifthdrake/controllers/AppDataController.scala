@@ -21,9 +21,9 @@ class AppDataController(dbh: DataAccessHandler,
   private implicit val userWrites = new Writes[User] {
     override def writes(user: User): JsValue = Json.obj(
       "id" -> user.uuid.toString,
+      "email" -> user.email,
       "firstName" -> user.firstName,
-      "lastName" -> user.lastName,
-      "email" -> user.email
+      "lastName" -> user.lastName
     )
   }
 
