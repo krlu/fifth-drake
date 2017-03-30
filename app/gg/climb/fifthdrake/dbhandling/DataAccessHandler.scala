@@ -31,6 +31,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
 
   def deleteTag(id: InternalId[Tag]): Int = pdbh.deleteTag(id)
   def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
+  def getTagById(id: InternalId[Tag]): Option[Tag] = pdbh.getTagById(id)
   def insertTag(tag: Tag): Long = pdbh.insertTag(tag)
 
   def getPlayer(id: InternalId[Player]): Player = pdbh.getPlayer(id)

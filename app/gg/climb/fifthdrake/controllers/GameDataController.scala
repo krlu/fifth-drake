@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter, TagAction}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.accounts.UserGroup
+import gg.climb.fifthdrake.lolobjects.accounts.{Admin, Owner, UserGroup}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
@@ -268,9 +268,39 @@ class GameDataController(dbh: DataAccessHandler,
     }
   }
 
-  def deleteTag(tagId: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
-    dbh.deleteTag(new InternalId[Tag](tagId))
-    Ok(tagId)
+  /**
+    * Only the author, group owner, or group admin can delete a tag
+    * @param tagId
+    * @return
+    */
+  def deleteTag(tagId: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
+    val tagInternalId = new InternalId[Tag](tagId)
+    def deleteTagHelper(): Result = {
+      dbh.deleteTag(tagInternalId)
+      Ok(tagId)
+    }
+    dbh.getTagById(tagInternalId) match {
+      case Some(tag) =>
+        request.user.uuid.equals(tag.author) match {
+          case true => deleteTagHelper()
+          case false =>
+            dbh.getUserGroupByUser(request.user) match {
+              case Some(group: UserGroup) =>
+                tag.authorizedGroups.map(_.uuid).contains(group.uuid) match {
+                  case true =>
+                    dbh.getUserPermissionForGroup(request.user.uuid, group.uuid) match {
+                      case Some(Owner) => deleteTagHelper()
+                      case Some(Admin) => deleteTagHelper()
+                      case _ => Ok
+                    }
+                  case false => Ok
+                }
+              case None => Ok
+            }
+        }
+      case None => Ok
+    }
   }
 }
 

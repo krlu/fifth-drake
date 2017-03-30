@@ -69,6 +69,23 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
       .single().apply().orNull
   }
 
+  def getTagById(tagId: InternalId[Tag]): Option[Tag] ={
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM league.tag WHERE id = ${tagId.id}".map(rs => {
+        val tagId = new InternalId[Tag](rs.int("id").toString)
+        new Tag(
+          Some(tagId),
+          new RiotId[Game](rs.string("game_key")),
+          rs.string("title"), rs.string("description"),
+          new Category(rs.string("category")),
+          Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
+          getPlayersForTag(tagId),
+          UUID.fromString(rs.string("author")),
+          buildUserGroupList(rs.array("authorized_groups"))
+        )
+      }).single().apply()
+    }
+  }
 
   def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
     DB readOnly { implicit session =>
