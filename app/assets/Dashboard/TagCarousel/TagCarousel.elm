@@ -2,6 +2,7 @@ module TagCarousel.TagCarousel exposing (init, update, view)
 
 import GameModel exposing (GameId, Player, PlayerId, Timestamp)
 import Html exposing (Html)
+import SettingsTypes exposing (UserId)
 import TagCarousel.Types exposing (..)
 import TagCarousel.Internal.Populate as Populate
 import TagCarousel.Internal.TagUtils as TagUtils
@@ -34,7 +35,7 @@ init loc addTagButton deleteTagButton =
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update = Update.update
 
-view : Model -> List (PlayerId, String, String, String) -> Html Msg
+view : Model -> UserId -> List (PlayerId, String, String, String) -> Html Msg
 view = View.view
 
 getGameId : Location -> GameId

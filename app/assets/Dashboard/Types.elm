@@ -17,7 +17,7 @@ type Msg
   | ControlsMsg Controls.Msg
   | TimerUpdate Time.Time
   | MinimapMsg Minimap.Msg
-  | SetGame (Result Http.Error Game)
+  | SetData (Result Http.Error DashboardData)
   | LocationUpdate Location
   | SwitchView
   | PlayerDisplayMsg PlayerDisplay.Msg
@@ -32,6 +32,11 @@ type alias Model =
   , viewType : ViewType
   , playerDisplay : PlayerDisplay.Model
   , graphStat : Graph.Model
+  , currentUser : User
+  }
+
+type alias DashboardData =
+  { game : Game
   , currentUser : User
   }
 

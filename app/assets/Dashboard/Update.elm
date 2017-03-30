@@ -56,7 +56,8 @@ update msg model =
         else
           ( { model
             | timestamp = model.timestamp + 1
-            , minimap = Minimap.update model.minimap model.game.data (model.timestamp) (MinimapT.MoveIconStates Increment)
+            , minimap =
+                Minimap.update model.minimap model.game.data (model.timestamp) (MinimapT.MoveIconStates Increment)
             }
           , Cmd.none
           )
@@ -69,14 +70,15 @@ update msg model =
           }
         , Cmd.none
         )
-    SetGame (Ok game) ->
+    SetData (Ok dashboardData) ->
       ( { model
-        | game = game
-        , minimap =  Minimap.update model.minimap game.data model.timestamp MinimapT.GenerateIconStates
+        | game = dashboardData.game
+        , minimap = Minimap.update model.minimap dashboardData.game.data model.timestamp MinimapT.GenerateIconStates
+        , currentUser = dashboardData.currentUser
         }
       , Cmd.none
       )
-    SetGame (Err err) ->
+    SetData (Err err) ->
       Debug.log "Game Data failed to fetch" (model, Cmd.none)
     LocationUpdate loc -> (model, Cmd.none)
     SwitchView ->

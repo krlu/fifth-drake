@@ -9,14 +9,15 @@ import TagCarousel.Css exposing (CssClass(..), namespace)
 import TagCarousel.Types exposing (Model, Msg(..), TagId)
 import Html.Attributes exposing (href, placeholder, defaultValue, rel, src, style, type_, for)
 import Html.Events exposing (onClick, onInput)
+import SettingsTypes exposing (UserId)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> List (PlayerId, String, String, String) -> Html Msg
-view model players =
+view : Model -> UserId -> List (PlayerId, String, String, String) -> Html Msg
+view model userId players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active model.deleteTagButton )
+         |> List.map (\tag -> tagHtml tag userId model.lastClickedTime model.tagForm.active model.deleteTagButton )
     tagFormView = tagFormHtml model players
     carouselCss =
       if model.tagForm.active then
@@ -100,8 +101,8 @@ tagFormHtml model players =
         ]
 
 
-tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> String -> Html Msg
-tagHtml tag lastClickedTimeStamp formActive deleteButton =
+tagHtml : TagCarousel.Types.Tag -> UserId -> Timestamp -> Bool -> String -> Html Msg
+tagHtml tag userId lastClickedTimeStamp formActive deleteButton =
   let
     tagCss = [Tag]
     selectedCss =
@@ -112,10 +113,20 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
       case formActive of
         True -> selectedCss ++ [AltTag]
         False -> selectedCss
+    deleteHtml =
+      case tag.author.id == userId of
+        True ->
+          [p [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
+            [ img
+              [src deleteButton]
+              []
+            ]
+          ]
+        False -> []
   in
     li
       [ class selectedAndAltCss ]
-      [ div
+      ([ div
         [ class [ TagClickableArea ]
         , onClick <| TagClick tag.timestamp
         ]
@@ -128,13 +139,7 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
         , p []
           [text ("- " ++ tag.author.firstName ++ " " ++ tag.author.lastName)]
         ]
-      , p
-        [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
-        [ img
-          [src deleteButton]
-          []
-        ]
-      ]
+      ] ++ deleteHtml)
 
 
 playerDataToHtml: (PlayerId, String, String, String) -> Html Msg

@@ -79,7 +79,7 @@ view model =
     redPlayers =  model.game.data.redTeam.players
     allPlayers = getPlayerIdsAndIgns bluePlayers redPlayers
 
-    tagCarousel = TagCarousel.view model.tagCarousel allPlayers |> Html.map TagCarouselMsg
+    tagCarousel = TagCarousel.view model.tagCarousel model.currentUser.id allPlayers |> Html.map TagCarouselMsg
     ((blueTeamDisplay, bluePlayerDisplays), (redTeamDisplay, redPlayerDisplays))
       = (Blue, Red)
       |> mapBoth sideToDisplays

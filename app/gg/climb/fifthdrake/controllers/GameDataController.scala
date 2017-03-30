@@ -45,6 +45,15 @@ class GameDataController(dbh: DataAccessHandler,
     result.getOrElse(InternalServerError(s"Could not find champion $name"))
   }
 
+  private implicit val userWrites = new Writes[User] {
+    override def writes(user: User): JsValue = Json.obj(
+      "id" -> user.uuid.toString,
+      "email" -> user.email,
+      "firstName" -> user.firstName,
+      "lastName" -> user.lastName
+    )
+  }
+
   def loadTimelineData(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
     val timeline: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
     implicit val buildingKillWrite = new Writes[BuildingKill] {
@@ -104,7 +113,8 @@ class GameDataController(dbh: DataAccessHandler,
   }
 
   // scalastyle:off method.length
-  def loadGameData(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
+  def loadGameData(gameKey: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
     dbh.getGame(new RiotId[Game](gameKey)) match {
       case Some(game@(metadata, _)) =>
         implicit def behaviorWrites[A]
@@ -195,7 +205,7 @@ class GameDataController(dbh: DataAccessHandler,
             )
           }
         }
-        Ok(Json.toJson(game))
+        Ok(Json.obj("game" -> Json.toJson(game), "currentUser" -> Json.toJson(request.user)))
       case None =>
         NotFound
     }
@@ -206,15 +216,6 @@ class GameDataController(dbh: DataAccessHandler,
   def getTags(gameKey: String): Action[AnyContent] =
     (AuthenticatedAction andThen AuthorizationFilter andThen TagAction.refiner(gameKey, dbh)) { request =>
       Ok(Json.toJson(request.gameTags))
-  }
-
-  private implicit val userWrites = new Writes[User] {
-    override def writes(user: User): JsValue = Json.obj(
-      "id" -> user.uuid.toString,
-      "email" -> user.email,
-      "firstName" -> user.firstName,
-      "lastName" -> user.lastName
-    )
   }
 
 
