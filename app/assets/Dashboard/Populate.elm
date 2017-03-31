@@ -40,9 +40,16 @@ playerUrl loc =
 
 dashboardData : Decoder DashboardData
 dashboardData =
-  map2 DashboardData
+  map3 DashboardData
     ("game" ::= game)
     ("currentUser" ::= user)
+    ("permissions" ::= list permission)
+
+permission : Decoder Permission
+permission =
+  map2 Permission
+  ("groupId" ::= string)
+  ("level" ::= string)
 
 game : Decoder Game
 game =

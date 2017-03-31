@@ -71,7 +71,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
 
   def getTagById(tagId: InternalId[Tag]): Option[Tag] ={
     DB readOnly { implicit session =>
-      sql"SELECT * FROM league.tag WHERE id = ${tagId.id}".map(rs => {
+      sql"SELECT * FROM league.tag WHERE id = ${tagId.id.toInt}".map(rs => {
         val tagId = new InternalId[Tag](rs.int("id").toString)
         new Tag(
           Some(tagId),
@@ -554,6 +554,22 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
           }
           level
         }).single().apply()
+    }
+  }
+
+  def getGroupPermissionsForUser(userId: UUID): Seq[(UUID, Permission)] = {
+    DB readOnly { implicit session =>
+      sql"""SELECT permission,group_id FROM account.user_to_permission WHERE (
+           user_id = ${userId}
+         )"""
+        .map(rs => {
+          val level: Permission = rs.string("permission") match {
+            case "owner" => Owner
+            case "admin" => Admin
+            case "member" => Member
+          }
+          (UUID.fromString(rs.string("group_id")), level)
+        }).list().apply()
     }
   }
 

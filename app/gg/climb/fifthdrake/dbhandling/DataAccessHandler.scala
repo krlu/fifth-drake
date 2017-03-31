@@ -108,6 +108,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def getPermissionsForGroup(groupUuid: UUID) = pdbh.getPermissionsForGroup(groupUuid)
   def getUserPermissionForGroup(userId: UUID, groupId : UUID): Option[Permission] =
     pdbh.getUserPermissionForGroup(userId, groupId)
+  def getGroupPermissionsForUser(userId: UUID): Seq[(UUID, Permission)] = pdbh.getGroupPermissionsForUser(userId)
   def updateUserPermissionForGroup(userUuid: UUID, groupUuid: UUID, permission: Permission) =
     pdbh.updateUserPermissionForGroup(userUuid, groupUuid, permission)
 

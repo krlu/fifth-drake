@@ -9,6 +9,7 @@ import TagCarousel.Internal.TagUtils as TagUtils
 import TagCarousel.Internal.Update as Update
 import TagCarousel.Internal.View as View
 import Navigation exposing (Location)
+import Types exposing (Permission)
 import UrlParser exposing ((</>), parsePath, s)
 
 defaultCategory : TagCategory
@@ -35,7 +36,7 @@ init loc addTagButton deleteTagButton =
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update = Update.update
 
-view : Model -> UserId -> List (PlayerId, String, String, String) -> Html Msg
+view : Model -> List Permission -> UserId -> List (PlayerId, String, String, String) -> Html Msg
 view = View.view
 
 getGameId : Location -> GameId

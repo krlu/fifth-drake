@@ -9,15 +9,17 @@ import TagCarousel.Css exposing (CssClass(..), namespace)
 import TagCarousel.Types exposing (Model, Msg(..), TagId)
 import Html.Attributes exposing (href, placeholder, defaultValue, rel, src, style, type_, for)
 import Html.Events exposing (onClick, onInput)
-import SettingsTypes exposing (UserId)
+import SettingsTypes exposing (GroupId, UserId)
+import Types exposing (Permission)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> UserId -> List (PlayerId, String, String, String) -> Html Msg
-view model userId players =
+view : Model -> List Permission -> UserId -> List (PlayerId, String, String, String) -> Html Msg
+view model permissions userId players =
   let
     tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag userId model.lastClickedTime model.tagForm.active model.deleteTagButton )
+         |> List.map (\tag ->
+              tagHtml tag permissions userId model.lastClickedTime model.tagForm.active model.deleteTagButton )
     tagFormView = tagFormHtml model players
     carouselCss =
       if model.tagForm.active then
@@ -101,9 +103,12 @@ tagFormHtml model players =
         ]
 
 
-tagHtml : TagCarousel.Types.Tag -> UserId -> Timestamp -> Bool -> String -> Html Msg
-tagHtml tag userId lastClickedTimeStamp formActive deleteButton =
+tagHtml : TagCarousel.Types.Tag -> List Permission -> UserId -> Timestamp -> Bool -> String -> Html Msg
+tagHtml tag permissions userId lastClickedTimeStamp formActive deleteButton =
   let
+    levels =
+      List.map (\perm -> perm.level)
+      <| List.filter (\element -> List.member element.groupId tag.authorizedGroups) permissions
     tagCss = [Tag]
     selectedCss =
       case (tag.timestamp == lastClickedTimeStamp) of
@@ -114,15 +119,15 @@ tagHtml tag userId lastClickedTimeStamp formActive deleteButton =
         True -> selectedCss ++ [AltTag]
         False -> selectedCss
     deleteHtml =
-      case tag.author.id == userId of
-        True ->
+      case (tag.author.id == userId, List.member "admin" levels, List.member "owner" levels) of
+        (False, False, False) -> []
+        _ ->
           [p [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
             [ img
               [src deleteButton]
               []
             ]
           ]
-        False -> []
   in
     li
       [ class selectedAndAltCss ]
@@ -140,7 +145,6 @@ tagHtml tag userId lastClickedTimeStamp formActive deleteButton =
           [text ("- " ++ tag.author.firstName ++ " " ++ tag.author.lastName)]
         ]
       ] ++ deleteHtml)
-
 
 playerDataToHtml: (PlayerId, String, String, String) -> Html Msg
 playerDataToHtml (id, ign, champName, champImage) = checkbox (AddPlayers id) champName champImage

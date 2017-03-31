@@ -5,7 +5,7 @@ import GameModel exposing (Game, GameLength, PlayerId, Timestamp)
 import Http
 import Minimap.Types as Minimap
 import Navigation exposing (Location)
-import SettingsTypes exposing (User, UserId)
+import SettingsTypes exposing (GroupId, PermissionLevel, User, UserId)
 import TagCarousel.Types as TagCarousel
 import PlayerDisplay.Types as PlayerDisplay
 import Graph.Types as Graph
@@ -33,11 +33,18 @@ type alias Model =
   , playerDisplay : PlayerDisplay.Model
   , graphStat : Graph.Model
   , currentUser : User
+  , permissions : List Permission
+  }
+
+type alias Permission =
+  { groupId : GroupId
+  , level : PermissionLevel
   }
 
 type alias DashboardData =
   { game : Game
   , currentUser : User
+  , permissions : List Permission
   }
 
 type alias Flags =

@@ -205,7 +205,15 @@ class GameDataController(dbh: DataAccessHandler,
             )
           }
         }
-        Ok(Json.obj("game" -> Json.toJson(game), "currentUser" -> Json.toJson(request.user)))
+        Ok(Json.obj(
+            "game" -> Json.toJson(game),
+            "currentUser" -> Json.toJson(request.user),
+            "permissions" -> Json.toJson(dbh.getGroupPermissionsForUser(request.user.uuid).map{
+              case (groupId, permission) =>
+                Json.obj(
+                  "groupId" -> groupId.toString,
+                  "level" -> permission.name)
+            })))
       case None =>
         NotFound
     }
