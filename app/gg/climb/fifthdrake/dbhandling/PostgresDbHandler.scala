@@ -13,7 +13,6 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import scalikejdbc._
 
-import scala.collection.immutable.Seq
 import scala.concurrent.duration.Duration
 
 //noinspection RedundantBlock
@@ -102,6 +101,34 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
           buildUserGroupList(rs.array("authorized_groups"))
         )
       }).list.apply()
+    }
+  }
+
+  def getTagsWithAuthorizedGroupId(groupId: UUID): Seq[Tag] ={
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM league.tag WHERE $groupId::uuid = ANY (authorized_groups)".map(rs => {
+        val tagId = new InternalId[Tag](rs.int("id").toString)
+        new Tag(
+          Some(tagId),
+          new RiotId[Game](rs.string("game_key")),
+          rs.string("title"), rs.string("description"),
+          new Category(rs.string("category")),
+          Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
+          getPlayersForTag(tagId),
+          UUID.fromString(rs.string("author")),
+          buildUserGroupList(rs.array("authorized_groups"))
+        )
+      }).list.apply()
+    }
+  }
+
+  def updateTagsAuthorizedGroups(newAuthorizedGroupIds: Seq[UUID], tagId: InternalId[Tag]): Int = {
+    DB localTx { implicit session =>
+      sql"""UPDATE league.tag
+            SET authorized_groups = ${newAuthorizedGroupIds.mkString("{", ",", "}")}::uuid[]
+            WHERE id=${tagId.id.toInt}"""
+        .update()
+        .apply()
     }
   }
 

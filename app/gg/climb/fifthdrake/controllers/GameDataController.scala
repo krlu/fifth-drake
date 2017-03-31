@@ -269,16 +269,21 @@ class GameDataController(dbh: DataAccessHandler,
       val description = data("description").as[String]
       val category = data("category").as[String]
       val timeStamp = data("timestamp").as[Int]
+      val shareWithGroup = data("shareWithGroup").as[Boolean]
       val players = data("relevantPlayerIds").as[JsArray].value.map{ jsVal =>
         val id = jsVal.as[String]
         dbh.getPlayer(new InternalId[Player](id))
       }.toSet
       val userGroup = dbh.getUserGroupByUser(request.user)
-      userGroup match {
-        case Some(group) =>
-          dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
-            Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List(group)))
-        case None =>
+      shareWithGroup match {
+        case true =>
+          userGroup match {
+            case Some(group) =>
+              dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
+                Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List(group)))
+            case None => BadRequest("Could not share tag with group!")
+          }
+        case false =>
           dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
             Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]))
       }

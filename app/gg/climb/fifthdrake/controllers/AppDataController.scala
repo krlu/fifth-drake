@@ -9,7 +9,6 @@ import play.Logger
 import play.api.libs.json.{JsObject, JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
 
-import scala.collection.immutable.Seq
 
 /**
   * Created by michael on 3/17/17.
@@ -102,6 +101,7 @@ class AppDataController(dbh: DataAccessHandler,
 
   /**
     * Delete a user group off the face of the earth
+    * Only owners can delete user groups!!
     *
     * query string parameters:
     * id -> user group uuid (String)
@@ -119,7 +119,16 @@ class AppDataController(dbh: DataAccessHandler,
               perms.foreach{ case(userId, perm) =>
                 dbh.removePermissionForUser(userId, groupUuid)
               }
-              dbh.deleteUserGroup(UUID.fromString(id))
+              dbh.getTagsWithAuthorizedGroupId(groupUuid).foreach{ tag =>
+                tag.id match {
+                  case Some(tagId) =>
+                    val groupIds = tag.authorizedGroups.map(_.uuid).filter(_ != groupUuid)
+                    dbh.updateTagsAuthorizedGroups(groupIds, tagId)
+                  case None =>
+                    Logger.error(s"adding user to group with query string parameters: ${request.queryString}")
+                }
+              }
+              dbh.deleteUserGroup(groupUuid)
               Ok("Group successfully deleted!")
             case _ => BadRequest("Only owners can delete groups!!")
           }

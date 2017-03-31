@@ -3,7 +3,7 @@ module TagCarousel.Internal.Save exposing (..)
 import GameModel exposing (Player, Timestamp)
 import Http exposing (Request, expectJson, jsonBody, request)
 import Json.Decode as Decoder
-import Json.Encode exposing (Value, int, list, object, string)
+import Json.Encode exposing (Value, bool, int, list, object, string)
 import String
 import TagCarousel.Internal.Populate exposing (tag)
 import TagCarousel.Types exposing (Msg(TagSaved), Tag, TagForm)
@@ -25,6 +25,7 @@ createRequest model ts =
           , ("category", string model.category)
           , ("timestamp", int ts)
           , ("relevantPlayerIds", list <| List.map string model.selectedIds)
+          , ("shareWithGroup", bool model.toShare)
           ]
     body = jsonBody jsonData
   in

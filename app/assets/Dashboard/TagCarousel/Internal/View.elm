@@ -78,7 +78,21 @@ tagFormHtml model players =
               [ class [PlayersInvolved] ]
               [ text "Players Involved" ]
             ] ++
-            checkBoxes
+            checkBoxes ++
+            [ div
+              [ class [CheckboxItem] ]
+              [ input
+                 [ type_ "checkbox"
+                 , onClick UpdateShare
+                 ]
+                 []
+              , label
+                [ class [CheckboxLabel]
+                ]
+                [ text "Share with group"
+                ]
+              ]
+            ]
           )
         , div
           [ id [SaveOrCancelForm] ]
@@ -171,5 +185,3 @@ checkbox msg champName champImage =
           []
        ]
     ]
-
-

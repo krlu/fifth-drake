@@ -9,6 +9,7 @@ type alias TagId = String
 type alias FirstName = String
 type alias LastName = String
 type alias Host = String
+type alias ToShare = Bool
 
 type Msg
   = TagClick Timestamp
@@ -22,6 +23,7 @@ type Msg
   | SwitchForm
   | SaveTag
   | TagSaved (Result Http.Error (List Tag))
+  | UpdateShare
 
 type alias Model =
   { host             : Host
@@ -51,4 +53,5 @@ type alias TagForm =
   , gameId      : GameId
   , host        : Host
   , active      : Bool
+  , toShare     : ToShare
   }

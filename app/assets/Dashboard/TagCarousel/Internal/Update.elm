@@ -2,7 +2,7 @@ module TagCarousel.Internal.Update exposing (..)
 
 import GameModel exposing (Player, PlayerId, Timestamp)
 import TagCarousel.Internal.TagUtils exposing (defaultTagForm)
-import TagCarousel.Types exposing (Model, Msg(..), Tag, TagId)
+import TagCarousel.Types exposing (Model, Msg(..), Tag, TagForm, TagId)
 import String as String exposing (toInt)
 import TagCarousel.Internal.Delete as Delete
 import TagCarousel.Internal.Save as Save
@@ -23,7 +23,10 @@ update msg model ts =
     TagDeleted (Err msg)->
       (Nothing, Debug.log "Could not delete tag!" model , Cmd.none)
     SwitchForm ->
-      (Nothing, switchTag model , Cmd.none)
+      let
+        oldForm = model.tagForm
+      in
+      (Nothing, { model | tagForm = switchTag oldForm } , Cmd.none)
     SaveTag ->
       let
         title = model.tagForm.title
@@ -31,7 +34,7 @@ update msg model ts =
         description = model.tagForm.description
         gameId = model.tagForm.gameId
         host = model.tagForm.host
-        modelWithEmptyTagform =
+        modelWithEmptyTagForm =
           { model
             | tagForm = defaultTagForm gameId host category
           }
@@ -43,9 +46,12 @@ update msg model ts =
         else if (String.length description == 0) then
           (Nothing, model, Cmd.none)
         else
-          (Nothing, modelWithEmptyTagform, Save.sendRequest model.tagForm ts)
+          (Nothing, modelWithEmptyTagForm, Save.sendRequest model.tagForm ts)
     TagSaved (Ok tags) ->
-     (Nothing, switchTag { model | tags = tags }, Cmd.none)
+      let
+        oldForm = model.tagForm
+      in
+      (Nothing, { model | tags = tags, tagForm = switchTag oldForm }, Cmd.none)
     TagSaved (Err msg) ->
      (Nothing, Debug.log "Could not save tag!" model, Cmd.none)
     CreateTitle title ->
@@ -81,6 +87,12 @@ update msg model ts =
         newTagForm = { oldTagForm | selectedIds = newIdsList}
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
+    UpdateShare ->
+      let
+        oldTagForm = model.tagForm
+        newTagForm = { oldTagForm | toShare = not oldTagForm.toShare }
+      in
+      (Nothing, { model | tagForm = newTagForm }, Cmd.none)
 
 filterTags: List Tag -> String -> List Tag
 filterTags tags id =
@@ -90,11 +102,16 @@ filterTags tags id =
   in
     List.filter customFilter tags
 
-switchTag: Model -> Model
-switchTag model =
+switchTag: TagForm -> TagForm
+switchTag form =
   let
-    oldTagForm = model.tagForm
-    oldActive = model.tagForm.active
-    newTagForm = { oldTagForm | active = not oldActive, selectedIds = [] }
+    oldActive = form.active
   in
-    { model | tagForm = newTagForm }
+    { form |
+    active = not oldActive
+    , selectedIds = []
+    , title = ""
+    , description = ""
+    , category = "Objective"
+    , toShare = False
+    }
