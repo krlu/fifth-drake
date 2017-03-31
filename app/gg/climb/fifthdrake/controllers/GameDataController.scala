@@ -13,6 +13,7 @@ import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
 import gg.climb.fifthdrake.reasoning._
 import gg.climb.fifthdrake.{Game, Time, TimeMonoid, Timeline}
 import gg.climb.ramenx.Behavior
+import play.api.Logger
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc.{Action, _}
 
@@ -294,8 +295,53 @@ class GameDataController(dbh: DataAccessHandler,
   }
 
   /**
+    * Request body MultiFormData should resemble:
+    * JsonArr(
+    *   "id" -> 0,
+    *   "id" -> 1
+    *    ....
+    * )
+    * Share tags with group, provided user belongs to a group
+    * If the tag is already shared, simply un-shares the tag
+    * @param gameKey - string representation of gameKey
+    * @return
+    */
+  def toggleShareTag(gameKey : String): Action[AnyContent] = {
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
+      val body: AnyContent = request.body
+      body.asJson match {
+        case Some(jsonValue) =>
+          val data = jsonValue.as[JsObject].value
+          val id = data("tagId").as[String]
+          val tagId = new InternalId[Tag](id)
+          Logger.info(s"Searching for tag with id $tagId")
+          dbh.getTagById(tagId) match {
+            case None => BadRequest("Tag not found!")
+            case Some(tag) =>
+              if(tag.author != request.user.uuid)
+                BadRequest("User is not the author of this tag!")
+              dbh.getUserGroupByUserUuid(request.user.uuid) match {
+                case Some(group) =>
+                  val isAlreadyShared = tag.authorizedGroups.map(_.uuid).contains(group.uuid)
+                  val groupIds =
+                    isAlreadyShared match {
+                      case true => tag.authorizedGroups.map(_.uuid).filter(_ != group.uuid)
+                      case false => tag.authorizedGroups.map(_.uuid) ++ List(group.uuid)
+                    }
+                  dbh.updateTagsAuthorizedGroups(groupIds, tagId)
+                  Ok("tag successfully shared!")
+                case None => BadRequest("User does not have group to share with!")
+              }
+          }
+        case None => BadRequest("Missing tag data in request!")
+      }
+    }
+  }
+
+  /**
     * Only the author, group owner, or group admin can delete a tag
-    * @param tagId
+    *
+    * @param tagId - string representation of tag id
     * @return
     */
   def deleteTag(tagId: String): Action[AnyContent] =
