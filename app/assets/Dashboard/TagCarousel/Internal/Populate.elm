@@ -1,4 +1,4 @@
-module TagCarousel.Internal.Populate exposing (..)
+module TagCarousel.Internal.Populate exposing (populate, tag)
 
 import Http
 import Internal.UserQuery exposing (user)

@@ -260,7 +260,7 @@ class GameDataController(dbh: DataAccessHandler,
     *
     * @return Ok if successful, otherwise BadRequest
     */
-  def saveTag(gameKey: String): Action[AnyContent] =
+  def saveTag: Action[AnyContent] =
     (AuthenticatedAction andThen AuthorizationFilter) { request =>
     val body: AnyContent = request.body
     body.asJson.map{ jsonValue =>
@@ -303,10 +303,10 @@ class GameDataController(dbh: DataAccessHandler,
     * )
     * Share tags with group, provided user belongs to a group
     * If the tag is already shared, simply un-shares the tag
-    * @param gameKey - string representation of gameKey
+    *
     * @return
     */
-  def toggleShareTag(gameKey : String): Action[AnyContent] = {
+  def toggleShareTag: Action[AnyContent] = {
     (AuthenticatedAction andThen AuthorizationFilter) { request =>
       val body: AnyContent = request.body
       body.asJson match {
@@ -333,7 +333,7 @@ class GameDataController(dbh: DataAccessHandler,
                 case None => BadRequest("User does not have group to share with!")
               }
           }
-        case None => BadRequest("Missing tag data in request!")
+        case None => BadRequest("Missing body data in request!")
       }
     }
   }
@@ -363,14 +363,14 @@ class GameDataController(dbh: DataAccessHandler,
                     dbh.getUserPermissionForGroup(request.user.uuid, group.uuid) match {
                       case Some(Owner) => deleteTagHelper()
                       case Some(Admin) => deleteTagHelper()
-                      case _ => Ok
+                      case _ => BadRequest("Only group owners, admins, or the author can delete this tags!")
                     }
-                  case false => Ok
+                  case false => BadRequest("Tag not part of this group!")
                 }
-              case None => Ok
+              case None => BadRequest(s"No group found for user ${request.user.uuid}")
             }
         }
-      case None => Ok
+      case None => BadRequest(s"No tag found with id $tagId")
     }
   }
 }

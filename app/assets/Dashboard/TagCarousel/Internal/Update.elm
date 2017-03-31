@@ -6,6 +6,7 @@ import TagCarousel.Types exposing (Model, Msg(..), Tag, TagForm, TagId)
 import String as String exposing (toInt)
 import TagCarousel.Internal.Delete as Delete
 import TagCarousel.Internal.Save as Save
+import TagCarousel.Internal.Share as Share
 
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update msg model ts =
@@ -93,6 +94,9 @@ update msg model ts =
         newTagForm = { oldTagForm | toShare = not oldTagForm.toShare }
       in
       (Nothing, { model | tagForm = newTagForm }, Cmd.none)
+    ToggleShare tagId -> (Nothing, model, Share.sendRequest tagId model.host)
+    ShareToggled (Ok msg) -> (Nothing,  model, Cmd.none)
+    ShareToggled (Err msg) -> (Nothing, Debug.log "could not toggle share!" model, Cmd.none)
 
 filterTags: List Tag -> String -> List Tag
 filterTags tags id =

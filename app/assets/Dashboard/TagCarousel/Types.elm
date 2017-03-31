@@ -24,6 +24,8 @@ type Msg
   | SaveTag
   | TagSaved (Result Http.Error (List Tag))
   | UpdateShare
+  | ToggleShare TagId
+  | ShareToggled (Result Http.Error String)
 
 type alias Model =
   { host             : Host

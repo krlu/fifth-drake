@@ -20,8 +20,9 @@ GET   /game/:gameKey/tags         gg.climb.fifthdrake.controllers.GameDataContro
 GET   /game/:gameKey/timeline     gg.climb.fifthdrake.controllers.GameDataController.loadTimelineData(gameKey: String)
 
 GET   /champion/:name             gg.climb.fifthdrake.controllers.GameDataController.loadChampion(name: String)
-PUT      /saveTag/:gameKey        gg.climb.fifthdrake.controllers.GameDataController.saveTag(gameKey: String)
+PUT      /saveTag                 gg.climb.fifthdrake.controllers.GameDataController.saveTag
 DELETE   /deleteTag/:id           gg.climb.fifthdrake.controllers.GameDataController.deleteTag(id: String)
+PUT      /shareTag                gg.climb.fifthdrake.controllers.GameDataController.toggleShareTag
 
 GET      /a/getUser               gg.climb.fifthdrake.controllers.AppDataController.findUser
 GET      /a/createGroup           gg.climb.fifthdrake.controllers.AppDataController.createNewUserGroup

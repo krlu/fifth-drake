@@ -1,7 +1,7 @@
-module TagCarousel.Internal.Delete exposing (..)
+module TagCarousel.Internal.Delete exposing (sendRequest)
 
 import GameModel exposing (Player)
-import Http exposing (Request, expectJson, expectString, jsonBody, request)
+import Http exposing (Request, emptyBody, expectJson, expectString, jsonBody, request)
 import Json.Decode as Decoder
 import Json.Encode exposing (object, string)
 import Navigation exposing (Location)
@@ -15,18 +15,11 @@ sendRequest id host = Http.send TagDeleted (createRequest id host)
 
 createRequest: TagId -> String -> Request String
 createRequest id host =
-  let
-    jsonData =
-        object
-          [ ("id", string id)
-          ]
-    body = jsonBody jsonData
-  in
     request
      {  method = "DELETE"
       , headers = []
       , url = url host id
-      , body = body
+      , body = emptyBody
       , expect = expectString
       , timeout = Nothing
       , withCredentials = False

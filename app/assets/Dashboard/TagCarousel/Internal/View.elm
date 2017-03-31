@@ -157,6 +157,8 @@ tagHtml tag permissions userId lastClickedTimeStamp formActive deleteButton =
           [text tag.description]
         , p []
           [text ("- " ++ tag.author.firstName ++ " " ++ tag.author.lastName)]
+        , p []
+          [shareToggle tag.id]
         ]
       ] ++ deleteHtml)
 
@@ -184,4 +186,14 @@ checkbox msg champName champImage =
           ]
           []
        ]
+    ]
+
+shareToggle: TagId -> Html Msg
+shareToggle tagId =
+  div
+    [ class [CheckboxItem] ]
+    [ button
+       [ onClick (ToggleShare tagId)
+       ]
+       [text "Share with group"]
     ]

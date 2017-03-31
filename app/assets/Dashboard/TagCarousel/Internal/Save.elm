@@ -1,4 +1,4 @@
-module TagCarousel.Internal.Save exposing (..)
+module TagCarousel.Internal.Save exposing (sendRequest)
 
 import GameModel exposing (Player, Timestamp)
 import Http exposing (Request, expectJson, jsonBody, request)
@@ -32,7 +32,7 @@ createRequest model ts =
     request
      {  method = "PUT"
       , headers = []
-      , url = (url model.host) ++ "/" ++ (toString model.gameId)
+      , url = (url model.host)
       , body = body
       , expect = expectJson (Decoder.list tag)
       , timeout = Nothing

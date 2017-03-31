@@ -25,13 +25,12 @@ object TagAction {
   new ActionRefiner[AuthenticatedRequest, TagRequest] {
     override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, TagRequest[A]]] =
       Future.successful {
-        val authoredTags = dbh.getTags(new RiotId[(MetaData, GameData)](gameKey))
-          .filter(t => t.author.equals(request.user.uuid))
+        val tagsForGame = dbh.getTags(new RiotId[(MetaData, GameData)](gameKey))
+        val authoredTags = tagsForGame.filter(t => t.author.equals(request.user.uuid))
         dbh.getUserGroupByUser(request.user) match {
           case Some(userGroup) =>
-            val tags = dbh.getTags(new RiotId[(MetaData, GameData)](gameKey))
-              .filter(t => t.authorizedGroups.map(g => g.uuid).contains(userGroup.uuid))
-            val visibleTags = tags ++ authoredTags
+            val groupTags = tagsForGame.filter(t => t.authorizedGroups.map(g => g.uuid).contains(userGroup.uuid))
+            val visibleTags = groupTags ++ authoredTags
             Right(new TagRequest[A](visibleTags.distinct, request))
           case None =>
             Right(new TagRequest[A](authoredTags, request))
