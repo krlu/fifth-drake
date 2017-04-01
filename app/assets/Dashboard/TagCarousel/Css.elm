@@ -131,6 +131,10 @@ type CssClass
   | CarouselContainer
   | HighlightSharedTag
   | UnsharedTag
+  | CarouselControls
+  | FilterTagCss
+  | SelectedFilter
+  | UnselectedFilter
 
 css : Stylesheet
 css =
@@ -307,9 +311,27 @@ css =
       , cursor pointer
       ]
     ]
+  , class FilterTagCss
+    [ height (shareTagHeight |> px)
+    , lineHeight (shareTagHeight |> px)
+    , width (shareTagWidth |> px)
+    , textAlign center
+    , borderRadius (shareTagBorderRadius |> px)
+    , fontSize (shareTagFontSize |> px)
+    , hover [ cursor pointer ]
+    ]
+    , class SelectedFilter
+        [ backgroundColor Color.c_filter_tag_selected
+        ]
+    , class UnselectedFilter
+      [ backgroundColor Color.c_filter_tag
+      ]
   , class CarouselContainer
     [ width (100 |> pct)
     , height (carouselContainerHeight |> px)
+    ]
+  , class CarouselControls
+    [ displayFlex
     ]
   ]
 

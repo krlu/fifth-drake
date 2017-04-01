@@ -59,6 +59,7 @@ init flags location =
     , graphStat = Graph.init
     , currentUser = currentUser
     , permissions = []
+    , loadingIcon = flags.loadingIcon
     } !
     [ Cmd.map TagCarouselMsg tagCarouselCmd
     , Populate.populate location

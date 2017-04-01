@@ -30,7 +30,7 @@ opacityValue : Float
 opacityValue = 0.2
 
 graphControlMarginTop : Float
-graphControlMarginTop = 32
+graphControlMarginTop = 31
 
 graphControlLeft : Float
 graphControlLeft = 90

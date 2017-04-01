@@ -34,6 +34,7 @@ type alias Model =
   , graphStat : Graph.Model
   , currentUser : User
   , permissions : List Permission
+  , loadingIcon : String
   }
 
 type alias Permission =
@@ -53,6 +54,7 @@ type alias Flags =
   , pauseButton       : String
   , addTagButton      : String
   , deleteTagButton   : String
+  , loadingIcon       : String
   }
 
 type ViewType = Map | Stats

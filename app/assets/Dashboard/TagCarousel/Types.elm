@@ -27,6 +27,8 @@ type Msg
   | ToggleShare TagId
   | ShareToggled (Result Http.Error ShareData)
   | ToggleCarouselForm
+  | FilterByAuthor
+  | FilterByGroup GroupId
 
 type alias Model =
   { host             : Host
@@ -36,6 +38,8 @@ type alias Model =
   , tagButton        : String
   , deleteTagButton  : String
   , isShareForm      : Bool
+  , filteredByAuthor : Bool
+  , groupFilters     : List GroupId
   }
 
 type alias Tag =

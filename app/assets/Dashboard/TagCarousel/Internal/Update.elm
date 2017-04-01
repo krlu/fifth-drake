@@ -106,6 +106,20 @@ update msg model ts =
         newFormBool = not model.isShareForm
       in
       (Nothing, {model | isShareForm = newFormBool}, Cmd.none)
+    FilterByAuthor ->
+      let
+        newBool = not model.filteredByAuthor
+      in
+      (Nothing, {model | filteredByAuthor = newBool}, Cmd.none)
+    FilterByGroup groupId ->
+      let
+        newFilters =
+          case List.member groupId model.groupFilters of
+            True -> List.filter (\filterId -> groupId /= groupId) model.groupFilters
+            False -> model.groupFilters ++ [groupId]
+      in
+        (Nothing, {model | groupFilters = newFilters}, Cmd.none)
+
 
 filterTags: List Tag -> String -> List Tag
 filterTags tags id =

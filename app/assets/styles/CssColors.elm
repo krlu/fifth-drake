@@ -97,3 +97,9 @@ c_shared_tag = hex "#539bab"
 
 c_unshared_tag : Color
 c_unshared_tag = hex "#3d5177"
+
+c_filter_tag : Color
+c_filter_tag = hex "#4d6271"
+
+c_filter_tag_selected : Color
+c_filter_tag_selected = hex "#96b3ff"

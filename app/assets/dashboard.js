@@ -11,6 +11,7 @@
 		playButton: require("Dashboard/ic_play_arrow_white_24px.svg"),
 		pauseButton: require("Dashboard/ic_pause_white_24px.svg"),
 		addTagButton: require("Dashboard/ic_add_white_48px.svg"),
-		deleteTagButton: require("Dashboard/ic_clear_white_24px.svg")
+		deleteTagButton: require("Dashboard/ic_clear_white_24px.svg"),
+		loadingIcon : require("Dashboard/loading.gif")
 	});
 })();

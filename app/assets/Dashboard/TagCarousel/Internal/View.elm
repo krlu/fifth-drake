@@ -17,7 +17,12 @@ import Types exposing (Permission)
 view : Model -> List Permission -> UserId -> List (PlayerId, String, String, String) -> Html Msg
 view model permissions currentUserId players =
   let
-    tags = List.sortBy .timestamp model.tags
+    groupFilteredTags = List.filter (tagInAllGroups model.groupFilters) model.tags
+    (filteredTags, filterCss) =
+      case model.filteredByAuthor of
+        True -> (List.filter (\tag -> tag.author.id == currentUserId) groupFilteredTags, SelectedFilter)
+        False -> (groupFilteredTags, UnselectedFilter)
+    tags = List.sortBy .timestamp filteredTags
            |> List.map (\tag ->
               tagHtml tag permissions currentUserId model.lastClickedTime model.tagForm.active model.deleteTagButton)
     tagsShare = List.sortBy .timestamp model.tags
@@ -29,18 +34,25 @@ view model permissions currentUserId players =
         [TagCarousel, MinimizedCarousel]
       else
         [TagCarousel]
-    (shareFormButtonLabel, tagsHtml) =
+    authorFilterHtml = buildFilterHtml FilterByAuthor "My Tags" filterCss
+    groupFilterHtml =
+      List.map (\perm ->
+        buildFilterHtml (FilterByGroup perm.groupId) "Group Tags"
+        <| groupFilterCss perm.groupId model.groupFilters) permissions
+    (shareFormButtonLabel, tagsHtml, filterHtml) =
       case model.isShareForm of
        True ->
-        ("Done", tagsShare)
-       False -> ("Share Tags", tags)
+        ("Done", tagsShare, [])
+       False -> ("Share Tags", tags, [authorFilterHtml] ++ groupFilterHtml)
   in
     div [class [CarouselContainer]]
-    [ div
-      [class [ShareTagCss]
-      , onClick ToggleCarouselForm]
-      [ text shareFormButtonLabel
-      ]
+    [ div [class [CarouselControls]]
+      ([ div
+        [class [ShareTagCss]
+        , onClick ToggleCarouselForm]
+        [ text shareFormButtonLabel
+        ]
+      ] ++ filterHtml)
     , div
       [ id [TagDisplay] ]
       [ div [ class carouselCss ]
@@ -49,6 +61,26 @@ view model permissions currentUserId players =
       ]
     ]
 
+groupFilterCss : GroupId -> List GroupId -> CssClass
+groupFilterCss groupId filters =
+  case List.member groupId filters of
+    True -> SelectedFilter
+    False -> UnselectedFilter
+
+tagInAllGroups : List GroupId -> TagCarousel.Types.Tag -> Bool
+tagInAllGroups groupIds tag =
+  not
+  <| List.member False
+  <| List.map (\id -> List.member id tag.authorizedGroups) groupIds
+
+buildFilterHtml : Msg -> String -> CssClass -> Html Msg
+buildFilterHtml action label filterCss =
+  div
+  [class [FilterTagCss, filterCss]
+  , onClick action
+  ]
+  [ text label
+  ]
 
 tagFormHtml : Model -> List (PlayerId, String, String, String) -> Html Msg
 tagFormHtml model players =
@@ -138,7 +170,7 @@ tagShareModeHtml tag permissions formActive =
     isShared =
       List.member True <| List.map (\perm -> List.member perm.groupId tag.authorizedGroups) permissions
     selectedCss =
-      case (Debug.log "" isShared) of
+      case isShared of
         True -> tagCss ++ [HighlightSharedTag]
         False -> tagCss ++ [UnsharedTag]
     selectedAndAltCss =

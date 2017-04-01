@@ -36,12 +36,25 @@ teamDisplayMarginLeft = 24.5 --vw
 mainContentMarginLeft : Float
 mainContentMarginLeft = 2 --vw
 
+switchBorderRadius : Float
+switchBorderRadius = 8  -- px
+
+switchWidth : Float
+switchWidth = 9 -- vw
+
+switchHeight : Float
+switchHeight = 3 -- vh
+
+switchFontSize : Float
+switchFontSize = 18 -- px
+
 type CssId
   = TeamDisplayDivider
   | ControlsDivider
   | MainContent
   | CenterContent
   | CarouselDivider
+  | LoadingCss
 
 type CssClass
   = Dashboard
@@ -50,6 +63,7 @@ type CssClass
   | Widget
   | WidgetColor Side
   | SwitchCss
+  | LoadingCenterContent
 
 css : Stylesheet
 css =
@@ -87,6 +101,10 @@ css =
                 ]
               ]
             ])
+          , class LoadingCenterContent
+            [ height (574 |> px)
+            , width (85 |> vw)
+            ]
           , class PlayerDisplay (
             [ displayFlex
             , justifyContent flexStart
@@ -130,5 +148,20 @@ css =
     ]
   , class SwitchCss
     [ position absolute
+    , backgroundColor Color.c_share_tag_button
+    , hover
+      [ backgroundColor Color.c_share_tag_button_hover
+      , cursor pointer
+      ]
+    , borderRadius (switchBorderRadius |> px)
+    , width (switchWidth |> vw)
+    , height (switchHeight |> vh)
+    , textAlign center
+    , lineHeight (switchHeight |> vh)
+    , fontSize (switchFontSize |> px)
+    ]
+  , id LoadingCss
+    [ position relative
+    , top (8 |> vh)
     ]
   ]
