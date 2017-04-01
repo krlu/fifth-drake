@@ -26,6 +26,7 @@ type Msg
   | UpdateShare
   | ToggleShare TagId
   | ShareToggled (Result Http.Error ShareData)
+  | ToggleCarouselForm
 
 type alias Model =
   { host             : Host
@@ -34,6 +35,7 @@ type alias Model =
   , lastClickedTime  : Timestamp
   , tagButton        : String
   , deleteTagButton  : String
+  , isShareForm      : Bool
   }
 
 type alias Tag =

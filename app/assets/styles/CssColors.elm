@@ -85,3 +85,15 @@ c_delete_button = hex "#985656"
 
 c_delete_button_hover : Color
 c_delete_button_hover = hex "#ec6060"
+
+c_share_tag_button : Color
+c_share_tag_button = hex "#4e728c"
+
+c_share_tag_button_hover : Color
+c_share_tag_button_hover = hex "#7ebeea"
+
+c_shared_tag : Color
+c_shared_tag = hex "#539bab"
+
+c_unshared_tag : Color
+c_unshared_tag = hex "#3d5177"

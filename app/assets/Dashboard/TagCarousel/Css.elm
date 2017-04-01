@@ -16,9 +16,6 @@ tagDisplayWidth = 100 -- percent
 tagDisplayHeight : Float
 tagDisplayHeight = 210
 
-tagDisplayMarginTop : Float
-tagDisplayMarginTop = 30
-
 addTagButtonHeight : Float
 addTagButtonHeight = 50 -- px
 
@@ -115,6 +112,10 @@ type CssClass
   | CheckboxItem
   | LabelImage
   | TagClickableArea
+  | ShareTagCss
+  | CarouselContainer
+  | HighlightSharedTag
+  | UnsharedTag
 
 css : Stylesheet
 css =
@@ -123,7 +124,6 @@ css =
     [ property "float" "left"
     , width (tagDisplayWidth |> pct)
     , height (tagDisplayHeight |> px)
-    , marginTop (tagDisplayMarginTop |> px)
     , displayFlex
     , children
       [ id AddTagButton
@@ -250,6 +250,14 @@ css =
               [ backgroundColor Color.c_selected
               ]
             ]
+          , class HighlightSharedTag
+            [ backgroundColor Color.c_shared_tag
+            , hover [backgroundColor Color.c_shared_tag]
+            ]
+          , class UnsharedTag
+            [ backgroundColor Color.c_unshared_tag
+            , hover [backgroundColor Color.c_unshared_tag]
+            ]
           ]
         ] ++ StyleUtils.userSelect "none")
       , class MinimizedCarousel
@@ -271,4 +279,22 @@ css =
     , width (100 |> pct)
     , overflow hidden
     ]
+  , class ShareTagCss
+    [ backgroundColor Color.c_share_tag_button
+    , height (4 |> vh)
+    , lineHeight (4 |> vh)
+    , width (7 |> vw)
+    , textAlign center
+    , borderRadius (0.5 |> vw)
+    , fontSize (1.3 |> vw)
+    , hover
+      [ backgroundColor Color.c_share_tag_button_hover
+      , cursor pointer
+      ]
+    ]
+  , class CarouselContainer
+    [ width (100 |> pct)
+    , height (275 |> px)
+    ]
   ]
+

@@ -318,19 +318,22 @@ class GameDataController(dbh: DataAccessHandler,
           dbh.getTagById(tagId) match {
             case None => BadRequest("Tag not found!")
             case Some(tag) =>
-              if(tag.author != request.user.uuid)
-                BadRequest("User is not the author of this tag!")
-              dbh.getUserGroupByUserUuid(request.user.uuid) match {
-                case Some(group) =>
-                  val isAlreadyShared = tag.authorizedGroups.map(_.uuid).contains(group.uuid)
-                  val groupIds =
-                    isAlreadyShared match {
-                      case true => tag.authorizedGroups.map(_.uuid).filter(_ != group.uuid)
-                      case false => tag.authorizedGroups.map(_.uuid) ++ List(group.uuid)
-                    }
-                  dbh.updateTagsAuthorizedGroups(groupIds, tagId)
-                  Ok(Json.obj("tagId" -> id, "groupId" -> group.uuid, "nowShared" -> !isAlreadyShared))
-                case None => BadRequest("User does not have group to share with!")
+              tag.author != request.user.uuid match {
+                case true =>
+                  BadRequest("User is not the author of this tag!")
+                case false =>
+                  dbh.getUserGroupByUserUuid(request.user.uuid) match {
+                    case Some(group) =>
+                      val isAlreadyShared = tag.authorizedGroups.map(_.uuid).contains(group.uuid)
+                      val groupIds =
+                        isAlreadyShared match {
+                          case true => tag.authorizedGroups.map(_.uuid).filter(_ != group.uuid)
+                          case false => tag.authorizedGroups.map(_.uuid) ++ List(group.uuid)
+                        }
+                      dbh.updateTagsAuthorizedGroups(groupIds, tagId)
+                      Ok(Json.obj("tagId" -> id, "groupId" -> group.uuid, "nowShared" -> !isAlreadyShared))
+                    case None => BadRequest("User does not have group to share with!")
+                  }
               }
           }
         case None => BadRequest("Missing body data in request!")

@@ -101,6 +101,11 @@ update msg model ts =
      in
       (Nothing, {model | tags = newTags}, Cmd.none)
     ShareToggled (Err msg) -> (Nothing, Debug.log "could not toggle share!" model, Cmd.none)
+    ToggleCarouselForm ->
+      let
+        newFormBool = not model.isShareForm
+      in
+      (Nothing, {model | isShareForm = newFormBool}, Cmd.none)
 
 filterTags: List Tag -> String -> List Tag
 filterTags tags id =

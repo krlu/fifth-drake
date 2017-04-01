@@ -104,38 +104,38 @@ type CssClass
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
-  [ class GroupTitle(
+  [ class GroupTitle
     [ fontSize (groupTitleSize |> vw)
     , color Color.c_offWhite
-    ])
-  , class GroupCss(
+    ]
+  , class GroupCss
     [ width (groupContainerWidth |> vw)
     , marginLeft (groupLeftMargin |> vw)
-    ])
-  , class Settings(
+    ]
+  , class Settings
     [ width (100 |> pct)
     , displayFlex
-    ])
-  , class Searchbar(
+    ]
+  , class Searchbar
     [ fontSize (searchBarFont |> vw)
     , width (searchBarWidth |> vw)
-    ])
-  , class AddButton(
+    ]
+  , class AddButton
     [ position relative
     , top (buttonTopPosition |> vw)
     , width (buttonSize |> vw)
     , height (buttonSize |> vw)
-    ])
-  , class UsersBackgroundPane(
+    ]
+  , class UsersBackgroundPane
     [ backgroundColor Color.c_navBar
     , width (100 |> pct)
     , height (backgroundPaneHeight |> vw)
     , overflowY scroll
-    ])
-  , class DeleteUserButton(
+    ]
+  , class DeleteUserButton
     [ display none
-    ])
-  , class GroupRow(
+    ]
+  , class GroupRow
     [ width (100 |> pct)
     , height (rowHeight |> vw)
     , hover
@@ -161,14 +161,14 @@ css =
     , borderBottomStyle solid
     , borderBottomWidth (rowBottomBorderWidth |> vw)
     , lineHeight (rowLineHeight |> vw)
-    ])
-  , class GroupCell(
+    ]
+  , class GroupCell
     [ width (cellWidth |> pct)
-    ])
-  , class MemberCell(
+    ]
+  , class MemberCell
     [ width (memberCellWidth |> pct)
-    ])
-  , class CreateButton(
+    ]
+  , class CreateButton
     [ width (createButtonWidth |> vw)
     , height (createButtonHeight |> vw)
     , fontSize (createButtonFontSize |> vw)
@@ -178,8 +178,8 @@ css =
     , cursor pointer
     , textAlign center
     , lineHeight (createButtonHeight |> vw)
-    ])
-  , class DeleteGroupButton(
+    ]
+  , class DeleteGroupButton
     [ width (deleteButtonWidth |> vw)
     , height (deleteButtonHeight |> vw)
     , fontSize (deleteButtonFontSize |> vw)
@@ -189,8 +189,8 @@ css =
     , cursor pointer
     , textAlign center
     , lineHeight (deleteButtonHeight |> vw)
-    ])
-  , class PermissionCell(
+    ]
+  , class PermissionCell
     [display none
-    ])
+    ]
   ]

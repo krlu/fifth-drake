@@ -29,6 +29,7 @@ init loc addTagButton deleteTagButton =
       , lastClickedTime = -1
       , tagButton = addTagButton
       , deleteTagButton = deleteTagButton
+      , isShareForm = False
       },
       Populate.populate loc
     )
