@@ -89,8 +89,8 @@ view model =
       |> mapBoth sideToDisplays
     switchLabel =
       case model.viewType of
-        Map -> " View"
-        Stats -> "Map View"
+        Map -> "View Stats"
+        Stats -> "View Map"
     loadedCenterView =
       case String.length model.currentUser.id of
        0 ->
