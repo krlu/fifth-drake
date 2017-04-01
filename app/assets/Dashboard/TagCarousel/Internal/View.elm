@@ -22,7 +22,7 @@ view model permissions currentUserId players =
               tagHtml tag permissions currentUserId model.lastClickedTime model.tagForm.active model.deleteTagButton)
     tagsShare = List.sortBy .timestamp model.tags
                 |> List.filter (\tag -> tag.author.id == currentUserId)
-                |> List.map (\tag -> tagShareModeHtml tag permissions)
+                |> List.map (\tag -> tagShareModeHtml tag permissions model.tagForm.active)
     tagFormView = tagFormHtml model players
     carouselCss =
       if model.tagForm.active then
@@ -131,8 +131,8 @@ tagFormHtml model players =
         ]
 
 
-tagShareModeHtml : TagCarousel.Types.Tag -> List Permission -> Html Msg
-tagShareModeHtml tag permissions =
+tagShareModeHtml : TagCarousel.Types.Tag -> List Permission -> Bool -> Html Msg
+tagShareModeHtml tag permissions formActive =
   let
     tagCss = [Tag]
     isShared =
@@ -141,9 +141,13 @@ tagShareModeHtml tag permissions =
       case (Debug.log "" isShared) of
         True -> tagCss ++ [HighlightSharedTag]
         False -> tagCss ++ [UnsharedTag]
+    selectedAndAltCss =
+      case formActive of
+        True -> selectedCss ++ [AltTag]
+        False -> selectedCss
   in
     li
-      [ class selectedCss ]
+      [ class selectedAndAltCss ]
       [ div
         [ class [ TagClickableArea ]
         , onClick (ToggleShare tag.id)

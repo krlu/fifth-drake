@@ -14,7 +14,7 @@ tagDisplayWidth : Float
 tagDisplayWidth = 100 -- percent
 
 tagDisplayHeight : Float
-tagDisplayHeight = 210
+tagDisplayHeight = 170
 
 addTagButtonHeight : Float
 addTagButtonHeight = 50 -- px
@@ -47,7 +47,7 @@ tagFormHeight : Float
 tagFormHeight = 100 -- percent
 
 playerCheckBoxesWidth : Float
-playerCheckBoxesWidth = 64 -- px
+playerCheckBoxesWidth = 66 -- px
 
 playerCheckBoxesHeight : Float
 playerCheckBoxesHeight = 100 -- percent
@@ -65,7 +65,7 @@ tagFormTextInputWidth : Float
 tagFormTextInputWidth = 75 -- pct
 
 tagFormTextInputHeight : Float
-tagFormTextInputHeight = 100 -- percent
+tagFormTextInputHeight = 96.5 -- percent
 
 tagFormTextBoxWidth : Float
 tagFormTextBoxWidth = 100-- percent
@@ -90,6 +90,21 @@ tagMargin = 10
 
 labelImageSize : Float
 labelImageSize = 20 -- px
+
+shareTagHeight : Float
+shareTagHeight = 40 -- px
+
+shareTagWidth : Float
+shareTagWidth = 100 -- px
+
+shareTagBorderRadius : Float
+shareTagBorderRadius = 10 -- px
+
+shareTagFontSize: Float
+shareTagFontSize = 18 -- px
+
+carouselContainerHeight : Float
+carouselContainerHeight = 211 -- px
 
 type CssClass
   = TagCarousel
@@ -281,12 +296,12 @@ css =
     ]
   , class ShareTagCss
     [ backgroundColor Color.c_share_tag_button
-    , height (4 |> vh)
-    , lineHeight (4 |> vh)
-    , width (7 |> vw)
+    , height (shareTagHeight |> px)
+    , lineHeight (shareTagHeight |> px)
+    , width (shareTagWidth |> px)
     , textAlign center
-    , borderRadius (0.5 |> vw)
-    , fontSize (1.3 |> vw)
+    , borderRadius (shareTagBorderRadius |> px)
+    , fontSize (shareTagFontSize |> px)
     , hover
       [ backgroundColor Color.c_share_tag_button_hover
       , cursor pointer
@@ -294,7 +309,7 @@ css =
     ]
   , class CarouselContainer
     [ width (100 |> pct)
-    , height (275 |> px)
+    , height (carouselContainerHeight |> px)
     ]
   ]
 

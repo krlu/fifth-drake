@@ -22,13 +22,19 @@ contentGap : Float
 contentGap = 40
 
 controlsGap : Float
-controlsGap = 20
+controlsGap = 2
 
 teamDisplayGap : Float
 teamDisplayGap = 30
 
 playerDisplaysGap : Float
 playerDisplaysGap = 20
+
+teamDisplayMarginLeft : Float
+teamDisplayMarginLeft = 24.5 --vw
+
+mainContentMarginLeft : Float
+mainContentMarginLeft = 2 --vw
 
 type CssId
   = TeamDisplayDivider
@@ -50,7 +56,7 @@ css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ class Dashboard (
     [ width (100 |> pct)
-    , displayFlex
+    , property "display" "block"
     , alignItems center
     ] ++ StyleUtils.flexDirection "column" ++
     [ children
@@ -59,10 +65,12 @@ css =
         , width (teamDisplaysWidth |> px)
         , justifyContent spaceBetween
         , marginBottom (teamDisplayGap |> px)
+        , marginLeft (teamDisplayMarginLeft|> vw)
         ] ++ StyleUtils.flexDirection "row")
       , id MainContent (
         [ displayFlex
         , justifyContent flexStart
+        , marginLeft (mainContentMarginLeft |> vw)
         ] ++ StyleUtils.flexDirection "row" ++
         [ children
           [ id CenterContent (
@@ -121,8 +129,6 @@ css =
       ]
     ]
   , class SwitchCss
-    [ position relative
-    , right (40 |> pct)
-    , top (10 |> pct)
+    [ position absolute
     ]
   ]
