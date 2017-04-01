@@ -2,7 +2,7 @@ module TagCarousel.Internal.Update exposing (..)
 
 import GameModel exposing (Player, PlayerId, Timestamp)
 import TagCarousel.Internal.TagUtils exposing (defaultTagForm)
-import TagCarousel.Types exposing (Model, Msg(..), Tag, TagForm, TagId)
+import TagCarousel.Types exposing (Model, Msg(..), ShareData, Tag, TagForm, TagId)
 import String as String exposing (toInt)
 import TagCarousel.Internal.Delete as Delete
 import TagCarousel.Internal.Save as Save
@@ -95,7 +95,11 @@ update msg model ts =
       in
       (Nothing, { model | tagForm = newTagForm }, Cmd.none)
     ToggleShare tagId -> (Nothing, model, Share.sendRequest tagId model.host)
-    ShareToggled (Ok msg) -> (Nothing,  model, Cmd.none)
+    ShareToggled (Ok shareData) ->
+     let
+      newTags = List.map (updateTag shareData) model.tags
+     in
+      (Nothing, {model | tags = newTags}, Cmd.none)
     ShareToggled (Err msg) -> (Nothing, Debug.log "could not toggle share!" model, Cmd.none)
 
 filterTags: List Tag -> String -> List Tag
@@ -119,3 +123,20 @@ switchTag form =
     , category = "Objective"
     , toShare = False
     }
+
+updateTag: ShareData -> Tag -> Tag
+updateTag shareData tag =
+  case tag.id == shareData.tagId of
+    True ->
+      case shareData.isShared of
+        True ->
+          let
+            newAuthorizedGroups = tag.authorizedGroups ++ [shareData.groupId]
+          in
+            {tag | authorizedGroups = newAuthorizedGroups}
+        False ->
+          let
+            newAuthorizedGroups = List.filter (\groupId -> (groupId /= shareData.groupId)) tag.authorizedGroups
+          in
+            {tag | authorizedGroups = newAuthorizedGroups}
+    False -> tag

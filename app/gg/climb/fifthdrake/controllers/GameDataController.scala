@@ -329,7 +329,7 @@ class GameDataController(dbh: DataAccessHandler,
                       case false => tag.authorizedGroups.map(_.uuid) ++ List(group.uuid)
                     }
                   dbh.updateTagsAuthorizedGroups(groupIds, tagId)
-                  Ok("tag successfully shared!")
+                  Ok(Json.obj("tagId" -> id, "groupId" -> group.uuid, "nowShared" -> !isAlreadyShared))
                 case None => BadRequest("User does not have group to share with!")
               }
           }

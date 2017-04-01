@@ -25,7 +25,7 @@ type Msg
   | TagSaved (Result Http.Error (List Tag))
   | UpdateShare
   | ToggleShare TagId
-  | ShareToggled (Result Http.Error String)
+  | ShareToggled (Result Http.Error ShareData)
 
 type alias Model =
   { host             : Host
@@ -56,4 +56,10 @@ type alias TagForm =
   , host        : Host
   , active      : Bool
   , toShare     : ToShare
+  }
+
+type alias ShareData =
+  { tagId : TagId
+  , groupId : GroupId
+  , isShared : Bool
   }
