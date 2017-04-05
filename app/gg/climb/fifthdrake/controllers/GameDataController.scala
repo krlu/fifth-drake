@@ -55,7 +55,7 @@ class GameDataController(dbh: DataAccessHandler,
     )
   }
 
-  def loadTimelineData(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
+  private def getTimelineForGame(gameKey: String): JsArray = {
     val timeline: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
     implicit val buildingKillWrite = new Writes[BuildingKill] {
       override def writes(event: BuildingKill): JsValue = {
@@ -110,7 +110,7 @@ class GameDataController(dbh: DataAccessHandler,
     }
 
     val listOfEventsJson = timeline.map(event => Json.toJson(event))
-    Ok(JsArray(listOfEventsJson))
+    JsArray(listOfEventsJson)
   }
 
   // scalastyle:off method.length
@@ -172,6 +172,7 @@ class GameDataController(dbh: DataAccessHandler,
               } yield controllers.routes.Assets.versioned(s"champion/${champion.image.full}").url
               champImg.getOrElse[String](controllers.routes.Assets.versioned("champion/unknown.png").url)
             },
+            "participantId" -> states(Duration.Zero).participantId,
             "playerStates" -> Json.toJson(states)
           )
         }
@@ -207,14 +208,16 @@ class GameDataController(dbh: DataAccessHandler,
           }
         }
         Ok(Json.obj(
-            "game" -> Json.toJson(game),
-            "currentUser" -> Json.toJson(request.user),
-            "permissions" -> Json.toJson(dbh.getGroupPermissionsForUser(request.user.uuid).map{
-              case (groupId, permission) =>
-                Json.obj(
-                  "groupId" -> groupId.toString,
-                  "level" -> permission.name)
-            })))
+          "game" -> Json.toJson(game),
+          "currentUser" -> Json.toJson(request.user),
+          "permissions" -> Json.toJson(dbh.getGroupPermissionsForUser(request.user.uuid).map{
+            case (groupId, permission) =>
+              Json.obj(
+                "groupId" -> groupId.toString,
+                "level" -> permission.name)
+          }),
+          "timeline" -> getTimelineForGame(gameKey)
+        ))
       case None =>
         NotFound
     }
@@ -254,8 +257,7 @@ class GameDataController(dbh: DataAccessHandler,
     *  "category" -> "gank"
     *  "timestamp" -> 1234  //measured in seconds
     *  "relevantPlayerIgns" -> JsArray("Hauntzer", "Meteos", "Impact")
-    *  "allplayerIgns" -> JSObject // contains all players
-    *                              // Uses key value pair: (playerIgn -> playerId)
+    *  "shareWithGroup" -> True // True if and only if sharing directly to group, otherwise false
     * )
     *
     * @return Ok if successful, otherwise BadRequest
@@ -303,6 +305,8 @@ class GameDataController(dbh: DataAccessHandler,
     * )
     * Share tags with group, provided user belongs to a group
     * If the tag is already shared, simply un-shares the tag
+    *
+    * Note, sharing a tag means the group owner/admins can delete the tag
     *
     * @return
     */

@@ -211,15 +211,12 @@ tagHtml tag permissions currentUserId lastClickedTimeStamp formActive deleteButt
         True -> selectedCss ++ [AltTag]
         False -> selectedCss
     deleteHtml =
-      case (tag.author.id == currentUserId, List.member "admin" levels, List.member "owner" levels) of
-        (False, False, False) -> []
-        _ ->
-          [p [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
-            [ img
-              [src deleteButton]
-              []
-            ]
-          ]
+      [ p [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
+        [ img
+          [src deleteButton]
+          []
+        ]
+      ]
   in
     li
       [ class selectedAndAltCss ]

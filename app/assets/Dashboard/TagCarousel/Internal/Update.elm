@@ -145,17 +145,15 @@ switchTag form =
 
 updateTag: ShareData -> Tag -> Tag
 updateTag shareData tag =
-  case tag.id == shareData.tagId of
-    True ->
-      case shareData.isShared of
-        True ->
-          let
-            newAuthorizedGroups = tag.authorizedGroups ++ [shareData.groupId]
-          in
-            {tag | authorizedGroups = newAuthorizedGroups}
-        False ->
-          let
-            newAuthorizedGroups = List.filter (\groupId -> (groupId /= shareData.groupId)) tag.authorizedGroups
-          in
-            {tag | authorizedGroups = newAuthorizedGroups}
-    False -> tag
+  case (tag.id == shareData.tagId, shareData.isShared) of
+    (True, True) ->
+      let
+        newAuthorizedGroups = tag.authorizedGroups ++ [shareData.groupId]
+      in
+        {tag | authorizedGroups = newAuthorizedGroups}
+    (True, False) ->
+      let
+        newAuthorizedGroups = List.filter (\groupId -> (groupId /= shareData.groupId)) tag.authorizedGroups
+      in
+        {tag | authorizedGroups = newAuthorizedGroups}
+    (False, _) -> tag

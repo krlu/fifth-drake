@@ -39,12 +39,6 @@ init flags location =
         , players = Array.empty
         }
       }
-    currentUser =
-      { id = ""
-      , email = ""
-      , firstName = ""
-      , lastName = ""
-      }
   in
     { minimap = minimapModel
     , tagCarousel = tagCarouselModel
@@ -57,7 +51,7 @@ init flags location =
     , viewType = Map
     , playerDisplay = PlayerDisplay.init
     , graphStat = Graph.init
-    , currentUser = currentUser
+    , currentUser = Nothing
     , permissions = []
     , loadingIcon = flags.loadingIcon
     } !

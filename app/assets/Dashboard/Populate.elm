@@ -88,13 +88,14 @@ teamState =
 
 player : Decoder Player
 player =
-  map6 Player
+  map7 Player
     ("id" ::= string)
     ("role" ::= role)
     ("ign" ::= string)
     ("championName" ::= string)
     ("championImage" ::= string)
     ("playerStates" ::= array playerState)
+    ("participantId" ::= int)
 
 side : Decoder Side
 side =

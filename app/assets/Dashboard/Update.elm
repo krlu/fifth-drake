@@ -74,7 +74,7 @@ update msg model =
       ( { model
         | game = dashboardData.game
         , minimap = Minimap.update model.minimap dashboardData.game.data model.timestamp MinimapT.GenerateIconStates
-        , currentUser = dashboardData.currentUser
+        , currentUser = Just dashboardData.currentUser
         , permissions = dashboardData.permissions
         }
       , Cmd.none

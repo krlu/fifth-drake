@@ -82,8 +82,11 @@ view model =
     allPlayers = getPlayerIdsAndIgns bluePlayers redPlayers
 
     tagCarousel =
-      TagCarousel.view model.tagCarousel model.permissions model.currentUser.id allPlayers
-      |> Html.map TagCarouselMsg
+      case model.currentUser of
+        Just user ->
+          TagCarousel.view model.tagCarousel model.permissions user.id allPlayers
+          |> Html.map TagCarouselMsg
+        Nothing -> Debug.log "Current user not found!!" div [] []
     ((blueTeamDisplay, bluePlayerDisplays), (redTeamDisplay, redPlayerDisplays))
       = (Blue, Red)
       |> mapBoth sideToDisplays
@@ -92,14 +95,14 @@ view model =
         Map -> "View Stats"
         Stats -> "View Map"
     loadedCenterView =
-      case String.length model.currentUser.id of
-       0 ->
-        div [id [CenterContent], class [LoadingCenterContent]]
-        [ img [ src model.loadingIcon, id [LoadingCss] ] []
-        ]
-       _ ->
-        div [ id [CenterContent] ]
-          centerView
+      case model.currentUser of
+        Nothing ->
+          div [ id [CenterContent], class [LoadingCenterContent] ]
+          [ img [ src model.loadingIcon, id [LoadingCss] ] []
+          ]
+        Just user ->
+          div [ id [CenterContent] ]
+            centerView
   in
     div
       [ class [Dashboard] ]

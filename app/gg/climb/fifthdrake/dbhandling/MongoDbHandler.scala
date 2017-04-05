@@ -163,6 +163,7 @@ class MongoDbHandler(mongoClient: MongoClient) {
       assists <- playerStat.get("assists").map(_.asInt32().getValue)
       currentGold <- playerStat.get("cg").map(_.asInt32().getValue)
       totalGold <- playerStat.get("tg").map(_.asInt32().getValue)
+      participantId <- playerStat.get("participantId").map(_.asInt32().getValue)
     } yield new PlayerState(
       id = playerId,
       championState = championState,
@@ -171,7 +172,8 @@ class MongoDbHandler(mongoClient: MongoClient) {
       deaths = deaths,
       assists = assists,
       currentGold = currentGold,
-      totalGold = totalGold
+      totalGold = totalGold,
+      participantId = participantId
     )
   }
 
@@ -252,11 +254,11 @@ class MongoDbHandler(mongoClient: MongoClient) {
         .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
     } yield {
       val dragType = dragTypeStr match {
-        case "AIR_DRAGON" => AirDragon
-        case "EARTH_DRAGON" => EarthDragon
-        case "ELDER_DRAGON" => ElderDragon
-        case "FIRE_DRAGON" => FireDragon
-        case "WATER_DRAGON" => WaterDragon
+        case "AIR_DRAGON" => AirDragon()
+        case "EARTH_DRAGON" => EarthDragon()
+        case "ELDER_DRAGON" => ElderDragon()
+        case "FIRE_DRAGON" => FireDragon()
+        case "WATER_DRAGON" => WaterDragon()
       }
       DragonKill(location, dragType, timestamp)
     }
@@ -274,19 +276,19 @@ class MongoDbHandler(mongoClient: MongoClient) {
         .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
     } yield {
       val building = buildingTypeStr match {
-        case "INHIBITOR_BUILDING" => Inhibitor
+        case "INHIBITOR_BUILDING" => Inhibitor()
         case "TOWER_BUILDING" =>
           towerTypeStr match {
-            case "OUTER_TURRET" => OuterTurret
-            case "INNER_TURRET" => InnerTurret
-            case "BASE_TURRET" => BaseTurret
-            case "NEXUS_TURRET" => NexusTurret
+            case "OUTER_TURRET" => OuterTurret()
+            case "INNER_TURRET" => InnerTurret()
+            case "BASE_TURRET" => BaseTurret()
+            case "NEXUS_TURRET" => NexusTurret()
           }
       }
       val lane = laneStr match {
-        case "TOP_LANE" => Top
-        case "MID_LANE" => Middle
-        case "BOT_LANE" => Bottom
+        case "TOP_LANE" => Top()
+        case "MID_LANE" => Middle()
+        case "BOT_LANE" => Bottom()
       }
       val turretColor = killingTeam.toString match {
         case Red.riotId.id => Blue

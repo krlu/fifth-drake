@@ -40,10 +40,13 @@ class Tag(val id: Option[InternalId[Tag]],
 
   override def equals(that: Any) = that match {
     case that : Tag =>
-      (this.id, that.id) match {
-        case (Some(id1), Some(id2))=>  this.id.get.id.equals(that.id.get.id)
-        case (_, _) => false
+      val x =for{
+        id1 <- this.id
+        id2 <- that.id
+      } yield {
+        id1.id == id2.id
       }
+      x.getOrElse(false)
     case _ => false
   }
 

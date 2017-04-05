@@ -20,62 +20,21 @@ case class BaronKill(loc: LocationData, time: Duration) extends Objective(loc, t
 case class BuildingKill(loc: LocationData, buildingType: Building,
                         lane: Lane, side: Side, time: Duration) extends Objective(loc, time)
 
-sealed trait Dragon{
-  val name : String
-}
+sealed class Dragon(val name : String)
+case class AirDragon() extends Dragon("AirDragon")
+case class EarthDragon() extends Dragon("EarthDragon")
+case class FireDragon() extends Dragon("FireDragon")
+case class WaterDragon() extends Dragon("WaterDragon")
+case class ElderDragon() extends Dragon("ElderDragon")
 
-case object FireDragon extends Dragon{
-  override val name = "FireDragon"
-}
-case object EarthDragon extends Dragon{
-  override val name = "MountainDragon"
-}
-case object WaterDragon extends Dragon{
-  override val name = "WaterDragon"
-}
-case object AirDragon extends Dragon{
-  override val name = "AirDragon"
-}
-case object ElderDragon extends Dragon{
-  override val name = "ElderDragon"
-}
+sealed class Building(val name: String)
+case class OuterTurret() extends Building("OuterTurret")
+case class InnerTurret() extends Building("InnerTurret")
+case class BaseTurret() extends Building("BaseTurret")
+case class NexusTurret() extends Building("NexusTurret")
+case class Inhibitor() extends Building("Inhibitor")
 
-sealed trait Building{
-  val name: String
-}
-
-case object OuterTurret extends Building{
-  override val name = "OuterTurret"
-}
-
-case object InnerTurret extends Building{
-  override val name = "InnerTurret"
-}
-
-case object BaseTurret extends Building{
-  override val name = "BaseTurret"
-}
-
-case object NexusTurret extends Building{
-  override val name = "NexusTurret"
-}
-
-case object Inhibitor extends Building{
-  override val name = "Inhibitor"
-}
-
-sealed trait Lane{
-  val name: String
-}
-
-case object Top extends Lane{
-  override val name = "Top"
-}
-
-case object Middle extends Lane{
-  override val name = "Middle"
-}
-
-case object Bottom extends Lane{
-  override val name = "Bottom"
-}
+sealed class Lane(val name: String)
+case class Top() extends Lane("Top")
+case class Middle() extends Lane("Middle")
+case class Bottom() extends Lane("Bottom")

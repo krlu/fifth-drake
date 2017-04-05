@@ -32,7 +32,7 @@ type alias Model =
   , viewType : ViewType
   , playerDisplay : PlayerDisplay.Model
   , graphStat : Graph.Model
-  , currentUser : User
+  , currentUser : Maybe User
   , permissions : List Permission
   , loadingIcon : String
   }
