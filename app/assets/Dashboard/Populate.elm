@@ -40,10 +40,19 @@ playerUrl loc =
 
 dashboardData : Decoder DashboardData
 dashboardData =
-  map3 DashboardData
+  map4 DashboardData
     ("game" ::= game)
     ("currentUser" ::= user)
     ("permissions" ::= list permission)
+    ("timeline" ::= list objectiveEvent)
+
+objectiveEvent : Decoder ObjectiveEvent
+objectiveEvent =
+  map4 ObjectiveEvent
+  ("unitKilled" ::= string)
+  ("killerId" ::= int)
+  ("timestamp" ::= int)
+  ("position" ::= position)
 
 permission : Decoder Permission
 permission =

@@ -46,7 +46,7 @@ switchHeight : Float
 switchHeight = 3 -- vh
 
 switchFontSize : Float
-switchFontSize = 18 -- px
+switchFontSize = 2 -- vh
 
 type CssId
   = TeamDisplayDivider
@@ -158,7 +158,7 @@ css =
     , height (switchHeight |> vh)
     , textAlign center
     , lineHeight (switchHeight |> vh)
-    , fontSize (switchFontSize |> px)
+    , fontSize (switchFontSize |> vh)
     ]
   , id LoadingCss
     [ position relative

@@ -1,6 +1,7 @@
 package gg.climb.fifthdrake.reasoning
 
-import gg.climb.fifthdrake.lolobjects.esports.Player
+import gg.climb.fifthdrake.lolobjects.RiotId
+import gg.climb.fifthdrake.lolobjects.esports.{Player, Role}
 import gg.climb.fifthdrake.lolobjects.game.state.{LocationData, Side}
 
 import scala.concurrent.duration.Duration
@@ -14,11 +15,19 @@ case class Gank(players: Set[Player], loc: LocationData) extends Fight(players, 
 case class Teamfight(players: Set[Player], loc: LocationData) extends Fight(players, loc)
 case class Skirmish(players: Set[Player], loc: LocationData) extends Fight(players, loc)
 
-class Objective(location : LocationData, timestamp: Duration) extends GameEvent
-case class DragonKill(loc: LocationData, dragonType: Dragon, time: Duration) extends Objective(loc, time)
-case class BaronKill(loc: LocationData, time: Duration) extends Objective(loc, time)
-case class BuildingKill(loc: LocationData, buildingType: Building,
-                        lane: Lane, side: Side, time: Duration) extends Objective(loc, time)
+class Objective(val location: LocationData,
+                val timestamp: Duration,
+                val killerId : RiotId[(Side, Role)]) extends GameEvent
+
+case class DragonKill(loc: LocationData, dragonType: Dragon, time: Duration,
+                      killer : RiotId[(Side, Role)]) extends Objective(loc, time, killer)
+
+case class BaronKill(loc: LocationData, time: Duration,
+                     killer : RiotId[(Side, Role)]) extends Objective(loc, time, killer)
+
+case class BuildingKill(loc: LocationData, buildingType: Building, lane: Lane, side: Side,
+                        time: Duration, killer : RiotId[(Side, Role)]) extends Objective(loc, time, killer)
+
 
 sealed class Dragon(val name : String)
 case class AirDragon() extends Dragon("AirDragon")

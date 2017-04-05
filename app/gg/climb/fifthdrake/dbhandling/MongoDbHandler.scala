@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 
 import scala.collection.JavaConversions._
 import gg.climb.fifthdrake.lolobjects.RiotId
-import gg.climb.fifthdrake.lolobjects.esports.{Player, Team}
+import gg.climb.fifthdrake.lolobjects.esports.{Player, Role, Team}
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
 import gg.climb.fifthdrake.reasoning._
@@ -221,14 +221,13 @@ class MongoDbHandler(mongoClient: MongoClient) {
       val eventType = eventDoc.get("type").map(_.asString().getValue).getOrElse("")
       eventType match {
         case "BUILDING_KILL" => parseBuildingKill(eventDoc)
-        case "ELITE_MONSTER_KILL" => {
+        case "ELITE_MONSTER_KILL" =>
           val monsterType = eventDoc.get("monsterType").map(_.asString().getValue).getOrElse("")
           monsterType match {
             case "DRAGON" => parseDragonKill(eventDoc)
             case "BARON_NASHOR" => parseBaronKill(eventDoc)
             case _ => None
           }
-        }
         case _ => None
       }
     }
@@ -237,17 +236,19 @@ class MongoDbHandler(mongoClient: MongoClient) {
   private def parseBaronKill(doc : Document) : Option[BaronKill] = {
     for {
       locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
+      killerId <- doc.get("killerId").map(_.asInt32().getValue)
       location <- parseLocationData(locationDoc)
       timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
         .map(millis => Duration(millis, TimeUnit.MILLISECONDS))
     } yield {
-      BaronKill(location,timestamp)
+      BaronKill(location, timestamp, new RiotId[(Side, Role)](killerId.toString))
     }
   }
 
   private def parseDragonKill(doc : Document) : Option[DragonKill] = {
     for {
       dragTypeStr <- doc.get("monsterSubType").map(_.asString().getValue)
+      killerId <- doc.get("killerId").map(_.asInt32().getValue)
       locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
       location <- parseLocationData(locationDoc)
       timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
@@ -260,7 +261,7 @@ class MongoDbHandler(mongoClient: MongoClient) {
         case "FIRE_DRAGON" => FireDragon()
         case "WATER_DRAGON" => WaterDragon()
       }
-      DragonKill(location, dragType, timestamp)
+      DragonKill(location, dragType, timestamp, new RiotId[(Side, Role)](killerId.toString))
     }
   }
 
@@ -270,6 +271,7 @@ class MongoDbHandler(mongoClient: MongoClient) {
       towerTypeStr <- doc.get("towerType").map(_.asString().getValue)
       killingTeam <- doc.get("teamId").map(_.asInt32().getValue)
       buildingTypeStr <- doc.get("buildingType").map(_.asString().getValue)
+      killerId <- doc.get("killerId").map(_.asInt32().getValue)
       locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
       location <- parseLocationData(locationDoc)
       timestamp <- doc.get("timestamp").map(_.asInt32().getValue)
@@ -294,7 +296,7 @@ class MongoDbHandler(mongoClient: MongoClient) {
         case Red.riotId.id => Blue
         case Blue.riotId.id => Red
       }
-      BuildingKill(location, building, lane, turretColor, timestamp)
+      BuildingKill(location, building, lane, turretColor, timestamp, new RiotId[(Side, Role)](killerId.toString))
     }
   }
 }
