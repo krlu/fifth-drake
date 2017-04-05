@@ -13,7 +13,6 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import scalikejdbc._
 
-import scala.collection.immutable.Seq
 import scala.concurrent.duration.Duration
 
 //noinspection RedundantBlock
@@ -69,6 +68,23 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
       .single().apply().orNull
   }
 
+  def getTagById(tagId: InternalId[Tag]): Option[Tag] ={
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM league.tag WHERE id = ${tagId.id.toInt}".map(rs => {
+        val tagId = new InternalId[Tag](rs.int("id").toString)
+        new Tag(
+          Some(tagId),
+          new RiotId[Game](rs.string("game_key")),
+          rs.string("title"), rs.string("description"),
+          new Category(rs.string("category")),
+          Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
+          getPlayersForTag(tagId),
+          UUID.fromString(rs.string("author")),
+          buildUserGroupList(rs.array("authorized_groups"))
+        )
+      }).single().apply()
+    }
+  }
 
   def getTagsForGame(gameKey: RiotId[Game]): Seq[Tag] = {
     DB readOnly { implicit session =>
@@ -85,6 +101,34 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
           buildUserGroupList(rs.array("authorized_groups"))
         )
       }).list.apply()
+    }
+  }
+
+  def getTagsWithAuthorizedGroupId(groupId: UUID): Seq[Tag] ={
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM league.tag WHERE $groupId::uuid = ANY (authorized_groups)".map(rs => {
+        val tagId = new InternalId[Tag](rs.int("id").toString)
+        new Tag(
+          Some(tagId),
+          new RiotId[Game](rs.string("game_key")),
+          rs.string("title"), rs.string("description"),
+          new Category(rs.string("category")),
+          Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
+          getPlayersForTag(tagId),
+          UUID.fromString(rs.string("author")),
+          buildUserGroupList(rs.array("authorized_groups"))
+        )
+      }).list.apply()
+    }
+  }
+
+  def updateTagsAuthorizedGroups(newAuthorizedGroupIds: Seq[UUID], tagId: InternalId[Tag]): Int = {
+    DB localTx { implicit session =>
+      sql"""UPDATE league.tag
+            SET authorized_groups = ${newAuthorizedGroupIds.mkString("{", ",", "}")}::uuid[]
+            WHERE id=${tagId.id.toInt}"""
+        .update()
+        .apply()
     }
   }
 
@@ -537,6 +581,22 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
           }
           level
         }).single().apply()
+    }
+  }
+
+  def getGroupPermissionsForUser(userId: UUID): Seq[(UUID, Permission)] = {
+    DB readOnly { implicit session =>
+      sql"""SELECT permission,group_id FROM account.user_to_permission WHERE (
+           user_id = ${userId}
+         )"""
+        .map(rs => {
+          val level: Permission = rs.string("permission") match {
+            case "owner" => Owner
+            case "admin" => Admin
+            case "member" => Member
+          }
+          (UUID.fromString(rs.string("group_id")), level)
+        }).list().apply()
     }
   }
 

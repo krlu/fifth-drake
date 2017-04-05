@@ -1,4 +1,4 @@
-module TagCarousel.Internal.View exposing (..)
+module TagCarousel.Internal.View exposing (view)
 
 import Css exposing (backgroundColor)
 import GameModel exposing (Player, PlayerId, Timestamp)
@@ -9,30 +9,78 @@ import TagCarousel.Css exposing (CssClass(..), namespace)
 import TagCarousel.Types exposing (Model, Msg(..), TagId)
 import Html.Attributes exposing (href, placeholder, defaultValue, rel, src, style, type_, for)
 import Html.Events exposing (onClick, onInput)
+import SettingsTypes exposing (GroupId, UserId)
+import Types exposing (Permission)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> List (PlayerId, String, String, String) -> Html Msg
-view model players =
+view : Model -> List Permission -> UserId -> List (PlayerId, String, String, String) -> Html Msg
+view model permissions currentUserId players =
   let
-    tags = List.sortBy .timestamp model.tags
-         |> List.map (\tag -> tagHtml tag model.lastClickedTime model.tagForm.active model.deleteTagButton )
---    checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData)
+    groupFilteredTags = List.filter (tagInAllGroups model.groupFilters) model.tags
+    (filteredTags, filterCss) =
+      case model.filteredByAuthor of
+        True -> (List.filter (\tag -> tag.author.id == currentUserId) groupFilteredTags, SelectedFilter)
+        False -> (groupFilteredTags, UnselectedFilter)
+    tags = List.sortBy .timestamp filteredTags
+           |> List.map (\tag ->
+              tagHtml tag permissions currentUserId model.lastClickedTime model.tagForm.active model.deleteTagButton)
+    tagsShare = List.sortBy .timestamp model.tags
+                |> List.filter (\tag -> tag.author.id == currentUserId)
+                |> List.map (\tag -> tagShareModeHtml tag permissions model.tagForm.active)
     tagFormView = tagFormHtml model players
     carouselCss =
       if model.tagForm.active then
         [TagCarousel, MinimizedCarousel]
       else
         [TagCarousel]
+    authorFilterHtml = buildFilterHtml FilterByAuthor "My Tags" filterCss
+    groupFilterHtml =
+      List.map (\perm ->
+        buildFilterHtml (FilterByGroup perm.groupId) "Group Tags"
+        <| groupFilterCss perm.groupId model.groupFilters) permissions
+    (shareFormButtonLabel, tagsHtml, filterHtml) =
+      case model.isShareForm of
+       True ->
+        ("Done", tagsShare, [])
+       False -> ("Share Tags", tags, [authorFilterHtml] ++ groupFilterHtml)
   in
-    div
+    div [class [CarouselContainer]]
+    [ div [class [CarouselControls]]
+      ([ div
+        [class [ShareTagCss]
+        , onClick ToggleCarouselForm]
+        [ text shareFormButtonLabel
+        ]
+      ] ++ filterHtml)
+    , div
       [ id [TagDisplay] ]
-      [ ol
-          [ class carouselCss ]
-          tags
+      [ div [ class carouselCss ]
+        tagsHtml
       , tagFormView
       ]
+    ]
 
+groupFilterCss : GroupId -> List GroupId -> CssClass
+groupFilterCss groupId filters =
+  case List.member groupId filters of
+    True -> SelectedFilter
+    False -> UnselectedFilter
+
+tagInAllGroups : List GroupId -> TagCarousel.Types.Tag -> Bool
+tagInAllGroups groupIds tag =
+  not
+  <| List.member False
+  <| List.map (\id -> List.member id tag.authorizedGroups) groupIds
+
+buildFilterHtml : Msg -> String -> CssClass -> Html Msg
+buildFilterHtml action label filterCss =
+  div
+  [class [FilterTagCss, filterCss]
+  , onClick action
+  ]
+  [ text label
+  ]
 
 tagFormHtml : Model -> List (PlayerId, String, String, String) -> Html Msg
 tagFormHtml model players =
@@ -76,7 +124,21 @@ tagFormHtml model players =
               [ class [PlayersInvolved] ]
               [ text "Players Involved" ]
             ] ++
-            checkBoxes
+            checkBoxes ++
+            [ div
+              [ class [CheckboxItem] ]
+              [ input
+                 [ type_ "checkbox"
+                 , onClick UpdateShare
+                 ]
+                 []
+              , label
+                [ class [CheckboxLabel]
+                ]
+                [ text "Share with group"
+                ]
+              ]
+            ]
           )
         , div
           [ id [SaveOrCancelForm] ]
@@ -101,14 +163,16 @@ tagFormHtml model players =
         ]
 
 
-tagHtml : TagCarousel.Types.Tag -> Timestamp -> Bool -> String -> Html Msg
-tagHtml tag lastClickedTimeStamp formActive deleteButton =
+tagShareModeHtml : TagCarousel.Types.Tag -> List Permission -> Bool -> Html Msg
+tagShareModeHtml tag permissions formActive =
   let
     tagCss = [Tag]
+    isShared =
+      List.member True <| List.map (\perm -> List.member perm.groupId tag.authorizedGroups) permissions
     selectedCss =
-      case (tag.timestamp == lastClickedTimeStamp) of
-        True -> tagCss ++ [SelectedTag]
-        False -> tagCss
+      case isShared of
+        True -> tagCss ++ [HighlightSharedTag]
+        False -> tagCss ++ [UnsharedTag]
     selectedAndAltCss =
       case formActive of
         True -> selectedCss ++ [AltTag]
@@ -118,6 +182,46 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
       [ class selectedAndAltCss ]
       [ div
         [ class [ TagClickableArea ]
+        , onClick (ToggleShare tag.id)
+        ]
+        [ p []
+          [text tag.title]
+        , p []
+          [text tag.category]
+        , p []
+          [text tag.description]
+        , p []
+          [text ("- " ++ tag.author.firstName ++ " " ++ tag.author.lastName)]
+        ]
+      ]
+
+tagHtml : TagCarousel.Types.Tag -> List Permission -> UserId -> Timestamp -> Bool -> String -> Html Msg
+tagHtml tag permissions currentUserId lastClickedTimeStamp formActive deleteButton =
+  let
+    levels =
+      List.map (\perm -> perm.level)
+      <| List.filter (\element -> List.member element.groupId tag.authorizedGroups) permissions
+    tagCss = [Tag]
+    selectedCss =
+      case (tag.timestamp == lastClickedTimeStamp) of
+        True -> tagCss ++ [SelectedTag]
+        False -> tagCss
+    selectedAndAltCss =
+      case formActive of
+        True -> selectedCss ++ [AltTag]
+        False -> selectedCss
+    deleteHtml =
+      [ p [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
+        [ img
+          [src deleteButton]
+          []
+        ]
+      ]
+  in
+    li
+      [ class selectedAndAltCss ]
+      ([ div
+        [ class [ TagClickableArea ]
         , onClick <| TagClick tag.timestamp
         ]
         [ p []
@@ -126,19 +230,13 @@ tagHtml tag lastClickedTimeStamp formActive deleteButton =
           [text tag.category]
         , p []
           [text tag.description]
+        , p []
+          [text ("- " ++ tag.author.firstName ++ " " ++ tag.author.lastName)]
         ]
-      , p
-        [class [DeleteButtonCss], onClick (DeleteTag tag.id)]
-        [ img
-          [src deleteButton]
-          []
-        ]
-      ]
-
+      ] ++ deleteHtml)
 
 playerDataToHtml: (PlayerId, String, String, String) -> Html Msg
 playerDataToHtml (id, ign, champName, champImage) = checkbox (AddPlayers id) champName champImage
-
 
 checkbox : msg -> String -> String -> Html msg
 checkbox msg champName champImage =
@@ -161,5 +259,3 @@ checkbox msg champName champImage =
           []
        ]
     ]
-
-

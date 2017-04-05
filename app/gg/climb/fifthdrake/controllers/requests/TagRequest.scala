@@ -17,22 +17,24 @@ object TagAction {
   /**
     * This refiner responds to a load tag request by filtering tags visible only by the particular user group
     *
-    * @param gameKey
-    * @param dbh
+    * @param gameKey - unique Id for game
+    * @param dbh - Data Handler for both mongo and postgres
     * @return
     */
   def refiner(gameKey: String, dbh: DataAccessHandler): ActionRefiner[AuthenticatedRequest, TagRequest] =
-    new ActionRefiner[AuthenticatedRequest, TagRequest] {
-      override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, TagRequest[A]]] =
-        Future.successful {
-          dbh.getUserGroupByUser(request.user) match {
-            case Some(userGroup) =>
-              val tags = dbh.getTags(new RiotId[(MetaData, GameData)](gameKey))
-                .filter(t => t.authorizedGroups.map(g => g.uuid).contains(userGroup.uuid))
-              Right(new TagRequest[A](tags, request))
-            case None =>
-              Right(new TagRequest[A](Seq.empty, request))
-          }
+  new ActionRefiner[AuthenticatedRequest, TagRequest] {
+    override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, TagRequest[A]]] =
+      Future.successful {
+        val tagsForGame = dbh.getTags(new RiotId[(MetaData, GameData)](gameKey))
+        val authoredTags = tagsForGame.filter(t => t.author.equals(request.user.uuid))
+        dbh.getUserGroupByUser(request.user) match {
+          case Some(userGroup) =>
+            val groupTags = tagsForGame.filter(t => t.authorizedGroups.map(g => g.uuid).contains(userGroup.uuid))
+            val visibleTags = groupTags ++ authoredTags
+            Right(new TagRequest[A](visibleTags.distinct, request))
+          case None =>
+            Right(new TagRequest[A](authoredTags, request))
         }
+      }
     }
 }

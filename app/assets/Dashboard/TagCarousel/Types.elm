@@ -2,12 +2,14 @@ module TagCarousel.Types exposing (..)
 
 import GameModel exposing (GameId, PlayerId, Timestamp)
 import Http
+import SettingsTypes exposing (GroupId, User, UserId)
 
 type alias TagCategory = String
-
 type alias TagId = String
-
+type alias FirstName = String
+type alias LastName = String
 type alias Host = String
+type alias ToShare = Bool
 
 type Msg
   = TagClick Timestamp
@@ -21,6 +23,12 @@ type Msg
   | SwitchForm
   | SaveTag
   | TagSaved (Result Http.Error (List Tag))
+  | UpdateShare
+  | ToggleShare TagId
+  | ShareToggled (Result Http.Error ShareData)
+  | ToggleCarouselForm
+  | FilterByAuthor
+  | FilterByGroup GroupId
 
 type alias Model =
   { host             : Host
@@ -29,6 +37,9 @@ type alias Model =
   , lastClickedTime  : Timestamp
   , tagButton        : String
   , deleteTagButton  : String
+  , isShareForm      : Bool
+  , filteredByAuthor : Bool
+  , groupFilters     : List GroupId
   }
 
 type alias Tag =
@@ -38,6 +49,8 @@ type alias Tag =
   , category    : TagCategory
   , timestamp   : Timestamp
   , players     : List PlayerId
+  , author      : User
+  , authorizedGroups : List GroupId
   }
 
 type alias TagForm =
@@ -48,5 +61,11 @@ type alias TagForm =
   , gameId      : GameId
   , host        : Host
   , active      : Bool
+  , toShare     : ToShare
   }
 
+type alias ShareData =
+  { tagId : TagId
+  , groupId : GroupId
+  , isShared : Bool
+  }

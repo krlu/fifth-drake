@@ -51,6 +51,9 @@ init flags location =
     , viewType = Map
     , playerDisplay = PlayerDisplay.init
     , graphStat = Graph.init
+    , currentUser = Nothing
+    , permissions = []
+    , loadingIcon = flags.loadingIcon
     } !
     [ Cmd.map TagCarouselMsg tagCarouselCmd
     , Populate.populate location

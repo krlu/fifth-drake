@@ -5,6 +5,7 @@ import Array
 import Dict
 import GameModel exposing (..)
 import Http
+import Internal.UserQuery exposing (user)
 import Json.Decode exposing (..)
 import Maybe exposing (withDefault)
 import Navigation exposing (Location)
@@ -28,14 +29,27 @@ getGameId =
       Err e -> Debug.log (key ++ " failed to parse") (fail e))
 
 populate : Location -> Cmd Msg
-populate loc = Http.send SetGame <| getGame loc
+populate loc = Http.send SetData <| getDashboardData loc
 
-getGame : Location -> Http.Request Game
-getGame loc = Http.get (playerUrl loc) game
+getDashboardData : Location -> Http.Request DashboardData
+getDashboardData loc = Http.get (playerUrl loc) dashboardData
 
 playerUrl : Location -> String
 playerUrl loc =
   loc.origin ++ "/game/" ++ toString (getGameId loc) ++ "/data"
+
+dashboardData : Decoder DashboardData
+dashboardData =
+  map3 DashboardData
+    ("game" ::= game)
+    ("currentUser" ::= user)
+    ("permissions" ::= list permission)
+
+permission : Decoder Permission
+permission =
+  map2 Permission
+  ("groupId" ::= string)
+  ("level" ::= string)
 
 game : Decoder Game
 game =
@@ -74,13 +88,14 @@ teamState =
 
 player : Decoder Player
 player =
-  map6 Player
+  map7 Player
     ("id" ::= string)
     ("role" ::= role)
     ("ign" ::= string)
     ("championName" ::= string)
     ("championImage" ::= string)
     ("playerStates" ::= array playerState)
+    ("participantId" ::= int)
 
 side : Decoder Side
 side =

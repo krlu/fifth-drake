@@ -6,6 +6,7 @@ module Internal.UserQuery exposing
   , sendCreateGroupRequest
   , sendUpdatePermissionRequest
   , sendDeleteGroupRequest
+  , user
   )
 
 import Http exposing (Request, emptyBody, expectJson, expectString, jsonBody, request)

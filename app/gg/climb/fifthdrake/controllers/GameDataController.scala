@@ -4,14 +4,16 @@ import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter, TagAction}
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.accounts.UserGroup
+import gg.climb.fifthdrake.lolobjects.accounts.{Admin, Owner, User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.esports.Player
-import gg.climb.fifthdrake.lolobjects.game.state.{Blue, PlayerState, Red, TeamState}
+import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
-import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
+import gg.climb.fifthdrake.reasoning._
+import gg.climb.fifthdrake.{Game, Time, TimeMonoid, Timeline}
 import gg.climb.ramenx.Behavior
+import play.api.Logger
 import play.api.libs.json.{JsArray, JsValue, Json, Writes, _}
 import play.api.mvc.{Action, _}
 
@@ -44,8 +46,76 @@ class GameDataController(dbh: DataAccessHandler,
     result.getOrElse(InternalServerError(s"Could not find champion $name"))
   }
 
+  private implicit val userWrites = new Writes[User] {
+    override def writes(user: User): JsValue = Json.obj(
+      "id" -> user.uuid.toString,
+      "email" -> user.email,
+      "firstName" -> user.firstName,
+      "lastName" -> user.lastName
+    )
+  }
+
+  private def getTimelineForGame(gameKey: String): JsArray = {
+    val timeline: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
+    implicit val buildingKillWrite = new Writes[BuildingKill] {
+      override def writes(event: BuildingKill): JsValue = {
+        Json.obj(
+          "eventType" -> "BuildingKill",
+          "buildingType" -> event.buildingType.name,
+          "location" -> Json.obj(
+            "x" -> event.loc.x,
+            "y" -> event.loc.y
+          ),
+          "lane" -> event.lane.name,
+          "side" -> event.side.name,
+          "time" -> event.time.toSeconds
+        )
+      }
+    }
+
+    implicit val baronKillWrite = new Writes[BaronKill] {
+      override def writes(event: BaronKill): JsValue = {
+        Json.obj(
+          "eventType" -> "BaronKill",
+          "location" -> Json.obj(
+            "x" -> event.loc.x,
+            "y" -> event.loc.y
+          ),
+          "time" -> event.time.toSeconds
+        )
+      }
+    }
+
+    implicit val dragonKillWrite = new Writes[DragonKill] {
+      override def writes(event: DragonKill): JsValue = {
+        Json.obj(
+          "eventType" -> "DragonKill",
+          "location" -> Json.obj(
+            "x" -> event.loc.x,
+            "y" -> event.loc.y
+          ),
+          "dragonType" -> event.dragonType.name,
+          "time" -> event.time.toSeconds
+        )
+      }
+    }
+
+    implicit val gameEventWrite = new Writes[GameEvent] {
+      override def writes(teamState: GameEvent): JsValue = teamState match {
+        case building : BuildingKill => Json.toJson(building)
+        case dragon : DragonKill => Json.toJson(dragon)
+        case baron : BaronKill => Json.toJson(baron)
+        case _ => Json.obj()
+      }
+    }
+
+    val listOfEventsJson = timeline.map(event => Json.toJson(event))
+    JsArray(listOfEventsJson)
+  }
+
   // scalastyle:off method.length
-  def loadGameData(gameKey: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
+  def loadGameData(gameKey: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
     dbh.getGame(new RiotId[Game](gameKey)) match {
       case Some(game@(metadata, _)) =>
         implicit def behaviorWrites[A]
@@ -102,6 +172,7 @@ class GameDataController(dbh: DataAccessHandler,
               } yield controllers.routes.Assets.versioned(s"champion/${champion.image.full}").url
               champImg.getOrElse[String](controllers.routes.Assets.versioned("champion/unknown.png").url)
             },
+            "participantId" -> states(Duration.Zero).participantId,
             "playerStates" -> Json.toJson(states)
           )
         }
@@ -136,7 +207,17 @@ class GameDataController(dbh: DataAccessHandler,
             )
           }
         }
-        Ok(Json.toJson(game))
+        Ok(Json.obj(
+          "game" -> Json.toJson(game),
+          "currentUser" -> Json.toJson(request.user),
+          "permissions" -> Json.toJson(dbh.getGroupPermissionsForUser(request.user.uuid).map{
+            case (groupId, permission) =>
+              Json.obj(
+                "groupId" -> groupId.toString,
+                "level" -> permission.name)
+          }),
+          "timeline" -> getTimelineForGame(gameKey)
+        ))
       case None =>
         NotFound
     }
@@ -149,6 +230,7 @@ class GameDataController(dbh: DataAccessHandler,
       Ok(Json.toJson(request.gameTags))
   }
 
+
   private implicit val tagWrites = new Writes[Tag] {
     def writes(tag: Tag): JsObject =
       if(tag.hasInternalId) {
@@ -158,13 +240,14 @@ class GameDataController(dbh: DataAccessHandler,
           "description" -> tag.description,
           "category" -> tag.category.name,
           "timestamp" -> tag.timestamp.toSeconds,
-          "players" -> Json.toJson(tag.players.map(_.id.id))
+          "players" -> Json.toJson(tag.players.map(_.id.id)),
+          "author" -> Json.toJson(dbh.getUserByUuid(tag.author)),
+          "authorizedGroups" -> tag.authorizedGroups.map(_.uuid.toString)
         )
       }
       else
         Json.obj("error:" -> "Error, tag does not have Id!")
   }
-
   /**
     * Request body MultiFormData should resemble:
     * Map(
@@ -174,13 +257,13 @@ class GameDataController(dbh: DataAccessHandler,
     *  "category" -> "gank"
     *  "timestamp" -> 1234  //measured in seconds
     *  "relevantPlayerIgns" -> JsArray("Hauntzer", "Meteos", "Impact")
-    *  "allplayerIgns" -> JSObject // contains all players
-    *                              // Uses key value pair: (playerIgn -> playerId)
+    *  "shareWithGroup" -> True // True if and only if sharing directly to group, otherwise false
     * )
     *
     * @return Ok if successful, otherwise BadRequest
     */
-  def saveTag(): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
+  def saveTag: Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
     val body: AnyContent = request.body
     body.asJson.map{ jsonValue =>
       val data = jsonValue.as[JsObject].value
@@ -189,28 +272,113 @@ class GameDataController(dbh: DataAccessHandler,
       val description = data("description").as[String]
       val category = data("category").as[String]
       val timeStamp = data("timestamp").as[Int]
+      val shareWithGroup = data("shareWithGroup").as[Boolean]
       val players = data("relevantPlayerIds").as[JsArray].value.map{ jsVal =>
         val id = jsVal.as[String]
         dbh.getPlayer(new InternalId[Player](id))
       }.toSet
       val userGroup = dbh.getUserGroupByUser(request.user)
-      userGroup match {
-        case Some(group) =>
-          dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
-            Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List(group)))
-        case None =>
+      shareWithGroup match {
+        case true =>
+          userGroup match {
+            case Some(group) =>
+              dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
+                Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List(group)))
+            case None => BadRequest("Could not share tag with group!")
+          }
+        case false =>
           dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
             Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]))
       }
-      Ok(Json.toJson(dbh.getTags(new RiotId[Game](gameKey ))))
+      Redirect(routes.GameDataController.getTags(gameKey))
     }.getOrElse{
       BadRequest("Failed to insert tag")
     }
   }
 
-  def deleteTag(tagId: String): Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) {
-    dbh.deleteTag(new InternalId[Tag](tagId))
-    Ok(tagId)
+  /**
+    * Request body MultiFormData should resemble:
+    * JsonArr(
+    *   "id" -> 0,
+    *   "id" -> 1
+    *    ....
+    * )
+    * Share tags with group, provided user belongs to a group
+    * If the tag is already shared, simply un-shares the tag
+    *
+    * Note, sharing a tag means the group owner/admins can delete the tag
+    *
+    * @return
+    */
+  def toggleShareTag: Action[AnyContent] = {
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
+      val body: AnyContent = request.body
+      body.asJson match {
+        case Some(jsonValue) =>
+          val data = jsonValue.as[JsObject].value
+          val id = data("tagId").as[String]
+          val tagId = new InternalId[Tag](id)
+          Logger.info(s"Searching for tag with id $tagId")
+          dbh.getTagById(tagId) match {
+            case None => BadRequest("Tag not found!")
+            case Some(tag) =>
+              tag.author != request.user.uuid match {
+                case true =>
+                  BadRequest("User is not the author of this tag!")
+                case false =>
+                  dbh.getUserGroupByUserUuid(request.user.uuid) match {
+                    case Some(group) =>
+                      val isAlreadyShared = tag.authorizedGroups.map(_.uuid).contains(group.uuid)
+                      val groupIds =
+                        isAlreadyShared match {
+                          case true => tag.authorizedGroups.map(_.uuid).filter(_ != group.uuid)
+                          case false => tag.authorizedGroups.map(_.uuid) ++ List(group.uuid)
+                        }
+                      dbh.updateTagsAuthorizedGroups(groupIds, tagId)
+                      Ok(Json.obj("tagId" -> id, "groupId" -> group.uuid, "nowShared" -> !isAlreadyShared))
+                    case None => BadRequest("User does not have group to share with!")
+                  }
+              }
+          }
+        case None => BadRequest("Missing body data in request!")
+      }
+    }
+  }
+
+  /**
+    * Only the author, group owner, or group admin can delete a tag
+    *
+    * @param tagId - string representation of tag id
+    * @return
+    */
+  def deleteTag(tagId: String): Action[AnyContent] =
+    (AuthenticatedAction andThen AuthorizationFilter) { request =>
+    val tagInternalId = new InternalId[Tag](tagId)
+    def deleteTagHelper(): Result = {
+      dbh.deleteTag(tagInternalId)
+      Ok(tagId)
+    }
+    dbh.getTagById(tagInternalId) match {
+      case Some(tag) =>
+        request.user.uuid.equals(tag.author) match {
+          case true => deleteTagHelper()
+          case false =>
+            dbh.getUserGroupByUser(request.user) match {
+              case Some(group: UserGroup) =>
+                tag.authorizedGroups.map(_.uuid).contains(group.uuid) match {
+                  case true =>
+                    dbh.getUserPermissionForGroup(request.user.uuid, group.uuid) match {
+                      case Some(Owner) => deleteTagHelper()
+                      case Some(Admin) => deleteTagHelper()
+                      case _ => BadRequest("Only group owners, admins, or the author can delete this tags!")
+                    }
+                  case false => BadRequest("Tag not part of this group!")
+                }
+              case None => BadRequest(s"No group found for user ${request.user.uuid}")
+            }
+        }
+      case None => BadRequest(s"No tag found with id $tagId")
+    }
   }
 }
 

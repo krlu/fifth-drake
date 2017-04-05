@@ -5,6 +5,7 @@ import GameModel exposing (Game, GameLength, PlayerId, Timestamp)
 import Http
 import Minimap.Types as Minimap
 import Navigation exposing (Location)
+import SettingsTypes exposing (GroupId, PermissionLevel, User, UserId)
 import TagCarousel.Types as TagCarousel
 import PlayerDisplay.Types as PlayerDisplay
 import Graph.Types as Graph
@@ -16,7 +17,7 @@ type Msg
   | ControlsMsg Controls.Msg
   | TimerUpdate Time.Time
   | MinimapMsg Minimap.Msg
-  | SetGame (Result Http.Error Game)
+  | SetData (Result Http.Error DashboardData)
   | LocationUpdate Location
   | SwitchView
   | PlayerDisplayMsg PlayerDisplay.Msg
@@ -31,6 +32,20 @@ type alias Model =
   , viewType : ViewType
   , playerDisplay : PlayerDisplay.Model
   , graphStat : Graph.Model
+  , currentUser : Maybe User
+  , permissions : List Permission
+  , loadingIcon : String
+  }
+
+type alias Permission =
+  { groupId : GroupId
+  , level : PermissionLevel
+  }
+
+type alias DashboardData =
+  { game : Game
+  , currentUser : User
+  , permissions : List Permission
   }
 
 type alias Flags =
@@ -39,6 +54,7 @@ type alias Flags =
   , pauseButton       : String
   , addTagButton      : String
   , deleteTagButton   : String
+  , loadingIcon       : String
   }
 
 type ViewType = Map | Stats
@@ -46,4 +62,3 @@ type ViewType = Map | Stats
 type TimeSelection
   = Instant Timestamp
   | Range (Timestamp, Timestamp)
-

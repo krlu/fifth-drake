@@ -5,6 +5,7 @@ import Controls.Controls as Controls
 import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider), namespace)
 import GameModel exposing (GameLength, Side(..), Timestamp)
 import Html exposing (..)
+import Html.Attributes exposing (src)
 import Html.CssHelpers exposing (withNamespace)
 import Minimap.Minimap as Minimap
 import TagCarousel.TagCarousel as TagCarousel
@@ -16,6 +17,7 @@ import Types exposing (..)
 import Tuple
 import Graph.Graph as Graph
 import Html.Events exposing (onClick)
+import String
 
 {id, class, classList} = withNamespace namespace
 
@@ -79,14 +81,32 @@ view model =
     redPlayers =  model.game.data.redTeam.players
     allPlayers = getPlayerIdsAndIgns bluePlayers redPlayers
 
-    tagCarousel = TagCarousel.view model.tagCarousel allPlayers |> Html.map TagCarouselMsg
+    tagCarousel =
+      case model.currentUser of
+        Just user ->
+          TagCarousel.view model.tagCarousel model.permissions user.id allPlayers
+          |> Html.map TagCarouselMsg
+        Nothing -> Debug.log "Current user not found!!" div [] []
     ((blueTeamDisplay, bluePlayerDisplays), (redTeamDisplay, redPlayerDisplays))
       = (Blue, Red)
       |> mapBoth sideToDisplays
+    switchLabel =
+      case model.viewType of
+        Map -> "View Stats"
+        Stats -> "View Map"
+    loadedCenterView =
+      case model.currentUser of
+        Nothing ->
+          div [ id [CenterContent], class [LoadingCenterContent] ]
+          [ img [ src model.loadingIcon, id [LoadingCss] ] []
+          ]
+        Just user ->
+          div [ id [CenterContent] ]
+            centerView
   in
     div
       [ class [Dashboard] ]
-      [ button [ class [SwitchCss], onClick SwitchView] [text "switch view"],
+      [ div [ class [SwitchCss], onClick SwitchView] [text switchLabel],
         div
         [ class [TeamDisplays] ]
         [ blueTeamDisplay
@@ -95,9 +115,7 @@ view model =
       , div
         [ id [MainContent] ]
         [ bluePlayerDisplays
-        , div
-          [ id [CenterContent] ]
-          centerView
+        , loadedCenterView
         , redPlayerDisplays
         ]
       , tagCarousel

@@ -14,10 +14,7 @@ tagDisplayWidth : Float
 tagDisplayWidth = 100 -- percent
 
 tagDisplayHeight : Float
-tagDisplayHeight = 210
-
-tagDisplayMarginTop : Float
-tagDisplayMarginTop = 30
+tagDisplayHeight = 170
 
 addTagButtonHeight : Float
 addTagButtonHeight = 50 -- px
@@ -50,7 +47,7 @@ tagFormHeight : Float
 tagFormHeight = 100 -- percent
 
 playerCheckBoxesWidth : Float
-playerCheckBoxesWidth = 64 -- px
+playerCheckBoxesWidth = 66 -- px
 
 playerCheckBoxesHeight : Float
 playerCheckBoxesHeight = 100 -- percent
@@ -68,7 +65,7 @@ tagFormTextInputWidth : Float
 tagFormTextInputWidth = 75 -- pct
 
 tagFormTextInputHeight : Float
-tagFormTextInputHeight = 100 -- percent
+tagFormTextInputHeight = 96.5 -- percent
 
 tagFormTextBoxWidth : Float
 tagFormTextBoxWidth = 100-- percent
@@ -94,6 +91,21 @@ tagMargin = 10
 labelImageSize : Float
 labelImageSize = 20 -- px
 
+shareTagHeight : Float
+shareTagHeight = 40 -- px
+
+shareTagWidth : Float
+shareTagWidth = 100 -- px
+
+shareTagBorderRadius : Float
+shareTagBorderRadius = 10 -- px
+
+shareTagFontSize: Float
+shareTagFontSize = 18 -- px
+
+carouselContainerHeight : Float
+carouselContainerHeight = 211 -- px
+
 type CssClass
   = TagCarousel
   | Tag
@@ -115,6 +127,14 @@ type CssClass
   | CheckboxItem
   | LabelImage
   | TagClickableArea
+  | ShareTagCss
+  | CarouselContainer
+  | HighlightSharedTag
+  | UnsharedTag
+  | CarouselControls
+  | FilterTagCss
+  | SelectedFilter
+  | UnselectedFilter
 
 css : Stylesheet
 css =
@@ -123,7 +143,6 @@ css =
     [ property "float" "left"
     , width (tagDisplayWidth |> pct)
     , height (tagDisplayHeight |> px)
-    , marginTop (tagDisplayMarginTop |> px)
     , displayFlex
     , children
       [ id AddTagButton
@@ -250,6 +269,14 @@ css =
               [ backgroundColor Color.c_selected
               ]
             ]
+          , class HighlightSharedTag
+            [ backgroundColor Color.c_shared_tag
+            , hover [backgroundColor Color.c_shared_tag]
+            ]
+          , class UnsharedTag
+            [ backgroundColor Color.c_unshared_tag
+            , hover [backgroundColor Color.c_unshared_tag]
+            ]
           ]
         ] ++ StyleUtils.userSelect "none")
       , class MinimizedCarousel
@@ -271,4 +298,40 @@ css =
     , width (100 |> pct)
     , overflow hidden
     ]
+  , class ShareTagCss
+    [ backgroundColor Color.c_share_tag_button
+    , height (shareTagHeight |> px)
+    , lineHeight (shareTagHeight |> px)
+    , width (shareTagWidth |> px)
+    , textAlign center
+    , borderRadius (shareTagBorderRadius |> px)
+    , fontSize (shareTagFontSize |> px)
+    , hover
+      [ backgroundColor Color.c_share_tag_button_hover
+      , cursor pointer
+      ]
+    ]
+  , class FilterTagCss
+    [ height (shareTagHeight |> px)
+    , lineHeight (shareTagHeight |> px)
+    , width (shareTagWidth |> px)
+    , textAlign center
+    , borderRadius (shareTagBorderRadius |> px)
+    , fontSize (shareTagFontSize |> px)
+    , hover [ cursor pointer ]
+    ]
+    , class SelectedFilter
+        [ backgroundColor Color.c_filter_tag_selected
+        ]
+    , class UnselectedFilter
+      [ backgroundColor Color.c_filter_tag
+      ]
+  , class CarouselContainer
+    [ width (100 |> pct)
+    , height (carouselContainerHeight |> px)
+    ]
+  , class CarouselControls
+    [ displayFlex
+    ]
   ]
+

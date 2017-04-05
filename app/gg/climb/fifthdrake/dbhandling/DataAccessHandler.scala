@@ -10,7 +10,8 @@ import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game._
 import gg.climb.fifthdrake.lolobjects.tagging.Tag
-import gg.climb.fifthdrake.{Game, Time}
+import gg.climb.fifthdrake.reasoning.GameEvent
+import gg.climb.fifthdrake.{Game, Time, Timeline}
 import gg.climb.ramenx.{Behavior, ListBehavior}
 import play.api.Logger
 
@@ -30,7 +31,11 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
 
   def deleteTag(id: InternalId[Tag]): Int = pdbh.deleteTag(id)
   def getTags(id: RiotId[Game]): Seq[Tag] = pdbh.getTagsForGame(id)
+  def getTagById(id: InternalId[Tag]): Option[Tag] = pdbh.getTagById(id)
   def insertTag(tag: Tag): Long = pdbh.insertTag(tag)
+  def getTagsWithAuthorizedGroupId(groupId: UUID): Seq[Tag] = pdbh.getTagsWithAuthorizedGroupId(groupId)
+  def updateTagsAuthorizedGroups(newAuthorizedGroupIds: Seq[UUID], tagId: InternalId[Tag]): Int =
+    pdbh.updateTagsAuthorizedGroups(newAuthorizedGroupIds, tagId)
 
   def getPlayer(id: InternalId[Player]): Player = pdbh.getPlayer(id)
   def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
@@ -40,6 +45,11 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def getAllGames: Seq[MetaData] = {
     val TIMEOUT = Duration(30, TimeUnit.SECONDS)
     Await.result(mdbh.getAllGames, TIMEOUT)
+  }
+
+  def getTimelineForGame(gameKey: RiotId[Timeline]): Seq[GameEvent] = {
+    val TIMEOUT = Duration(30, TimeUnit.SECONDS)
+    Await.result(mdbh.getTimelineForGame(gameKey), TIMEOUT).orNull
   }
 
   def getGame(gameKey: RiotId[Game]): Option[Game] ={
@@ -93,6 +103,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def createUserGroup(owner: User): Int = pdbh.insertUserGroup(owner)
   def updateUserGroup(userGroupId: UUID, users: List[UUID]): Int = pdbh.updateUserGroup(userGroupId, users)
   def getUserGroupByUser(user: User): Option[UserGroup] = pdbh.findUserGroupByUserUuid(user.uuid)
+  def getUserGroupByUserUuid(uuid: UUID): Option[UserGroup] = pdbh.findUserGroupByUserUuid(uuid)
   def getUserGroupByUuid(userGroupUuid: UUID): Option[UserGroup] = pdbh.findUserGroupByGroupUuid(userGroupUuid)
   def insertPermissionForUser(userUuid: UUID, groupUuid: UUID, permission: Permission) =
     pdbh.insertPermissionForUser(userUuid, groupUuid, permission)
@@ -100,6 +111,7 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
   def getPermissionsForGroup(groupUuid: UUID) = pdbh.getPermissionsForGroup(groupUuid)
   def getUserPermissionForGroup(userId: UUID, groupId : UUID): Option[Permission] =
     pdbh.getUserPermissionForGroup(userId, groupId)
+  def getGroupPermissionsForUser(userId: UUID): Seq[(UUID, Permission)] = pdbh.getGroupPermissionsForUser(userId)
   def updateUserPermissionForGroup(userUuid: UUID, groupUuid: UUID, permission: Permission) =
     pdbh.updateUserPermissionForGroup(userUuid, groupUuid, permission)
 

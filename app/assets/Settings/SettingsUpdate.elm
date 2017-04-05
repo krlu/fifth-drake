@@ -40,4 +40,3 @@ update msg model =
      (model, sendDeleteGroupRequest groupId model.location)
     SendDeleteGroupRequest (Ok msg) -> (Debug.log msg { model | group = Nothing, permissions = Nothing} , Cmd.none)
     SendDeleteGroupRequest (Err err) -> (Debug.log "Failed to delete group!" model, Cmd.none)
-

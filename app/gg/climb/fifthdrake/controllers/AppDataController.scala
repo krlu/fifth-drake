@@ -9,7 +9,6 @@ import play.Logger
 import play.api.libs.json.{JsObject, JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent, Controller}
 
-import scala.collection.immutable.Seq
 
 /**
   * Created by michael on 3/17/17.
@@ -21,9 +20,9 @@ class AppDataController(dbh: DataAccessHandler,
   private implicit val userWrites = new Writes[User] {
     override def writes(user: User): JsValue = Json.obj(
       "id" -> user.uuid.toString,
+      "email" -> user.email,
       "firstName" -> user.firstName,
-      "lastName" -> user.lastName,
-      "email" -> user.email
+      "lastName" -> user.lastName
     )
   }
 
@@ -33,8 +32,8 @@ class AppDataController(dbh: DataAccessHandler,
       Json.obj(
         "id" -> userGroup.uuid.toString,
         "users" -> userGroup.users
-              .flatMap(uuid => dbh.getUserByUuid(uuid))
-              .map(user => Json.toJson(user))
+          .flatMap(uuid => dbh.getUserByUuid(uuid))
+          .map(user => Json.toJson(user))
       )
     }
   }
@@ -55,10 +54,10 @@ class AppDataController(dbh: DataAccessHandler,
     request.queryString
       .get("email")
       .map(emails => dbh.getUserByEmail(emails.head)) match {
-        case Some(user) =>
-          Ok(Json.toJson(user))
-        case None =>
-          Ok
+      case Some(user) =>
+        Ok(Json.toJson(user))
+      case None =>
+        Ok
     }
   }
 
@@ -102,6 +101,7 @@ class AppDataController(dbh: DataAccessHandler,
 
   /**
     * Delete a user group off the face of the earth
+    * Only owners can delete user groups!!
     *
     * query string parameters:
     * id -> user group uuid (String)
@@ -119,7 +119,16 @@ class AppDataController(dbh: DataAccessHandler,
               perms.foreach{ case(userId, perm) =>
                 dbh.removePermissionForUser(userId, groupUuid)
               }
-              dbh.deleteUserGroup(UUID.fromString(id))
+              dbh.getTagsWithAuthorizedGroupId(groupUuid).foreach{ tag =>
+                tag.id match {
+                  case Some(tagId) =>
+                    val groupIds = tag.authorizedGroups.map(_.uuid).filter(_ != groupUuid)
+                    dbh.updateTagsAuthorizedGroups(groupIds, tagId)
+                  case None =>
+                    Logger.error(s"adding user to group with query string parameters: ${request.queryString}")
+                }
+              }
+              dbh.deleteUserGroup(groupUuid)
               Ok("Group successfully deleted!")
             case _ => BadRequest("Only owners can delete groups!!")
           }
@@ -141,31 +150,35 @@ class AppDataController(dbh: DataAccessHandler,
     val userGroupUuidStr = request.queryString.get("group").map(_.head)
     (userUuidStr, userGroupUuidStr) match {
       case (Some(user), Some(group)) =>
-        dbh.getUserGroupByUuid(UUID.fromString(group)) match {
-          case Some(userGroup) =>
-            val userUuid = UUID.fromString(user)
-            val groupUuid = userGroup.uuid
-            // Check if user doing the adding is has admin or owner access
-            dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
-              case Some(Member) => BadRequest("Members cannot modify groups!!")
-              case _ =>
-                if (!userGroup.users.contains(userUuid)) {
-                  dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
-                  dbh.insertPermissionForUser(userUuid, groupUuid, Member)
+        val userUuid = UUID.fromString(user)
+        dbh.getUserGroupByUserUuid(userUuid) match {
+          case Some(userGroup) => BadRequest("User already member of a user group")
+          case _ =>
+            dbh.getUserGroupByUuid(UUID.fromString(group)) match {
+              case Some(userGroup) =>
+                val groupUuid = userGroup.uuid
+                // Check if user doing the adding is has admin or owner access
+                dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
+                  case Some(Member) => BadRequest("Members cannot modify groups!!")
+                  case _ =>
+                    if (!userGroup.users.contains(userUuid)) {
+                      dbh.updateUserGroup(groupUuid, userGroup.users.::(userUuid))
+                      dbh.insertPermissionForUser(userUuid, groupUuid, Member)
+                    }
+                    val newGroup = dbh.getUserGroupByUser(request.user)
+                    val permissions = dbh.getPermissionsForGroup(groupUuid)
+                    val permJson = permissions.map{case (userId, permission) =>
+                      Json.obj("userId" -> userId.toString, "level" -> permission.name)
+                    }
+                    Ok(Json.obj(
+                      "group" -> Json.toJson(newGroup),
+                      "permissions" -> Json.toJson(permJson),
+                      "currentUser" -> Json.toJson(request.user))
+                    )
                 }
-                val newGroup = dbh.getUserGroupByUser(request.user)
-                val permissions = dbh.getPermissionsForGroup(groupUuid)
-                val permJson = permissions.map{case (userId, permission) =>
-                  Json.obj("userId" -> userId.toString, "level" -> permission.name)
-                }
-                Ok(Json.obj(
-                  "group" -> Json.toJson(newGroup),
-                  "permissions" -> Json.toJson(permJson),
-                  "currentUser" -> Json.toJson(request.user))
-                )
+              case None =>
+                Ok
             }
-          case None =>
-            Ok
         }
       case (_, _) =>
         BadRequest("error: missing either 'user' or 'group' query string parameters")

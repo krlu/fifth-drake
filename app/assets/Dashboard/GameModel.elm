@@ -9,6 +9,7 @@ type alias Timestamp = Int
 type alias Ign = String
 type alias Name = String
 type alias Image = String
+type alias ParticipantId = Int
 
 type alias Game =
   { metadata : Metadata
@@ -23,6 +24,9 @@ type alias Metadata =
   , redTeamName        : String
   , gameLength         : GameLength
   }
+
+
+type Event = A | B
 
 type alias Data =
   { blueTeam          : Team
@@ -47,6 +51,7 @@ type alias Player =
   , championName      : Name
   , championImage     : Image
   , state             : Array PlayerState
+  , participantId     : ParticipantId
   }
 
 type alias PlayerState =

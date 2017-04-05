@@ -17,9 +17,11 @@ GET   /health                     gg.climb.fifthdrake.controllers.HealthControll
 GET   /game/:gameKey              gg.climb.fifthdrake.controllers.GameDataController.loadDashboard(gameKey: String)
 GET   /game/:gameKey/data         gg.climb.fifthdrake.controllers.GameDataController.loadGameData(gameKey: String)
 GET   /game/:gameKey/tags         gg.climb.fifthdrake.controllers.GameDataController.getTags(gameKey: String)
+
 GET   /champion/:name             gg.climb.fifthdrake.controllers.GameDataController.loadChampion(name: String)
 PUT      /saveTag                 gg.climb.fifthdrake.controllers.GameDataController.saveTag
 DELETE   /deleteTag/:id           gg.climb.fifthdrake.controllers.GameDataController.deleteTag(id: String)
+PUT      /shareTag                gg.climb.fifthdrake.controllers.GameDataController.toggleShareTag
 
 GET      /a/getUser               gg.climb.fifthdrake.controllers.AppDataController.findUser
 GET      /a/createGroup           gg.climb.fifthdrake.controllers.AppDataController.createNewUserGroup

@@ -22,7 +22,7 @@ contentGap : Float
 contentGap = 40
 
 controlsGap : Float
-controlsGap = 20
+controlsGap = 2
 
 teamDisplayGap : Float
 teamDisplayGap = 30
@@ -30,12 +30,31 @@ teamDisplayGap = 30
 playerDisplaysGap : Float
 playerDisplaysGap = 20
 
+teamDisplayMarginLeft : Float
+teamDisplayMarginLeft = 24.5 --vw
+
+mainContentMarginLeft : Float
+mainContentMarginLeft = 2 --vw
+
+switchBorderRadius : Float
+switchBorderRadius = 8  -- px
+
+switchWidth : Float
+switchWidth = 9 -- vw
+
+switchHeight : Float
+switchHeight = 3 -- vh
+
+switchFontSize : Float
+switchFontSize = 18 -- px
+
 type CssId
   = TeamDisplayDivider
   | ControlsDivider
   | MainContent
   | CenterContent
   | CarouselDivider
+  | LoadingCss
 
 type CssClass
   = Dashboard
@@ -44,13 +63,14 @@ type CssClass
   | Widget
   | WidgetColor Side
   | SwitchCss
+  | LoadingCenterContent
 
 css : Stylesheet
 css =
   (stylesheet << Css.Namespace.namespace namespace)
   [ class Dashboard (
     [ width (100 |> pct)
-    , displayFlex
+    , property "display" "block"
     , alignItems center
     ] ++ StyleUtils.flexDirection "column" ++
     [ children
@@ -59,10 +79,12 @@ css =
         , width (teamDisplaysWidth |> px)
         , justifyContent spaceBetween
         , marginBottom (teamDisplayGap |> px)
+        , marginLeft (teamDisplayMarginLeft|> vw)
         ] ++ StyleUtils.flexDirection "row")
       , id MainContent (
         [ displayFlex
         , justifyContent flexStart
+        , marginLeft (mainContentMarginLeft |> vw)
         ] ++ StyleUtils.flexDirection "row" ++
         [ children
           [ id CenterContent (
@@ -79,6 +101,10 @@ css =
                 ]
               ]
             ])
+          , class LoadingCenterContent
+            [ height (574 |> px)
+            , width (85 |> vw)
+            ]
           , class PlayerDisplay (
             [ displayFlex
             , justifyContent flexStart
@@ -121,8 +147,21 @@ css =
       ]
     ]
   , class SwitchCss
+    [ position absolute
+    , backgroundColor Color.c_share_tag_button
+    , hover
+      [ backgroundColor Color.c_share_tag_button_hover
+      , cursor pointer
+      ]
+    , borderRadius (switchBorderRadius |> px)
+    , width (switchWidth |> vw)
+    , height (switchHeight |> vh)
+    , textAlign center
+    , lineHeight (switchHeight |> vh)
+    , fontSize (switchFontSize |> px)
+    ]
+  , id LoadingCss
     [ position relative
-    , right (40 |> pct)
-    , top (10 |> pct)
+    , top (8 |> vh)
     ]
   ]

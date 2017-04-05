@@ -38,6 +38,23 @@ class Tag(val id: Option[InternalId[Tag]],
     )
   }
 
+  override def equals(that: Any) = that match {
+    case that : Tag =>
+      val x =for{
+        id1 <- this.id
+        id2 <- that.id
+      } yield {
+        id1.id == id2.id
+      }
+      x.getOrElse(false)
+    case _ => false
+  }
+
+  override def hashCode = this.id match {
+    case Some(internalId) => internalId.id.hashCode
+    case None => this.hashCode
+  }
+
   override def toString: String = s"id=$id, gameKey=${
     gameKey
     .id

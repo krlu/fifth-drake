@@ -10,7 +10,8 @@ class PlayerState(val id: RiotId[Player],
                   val deaths: Int,
                   val assists: Int,
                   val currentGold: Int,
-                  val totalGold: Int
+                  val totalGold: Int,
+                  val participantId: Int
                   ) {
 
   override def toString: String = s"PlayerState(RiotId=$id,\nchampionState=$championState,\nlocation=$location)"

@@ -2,10 +2,11 @@ module TagCarousel.Internal.Update exposing (..)
 
 import GameModel exposing (Player, PlayerId, Timestamp)
 import TagCarousel.Internal.TagUtils exposing (defaultTagForm)
-import TagCarousel.Types exposing (Model, Msg(..), Tag, TagId)
+import TagCarousel.Types exposing (Model, Msg(..), ShareData, Tag, TagForm, TagId)
 import String as String exposing (toInt)
 import TagCarousel.Internal.Delete as Delete
 import TagCarousel.Internal.Save as Save
+import TagCarousel.Internal.Share as Share
 
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update msg model ts =
@@ -23,7 +24,10 @@ update msg model ts =
     TagDeleted (Err msg)->
       (Nothing, Debug.log "Could not delete tag!" model , Cmd.none)
     SwitchForm ->
-      (Nothing, switchTag model , Cmd.none)
+      let
+        oldForm = model.tagForm
+      in
+      (Nothing, { model | tagForm = switchTag oldForm } , Cmd.none)
     SaveTag ->
       let
         title = model.tagForm.title
@@ -31,7 +35,7 @@ update msg model ts =
         description = model.tagForm.description
         gameId = model.tagForm.gameId
         host = model.tagForm.host
-        modelWithEmptyTagform =
+        modelWithEmptyTagForm =
           { model
             | tagForm = defaultTagForm gameId host category
           }
@@ -43,9 +47,12 @@ update msg model ts =
         else if (String.length description == 0) then
           (Nothing, model, Cmd.none)
         else
-          (Nothing, modelWithEmptyTagform, Save.sendRequest model.tagForm ts)
+          (Nothing, modelWithEmptyTagForm, Save.sendRequest model.tagForm ts)
     TagSaved (Ok tags) ->
-     (Nothing, switchTag { model | tags = tags }, Cmd.none)
+      let
+        oldForm = model.tagForm
+      in
+      (Nothing, { model | tags = tags, tagForm = switchTag oldForm }, Cmd.none)
     TagSaved (Err msg) ->
      (Nothing, Debug.log "Could not save tag!" model, Cmd.none)
     CreateTitle title ->
@@ -81,6 +88,38 @@ update msg model ts =
         newTagForm = { oldTagForm | selectedIds = newIdsList}
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
+    UpdateShare ->
+      let
+        oldTagForm = model.tagForm
+        newTagForm = { oldTagForm | toShare = not oldTagForm.toShare }
+      in
+      (Nothing, { model | tagForm = newTagForm }, Cmd.none)
+    ToggleShare tagId -> (Nothing, model, Share.sendRequest tagId model.host)
+    ShareToggled (Ok shareData) ->
+     let
+      newTags = List.map (updateTag shareData) model.tags
+     in
+      (Nothing, {model | tags = newTags}, Cmd.none)
+    ShareToggled (Err msg) -> (Nothing, Debug.log "could not toggle share!" model, Cmd.none)
+    ToggleCarouselForm ->
+      let
+        newFormBool = not model.isShareForm
+      in
+      (Nothing, {model | isShareForm = newFormBool}, Cmd.none)
+    FilterByAuthor ->
+      let
+        newBool = not model.filteredByAuthor
+      in
+      (Nothing, {model | filteredByAuthor = newBool}, Cmd.none)
+    FilterByGroup groupId ->
+      let
+        newFilters =
+          case List.member groupId model.groupFilters of
+            True -> List.filter (\filterId -> groupId /= groupId) model.groupFilters
+            False -> model.groupFilters ++ [groupId]
+      in
+        (Nothing, {model | groupFilters = newFilters}, Cmd.none)
+
 
 filterTags: List Tag -> String -> List Tag
 filterTags tags id =
@@ -90,11 +129,31 @@ filterTags tags id =
   in
     List.filter customFilter tags
 
-switchTag: Model -> Model
-switchTag model =
+switchTag: TagForm -> TagForm
+switchTag form =
   let
-    oldTagForm = model.tagForm
-    oldActive = model.tagForm.active
-    newTagForm = { oldTagForm | active = not oldActive, selectedIds = [] }
+    oldActive = form.active
   in
-    { model | tagForm = newTagForm }
+    { form |
+    active = not oldActive
+    , selectedIds = []
+    , title = ""
+    , description = ""
+    , category = "Objective"
+    , toShare = False
+    }
+
+updateTag: ShareData -> Tag -> Tag
+updateTag shareData tag =
+  case (tag.id == shareData.tagId, shareData.isShared) of
+    (True, True) ->
+      let
+        newAuthorizedGroups = tag.authorizedGroups ++ [shareData.groupId]
+      in
+        {tag | authorizedGroups = newAuthorizedGroups}
+    (True, False) ->
+      let
+        newAuthorizedGroups = List.filter (\groupId -> (groupId /= shareData.groupId)) tag.authorizedGroups
+      in
+        {tag | authorizedGroups = newAuthorizedGroups}
+    (False, _) -> tag
