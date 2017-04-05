@@ -1,7 +1,7 @@
 module Types exposing (..)
 
 import Controls.Types as Controls
-import GameModel exposing (Game, GameLength, PlayerId, Timestamp)
+import GameModel exposing (Game, GameLength, PlayerId, Position, Timestamp)
 import Http
 import Minimap.Types as Minimap
 import Navigation exposing (Location)
@@ -35,6 +35,16 @@ type alias Model =
   , currentUser : Maybe User
   , permissions : List Permission
   , loadingIcon : String
+  , events : List ObjectiveEvent
+  }
+
+type alias ParticipantId = Int
+
+type alias ObjectiveEvent =
+  { unitKilled : String
+  , killerId : ParticipantId
+  , timestamp : Timestamp
+  , position : Position
   }
 
 type alias Permission =
@@ -46,6 +56,7 @@ type alias DashboardData =
   { game : Game
   , currentUser : User
   , permissions : List Permission
+  , objectiveEvents : List ObjectiveEvent
   }
 
 type alias Flags =

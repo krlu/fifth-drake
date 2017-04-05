@@ -57,54 +57,24 @@ class GameDataController(dbh: DataAccessHandler,
 
   private def getTimelineForGame(gameKey: String): JsArray = {
     val timeline: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
-    implicit val buildingKillWrite = new Writes[BuildingKill] {
-      override def writes(event: BuildingKill): JsValue = {
-        Json.obj(
-          "eventType" -> "BuildingKill",
-          "buildingType" -> event.buildingType.name,
-          "location" -> Json.obj(
-            "x" -> event.loc.x,
-            "y" -> event.loc.y
-          ),
-          "lane" -> event.lane.name,
-          "side" -> event.side.name,
-          "time" -> event.time.toSeconds
-        )
-      }
-    }
-
-    implicit val baronKillWrite = new Writes[BaronKill] {
-      override def writes(event: BaronKill): JsValue = {
-        Json.obj(
-          "eventType" -> "BaronKill",
-          "location" -> Json.obj(
-            "x" -> event.loc.x,
-            "y" -> event.loc.y
-          ),
-          "time" -> event.time.toSeconds
-        )
-      }
-    }
-
-    implicit val dragonKillWrite = new Writes[DragonKill] {
-      override def writes(event: DragonKill): JsValue = {
-        Json.obj(
-          "eventType" -> "DragonKill",
-          "location" -> Json.obj(
-            "x" -> event.loc.x,
-            "y" -> event.loc.y
-          ),
-          "dragonType" -> event.dragonType.name,
-          "time" -> event.time.toSeconds
-        )
-      }
-    }
-
     implicit val gameEventWrite = new Writes[GameEvent] {
-      override def writes(teamState: GameEvent): JsValue = teamState match {
-        case building : BuildingKill => Json.toJson(building)
-        case dragon : DragonKill => Json.toJson(dragon)
-        case baron : BaronKill => Json.toJson(baron)
+      override def writes(event: GameEvent): JsValue = event match {
+        case objective: Objective =>
+          val unitKilled = objective match {
+            case building: BuildingKill => building.buildingType.name
+            case dragon: DragonKill => dragon.dragonType.name
+            case baron: BaronKill => "BaronNashor"
+            case _ => ""
+          }
+          Json.obj(
+            "unitKilled" -> unitKilled,
+            "killerId" -> objective.killerId.id.toInt,
+            "timestamp" -> objective.timestamp.toSeconds,
+            "position" -> Json.obj(
+              "x" -> objective.location.x,
+              "y" -> objective.location.y
+            )
+          )
         case _ => Json.obj()
       }
     }

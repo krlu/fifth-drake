@@ -20,7 +20,6 @@ init loc addTagButton deleteTagButton =
   let
       gameId = getGameId loc
       host = loc.host
-      tagForm : TagForm
       tagForm = TagUtils.defaultTagForm gameId host defaultCategory
   in
     ( { host = loc.host
