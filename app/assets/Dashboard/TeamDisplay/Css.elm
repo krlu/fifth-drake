@@ -19,6 +19,9 @@ statsFontSize = 14
 teamDisplayWidth : Float
 teamDisplayWidth = 275
 
+teamDisplayContainerWidth : Float
+teamDisplayContainerWidth = 450
+
 teamDisplayHeight : Float
 teamDisplayHeight = 100
 
@@ -26,6 +29,9 @@ type CssClass
   = TeamDisplay
   | TeamStats
   | Label
+  | DragonImage
+  | TeamDisplayContainer
+  | DragonDisplay
 
 css : Stylesheet
 css =
@@ -66,4 +72,19 @@ css =
         )
       ]
     ])
+  , class DragonImage
+    [ width (3 |> vh)
+    , height (3 |> vh)
+    , borderRadius (3 |> vh)
+    , position relative
+    , top (68 |> px)
+    ]
+  , class TeamDisplayContainer
+    [ width (teamDisplayContainerWidth |> px)
+    , displayFlex
+    ]
+  , class DragonDisplay
+    [ displayFlex
+    , width (200 |> px)
+    ]
   ]

@@ -41,6 +41,9 @@ view model =
           (getTeamName side model.game.metadata)
           (getTeam side model.game.data)
           model.timestamp
+          model.events
+          model.teamDisplay
+          side
         ]
 
     sideToPlayerDisplay side =

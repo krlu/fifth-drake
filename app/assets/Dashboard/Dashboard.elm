@@ -22,6 +22,14 @@ init flags location =
     minimapModel = Minimap.init flags.minimapBackground
     (tagCarouselModel, tagCarouselCmd) = TagCarousel.init location flags.addTagButton flags.deleteTagButton
     controlsModel = Controls.init flags.playButton flags.pauseButton
+
+    teamDisplay =
+      { airDragonIcon = flags.airDragonIcon
+      , earthDragonIcon = flags.earthDragonIcon
+      , fireDragonIcon  = flags.fireDragonIcon
+      , waterDragonIcon = flags.waterDragonIcon
+      , elderDragonIcon = flags.elderDragonIcon
+      }
     metadata : Metadata
     metadata =
       { blueTeamName = ""
@@ -55,6 +63,7 @@ init flags location =
     , permissions = []
     , loadingIcon = flags.loadingIcon
     , events = []
+    , teamDisplay = teamDisplay
     } !
     [ Cmd.map TagCarouselMsg tagCarouselCmd
     , Populate.populate location
