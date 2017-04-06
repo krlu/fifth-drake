@@ -12,6 +12,12 @@
 		pauseButton: require("Dashboard/ic_pause_white_24px.svg"),
 		addTagButton: require("Dashboard/ic_add_white_48px.svg"),
 		deleteTagButton: require("Dashboard/ic_clear_white_24px.svg"),
-		loadingIcon : require("Dashboard/loading.gif")
+		loadingIcon : require("Dashboard/loading.gif"),
+		airDragonIcon : require("Dashboard/air_dragon.png"),
+		earthDragonIcon : require("Dashboard/earth_dragon.png"),
+		fireDragonIcon : require("Dashboard/fire_dragon.png"),
+		waterDragonIcon : require("Dashboard/water_dragon.png"),
+		elderDragonIcon : require("Dashboard/elder_dragon.png"),
+		redTowerKillIcon : require("Dashboard/air_dragon.png")
 	});
 })();

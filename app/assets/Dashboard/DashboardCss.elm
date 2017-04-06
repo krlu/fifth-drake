@@ -7,7 +7,7 @@ import GameModel exposing (Side(Blue, Red))
 import Minimap.Css exposing (minimapHeight, minimapWidth)
 import StyleUtils
 import TagCarousel.Css exposing (tagCarouselWidth)
-import TeamDisplay.Css exposing (teamDisplayWidth)
+import TeamDisplay.Css exposing (teamDisplayContainerWidth)
 
 namespace : String
 namespace = "dashboard"
@@ -16,7 +16,7 @@ teamDisplaysGap : Float
 teamDisplaysGap = 50
 
 teamDisplaysWidth : Float
-teamDisplaysWidth = teamDisplayWidth * 2 + teamDisplaysGap
+teamDisplaysWidth = teamDisplayContainerWidth * 2 + teamDisplaysGap
 
 contentGap : Float
 contentGap = 40
@@ -31,7 +31,7 @@ playerDisplaysGap : Float
 playerDisplaysGap = 20
 
 teamDisplayMarginLeft : Float
-teamDisplayMarginLeft = 24.5 --vw
+teamDisplayMarginLeft = 11.7 --vw
 
 mainContentMarginLeft : Float
 mainContentMarginLeft = 2 --vw

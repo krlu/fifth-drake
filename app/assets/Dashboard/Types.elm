@@ -8,6 +8,7 @@ import Navigation exposing (Location)
 import SettingsTypes exposing (GroupId, PermissionLevel, User, UserId)
 import TagCarousel.Types as TagCarousel
 import PlayerDisplay.Types as PlayerDisplay
+import TeamDisplay.Types as TeamDisplay
 import Graph.Types as Graph
 import Time
 
@@ -36,6 +37,7 @@ type alias Model =
   , permissions : List Permission
   , loadingIcon : String
   , events : List ObjectiveEvent
+  , teamDisplay : TeamDisplay.Model
   }
 
 type alias ParticipantId = Int
@@ -66,6 +68,11 @@ type alias Flags =
   , addTagButton      : String
   , deleteTagButton   : String
   , loadingIcon       : String
+  , airDragonIcon     : String
+  , earthDragonIcon   : String
+  , fireDragonIcon    : String
+  , waterDragonIcon   : String
+  , elderDragonIcon   : String
   }
 
 type ViewType = Map | Stats
