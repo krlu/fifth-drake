@@ -38,7 +38,7 @@ class AppDataController(dbh: DataAccessHandler,
     }
   }
 
-  def loadSettings: Action[AnyContent] =  AuthenticatedAction { request =>
+  def loadSettings: Action[AnyContent] =  (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Logger.info(s"loading home page: ${request.toString()}")
     Ok(views.html.userSettings())
   }
@@ -49,7 +49,7 @@ class AppDataController(dbh: DataAccessHandler,
     * query string parameters:
     * email -> user email (String)
     */
-  def findUser: Action[AnyContent] = AuthenticatedAction { request =>
+  def findUser: Action[AnyContent] = (AuthenticatedAction andThen AuthorizationFilter) { request =>
     Logger.info(s"searching for users with query string parameters: ${request.queryString}")
     request.queryString
       .get("email")

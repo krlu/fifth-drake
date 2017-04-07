@@ -2,9 +2,9 @@ package gg.climb.fifthdrake.controllers
 
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.controllers.requests.{AuthenticatedAction, AuthorizationFilter, TagAction}
+import gg.climb.fifthdrake.controllers.requests._
 import gg.climb.fifthdrake.dbhandling.DataAccessHandler
-import gg.climb.fifthdrake.lolobjects.accounts.{Admin, Owner, User, UserGroup}
+import gg.climb.fifthdrake.lolobjects.accounts.{User, UserGroup}
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, InGameTeam, MetaData}
@@ -235,34 +235,38 @@ class GameDataController(dbh: DataAccessHandler,
   def saveTag: Action[AnyContent] =
     (AuthenticatedAction andThen AuthorizationFilter) { request =>
     val body: AnyContent = request.body
-    body.asJson.map{ jsonValue =>
-      val data = jsonValue.as[JsObject].value
-      val gameKey = data("gameKey").as[String]
-      val title = data("title").as[String]
-      val description = data("description").as[String]
-      val category = data("category").as[String]
-      val timeStamp = data("timestamp").as[Int]
-      val shareWithGroup = data("shareWithGroup").as[Boolean]
-      val players = data("relevantPlayerIds").as[JsArray].value.map{ jsVal =>
-        val id = jsVal.as[String]
-        dbh.getPlayer(new InternalId[Player](id))
-      }.toSet
-      val userGroup = dbh.getUserGroupByUser(request.user)
-      shareWithGroup match {
-        case true =>
-          userGroup match {
-            case Some(group) =>
-              dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
-                Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List(group)))
-            case None => BadRequest("Could not share tag with group!")
-          }
-        case false =>
-          dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
-            Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]))
-      }
-      Redirect(routes.GameDataController.getTags(gameKey))
-    }.getOrElse{
-      BadRequest("Failed to insert tag")
+    body.asJson match {
+      case Some(jsonValue) =>
+        val data = jsonValue.as[JsObject].value
+        val gameKey = data("gameKey").as[String]
+        val title = data("title").as[String]
+        val description = data("description").as[String]
+        val category = data("category").as[String]
+        val timeStamp = data("timestamp").as[Int]
+        val shareWithGroup = data("shareWithGroup").as[Boolean]
+        val players = data("relevantPlayerIds").as[JsArray].value.map { jsVal =>
+          val id = jsVal.as[String]
+          dbh.getPlayer(new InternalId[Player](id))
+        }.toSet
+        val userGroup = dbh.getUserGroupByUser(request.user)
+        shareWithGroup match {
+          case true =>
+            userGroup match {
+              case Some(group) =>
+                dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
+                  Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List(group)
+                )
+                )
+              case None => BadRequest("Could not share tag with group!")
+            }
+          case false =>
+            dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
+              Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]
+            )
+            )
+        }
+        Redirect(routes.GameDataController.getTags(gameKey))
+      case nothing => BadRequest("Failed to insert tag")
     }
   }
 
@@ -299,11 +303,10 @@ class GameDataController(dbh: DataAccessHandler,
                   dbh.getUserGroupByUserUuid(request.user.uuid) match {
                     case Some(group) =>
                       val isAlreadyShared = tag.authorizedGroups.map(_.uuid).contains(group.uuid)
-                      val groupIds =
-                        isAlreadyShared match {
-                          case true => tag.authorizedGroups.map(_.uuid).filter(_ != group.uuid)
-                          case false => tag.authorizedGroups.map(_.uuid) ++ List(group.uuid)
-                        }
+                      val groupIds = isAlreadyShared match {
+                        case true => tag.authorizedGroups.map(_.uuid).filter(_ != group.uuid)
+                        case false => tag.authorizedGroups.map(_.uuid) ++ List(group.uuid)
+                      }
                       dbh.updateTagsAuthorizedGroups(groupIds, tagId)
                       Ok(Json.obj("tagId" -> id, "groupId" -> group.uuid, "nowShared" -> !isAlreadyShared))
                     case None => BadRequest("User does not have group to share with!")
@@ -336,12 +339,7 @@ class GameDataController(dbh: DataAccessHandler,
             dbh.getUserGroupByUser(request.user) match {
               case Some(group: UserGroup) =>
                 tag.authorizedGroups.map(_.uuid).contains(group.uuid) match {
-                  case true =>
-                    dbh.getUserPermissionForGroup(request.user.uuid, group.uuid) match {
-                      case Some(Owner) => deleteTagHelper()
-                      case Some(Admin) => deleteTagHelper()
-                      case _ => BadRequest("Only group owners, admins, or the author can delete this tags!")
-                    }
+                  case true => deleteTagHelper()
                   case false => BadRequest("Tag not part of this group!")
                 }
               case None => BadRequest(s"No group found for user ${request.user.uuid}")
