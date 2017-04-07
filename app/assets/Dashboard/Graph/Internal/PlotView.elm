@@ -1,4 +1,4 @@
-module Graph.Internal.PlotView exposing (customHintCreator)
+module Graph.Internal.PlotView exposing (customHintCreator, zip)
 
 import Array
 import Css exposing (height, pct, property, width, zero)

@@ -8,6 +8,7 @@ import Minimap.Internal.Update as Update
 import Minimap.Internal.View as View
 import Minimap.Internal.Subscriptions as Subscriptions
 import Minimap.Types exposing (..)
+import Set exposing (Set)
 import SettingsTypes exposing (Icon)
 import Types exposing (Flags, ObjectiveEvent)
 
@@ -29,7 +30,7 @@ init = initialModel
 update : Model -> Data -> Timestamp -> Msg -> Model
 update = Update.update
 
-view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Html a
+view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Html a
 view = View.view
 
 subscriptions : Model -> Sub Msg

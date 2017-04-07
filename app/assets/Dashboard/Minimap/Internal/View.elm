@@ -6,6 +6,7 @@ import Collage exposing (Form, Path, collage, defaultLine, path, toForm, traced)
 import Css exposing (backgroundImage, url)
 import Dict
 import Element exposing (toHtml)
+import Graph.Internal.PlotView exposing (zip)
 import Html exposing (..)
 import Html.Attributes exposing (draggable, src, style)
 import Html.CssHelpers exposing (withNamespace)
@@ -13,13 +14,14 @@ import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespac
 import Minimap.Types exposing (Model)
 import GameModel exposing (..)
 import Navbar exposing (Icon)
+import Set exposing (Set)
 import StyleUtils exposing (styles)
 import Types exposing (ObjectiveEvent)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Html a
-view model data objectives timestamp=
+view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Html a
+view model data objectives timestamp selectedPlayers=
   let
     inhibsHtml =
       List.map (buildingToHtml model model.blueInhibitorKillIcon model.redInhibitorKillIcon) <|
@@ -31,6 +33,7 @@ view model data objectives timestamp=
       List.filter (\obj -> isTurretKill obj) <|
       List.filter (\obj -> obj.timestamp < timestamp) objectives
 
+    paths = Debug.log "" <| playerPaths model data (timestamp - 60) timestamp selectedPlayers
     playerIcons : List (Html a)
     playerIcons =
       Dict.values model.iconStates
@@ -57,7 +60,7 @@ view model data objectives timestamp=
               ]
             []
         ]
-        ++ playerIcons ++ towersHtml ++ inhibsHtml
+        ++ playerIcons ++ towersHtml ++ inhibsHtml ++ paths
       )
 
 buildingToHtml : Model -> Icon -> Icon -> ObjectiveEvent -> Html a
@@ -94,40 +97,62 @@ isTurretKill objective =
     _ -> False
 
 
-playerPaths : Model -> Data -> Timestamp -> Timestamp -> List (Html a)
-playerPaths model data start end =
+playerPaths : Model -> Data -> Timestamp -> Timestamp -> Set PlayerId -> List (Html a)
+playerPaths model data start end selectedPlayers =
   let
     playerPaths =
       data |>
       (\{blueTeam, redTeam} ->
-        [ teamToPlayerPaths blueTeam model start end
-        , teamToPlayerPaths redTeam model start end
+        [ teamToPlayerPaths blueTeam model start end selectedPlayers Blue
+        , teamToPlayerPaths redTeam model start end selectedPlayers Red
         ]
       )
+      |> List.concatMap (\list -> list)
   in
-    playerPaths
+    case (start > 0) of
+      True -> playerPaths
+      False -> []
 
-teamToPlayerPaths : Team -> Model -> Timestamp -> Timestamp -> Html a
-teamToPlayerPaths team model start end =
-  team.players
-  |> Array.toList
-  |> List.map (\player -> (
-    player.state
+teamToPlayerPaths : Team -> Model -> Timestamp -> Timestamp -> Set PlayerId -> Side -> List (Html a)
+teamToPlayerPaths team model start end selectedPlayers side =
+  let
+    diff = end - start
+    opacities = List.range 1 diff |> List.map (\val -> (toFloat val)/(toFloat diff))
+  in
+    team.players
     |> Array.toList
-    -- Might need to do start - 1/
-    |> List.drop start
-    |> List.take (end - start)
-    -- This is wrong, since origin for Collage is
-    -- at center of element and not bottom left corner
-    |> List.map (\state ->
-      (model.mapWidth * (state.position.x / model.mapWidth),
-       model.mapHeight * (state.position.y / model.mapHeight)
+    |> List.filter (\player -> Set.member player.id selectedPlayers)
+    |> List.map (\player -> (
+      player.state
+      |> Array.toList
+      |> List.drop start
+      |> List.take diff
+      |> List.map (\state ->
+        (minimapWidth * (state.position.x / model.mapWidth),
+         minimapHeight * (state.position.y / model.mapHeight)
+        ))
+      |> zip opacities
+      |> List.map (\(op, (x,y)) -> div [getPosStyle x y op side] [])
       )
-    ))
-  )
-  -- Solid black line for player paths, can change later as necessary
-  |> List.map (\states ->
-    path states
-    |> traced defaultLine)
-  |> collage (ceiling model.mapWidth) (ceiling model.mapHeight)
-  |> toHtml
+    )
+    |> List.concatMap (\list -> list)
+
+
+getPosStyle : a -> a -> Float -> Side -> Attribute msg
+getPosStyle x y opacity side =
+  let
+    color =
+      case side of
+        Blue -> "blue"
+        Red -> "red"
+  in
+   style
+    [ ("bottom", (toString y) ++ "px")
+    , ("left", (toString x) ++ "px")
+    , ("position", "absolute")
+    , ("width", "10px")
+    , ("height", "10px")
+    , ("background", color)
+    , ("border-radius", "10px")
+    , ("opacity", toString opacity)
+    ]
