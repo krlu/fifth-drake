@@ -80,11 +80,12 @@ buildingToHtml model blue red objective =
       Red -> img [ src blue, styles] []
 
 
+{-- killed should be opposite color of killer -}
 colorOfKilled : ObjectiveEvent -> Side
 colorOfKilled objective =
     case objective.killerId of
-      200 -> Red
-      100 -> Blue
+      200 -> Blue
+      100 -> Red
       _ -> Debug.log "ERROR, ID WAS NOT 100 NOR 200, ARE YOU SURE THIS IS A BUILDING KILL?" Red
 
 isTurretKill : ObjectiveEvent -> Bool
