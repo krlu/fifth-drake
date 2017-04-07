@@ -1,9 +1,10 @@
 module TeamDisplay.TeamDisplay exposing (view)
 
 import Array
+import Css exposing (px)
 import GameModel exposing (Player, Side(Blue, Red), Team, Timestamp)
 import Html exposing (..)
-import Html.Attributes exposing (src)
+import Html.Attributes exposing (src, style)
 import Html.CssHelpers exposing (withNamespace)
 import TeamDisplay.Css exposing (CssClass(..), namespace)
 import TeamDisplay.Types exposing (Model)
@@ -15,10 +16,12 @@ view : String -> Team -> Timestamp -> List ObjectiveEvent -> Model -> Side -> Ht
 view name team timestamp objectives model side =
   let
     players = Array.toList team.players
-    objectivesHtml =
-      List.map (objectiveToHtml model) <|
+    dragonObjectives =
+      List.filter (\obj -> isDragonKill obj) <|
       List.filter (\obj -> teamKilledObjective players obj) <|
       List.filter (\obj -> obj.timestamp < timestamp) objectives
+    objectivesHtml =
+      List.map (objectiveToHtml model side (List.length dragonObjectives)) <| dragonObjectives
     teamState =
       Array.get timestamp team.teamStates
       |> Maybe.map (\{turrets, dragons, barons} ->
@@ -66,18 +69,33 @@ view name team timestamp objectives model side =
     div [class [TeamDisplayContainer]]
       containedHtml
 
+isDragonKill : ObjectiveEvent -> Bool
+isDragonKill objective =
+  case objective.unitKilled of
+    "WaterDragon" -> True
+    "FireDragon" ->  True
+    "EarthDragon" -> True
+    "AirDragon" ->  True
+    "ElderDragon" ->  True
+    _ -> False
 
 teamKilledObjective : List Player -> ObjectiveEvent -> Bool
 teamKilledObjective players objective =
   List.map (\player -> player.participantId) players
   |> List.member objective.killerId
 
-objectiveToHtml : Model -> ObjectiveEvent -> Html a
-objectiveToHtml model objective =
+objectiveToHtml : Model -> Side -> Int -> ObjectiveEvent -> Html a
+objectiveToHtml model side numDragons objective=
+  let
+    pos =
+      case side of
+        Blue -> style [("left", (toString <| 13 - (2 * (numDragons-1))) ++ "vw")]
+        Red -> style []
+  in
     case objective.unitKilled of
-      ("WaterDragon") ->  img [ src model.waterDragonIcon, class [DragonImage]] []
-      ("FireDragon") ->  img [ src model.fireDragonIcon, class [DragonImage]] []
-      ("EarthDragon") ->  img [ src model.earthDragonIcon, class [DragonImage]] []
-      ("AirDragon") ->  img [ src model.airDragonIcon, class [DragonImage]] []
-      ("ElderDragon") ->  img [ src model.elderDragonIcon, class [DragonImage]] []
+      ("WaterDragon") ->  img [ src model.waterDragonIcon, class [DragonImage], pos] []
+      ("FireDragon") ->  img [ src model.fireDragonIcon, class [DragonImage], pos] []
+      ("EarthDragon") ->  img [ src model.earthDragonIcon, class [DragonImage], pos] []
+      ("AirDragon") ->  img [ src model.airDragonIcon, class [DragonImage], pos] []
+      ("ElderDragon") ->  img [ src model.elderDragonIcon, class [DragonImage], pos] []
       _ -> div [] []

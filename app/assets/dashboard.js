@@ -18,6 +18,10 @@
 		fireDragonIcon : require("Dashboard/fire_dragon.png"),
 		waterDragonIcon : require("Dashboard/water_dragon.png"),
 		elderDragonIcon : require("Dashboard/elder_dragon.png"),
-		redTowerKillIcon : require("Dashboard/air_dragon.png")
+		redTowerKillIcon : require("Dashboard/air_dragon.png"),
+		blueTowerKillIcon : require("Dashboard/blue_tower_kill.png"),
+    redTowerKillIcon : require("Dashboard/red_tower_kill.png"),
+    blueInhibitorKillIcon : require("Dashboard/blue_inhibitor_kill.png"),
+    redInhibitorKillIcon : require("Dashboard/red_inhibitor_kill.png")
 	});
 })();

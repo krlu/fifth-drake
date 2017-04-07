@@ -77,7 +77,7 @@ view model =
       |> Html.map ControlsMsg
 
     centerView = case model.viewType of
-      Map -> [Minimap.view model.minimap model.game.data, controls]
+      Map -> [Minimap.view model.minimap model.game.data model.events model.timestamp, controls]
       Stats -> [Graph.view model.graphStat model.game model.playerDisplay.selectedPlayers |> Html.map GraphMsg]
 
     bluePlayers = model.game.data.blueTeam.players

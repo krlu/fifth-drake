@@ -73,7 +73,7 @@ css =
       ]
     ])
   , class DragonImage
-    [ width (3 |> vh)
+    [ width (2 |> vw)
     , height (3 |> vh)
     , borderRadius (3 |> vh)
     , position relative
