@@ -271,7 +271,7 @@ class MongoDbHandler(mongoClient: MongoClient) {
       towerTypeStr <- doc.get("towerType").map(_.asString().getValue)
       killingTeam <- doc.get("teamId").map(_.asInt32().getValue)
       buildingTypeStr <- doc.get("buildingType").map(_.asString().getValue)
-      killerId <- doc.get("killerId").map(_.asInt32().getValue)
+      killerId <- doc.get("teamId").map(_.asInt32().getValue)
       locationDoc: Document <- doc.get("position").map(x => Document(x.asDocument()))
       location <- parseLocationData(locationDoc)
       timestamp <- doc.get("timestamp").map(_.asInt32().getValue)

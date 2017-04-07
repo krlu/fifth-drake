@@ -19,7 +19,7 @@ import Graph.Graph as Graph
 init : Flags -> Location -> (Model, Cmd Msg)
 init flags location =
   let
-    minimapModel = Minimap.init flags.minimapBackground
+    minimapModel = Minimap.init flags
     (tagCarouselModel, tagCarouselCmd) = TagCarousel.init location flags.addTagButton flags.deleteTagButton
     controlsModel = Controls.init flags.playButton flags.pauseButton
 

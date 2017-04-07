@@ -38,8 +38,9 @@ css =
     ] ++
     StyleUtils.userSelect "none" ++
     [ children
-      [ class PlayerIcon (
+      [ class PlayerIcon
         [ position absolute
+        , zIndex (2 |> int)
         , width (playerIconSize |> px)
         , height (playerIconSize |> px)
         , transform <| translate2 (-50 |> pct) (50 |> pct)
@@ -59,7 +60,7 @@ css =
             , borderRadius (50 |> pct)
             ]
           ]
-        ])
+        ]
       , class Background
         [ height (100 |> pct)
         , width (100 |> pct)
