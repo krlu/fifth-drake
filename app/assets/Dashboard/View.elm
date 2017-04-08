@@ -5,7 +5,7 @@ import Controls.Controls as Controls
 import DashboardCss exposing (CssClass(..), CssId(ControlsDivider, TeamDisplayDivider), namespace)
 import GameModel exposing (GameLength, Side(..), Timestamp)
 import Html exposing (..)
-import Html.Attributes exposing (src)
+import Html.Attributes exposing (placeholder, src)
 import Html.CssHelpers exposing (withNamespace)
 import Minimap.Minimap as Minimap
 import TagCarousel.TagCarousel as TagCarousel
@@ -16,7 +16,7 @@ import TeamDisplay.TeamDisplay as TeamDisplay
 import Types exposing (..)
 import Tuple
 import Graph.Graph as Graph
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import String
 
 {id, class, classList} = withNamespace namespace
@@ -77,7 +77,15 @@ view model =
       |> Html.map ControlsMsg
     selectedPlayers = model.playerDisplay.selectedPlayers
     centerView = case model.viewType of
-      Map -> [Minimap.view model.minimap model.game.data model.events model.timestamp selectedPlayers, controls]
+      Map ->
+        [ Minimap.view model.minimap model.game.data model.events model.timestamp selectedPlayers model.pathLength
+        , controls
+        , input
+          [ placeholder "path length (seconds)"
+          , onInput SetPathLength
+          ]
+          []
+        ]
       Stats -> [Graph.view model.graphStat model.game selectedPlayers |> Html.map GraphMsg]
 
     bluePlayers = model.game.data.blueTeam.players
@@ -109,8 +117,8 @@ view model =
   in
     div
       [ class [Dashboard] ]
-      [ div [ class [SwitchCss], onClick SwitchView] [text switchLabel],
-        div
+      [ div [ class [SwitchCss], onClick SwitchView] [text switchLabel]
+      , div
         [ class [TeamDisplays] ]
         [ blueTeamDisplay
         , redTeamDisplay

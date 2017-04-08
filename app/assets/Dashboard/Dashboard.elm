@@ -64,6 +64,7 @@ init flags location =
     , loadingIcon = flags.loadingIcon
     , events = []
     , teamDisplay = teamDisplay
+    , pathLength = 0
     } !
     [ Cmd.map TagCarouselMsg tagCarouselCmd
     , Populate.populate location

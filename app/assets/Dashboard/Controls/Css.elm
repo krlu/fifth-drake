@@ -14,7 +14,7 @@ controlsWidth : Float
 controlsWidth = 512
 
 controlsHeight : Float
-controlsHeight = 60
+controlsHeight = 41
 
 buttonWidth : Float
 buttonWidth = controlsHeight

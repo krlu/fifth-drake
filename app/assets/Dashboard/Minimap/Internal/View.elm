@@ -20,8 +20,8 @@ import Types exposing (ObjectiveEvent)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Html a
-view model data objectives timestamp selectedPlayers=
+view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Int -> Html a
+view model data objectives timestamp selectedPlayers pathLength =
   let
     inhibsHtml =
       List.map (buildingToHtml model model.blueInhibitorKillIcon model.redInhibitorKillIcon) <|
@@ -33,7 +33,7 @@ view model data objectives timestamp selectedPlayers=
       List.filter (\obj -> isTurretKill obj) <|
       List.filter (\obj -> obj.timestamp < timestamp) objectives
 
-    paths = Debug.log "" <| playerPaths model data (timestamp - 60) timestamp selectedPlayers
+    paths = Debug.log "" <| playerPaths model data (timestamp - pathLength) timestamp selectedPlayers
     playerIcons : List (Html a)
     playerIcons =
       Dict.values model.iconStates
@@ -79,7 +79,6 @@ buildingToHtml model blue red objective =
       Blue -> img [ src red, styles] []
       Red -> img [ src blue, styles] []
 
-
 {-- killed should be opposite color of killer -}
 colorOfKilled : ObjectiveEvent -> Side
 colorOfKilled objective =
@@ -96,7 +95,6 @@ isTurretKill objective =
     "BaseTurret" -> True
     "NexusTurret" -> True
     _ -> False
-
 
 playerPaths : Model -> Data -> Timestamp -> Timestamp -> Set PlayerId -> List (Html a)
 playerPaths model data start end selectedPlayers =
@@ -117,7 +115,7 @@ playerPaths model data start end selectedPlayers =
 teamToPlayerPaths : Team -> Model -> Timestamp -> Timestamp -> Set PlayerId -> Side -> List (Html a)
 teamToPlayerPaths team model start end selectedPlayers side =
   let
-    diff = end - start
+    diff = end - start - 1
     opacities = List.range 1 diff |> List.map (\val -> (toFloat val)/(toFloat diff))
   in
     team.players
@@ -138,8 +136,7 @@ teamToPlayerPaths team model start end selectedPlayers side =
     )
     |> List.concatMap (\list -> list)
 
-
-getPosStyle : a -> a -> Float -> Side -> Attribute msg
+getPosStyle : Float -> Float -> Float -> Side -> Attribute msg
 getPosStyle x y opacity side =
   let
     color =

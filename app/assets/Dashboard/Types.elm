@@ -23,6 +23,7 @@ type Msg
   | SwitchView
   | PlayerDisplayMsg PlayerDisplay.Msg
   | GraphMsg Graph.Msg
+  | SetPathLength String
 
 type alias Model =
   { controls : Controls.Model
@@ -38,6 +39,7 @@ type alias Model =
   , loadingIcon : String
   , events : List ObjectiveEvent
   , teamDisplay : TeamDisplay.Model
+  , pathLength  : Int
   }
 
 type alias ParticipantId = Int
