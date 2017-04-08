@@ -7,6 +7,7 @@ import GameModel exposing (Player)
 import Minimap.Minimap as Minimap
 import Minimap.Types as MinimapT
 import PlaybackTypes exposing (..)
+import String exposing (toInt)
 import TagCarousel.TagCarousel as TagCarousel
 import TagCarousel.Types as TagCarouselT
 import PlayerDisplay.PlayerDisplay as PlayerDisplay
@@ -101,4 +102,12 @@ update msg model =
         (gModel, cmd) = Graph.update msg model.graphStat model.game.metadata.gameLength
       in
         ({model | graphStat = gModel}, Cmd.none)
+    SetPathLength lengthString ->
+      let
+        length =
+          case (toInt lengthString) of
+            Ok len -> len
+            Err msg -> Debug.log msg 0
+      in
+        ({model | pathLength = length }, Cmd.none)
 

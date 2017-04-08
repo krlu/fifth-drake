@@ -90,12 +90,12 @@ view model game selectedPlayers =
           [text "HP"]
         ]
       , input
-        [ placeholder "Start Time"
+        [ placeholder "Start Time (seconds)"
         , onInput UpdateStart
         ]
         []
       , input
-        [ placeholder "End Time"
+        [ placeholder "End Time (seconds)"
         , onInput UpdateEnd
         ]
         []
