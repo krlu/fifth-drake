@@ -5,13 +5,14 @@ import Html.Attributes exposing (href, src)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (..)
 import NavbarCss exposing (CssClass(..), namespace)
+import Navigation
 import String exposing (toLower)
+import Navigation exposing (Location)
 
 -- MODEL
 
 type Page
   = Home
-  | Games
   | Settings
   | Problem
   | Logout
@@ -30,6 +31,7 @@ type alias Model =
   , settingsIcon : Icon
   , problemIcon : Icon
   , logoutIcon : Icon
+  , toolTip : Maybe Page
   }
 
 type alias Flags =
@@ -40,26 +42,34 @@ type alias Flags =
   , logoutIcon : Icon
   }
 
-init : Flags -> ( Model, Cmd Msg )
-init flags =
-  ( { active = Games
-    , user = Nothing
-
-    , homeIcon = flags.homeIcon
-    , gamesIcon = flags.gamesIcon
-    , settingsIcon = flags.settingsIcon
-    , problemIcon = flags.problemIcon
-    , logoutIcon = flags.logoutIcon
-    }
-  , Cmd.none
-  )
+init : Flags -> Location ->( Model, Cmd Msg )
+init flags loc =
+  let
+    activePage =
+      case loc.pathname of
+        "/home" -> Home
+        "/settings" -> Settings
+        "/problem" -> Problem
+        "/logout" -> Logout
+        _ -> Landing
+  in
+    ( { active = activePage
+      , user = Nothing
+      , homeIcon = flags.homeIcon
+      , gamesIcon = flags.gamesIcon
+      , settingsIcon = flags.settingsIcon
+      , problemIcon = flags.problemIcon
+      , logoutIcon = flags.logoutIcon
+      , toolTip = Nothing
+      }
+    , Cmd.none
+    )
 
 pageToIcon : Model -> Page -> Icon
 pageToIcon model page =
   case page of
     Home -> model.homeIcon
     Landing -> "" -- LOGO FAVICON GOES HERE!!!!!!
-    Games -> model.gamesIcon
     Settings -> model.settingsIcon
     Problem -> model.problemIcon
     Logout -> model.logoutIcon
@@ -69,15 +79,28 @@ pageUrl : Page -> String
 pageUrl page =
   case page of
     Home -> "/home"
-    Games -> "/game"
     Settings -> "/settings"
     Problem -> "/problem"
     Logout -> "/logout"
     Landing -> "/"
 
+
+pageToText : Page -> String
+pageToText page =
+  case page of
+    Home -> "Home Page"
+    Settings -> "Settings"
+    Problem -> "Bug Report"
+    Logout -> "Logout"
+    Landing -> "Landing Page"
+
 -- MESSAGES
 
-type Msg = Unit
+type Msg
+  = LocationUpdate Location
+  | ShowToolTip Page
+  | HideToolTip
+
 
 -- VIEW
 
@@ -94,17 +117,30 @@ view model =
 
     link : Page -> Html Msg
     link page =
+      let
+        toolTipText = text <| pageToText page
+        toolTipHtml =
+          case model.toolTip of
+            Just tipPage ->
+              case tipPage == page of
+                True -> [div [class [ToolTip]] [toolTipText]]
+                False -> []
+            Nothing -> []
+      in
         a
           ([ href <| pageUrl page
+           , onMouseOver (ShowToolTip page)
+           , onMouseOut (HideToolTip)
            ] ++ selected page)
-          [ img
+          ([ img
             [src <| pageToIcon model page ]
             []
-          ]
+          ] ++ toolTipHtml)
 
     links =
-      [ Home, Games, Settings, Problem, Logout]
+      [ Home, Settings, Problem, Logout]
       |> List.map link
+
   in
     div
       [ class [NavbarCss.NavbarLeft] ]
@@ -124,7 +160,11 @@ view model =
 -- UPDATE
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model = (model, Cmd.none)
+update msg model =
+  case msg of
+    LocationUpdate loc -> (model, Cmd.none)
+    ShowToolTip page -> ({model | toolTip = Just page}, Cmd.none)
+    HideToolTip -> ({model | toolTip = Nothing}, Cmd.none)
 
 -- SUBSCRIPTIONS
 
@@ -136,9 +176,10 @@ subscriptions model =
 
 main : Program Flags Model Msg
 main =
-  Html.programWithFlags
-  { init = init
-  , update = update
-  , view = view
-  , subscriptions = subscriptions
-  }
+  Navigation.programWithFlags
+    LocationUpdate
+    { init = init
+    , update = update
+    , view = view
+    , subscriptions = subscriptions
+    }

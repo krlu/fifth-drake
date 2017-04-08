@@ -103,3 +103,6 @@ c_filter_tag = hex "#4d6271"
 
 c_filter_tag_selected : Color
 c_filter_tag_selected = hex "#96b3ff"
+
+c_tool_tip_background : Color
+c_tool_tip_background = hex "#2b2b2b"

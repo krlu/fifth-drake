@@ -18,6 +18,7 @@ buttonHeight = 50
 type CssClass
   = NavbarLeft
   | Selected
+  | ToolTip
 
 type CssIds
   = NavbarLinks
@@ -77,4 +78,14 @@ css =
         ])
       ]
     ])
+  , class ToolTip
+    [ backgroundColor Color.c_tool_tip_background
+    , width (98 |> px)
+    , color Color.c_slateGrey
+    , position absolute
+    , left (47 |> px)
+    , fontSize (14 |> px)
+    , textAlign center
+    , borderRadius (6 |> px)
+    ]
   ]
