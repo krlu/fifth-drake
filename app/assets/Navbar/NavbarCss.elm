@@ -15,6 +15,21 @@ navbarWidth = 50
 buttonHeight : Float
 buttonHeight = 50
 
+toolTipWidth : Float
+toolTipWidth = 98
+
+toolTipFont : Float
+toolTipFont = 14
+
+toolTipLeft : Float
+toolTipLeft = 47
+
+toolTipRadius : Float
+toolTipRadius = 6
+
+toolTipZIndex : Int
+toolTipZIndex = 3
+
 type CssClass
   = NavbarLeft
   | Selected
@@ -80,12 +95,13 @@ css =
     ])
   , class ToolTip
     [ backgroundColor Color.c_tool_tip_background
-    , width (98 |> px)
+    , width (toolTipWidth |> px)
     , color Color.c_slateGrey
     , position absolute
-    , left (47 |> px)
-    , fontSize (14 |> px)
+    , left (toolTipLeft |> px)
+    , fontSize (toolTipFont |> px)
     , textAlign center
-    , borderRadius (6 |> px)
+    , borderRadius (toolTipRadius |> px)
+    , zIndex (toolTipZIndex |> int)
     ]
   ]
