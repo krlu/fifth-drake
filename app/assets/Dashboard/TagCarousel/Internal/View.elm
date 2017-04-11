@@ -44,15 +44,20 @@ view model permissions currentUserId players =
        True ->
         ("Done", tagsShare, [])
        False -> ("Share Tags", tags, [authorFilterHtml] ++ groupFilterHtml)
+    carouselControlsHtml =
+      case (List.length permissions) == 0 of
+        False ->
+          ([ div
+           [class [ShareTagCss, CarouselControlCss]
+           , onClick ToggleCarouselForm]
+           [ text shareFormButtonLabel
+           ]
+          ] ++ filterHtml)
+        True -> [ div [class [CarouselControlCss]] []]
   in
     div [class [CarouselContainer]]
     [ div [class [CarouselControls]]
-      ([ div
-        [class [ShareTagCss]
-        , onClick ToggleCarouselForm]
-        [ text shareFormButtonLabel
-        ]
-      ] ++ filterHtml)
+      carouselControlsHtml
     , div
       [ id [TagDisplay] ]
       [ div [ class carouselCss ]
@@ -76,7 +81,7 @@ tagInAllGroups groupIds tag =
 buildFilterHtml : Msg -> String -> CssClass -> Html Msg
 buildFilterHtml action label filterCss =
   div
-  [class [FilterTagCss, filterCss]
+  [class [FilterTagCss, filterCss, CarouselControlCss]
   , onClick action
   ]
   [ text label

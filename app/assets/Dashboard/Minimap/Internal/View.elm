@@ -33,7 +33,8 @@ view model data objectives timestamp selectedPlayers pathLength =
       List.filter (\obj -> isTurretKill obj) <|
       List.filter (\obj -> obj.timestamp < timestamp) objectives
 
-    paths = Debug.log "" <| playerPaths model data (timestamp - pathLength) timestamp selectedPlayers
+    startTime = max 0 (timestamp - pathLength)
+    paths = Debug.log "" <| playerPaths model data startTime timestamp selectedPlayers
     playerIcons : List (Html a)
     playerIcons =
       Dict.values model.iconStates
@@ -108,9 +109,7 @@ playerPaths model data start end selectedPlayers =
       )
       |> List.concatMap (\list -> list)
   in
-    case (start > 0) of
-      True -> playerPaths
-      False -> []
+    playerPaths
 
 teamToPlayerPaths : Team -> Model -> Timestamp -> Timestamp -> Set PlayerId -> Side -> List (Html a)
 teamToPlayerPaths team model start end selectedPlayers side =
