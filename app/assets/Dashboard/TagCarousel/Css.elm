@@ -91,11 +91,11 @@ tagMargin = 10
 labelImageSize : Float
 labelImageSize = 20 -- px
 
-shareTagHeight : Float
-shareTagHeight = 40 -- px
+carouselControlHeight : Float
+carouselControlHeight = 40 -- px
 
-shareTagWidth : Float
-shareTagWidth = 100 -- px
+carouselControlWidth : Float
+carouselControlWidth = 100 -- px
 
 shareTagBorderRadius : Float
 shareTagBorderRadius = 10 -- px
@@ -135,6 +135,7 @@ type CssClass
   | FilterTagCss
   | SelectedFilter
   | UnselectedFilter
+  | CarouselControlCss
 
 css : Stylesheet
 css =
@@ -298,11 +299,13 @@ css =
     , width (100 |> pct)
     , overflow hidden
     ]
+  , class CarouselControlCss
+    [ height (carouselControlHeight |> px)
+    , width (carouselControlWidth |> px)
+    ]
   , class ShareTagCss
     [ backgroundColor Color.c_share_tag_button
-    , height (shareTagHeight |> px)
-    , lineHeight (shareTagHeight |> px)
-    , width (shareTagWidth |> px)
+    , lineHeight (carouselControlHeight |> px)
     , textAlign center
     , borderRadius (shareTagBorderRadius |> px)
     , fontSize (shareTagFontSize |> px)
@@ -312,9 +315,7 @@ css =
       ]
     ]
   , class FilterTagCss
-    [ height (shareTagHeight |> px)
-    , lineHeight (shareTagHeight |> px)
-    , width (shareTagWidth |> px)
+    [ lineHeight (carouselControlHeight |> px)
     , textAlign center
     , borderRadius (shareTagBorderRadius |> px)
     , fontSize (shareTagFontSize |> px)
