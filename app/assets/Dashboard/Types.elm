@@ -5,6 +5,7 @@ import GameModel exposing (Game, GameLength, PlayerId, Position, Timestamp)
 import Http
 import Minimap.Types as Minimap
 import Navigation exposing (Location)
+import Set exposing (Set)
 import SettingsTypes exposing (GroupId, PermissionLevel, User, UserId)
 import TagCarousel.Types as TagCarousel
 import PlayerDisplay.Types as PlayerDisplay

@@ -11,7 +11,7 @@ import Html exposing (..)
 import Html.Attributes exposing (draggable, src, style)
 import Html.CssHelpers exposing (withNamespace)
 import Minimap.Css exposing (CssClass(..), minimapHeight, minimapWidth, namespace)
-import Minimap.Types exposing (Model)
+import Minimap.Types exposing (Model, State)
 import GameModel exposing (..)
 import Navbar exposing (Icon)
 import Set exposing (Set)
@@ -20,8 +20,8 @@ import Types exposing (ObjectiveEvent)
 
 {id, class, classList} = withNamespace namespace
 
-view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Int -> Html a
-view model data objectives timestamp selectedPlayers pathLength =
+view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Int -> Maybe PlayerId -> Html a
+view model data objectives timestamp selectedPlayers pathLength hoveredPlayer =
   let
     inhibsHtml =
       List.map (buildingToHtml model model.blueInhibitorKillIcon model.redInhibitorKillIcon) <|
@@ -37,12 +37,12 @@ view model data objectives timestamp selectedPlayers pathLength =
     paths = Debug.log "" <| playerPaths model data startTime timestamp selectedPlayers
     playerIcons : List (Html a)
     playerIcons =
-      Dict.values model.iconStates
-      |> List.map (\iconState ->
+      Dict.toList model.iconStates
+      |> List.map (\(playerId, iconState) ->
           div
             ([ class
               [ PlayerIcon
-              , IconColor iconState.side
+              , iconColor iconState playerId hoveredPlayer
               ]
             , styles
               [ backgroundImage (url iconState.img)
@@ -63,6 +63,16 @@ view model data objectives timestamp selectedPlayers pathLength =
         ]
         ++ playerIcons ++ towersHtml ++ inhibsHtml ++ paths
       )
+
+iconColor : State -> PlayerId -> Maybe PlayerId -> CssClass
+iconColor iconState playerId hoveredPlayer =
+ case hoveredPlayer of
+  Nothing -> IconColor iconState.side
+  Just hoveredId ->
+    case playerId == hoveredId of
+      False -> IconColor iconState.side
+      True -> HighlightedIconColor
+
 
 buildingToHtml : Model -> Icon -> Icon -> ObjectiveEvent -> Html a
 buildingToHtml model blue red objective =

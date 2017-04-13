@@ -6,9 +6,9 @@ import GameModel exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (draggable, src)
 import Html.CssHelpers exposing (withNamespace)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onMouseOut, onMouseOver)
 import PlayerDisplay.Css exposing (CssClass(..), namespace)
-import PlayerDisplay.Types exposing (Model, Msg(PlayerDisplayClicked))
+import PlayerDisplay.Types exposing (Model, Msg(PlayerDisplayClicked, PlayerDisplayHovered, PlayerDisplayUnhovered))
 import Set
 import String
 import StyleUtils exposing (styles)
@@ -19,6 +19,7 @@ import PlayerDisplay.Internal.Update as Update
 init : Model
 init =
   { selectedPlayers = Set.empty
+  , hoveredPlayer = Nothing
   }
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -87,6 +88,8 @@ view side player timestamp model =
     div
       [ class [displayCss, direction]
       , onClick (PlayerDisplayClicked player.id)
+      , onMouseOver (PlayerDisplayHovered player.id)
+      , onMouseOut (PlayerDisplayUnhovered)
       ]
       [ div
         [ class [ChampDisplay, direction]

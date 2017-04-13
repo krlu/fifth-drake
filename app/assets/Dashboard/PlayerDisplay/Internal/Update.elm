@@ -1,6 +1,6 @@
 module PlayerDisplay.Internal.Update exposing (..)
 
-import PlayerDisplay.Types exposing (Model, Msg(PlayerDisplayClicked, PlotInteraction))
+import PlayerDisplay.Types exposing (Model, Msg(..))
 import Set
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -15,3 +15,6 @@ update msg model =
             False -> Set.insert id model.selectedPlayers
      in
       ( {model | selectedPlayers = newSet}, Cmd.none)
+    PlayerDisplayHovered playerId -> ({ model | hoveredPlayer = Just playerId }, Cmd.none)
+    PlayerDisplayUnhovered -> ({ model | hoveredPlayer = Nothing }, Cmd.none)
+
