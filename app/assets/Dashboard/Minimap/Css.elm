@@ -27,6 +27,7 @@ type CssClass
   | IconColor Side
   | Background
   | ChampionImage
+  | HighlightedIconColor
 
 css : Stylesheet
 css =
@@ -51,6 +52,11 @@ css =
           ]
         , withClass (IconColor Red)
           [ borderColor CssColors.c_redTeam
+          ]
+        , withClass HighlightedIconColor
+          [ borderColor CssColors.c_highlighted_player
+          , property "border-width" "4px"
+          , zIndex (10 |> int)
           ]
         , backgroundSize cover
         , children

@@ -79,6 +79,7 @@ view model =
     centerView = case model.viewType of
       Map ->
         [ Minimap.view model.minimap model.game.data model.events model.timestamp selectedPlayers model.pathLength
+            model.playerDisplay.hoveredPlayer
         , controls
         , input
           [ placeholder "path length (seconds)"

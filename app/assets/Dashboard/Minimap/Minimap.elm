@@ -30,7 +30,7 @@ init = initialModel
 update : Model -> Data -> Timestamp -> Msg -> Model
 update = Update.update
 
-view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Int -> Html a
+view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Int -> Maybe PlayerId -> Html a
 view = View.view
 
 subscriptions : Model -> Sub Msg
