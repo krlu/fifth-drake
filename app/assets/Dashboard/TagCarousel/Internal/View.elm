@@ -24,7 +24,7 @@ view model permissions currentUserId players =
         False -> (groupFilteredTags, UnselectedFilter)
     tags = List.sortBy .timestamp filteredTags
            |> List.map (\tag ->
-              tagHtml tag permissions currentUserId model.lastClickedTime model.tagForm.active model.deleteTagButton)
+              tagHtml tag permissions currentUserId model.lastClickedTag model.tagForm.active model.deleteTagButton)
     tagsShare = List.sortBy .timestamp model.tags
                 |> List.filter (\tag -> tag.author.id == currentUserId)
                 |> List.map (\tag -> tagShareModeHtml tag permissions model.tagForm.active)
@@ -186,15 +186,15 @@ tagShareModeHtml tag permissions formActive =
         ]
       ]
 
-tagHtml : TagCarousel.Types.Tag -> List Permission -> UserId -> Timestamp -> Bool -> String -> Html Msg
-tagHtml tag permissions currentUserId lastClickedTimeStamp formActive deleteButton =
+tagHtml : TagCarousel.Types.Tag -> List Permission -> UserId -> TagId-> Bool -> String -> Html Msg
+tagHtml tag permissions currentUserId lastClickedTag formActive deleteButton =
   let
     levels =
       List.map (\perm -> perm.level)
       <| List.filter (\element -> List.member element.groupId tag.authorizedGroups) permissions
     tagCss = [Tag]
     selectedCss =
-      case (tag.timestamp == lastClickedTimeStamp) of
+      case (tag.id == lastClickedTag) of
         True -> tagCss ++ [SelectedTag]
         False -> tagCss
     selectedAndAltCss =
@@ -213,7 +213,7 @@ tagHtml tag permissions currentUserId lastClickedTimeStamp formActive deleteButt
       [ class selectedAndAltCss ]
       ([ div
         [ class [ TagClickableArea ]
-        , onClick <| TagClick tag.timestamp
+        , onClick <| TagClick (tag.timestamp, tag.id)
         , onMouseOver <| HighlightPlayers tag.players
         , onMouseLeave UnhighlightPlayers
         ]
