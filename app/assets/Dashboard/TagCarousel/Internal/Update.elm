@@ -11,8 +11,8 @@ import TagCarousel.Internal.Share as Share
 update : Msg -> Model -> Timestamp -> (Maybe Timestamp, Model, Cmd Msg)
 update msg model ts =
   case msg of
-    TagClick timestamp ->
-      (Just timestamp, { model | lastClickedTime = timestamp }, Cmd.none)
+    TagClick (timestamp, tagId) ->
+      (Just timestamp, { model | lastClickedTag = tagId }, Cmd.none)
     UpdateTags (Ok tags) ->
       (Nothing, { model | tags = tags }, Cmd.none)
     UpdateTags (Err err) ->

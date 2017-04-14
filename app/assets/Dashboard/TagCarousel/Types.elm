@@ -12,7 +12,7 @@ type alias Host = String
 type alias ToShare = Bool
 
 type Msg
-  = TagClick Timestamp
+  = TagClick (Timestamp, TagId)
   | UpdateTags (Result Http.Error (List Tag))
   | DeleteTag TagId
   | TagDeleted (Result Http.Error String)
@@ -36,7 +36,7 @@ type alias Model =
   { host               : Host
   , tags               : List Tag
   , tagForm            : TagForm
-  , lastClickedTime    : Timestamp
+  , lastClickedTag     : TagId
   , highlightedPlayers : List PlayerId
   , tagButton          : String
   , deleteTagButton    : String
