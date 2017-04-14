@@ -214,6 +214,8 @@ tagHtml tag permissions currentUserId lastClickedTimeStamp formActive deleteButt
       ([ div
         [ class [ TagClickableArea ]
         , onClick <| TagClick tag.timestamp
+        , onMouseOver <| HighlightPlayers tag.players
+        , onMouseLeave UnhighlightPlayers
         ]
         [ p []
           [text tag.title]
