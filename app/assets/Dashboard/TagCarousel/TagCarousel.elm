@@ -26,6 +26,7 @@ init loc addTagButton deleteTagButton =
       , tagForm = tagForm
       , tags = []
       , lastClickedTime = -1
+      , highlightedPlayers = []
       , tagButton = addTagButton
       , deleteTagButton = deleteTagButton
       , isShareForm = False

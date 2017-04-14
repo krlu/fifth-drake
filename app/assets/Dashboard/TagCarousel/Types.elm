@@ -29,17 +29,20 @@ type Msg
   | ToggleCarouselForm
   | FilterByAuthor
   | FilterByGroup GroupId
+  | HighlightPlayers (List PlayerId)
+  | UnhighlightPlayers
 
 type alias Model =
-  { host             : Host
-  , tags             : List Tag
-  , tagForm          : TagForm
-  , lastClickedTime  : Timestamp
-  , tagButton        : String
-  , deleteTagButton  : String
-  , isShareForm      : Bool
-  , filteredByAuthor : Bool
-  , groupFilters     : List GroupId
+  { host               : Host
+  , tags               : List Tag
+  , tagForm            : TagForm
+  , lastClickedTime    : Timestamp
+  , highlightedPlayers : List PlayerId
+  , tagButton          : String
+  , deleteTagButton    : String
+  , isShareForm        : Bool
+  , filteredByAuthor   : Bool
+  , groupFilters       : List GroupId
   }
 
 type alias Tag =

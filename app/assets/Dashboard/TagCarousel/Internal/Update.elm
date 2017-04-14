@@ -119,6 +119,10 @@ update msg model ts =
             False -> model.groupFilters ++ [groupId]
       in
         (Nothing, {model | groupFilters = newFilters}, Cmd.none)
+    HighlightPlayers playerIds ->
+      (Nothing, {model | highlightedPlayers = playerIds}, Cmd.none)
+    UnhighlightPlayers ->
+      (Nothing, {model | highlightedPlayers = []}, Cmd.none)
 
 
 filterTags: List Tag -> String -> List Tag
