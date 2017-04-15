@@ -15,6 +15,7 @@ type Msg
   = TagClick (Timestamp, TagId)
   | UpdateTags (Result Http.Error (List Tag))
   | DeleteTag TagId
+  | EditTag Tag
   | TagDeleted (Result Http.Error String)
   | CreateTitle String
   | CreateDescription String
@@ -40,6 +41,7 @@ type alias Model =
   , highlightedPlayers : List PlayerId
   , tagButton          : String
   , deleteTagButton    : String
+  , editTagButton      : String
   , isShareForm        : Bool
   , filteredByAuthor   : Bool
   , groupFilters       : List GroupId
@@ -65,6 +67,7 @@ type alias TagForm =
   , host        : Host
   , active      : Bool
   , toShare     : ToShare
+  , tagId       : Maybe TagId
   }
 
 type alias ShareData =

@@ -243,27 +243,20 @@ class GameDataController(dbh: DataAccessHandler,
         val description = data("description").as[String]
         val category = data("category").as[String]
         val timeStamp = data("timestamp").as[Int]
-        val shareWithGroup = data("shareWithGroup").as[Boolean]
         val players = data("relevantPlayerIds").as[JsArray].value.map { jsVal =>
           val id = jsVal.as[String]
           dbh.getPlayer(new InternalId[Player](id))
         }.toSet
-        val userGroup = dbh.getUserGroupByUser(request.user)
-        shareWithGroup match {
-          case true =>
-            userGroup match {
-              case Some(group) =>
-                dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
-                  Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List(group)
-                )
-                )
-              case None => BadRequest("Could not share tag with group!")
-            }
-          case false =>
+        data.get("tagId") match {
+          case Some(x) =>
+            val tagId = new InternalId[Tag](x.as[String])
+            dbh.updateTag(new Tag(Some(tagId), new RiotId[Game](gameKey), title, description, new Category(category),
+              Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]
+            ))
+          case None =>
             dbh.insertTag(new Tag(new RiotId[Game](gameKey), title, description, new Category(category),
               Duration(timeStamp, TimeUnit.SECONDS), players, request.user.uuid, List.empty[UserGroup]
-            )
-            )
+            ))
         }
         Redirect(routes.GameDataController.getTags(gameKey))
       case nothing => BadRequest("Failed to insert tag")

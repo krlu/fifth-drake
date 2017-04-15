@@ -12,6 +12,7 @@
 		pauseButton: require("Dashboard/ic_pause_white_24px.svg"),
 		addTagButton: require("Dashboard/ic_add_white_48px.svg"),
 		deleteTagButton: require("Dashboard/ic_clear_white_24px.svg"),
+		editTagButton: require("Dashboard/ic_mode_edit_white_24px.svg"),
 		loadingIcon : require("Dashboard/loading.gif"),
 		airDragonIcon : require("Dashboard/air_dragon.png"),
 		earthDragonIcon : require("Dashboard/earth_dragon.png"),

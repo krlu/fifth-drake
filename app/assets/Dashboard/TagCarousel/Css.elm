@@ -108,11 +108,11 @@ carouselContainerHeight = 211 -- px
 
 type CssClass
   = TagCarousel
-  | Tag
+  | TagCss
   | TagFormCss
   | PlayerCheckboxes
   | CheckboxLabel
-  | DeleteButtonCss
+  | TagOptionsCss
   | SelectedTag
   | TagDisplay
   | MinimizedCarousel
@@ -231,7 +231,7 @@ css =
         , flexDirection row
         , flexWrap noWrap
         , children
-          [ class Tag
+          [ class TagCss
             [ height (tagHeight |> pct)
             , width (tagWidth |> pct)
             , backgroundColor Color.c_navBar
@@ -248,7 +248,7 @@ css =
               [ backgroundColor Color.c_hovering
               , cursor pointer
               , children
-                [ class DeleteButtonCss
+                [ class TagOptionsCss
                   [ position absolute
                   , bottom zero
                   , hover
@@ -259,7 +259,7 @@ css =
                 ]
               ]
             , children
-              [ class DeleteButtonCss
+              [ class TagOptionsCss
                 [ display none
                 ]
               ]

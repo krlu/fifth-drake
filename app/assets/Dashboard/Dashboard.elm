@@ -20,7 +20,8 @@ init : Flags -> Location -> (Model, Cmd Msg)
 init flags location =
   let
     minimapModel = Minimap.init flags
-    (tagCarouselModel, tagCarouselCmd) = TagCarousel.init location flags.addTagButton flags.deleteTagButton
+    (tagCarouselModel, tagCarouselCmd)
+      = TagCarousel.init location flags.addTagButton flags.deleteTagButton flags.editTagButton
     controlsModel = Controls.init flags.playButton flags.pauseButton
 
     teamDisplay =

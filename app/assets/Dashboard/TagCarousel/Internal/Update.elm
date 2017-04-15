@@ -19,6 +19,19 @@ update msg model ts =
       (Nothing, Debug.log "Tags failed to fetch!" model, Cmd.none)
     DeleteTag id ->
       (Nothing, model, Delete.sendRequest id model.host)
+    EditTag tag ->
+      let
+        oldForm = model.tagForm
+        newForm =
+          { oldForm
+          | title = tag.title
+          , description = tag.description
+          , selectedIds = tag.players
+          , active = True
+          , tagId = Just tag.id
+          }
+      in
+      (Nothing, { model | tagForm = newForm }, Cmd.none)
     TagDeleted (Ok id)->
       (Nothing, { model | tags = filterTags model.tags id }, Cmd.none)
     TagDeleted (Err msg)->
@@ -35,10 +48,6 @@ update msg model ts =
         description = model.tagForm.description
         gameId = model.tagForm.gameId
         host = model.tagForm.host
-        modelWithEmptyTagForm =
-          { model
-            | tagForm = defaultTagForm gameId host category
-          }
       in
         if(String.length title == 0) then
           (Nothing, model, Cmd.none)
@@ -47,7 +56,7 @@ update msg model ts =
         else if (String.length description == 0) then
           (Nothing, model, Cmd.none)
         else
-          (Nothing, modelWithEmptyTagForm, Save.sendRequest model.tagForm ts)
+          (Nothing, model, Save.sendRequest model.tagForm ts)
     TagSaved (Ok tags) ->
       let
         oldForm = model.tagForm
@@ -138,13 +147,14 @@ switchTag form =
   let
     oldActive = form.active
   in
-    { form |
-    active = not oldActive
+    { form
+    | active = not oldActive
     , selectedIds = []
     , title = ""
     , description = ""
     , category = "Objective"
     , toShare = False
+    , tagId = Nothing
     }
 
 updateTag: ShareData -> Tag -> Tag

@@ -256,17 +256,21 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     }
   }
 
-  def updateTag(tag: Tag): Unit = {
+  def updateTag(tag: Tag): Option[Long] = {
     require(tag.hasInternalId,
             s"Tag '${tag.title}' is missing InternalId, check if Tag exists in DB!")
-    DB localTx { implicit session => {
-      val where = tag.id.map(iid => sqls"WHERE id=${iid.id.toInt}").getOrElse("")
-      sql"""UPDATE league.tag SET game_key=${tag.gameKey.id}, title=${tag.title},
+    DB localTx { implicit session =>
+      tag.id match {
+        case Some(tagId) =>
+          val returnedKey = sql"""UPDATE league.tag SET game_key=${tag.gameKey.id}, title=${tag.title},
           description=${tag.description}, category=${tag.category.name},
-          timestamp=${tag.timestamp.toMillis} ${where}"""
-        .updateAndReturnGeneratedKey().apply()
-      updatePlayersForTag(tag)
-    }
+          timestamp=${tag.timestamp.toMillis} WHERE id=${tagId.id.toInt}"""
+            .updateAndReturnGeneratedKey().apply()
+          updatePlayersForTag(tag)
+          Some(returnedKey)
+        case None =>
+          None
+      }
     }
   }
 
