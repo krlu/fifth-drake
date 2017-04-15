@@ -13,4 +13,5 @@ defaultTagForm gameId host category =
   , host = host
   , active = False
   , toShare = False
+  , tagId = Nothing
   }

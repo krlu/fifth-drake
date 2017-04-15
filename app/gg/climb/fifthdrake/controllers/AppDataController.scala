@@ -116,9 +116,11 @@ class AppDataController(dbh: DataAccessHandler,
           dbh.getUserPermissionForGroup(request.user.uuid, groupUuid) match {
             case Some(Owner) =>
               val perms = dbh.getPermissionsForGroup(groupUuid)
+              Logger.info(s"Deleting all permission for group $groupUuid")
               perms.foreach{ case(userId, perm) =>
                 dbh.removePermissionForUser(userId, groupUuid)
               }
+              Logger.info(s"Removing authorized group $groupUuid from all tags")
               dbh.getTagsWithAuthorizedGroupId(groupUuid).foreach{ tag =>
                 tag.id match {
                   case Some(tagId) =>

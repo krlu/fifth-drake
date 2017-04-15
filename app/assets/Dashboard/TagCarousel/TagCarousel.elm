@@ -15,8 +15,8 @@ import UrlParser exposing ((</>), parsePath, s)
 defaultCategory : TagCategory
 defaultCategory = "Objective"
 
-init : Location -> String -> String -> (Model, Cmd Msg)
-init loc addTagButton deleteTagButton =
+init : Location -> String -> String -> String -> (Model, Cmd Msg)
+init loc addTagButton deleteTagButton editTagButton =
   let
       gameId = getGameId loc
       host = loc.host
@@ -29,6 +29,7 @@ init loc addTagButton deleteTagButton =
       , highlightedPlayers = []
       , tagButton = addTagButton
       , deleteTagButton = deleteTagButton
+      , editTagButton = editTagButton
       , isShareForm = False
       , filteredByAuthor = False
       , groupFilters = []

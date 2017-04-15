@@ -70,6 +70,7 @@ type alias Flags =
   , pauseButton       : String
   , addTagButton      : String
   , deleteTagButton   : String
+  , editTagButton     : String
   , loadingIcon       : String
   , airDragonIcon     : String
   , earthDragonIcon   : String
