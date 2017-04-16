@@ -88,6 +88,9 @@ tagBorderSize = 1
 tagMargin : Float
 tagMargin = 10
 
+tagOptionBorderRadius : Float
+tagOptionBorderRadius = 1 -- vh
+
 labelImageSize : Float
 labelImageSize = 20 -- px
 
@@ -252,9 +255,10 @@ css =
                   [ position absolute
                   , bottom zero
                   , hover
-                    [ backgroundColor Color.c_darkGray
+                    [ backgroundColor Color.c_tag_option
                     ]
                   , displayFlex
+                  , borderRadius (tagOptionBorderRadius |> vh)
                   ]
                 ]
               ]

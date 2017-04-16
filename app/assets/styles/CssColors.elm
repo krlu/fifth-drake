@@ -109,3 +109,6 @@ c_tool_tip_background = hex "#2b2b2b"
 
 c_highlighted_player : Color
 c_highlighted_player = hex "#bcd7f5"
+
+c_tag_option : Color
+c_tag_option = hex "#80acbb"
