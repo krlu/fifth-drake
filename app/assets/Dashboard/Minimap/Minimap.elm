@@ -20,12 +20,10 @@ initialModel flags =
   , iconStates = Dict.empty
   , blueTowerIcon = flags.blueTowerIcon
   , redTowerIcon = flags.redTowerIcon
-  , blueTowerKillIcon = flags.blueTowerKillIcon
-  , redTowerKillIcon = flags.redTowerKillIcon
+  , towerKillIcon = flags.towerKillIcon
   , blueInhibitorIcon = flags.blueInhibitorIcon
   , redInhibitorIcon = flags.redInhibitorIcon
-  , blueInhibitorKillIcon = flags.blueInhibitorKillIcon
-  , redInhibitorKillIcon = flags.redInhibitorKillIcon
+  , inhibitorKillIcon = flags.inhibitorKillIcon
   }
 
 init : Flags -> Model

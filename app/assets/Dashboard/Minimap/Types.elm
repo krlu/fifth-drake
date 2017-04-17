@@ -15,12 +15,10 @@ type alias Model =
   , iconStates : Dict PlayerId State
   , blueTowerIcon : Icon
   , redTowerIcon : Icon
-  , blueTowerKillIcon : Icon
-  , redTowerKillIcon : Icon
+  , towerKillIcon : Icon
   , blueInhibitorIcon : Icon
   , redInhibitorIcon : Icon
-  , blueInhibitorKillIcon : Icon
-  , redInhibitorKillIcon : Icon
+  , inhibitorKillIcon : Icon
   }
 
 type Building = Tower | Inhibitor

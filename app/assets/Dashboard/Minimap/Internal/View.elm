@@ -33,12 +33,13 @@ view model =
     highlightedPlayers = model.tagCarousel.highlightedPlayers
 
     inhibsHtml =
-      List.map (killedBuildingToHtml minimap minimap.blueInhibitorKillIcon minimap.redInhibitorKillIcon) <|
-      List.filter (\obj ->obj.unitKilled == "Inhibitor") <|
+      List.map (killedBuildingToHtml minimap minimap.inhibitorKillIcon) <|
+      List.filter (\obj -> (obj.timestamp + 300) > timestamp) <|
+      List.filter (\obj -> obj.unitKilled == "Inhibitor") <|
       List.filter (\obj -> obj.timestamp < timestamp) objectives
 
     towersHtml =
-      List.map (killedBuildingToHtml minimap minimap.blueTowerKillIcon minimap.redTowerKillIcon) <|
+      List.map (killedBuildingToHtml minimap minimap.towerKillIcon) <|
       List.filter (\obj -> isTurretKill obj) <|
       List.filter (\obj -> obj.timestamp < timestamp) objectives
 
@@ -113,8 +114,8 @@ buildingToHtml model blueT redT blueH redH (x, y, side, building) =
       (Blue, Inhibitor) -> img [ src blueH, styles] []
       (Red, Inhibitor) -> img [ src redH, styles] []
 
-killedBuildingToHtml : Minimap.Types.Model -> Icon -> Icon -> ObjectiveEvent -> Html a
-killedBuildingToHtml model blue red objective =
+killedBuildingToHtml : Minimap.Types.Model -> Icon ->  ObjectiveEvent -> Html a
+killedBuildingToHtml model building objective =
   let
     bottom = minimapHeight * (objective.position.y / model.mapHeight)
     left = minimapWidth * (objective.position.x / model.mapWidth)
@@ -128,9 +129,7 @@ killedBuildingToHtml model blue red objective =
       , ("z-index", "1")
       ]
   in
-    case (colorOfKilled objective) of
-      Blue -> img [ src red, styles] []
-      Red -> img [ src blue, styles] []
+    img [ src building, styles] []
 
 {-- killed should be opposite color of killer -}
 colorOfKilled : ObjectiveEvent -> Side
@@ -208,32 +207,32 @@ getPosStyle x y opacity side =
 
 buildingPositions : List (Float, Float, Side, Building)
 buildingPositions =
-  [ (13604,11316, Red, Inhibitor) -- red Inhib
-  , (11598,11667, Red, Inhibitor) -- red Inhib
-  , (3203,3208, Blue, Inhibitor) -- blue Inhib
+  [ (13604,11316, Red, Inhibitor)
+  , (11598,11667, Red, Inhibitor) 
+  , (11261,13676, Red, Inhibitor) 
   , (12611,13084, Red, Tower)
   , (13052,12612, Red, Tower)
   , (13624,10572, Red, Tower)
-  , (13327,8226, Red, Tower)
   , (11134,11207, Red, Tower)
+  , (10481,13650, Red, Tower)
   , (9767,10113, Red, Tower)
   , (7943,13411, Red, Tower)
+  , (4318,13875, Red, Tower)
+  , (13327,8226, Red, Tower)
+  , (13866,4505, Red, Tower)
+  , (8955,8510, Red, Tower)
   , (6919,1483, Blue, Tower)
   , (3651,3696, Blue, Tower)
   , (5048,4812, Blue, Tower)
   , (1512,6699, Blue, Tower)
-  , (8955,8510, Red, Tower)
   , (5846,6396, Blue, Tower)
-  , (4318,13875, Red, Tower)
-  , (10504,1029, Blue, Tower)
-  , (13866,4505, Red, Tower)
   , (981,10441, Blue, Tower)
-  , (1171,3571, Blue, Inhibitor) -- blue Inhib
   , (2177,1807, Blue, Tower)
   , (1748,2270, Blue, Tower)
   , (1169,4287, Blue, Tower)
-  , (10481,13650, Red, Tower)
-  , (3452,1236, Blue, Inhibitor)-- blue Inhib
   , (4281,1253, Blue, Tower)
-  , (11261,13676, Red, Inhibitor) -- red Inhib
+  , (10504,1029, Blue, Tower)
+  , (3203,3208, Blue, Inhibitor)
+  , (3452,1236, Blue, Inhibitor)
+  , (1171,3571, Blue, Inhibitor)
   ]
