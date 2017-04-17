@@ -18,8 +18,12 @@ initialModel flags =
   , mapWidth = 15000
   , mapHeight = 15000
   , iconStates = Dict.empty
+  , blueTowerIcon = flags.blueTowerIcon
+  , redTowerIcon = flags.redTowerIcon
   , blueTowerKillIcon = flags.blueTowerKillIcon
   , redTowerKillIcon = flags.redTowerKillIcon
+  , blueInhibitorIcon = flags.blueInhibitorIcon
+  , redInhibitorIcon = flags.redInhibitorIcon
   , blueInhibitorKillIcon = flags.blueInhibitorKillIcon
   , redInhibitorKillIcon = flags.redInhibitorKillIcon
   }
@@ -30,8 +34,7 @@ init = initialModel
 update : Model -> Data -> Timestamp -> Msg -> Model
 update = Update.update
 
-view : Model -> Data -> List ObjectiveEvent -> Timestamp -> Set PlayerId -> Int -> Maybe PlayerId -> List PlayerId
-  -> Html a
+view : Types.Model -> Html a
 view = View.view
 
 subscriptions : Model -> Sub Msg

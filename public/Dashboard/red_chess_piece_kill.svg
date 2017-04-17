@@ -1,0 +1,64 @@
+<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <clipPath id="clipPath18983" clipPathUnits="userSpaceOnUse">
+   <rect ry="6.020455" rx="5.366997" y="377.28311" x="462.55518" height="127.75334" width="204.11165" id="rect18985" stroke-width="1px" stroke="#000000" fill-rule="evenodd" fill="#0000ff"/>
+  </clipPath>
+  <clipPath clipPathUnits="userSpaceOnUse" id="clipPath29875">
+   <path d="m271.40481,-375.71164l0.71869,1.625c257.34964,3.62524 465.46874,463.95959 465.46874,1031.3438c0,0.3022 0.0002,0.6041 0,0.9063l0.625,1.4062l212.1876,0l0,-1015.2813c0,-14.2043 -6.6595,-20 -19.5,-20l-659.50003,0z" id="path29877" stroke-width="4" stroke="#ffff00" fill="none"/>
+  </clipPath>
+  <clipPath clipPathUnits="userSpaceOnUse" id="clipPath29920">
+   <rect id="rect29922" width="990" height="1530" x="0" y="-477.63724" rx="12.217699" ry="10.540621" fill-rule="evenodd" fill="#0000ff"/>
+  </clipPath>
+  <clipPath clipPathUnits="userSpaceOnUse" id="clipPath14070">
+   <rect y="-477.63724" x="0" height="1530" width="990" id="rect14072" fill-rule="evenodd" fill="#0000ff" opacity="0.5"/>
+  </clipPath>
+  <pattern id="pattern16122" patternTransform="translate(-811.17872,496.86455)" height="290.68932" width="290.72009" patternUnits="userSpaceOnUse">
+   <path id="path15374" d="m14.49388,81.84972l78.05252,11.1747l-71.31915,-23.5063l76.60963,18.6557l-68.71751,-30.28l74.45145,25.9626l-65.47428,-36.7708l71.59813,33.0269l-61.61973,-42.9183l68.07634,39.783l-57.18986,-48.6651l63.91892,46.1675l-52.22601,-53.9575l59.16471,52.1211l-46.77455,-58.7462l53.8581,57.588l-40.88636,-62.9863l48.04862,62.5172l-34.61643,-66.6384l41.79053,66.8627l-28.0233,-69.6682l35.14226,70.5839l-21.16852,-72.0476l28.16587,73.6461l-14.1161,-73.7544l20.92651,76.0208l-6.93188,-74.7725l13.49175,77.6856l0.31707,-75.0925l5.93103,78.6251l7.56305,-74.7113l-1.68506,78.8304l14.73841,-73.6325l-9.28542,78.2997l21.77617,-71.8663l-16.79909,77.038l28.61062,-69.4291l-24.15592,75.0571l35.17793,-66.3437l-31.2872,72.3753l41.4168,-62.6388l-38.12636,69.0177l47.26896,-58.349l-44.60954,65.0158l52.67979,-53.5146l-50.67623,60.4069l57.59877,-48.1804l-56.26976,55.2339l61.97996,-42.3964l-61.33791,49.5452l65.78245,-36.2165l-65.83336,43.394l68.97075,-29.6986l-69.71415,36.8376l71.5151,-22.9033l-72.94404,29.9372l73.39173,-15.8942l-75.49287,22.7574l74.58311,-8.7367l-77.33684,15.365l75.07815,-1.4975l-78.45875,7.8292l74.87219,5.7555l-78.8481,0.2203l73.96717,12.9548l-78.50126,-7.3907l72.37153,20.0333l-77.42148,-14.9327l70.10019,26.9246l-75.61884,-22.3352l67.17434,33.5646l-73.11017,-29.5292l63.6213,39.8911l-69.91889,-36.4475l59.47425,45.8452l-66.07479,-43.0255l54.7719,51.3713l-61.61377,-49.2018l49.55815,56.4178l-56.57747,-54.9187l43.8817,60.9374l-51.01293,-60.1228l37.79553,64.8881l-44.9721,-64.7656l31.35649,68.233l-38.51137,-68.8036l24.62467,70.9408l-31.69108,-72.1994l17.66294,72.9862l-24.57489,-74.9209l10.5363,74.3503l-17.22925,-76.943l3.31127,75.02l-9.72275,-78.2467l-3.94466,74.9894l-2.12547,-78.8197l-11.16377,74.2586l5.49166,-78.6569l-18.27864,72.8345l13.05751,-77.7597l-25.22285,70.7303l20.50144,-76.1365l-31.93156,67.9658l27.75397,-73.8024l-38.34214,64.5667l34.74735,-70.7792l-44.39472,60.5647l41.41632,-67.0952l-50.0328,55.9972l47.69858,-62.7846l-55.20374,50.9069l53.53551,-57.888l-59.85927,45.3414l58.87259,-52.4509l-63.95589,39.3525l63.65997,-46.524l-67.45537,32.9961l67.85299,-40.1626l-70.32505,26.3316l71.41249,-33.4264l-72.53812,19.4214l74.30523,-26.3781l-74.07393,12.3298l76.5042,-19.0834l-74.91812,5.123l77.98887,-11.6106l-75.06283,-2.1315l78.74538,-4.0294l-74.50668,-9.3662l78.76666,3.5894l-73.2549,-16.5133z" fill-rule="evenodd" fill="#ffff00"/>
+  </pattern>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-7"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-3"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-5"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-9"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-4"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-2"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-0"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-1"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-24"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-36"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-6"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-10"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-63"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-32"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-74"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-14"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-21"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-52"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-90"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-64"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-73"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-8"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-48"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-07"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-47"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-08"/>
+  <pattern y="0" x="0" height="6" width="6" patternUnits="userSpaceOnUse" id="EMFhbasepattern-59"/>
+ </defs>
+ <metadata id="metadata7">image/svg+xml</metadata>
+ <g>
+  <title>background</title>
+  <rect x="-1" y="-1" width="502" height="502" id="canvas_background" fill="none"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g id="layer1" display="inline" fill="#2614e5">
+   <g id="g467" transform="matrix(10.0161,0,0,10.0161,-2254.0249,-8638.4364) "/>
+   <g id="g487" transform="matrix(10.0161,0,0,10.0161,-2254.0249,-8847.4839) ">
+    <path d="m250.03973,889.64618c-1.75998,0 -3.51997,0.64 -5.03996,1.91999c-3.35997,3.03998 -3.43997,8.15994 -0.16,11.19992l0.88,0.79999l-2.63999,2.63998l-2.55998,2.55998l3.11998,0l3.11998,0l-0.16,0.56c-0.64,3.35997 -1.75999,6.79995 -2.95998,9.19993c-1.67999,3.27997 -3.35997,4.79996 -6.39995,5.99996c-2.55998,1.03999 -3.75997,1.67998 -4.07997,2.31998c-0.32,0.47999 -0.72,2.47998 -0.72,2.95998c0,0 35.27974,0 35.11974,0c0,-0.48 -0.39999,-2.47999 -0.63999,-2.95998c-0.4,-0.64 -1.51999,-1.27999 -4.15997,-2.31998c-3.03998,-1.2 -4.71997,-2.71999 -6.31995,-5.99996c-1.27999,-2.39998 -2.39999,-5.83996 -3.03998,-9.19993l-0.08,-0.56l3.03998,0l3.11997,0l-2.55998,-2.55998l-2.63998,-2.63998l0.88,-0.79999c3.27997,-3.03998 3.19997,-8.15994 -0.16,-11.19992c-1.51999,-1.27999 -3.27998,-1.91999 -4.95997,-1.91999z" id="path474" fill-rule="nonzero" fill="#ed021d"/>
+   </g>
+  </g>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_1" y2="464.4" x2="422.5" y1="66.4" x1="78.5" stroke-width="50" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_2" y2="462.4" x2="76.5" y1="70.4" x1="418.5" stroke-width="50" stroke="#000" fill="none"/>
+  <line stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_3" y2="158.4" x2="342.5" y1="158.4" x1="341.5" stroke-width="1.5" fill="none"/>
+ </g>
+</svg>

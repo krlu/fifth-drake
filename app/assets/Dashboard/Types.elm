@@ -79,8 +79,12 @@ type alias Flags =
   , elderDragonIcon   : String
   , blueTowerKillIcon : String
   , redTowerKillIcon  : String
+  , blueTowerIcon     : String
+  , redTowerIcon      : String
   , blueInhibitorKillIcon : String
   , redInhibitorKillIcon  : String
+  , blueInhibitorIcon : String
+  , redInhibitorIcon  : String
   }
 
 type ViewType = Map | Stats
