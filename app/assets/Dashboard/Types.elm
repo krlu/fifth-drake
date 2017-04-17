@@ -77,12 +77,10 @@ type alias Flags =
   , fireDragonIcon    : String
   , waterDragonIcon   : String
   , elderDragonIcon   : String
-  , blueTowerKillIcon : String
-  , redTowerKillIcon  : String
+  , towerKillIcon : String
   , blueTowerIcon     : String
   , redTowerIcon      : String
-  , blueInhibitorKillIcon : String
-  , redInhibitorKillIcon  : String
+  , inhibitorKillIcon : String
   , blueInhibitorIcon : String
   , redInhibitorIcon  : String
   }
