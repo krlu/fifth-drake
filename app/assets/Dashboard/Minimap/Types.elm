@@ -13,11 +13,17 @@ type alias Model =
   , mapWidth : Float
   , mapHeight : Float
   , iconStates : Dict PlayerId State
+  , blueTowerIcon : Icon
+  , redTowerIcon : Icon
   , blueTowerKillIcon : Icon
   , redTowerKillIcon : Icon
+  , blueInhibitorIcon : Icon
+  , redInhibitorIcon : Icon
   , blueInhibitorKillIcon : Icon
   , redInhibitorKillIcon : Icon
   }
+
+type Building = Tower | Inhibitor
 
 type Msg
   = AnimatePlayerIcons Animation.Msg

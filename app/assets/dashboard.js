@@ -19,10 +19,13 @@
 		fireDragonIcon : require("Dashboard/fire_dragon.png"),
 		waterDragonIcon : require("Dashboard/water_dragon.png"),
 		elderDragonIcon : require("Dashboard/elder_dragon.png"),
-		redTowerKillIcon : require("Dashboard/air_dragon.png"),
-		blueTowerKillIcon : require("Dashboard/blue_tower_kill.png"),
-    redTowerKillIcon : require("Dashboard/red_tower_kill.png"),
-    blueInhibitorKillIcon : require("Dashboard/blue_inhibitor_kill.png"),
-    redInhibitorKillIcon : require("Dashboard/red_inhibitor_kill.png")
+		blueTowerKillIcon : require("Dashboard/blue_chess_piece_kill.svg"),
+    redTowerKillIcon : require("Dashboard/red_chess_piece_kill.svg"),
+    blueTowerIcon : require("Dashboard/blue_chess_piece.svg"),
+    redTowerIcon : require("Dashboard/red_chess_piece.svg"),
+    blueInhibitorKillIcon : require("Dashboard/blue_inhibitor_kill.svg"),
+    redInhibitorKillIcon : require("Dashboard/red_inhibitor_kill.svg"),
+    blueInhibitorIcon : require("Dashboard/blue_inhib.svg"),
+    redInhibitorIcon : require("Dashboard/red_inhib.svg")
 	});
 })();

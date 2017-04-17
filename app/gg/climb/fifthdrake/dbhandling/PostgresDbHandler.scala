@@ -233,7 +233,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     new Player(playerId, ign, Role.interpret(role), getPlayerRiotId(playerId))
   }
 
-  def insertTag(tag: Tag): Long = {
+  def insertTag(tag: Tag): InternalId[Tag] = {
     require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
       s"check that this Tag already exists in DB! Id is $tag")
     DB localTx { implicit session =>
@@ -252,11 +252,11 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
         sql"""INSERT INTO league.player_to_tag (tag_id, player_id)
              values (${tag_id}, ${id.id.id.toInt})""".update.apply()
       })
-      tag_id
+      new InternalId[Tag](tag_id.toString)
     }
   }
 
-  def updateTag(tag: Tag): Option[Long] = {
+  def updateTag(tag: Tag): Option[InternalId[Tag]] = {
     require(tag.hasInternalId,
             s"Tag '${tag.title}' is missing InternalId, check if Tag exists in DB!")
     DB localTx { implicit session =>
@@ -267,7 +267,7 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
           timestamp=${tag.timestamp.toMillis} WHERE id=${tagId.id.toInt}"""
             .updateAndReturnGeneratedKey().apply()
           updatePlayersForTag(tag)
-          Some(returnedKey)
+          Some(new InternalId[Tag](returnedKey.toString))
         case None =>
           None
       }
