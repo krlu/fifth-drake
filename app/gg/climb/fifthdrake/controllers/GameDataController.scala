@@ -197,7 +197,10 @@ class GameDataController(dbh: DataAccessHandler,
 
   def getTags(gameKey: String): Action[AnyContent] =
     (AuthenticatedAction andThen AuthorizationFilter andThen TagAction.refiner(gameKey, dbh)) { request =>
-      Ok(Json.toJson(request.gameTags))
+      val gameData = dbh.getGame(new RiotId[Game](gameKey))
+      val timelineEvents: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
+      val autoGenTags = EventFinder.generateObjectivesTags(gameData,timelineEvents, gameKey, request.request.user.uuid)
+      Ok(Json.toJson(request.gameTags ++ autoGenTags))
   }
 
 

@@ -1,18 +1,23 @@
 package gg.climb.fifthdrake.reasoning
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.lolobjects.esports.Player
+import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
+import gg.climb.fifthdrake.lolobjects.esports.{Player, Role}
 import gg.climb.fifthdrake.lolobjects.game.state._
-import gg.climb.fifthdrake.{Game, Time, TimeMonoid}
+import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
+import gg.climb.fifthdrake._
+import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
 import gg.climb.ramenx.{EventStream, ListEventStream}
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
 
 /**
+  * For automatically generating tags for events
   * NOTE: Does not currently support event periods, only time slices
   */
-class EventFinder{
+object EventFinder{
 
   type Group = Set[Player]
 
@@ -135,5 +140,54 @@ class EventFinder{
 
   private def distance(loc1: LocationData, loc2: LocationData): Double =
     Math.sqrt(Math.pow(loc1.x - loc2.x, 2) + Math.pow(loc1.y - loc2.y, 2))
+
+
+  def generateObjectivesTags(gameData: Option[(MetaData, GameData)],
+                             timelineEvents: Seq[GameEvent],
+                             gameKey : String, userId : UUID): Seq[Tag] = {
+    val players = gameData.get._2.teams(Blue).playerStates ++ gameData.get._2.teams(Red).playerStates
+    val participants = players.map{ case (player, states) =>
+      new RiotId[(Side, Role)](states.apply(Duration.Zero).participantId.toString) -> player
+    }
+    timelineEvents.flatMap { event =>
+      event match {
+        case drag: DragonKill =>
+          val sec = drag.timestamp.toSeconds % 60 match {
+            case x if x < 10 => "0" + drag.timestamp.toSeconds % 60
+            case _ => "" + drag.timestamp.toSeconds % 60
+          }
+          Some(new Tag(Some(new InternalId[Tag]((-drag.time.toMillis).toString)),
+            new RiotId[Game](gameKey),
+            s"${drag.dragonType.name} killed at ${drag.timestamp.toMinutes}:$sec",
+            s"${drag.dragonType.name} taken by ${participants(drag.killer).ign}",
+            new Category("Objective"),
+            drag.timestamp,
+            Set(participants(drag.killer)),
+            userId,
+            List()
+          ))
+        case building: BuildingKill =>
+          val sec = building.timestamp.toSeconds % 60 match {
+            case x if x < 10 => "0" + building.timestamp.toSeconds % 60
+            case _ => "" + building.timestamp.toSeconds % 60
+          }
+          val side = building.killer.id match {
+            case "100" => Blue
+            case "200" => Red
+          }
+          Some(new Tag(Some(new InternalId[Tag]((-building.time.toMillis).toString)),
+            new RiotId[Game](gameKey),
+            s"${building.buildingType.name} killed at ${building.timestamp.toMinutes}:$sec",
+            s"${building.buildingType.name} taken by ${side.name} team",
+            new Category("Objective"),
+            building.timestamp,
+            Set(),
+            userId,
+            List()
+          ))
+        case _ => None
+      }
+    }
+  }
 }
 
