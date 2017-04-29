@@ -11,7 +11,7 @@ import scala.concurrent.Future
 /**
   * Created by michael on 3/4/17.
   */
-class TagRequest[A](val gameTags: Seq[Tag], request: AuthenticatedRequest[A]) extends WrappedRequest[A](request)
+class TagRequest[A](val gameTags: Seq[Tag], val request: AuthenticatedRequest[A]) extends WrappedRequest[A](request)
 
 object TagAction {
   /**

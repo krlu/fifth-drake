@@ -39,6 +39,8 @@ class DataAccessHandler(pdbh: PostgresDbHandler,mdbh: MongoDbHandler){
     pdbh.updateTagsAuthorizedGroups(newAuthorizedGroupIds, tagId)
 
   def getPlayer(id: InternalId[Player]): Player = pdbh.getPlayer(id)
+  def getPlayerByRiotId(id : RiotId[Player]) : Player = pdbh.getPlayerByRiotId(id)
+
   def getChampion(championName: String): Option[Champion] = pdbh.getChampion(championName)
 
   def getAllGameIdentifiers: Seq[GameIdentifier] = pdbh.getAllGameIdentifiers
