@@ -175,10 +175,14 @@ object EventFinder{
             case "100" => Blue
             case "200" => Red
           }
+          val description = building.buildingType match {
+            case nex: NexusTurret => "$side nexus turret destroyed"
+            case _ => s"${side.name} ${building.lane.name} ${building.buildingType.name} destroyed"
+          }
           Some(new Tag(Some(new InternalId[Tag]((-building.time.toMillis).toString)),
             new RiotId[Game](gameKey),
             s"${building.buildingType.name} killed at ${building.timestamp.toMinutes}:$sec",
-            s"${building.buildingType.name} taken by ${side.name} team",
+            description,
             new Category("Objective"),
             building.timestamp,
             Set(),
