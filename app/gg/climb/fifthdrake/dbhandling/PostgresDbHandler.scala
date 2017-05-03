@@ -629,5 +629,56 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
         .update().apply()
     }
   }
-}
 
+  def insertAutoGenTag(tag : Tag): InternalId[Tag] = {
+    require(!tag.hasInternalId, s"Inserting tag titled Cannot insert Tag with InternalId, " +
+      s"check that this Tag already exists in DB! Id is $tag")
+    DB localTx { implicit session =>
+      val tag_id: Long =
+        sql"""insert into league.auto_gen_tag (game_key, title, description, category, timestamp)
+              values (${tag.gameKey.id},
+                      ${tag.title},
+                      ${tag.description},
+                      ${tag.category.name},
+                      ${tag.timestamp.toMillis})
+             """.updateAndReturnGeneratedKey().apply()
+      tag.players.foreach((id: Player) => {
+        sql"""INSERT INTO league.player_to_auto_gen_tag (auto_gen_tag_id, player_id)
+             values (${tag_id}, ${id.id.id.toInt})""".update.apply()
+      })
+      new InternalId[Tag](tag_id.toString)
+    }
+  }
+
+  def getAutoGenTagsForGame(gameKey : String) : Seq[Tag] = {
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM league.auto_gen_tag WHERE game_key = $gameKey".map(rs => {
+        val tagId = new InternalId[Tag]("auto-" + rs.int("id").toString)
+        new Tag(
+          Some(tagId),
+          new RiotId[Game](rs.string("game_key")),
+          rs.string("title"), rs.string("description"),
+          new Category(rs.string("category")),
+          Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
+          getPlayersForAutoGenTag(tagId),
+          UUID.fromString("07f96895-4b4a-46a5-9ac6-18aa354ffd08"),
+          List()
+        )
+      }).list.apply()
+    }
+  }
+  private def getPlayersForAutoGenTag(tagId: InternalId[Tag]): Set[Player] = {
+    val ids = getPlayerIdsForAutoGenTag(tagId)
+    ids.map(id => getPlayer(id))
+  }
+  private def getPlayerIdsForAutoGenTag(tagId: InternalId[Tag]): Set[InternalId[Player]] = {
+    val tagIds: List[Int] = DB readOnly { implicit session =>
+      sql"""SELECT player_id
+            FROM league.player_to_auto_gen_tag
+            WHERE auto_gen_tag_id=${tagId.id.split("-")(1).toInt}""".map(rs => rs.int("player_id")).list
+        .apply()
+    }
+    tagIds.map(id => new InternalId[Player](id.toString)).toSet
+  }
+
+}

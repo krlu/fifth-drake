@@ -199,10 +199,14 @@ class GameDataController(dbh: DataAccessHandler,
     (AuthenticatedAction andThen AuthorizationFilter andThen TagAction.refiner(gameKey, dbh)) { request =>
       val gameData = dbh.getGame(new RiotId[Game](gameKey))
       val timelineEvents: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
-      val autoGenTags = EventFinder.generateObjectivesTags(gameData,timelineEvents, gameKey, request.request.user.uuid)
+      var autoGenTags = dbh.getAutoGenTagsForGame(gameKey)
+      if(autoGenTags.size == 0){
+        val foundTags = EventFinder.generateObjectivesTags(gameData,timelineEvents, gameKey, request.request.user.uuid)
+        foundTags.foreach(t => dbh.insertAutoGenTag(t))
+        autoGenTags = dbh.getAutoGenTagsForGame(gameKey)
+      }
       Ok(Json.toJson(request.gameTags ++ autoGenTags))
   }
-
 
   private implicit val tagWrites = new Writes[Tag] {
     def writes(tag: Tag): JsObject =

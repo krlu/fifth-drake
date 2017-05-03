@@ -2,12 +2,12 @@ package gg.climb.fifthdrake.reasoning
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-import gg.climb.fifthdrake.lolobjects.{InternalId, RiotId}
+import gg.climb.fifthdrake._
+import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role}
 import gg.climb.fifthdrake.lolobjects.game.state._
-import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
-import gg.climb.fifthdrake._
 import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
+import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.ramenx.{EventStream, ListEventStream}
 
 import scala.collection.mutable.ListBuffer
@@ -145,6 +145,7 @@ object EventFinder{
   def generateObjectivesTags(gameData: Option[(MetaData, GameData)],
                              timelineEvents: Seq[GameEvent],
                              gameKey : String, userId : UUID): Seq[Tag] = {
+    println("running event finder........")
     val players = gameData.get._2.teams(Blue).playerStates ++ gameData.get._2.teams(Red).playerStates
     val participants = players.map{ case (player, states) =>
       new RiotId[(Side, Role)](states.apply(Duration.Zero).participantId.toString) -> player
@@ -156,7 +157,7 @@ object EventFinder{
             case x if x < 10 => "0" + drag.timestamp.toSeconds % 60
             case _ => "" + drag.timestamp.toSeconds % 60
           }
-          Some(new Tag(Some(new InternalId[Tag]((-drag.time.toMillis).toString)),
+          Some(new Tag(
             new RiotId[Game](gameKey),
             s"${drag.dragonType.name} killed at ${drag.timestamp.toMinutes}:$sec",
             s"${drag.dragonType.name} taken by ${participants(drag.killer).ign}",
@@ -179,7 +180,7 @@ object EventFinder{
             case nex: NexusTurret => "$side nexus turret destroyed"
             case _ => s"${side.name} ${building.lane.name} ${building.buildingType.name} destroyed"
           }
-          Some(new Tag(Some(new InternalId[Tag]((-building.time.toMillis).toString)),
+          Some(new Tag(
             new RiotId[Game](gameKey),
             s"${building.buildingType.name} killed at ${building.timestamp.toMinutes}:$sec",
             description,
