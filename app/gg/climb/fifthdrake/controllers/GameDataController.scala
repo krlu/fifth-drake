@@ -200,7 +200,7 @@ class GameDataController(dbh: DataAccessHandler,
       val gameData = dbh.getGame(new RiotId[Game](gameKey))
       val timelineEvents: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
       var autoGenTags = dbh.getAutoGenTagsForGame(gameKey)
-      if(autoGenTags.size == 0){
+      if(autoGenTags.isEmpty){
         val foundTags = EventFinder.generateObjectivesTags(gameData,timelineEvents, gameKey, request.request.user.uuid)
         foundTags.foreach(t => dbh.insertAutoGenTag(t))
         autoGenTags = dbh.getAutoGenTagsForGame(gameKey)
