@@ -177,7 +177,7 @@ object EventFinder{
             case "200" => Red
           }
           val description = building.buildingType match {
-            case nex: NexusTurret => "$side nexus turret destroyed"
+            case nex: NexusTurret => "Side nexus turret destroyed"
             case _ => s"${side.name} ${building.lane.name} ${building.buildingType.name} destroyed"
           }
           Some(new Tag(

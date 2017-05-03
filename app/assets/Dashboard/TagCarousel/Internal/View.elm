@@ -5,6 +5,7 @@ import GameModel exposing (Player, PlayerId, Timestamp)
 import Html exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick, onMouseLeave, onMouseOver)
+import String
 import TagCarousel.Css exposing (CssClass(..), namespace)
 import TagCarousel.Types exposing (Model, Msg(..), Tag, TagForm, TagId)
 import Html.Attributes exposing (checked, defaultValue, for, href, placeholder, rel, src, style, type_, value)
@@ -17,11 +18,14 @@ import Types exposing (Permission)
 view : Model -> List Permission -> UserId -> List (PlayerId, String, String, String) -> Html Msg
 view model permissions currentUserId players =
   let
-    groupFilteredTags = List.filter (tagInAllGroups model.groupFilters) model.tags
-    (filteredTags, filterCss) =
-      case model.filteredByAuthor of
-        True -> (List.filter (\tag -> tag.author.id == currentUserId) groupFilteredTags, SelectedFilter)
-        False -> (groupFilteredTags, UnselectedFilter)
+
+  {------------ Apply filters to list of tags -------------}
+
+    autoFilteredTags =
+      case model.showAutoTags of
+        True -> model.tags
+        False -> List.filter (\tag -> not <| String.contains "auto" tag.id) model.tags
+    groupFilteredTags = List.filter (tagInAllGroups model.groupFilters) autoFilteredTags
     tags = List.sortBy .timestamp filteredTags
            |> List.map (\tag ->
               tagHtml tag permissions currentUserId model.lastClickedTag
@@ -29,22 +33,34 @@ view model permissions currentUserId players =
     tagsShare = List.sortBy .timestamp model.tags
                 |> List.filter (\tag -> tag.author.id == currentUserId)
                 |> List.map (\tag -> tagShareModeHtml tag permissions model.tagForm.active)
+
+    {----------------- Generate HTML/CSS elements for Tag Carousel -------------------}
+
+    (filteredTags, authorFilterCss) =
+      case model.filteredByAuthor of
+        True -> (List.filter (\tag -> tag.author.id == currentUserId) groupFilteredTags, SelectedFilter)
+        False -> (groupFilteredTags, UnselectedFilter)
+    (autoFilteredCss, autoFilteredLabel) =
+      case model.showAutoTags of
+        True -> (UnselectedFilter, "Hide Auto-Tags")
+        False -> (SelectedFilter, "Show Auto-Tags")
     tagFormView = tagFormHtml model players
     carouselCss =
       if model.tagForm.active then
         [TagCarousel, MinimizedCarousel]
       else
         [TagCarousel]
-    authorFilterHtml = buildFilterHtml FilterByAuthor "My Tags" filterCss
+    autoTagsFilterHtml = buildFilterHtml ToggleShowTags autoFilteredLabel [("width", "11vw")] autoFilteredCss
+    authorFilterHtml = buildFilterHtml FilterByAuthor "My Tags" [] authorFilterCss
     groupFilterHtml =
       List.map (\perm ->
-        buildFilterHtml (FilterByGroup perm.groupId) "Group Tags"
+        buildFilterHtml (UpdateGroupFilters perm.groupId) "Group Tags" []
         <| groupFilterCss perm.groupId model.groupFilters) permissions
     (shareFormButtonLabel, tagsHtml, filterHtml) =
       case model.isShareForm of
        True ->
         ("Done", tagsShare, [])
-       False -> ("Share Tags", tags, [authorFilterHtml] ++ groupFilterHtml)
+       False -> ("Share Tags", tags, [autoTagsFilterHtml, authorFilterHtml] ++ groupFilterHtml)
     carouselControlsHtml =
       case (List.length permissions) == 0 of
         False ->
@@ -82,11 +98,12 @@ tagInAllGroups groupIds tag =
   <| List.member False
   <| List.map (\id -> List.member id tag.authorizedGroups) groupIds
 
-buildFilterHtml : Msg -> String -> CssClass -> Html Msg
-buildFilterHtml action label filterCss =
+buildFilterHtml : Msg -> String -> List (String, String) -> CssClass -> Html Msg
+buildFilterHtml action label styles filterCss =
   div
   [class [FilterTagCss, filterCss, CarouselControlCss]
   , onClick action
+  , style styles
   ]
   [ text label
   ]
@@ -231,7 +248,6 @@ tagHtml tag permissions currentUserId lastClickedTag formActive deleteButton edi
         ]
         (tagHtmlContents tag)
       ] ++ deleteHtml ++ editHtml )
-
 
 
 {-------------- Helper functions --------------}

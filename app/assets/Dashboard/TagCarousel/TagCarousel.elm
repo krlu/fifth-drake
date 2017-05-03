@@ -32,6 +32,7 @@ init loc addTagButton deleteTagButton editTagButton =
       , editTagButton = editTagButton
       , isShareForm = False
       , filteredByAuthor = False
+      , showAutoTags = True
       , groupFilters = []
       },
       Populate.populate loc

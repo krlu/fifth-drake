@@ -120,7 +120,7 @@ update msg model ts =
         newBool = not model.filteredByAuthor
       in
       (Nothing, {model | filteredByAuthor = newBool}, Cmd.none)
-    FilterByGroup groupId ->
+    UpdateGroupFilters groupId ->
       let
         newFilters =
           case List.member groupId model.groupFilters of
@@ -132,6 +132,11 @@ update msg model ts =
       (Nothing, {model | highlightedPlayers = playerIds}, Cmd.none)
     UnhighlightPlayers ->
       (Nothing, {model | highlightedPlayers = []}, Cmd.none)
+    ToggleShowTags ->
+      let
+        newToggle = not model.showAutoTags
+      in
+        (Nothing, {model| showAutoTags = newToggle}, Cmd.none)
 
 
 filterTags: List Tag -> String -> List Tag

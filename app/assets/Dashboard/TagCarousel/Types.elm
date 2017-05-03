@@ -29,9 +29,10 @@ type Msg
   | ShareToggled (Result Http.Error ShareData)
   | ToggleCarouselForm
   | FilterByAuthor
-  | FilterByGroup GroupId
+  | UpdateGroupFilters GroupId
   | HighlightPlayers (List PlayerId)
   | UnhighlightPlayers
+  | ToggleShowTags
 
 type alias Model =
   { host               : Host
@@ -44,6 +45,7 @@ type alias Model =
   , editTagButton      : String
   , isShareForm        : Bool
   , filteredByAuthor   : Bool
+  , showAutoTags       : Bool
   , groupFilters       : List GroupId
   }
 
