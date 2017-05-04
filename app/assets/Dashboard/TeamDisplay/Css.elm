@@ -25,6 +25,15 @@ teamDisplayContainerWidth = 450
 teamDisplayHeight : Float
 teamDisplayHeight = 100
 
+dragonImageSize : Float
+dragonImageSize = 30
+
+dragonImageTop : Float
+dragonImageTop = 68
+
+dragonDisplayWidth : Float
+dragonDisplayWidth = 200
+
 type CssClass
   = TeamDisplay
   | TeamStats
@@ -73,11 +82,11 @@ css =
       ]
     ])
   , class DragonImage
-    [ width (2 |> vw)
-    , height (3 |> vh)
+    [ width (dragonImageSize |> px)
+    , height (dragonImageSize |> px)
     , borderRadius (3 |> vh)
     , position relative
-    , top (68 |> px)
+    , top (dragonImageTop |> px)
     ]
   , class TeamDisplayContainer
     [ width (teamDisplayContainerWidth |> px)
@@ -85,6 +94,6 @@ css =
     ]
   , class DragonDisplay
     [ displayFlex
-    , width (200 |> px)
+    , width (dragonDisplayWidth |> px)
     ]
   ]
