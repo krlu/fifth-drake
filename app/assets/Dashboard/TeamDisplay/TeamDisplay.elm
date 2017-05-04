@@ -89,7 +89,7 @@ objectiveToHtml model side numDragons objective=
   let
     pos =
       case side of
-        Blue -> style [("left", (toString <| 13 - (2 * (numDragons-1))) ++ "vw")]
+        Blue -> style [("left", (toString <| 160 - (30 * (numDragons-1))) ++ "px")]
         Red -> style []
   in
     case objective.unitKilled of
