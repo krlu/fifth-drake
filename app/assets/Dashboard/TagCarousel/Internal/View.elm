@@ -23,10 +23,12 @@ view model permissions currentUserId players =
 
     autoFilteredTags =
       case model.showAutoTags of
-        True -> model.tags
-        False -> List.filter (\tag -> not <| String.contains "auto" tag.id) model.tags
-    groupFilteredTags = List.filter (tagInAllGroups model.groupFilters) autoFilteredTags
-    tags = List.sortBy .timestamp filteredTags
+        True -> List.filter (\tag -> String.contains "auto" tag.id) model.tags
+        False -> []
+    groupFilteredTags =
+      List.filter (\tag -> not <| String.contains "auto" tag.id)
+      <| List.filter (tagInAllGroups model.groupFilters) model.tags
+    tags = List.sortBy .timestamp (filteredTags ++ autoFilteredTags)
            |> List.map (\tag ->
               tagHtml tag permissions currentUserId model.lastClickedTag
                 model.tagForm.active model.deleteTagButton model.editTagButton)
