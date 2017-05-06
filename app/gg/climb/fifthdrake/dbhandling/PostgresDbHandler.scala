@@ -654,17 +654,33 @@ class PostgresDbHandler(host: String, port: Int, db: String, user: String, passw
     DB readOnly { implicit session =>
       sql"SELECT * FROM league.auto_gen_tag WHERE game_key = $gameKey".map(rs => {
         val tagId = new InternalId[Tag]("auto-" + rs.int("id").toString)
-        new Tag(
-          Some(tagId),
-          new RiotId[Game](rs.string("game_key")),
-          rs.string("title"), rs.string("description"),
-          new Category(rs.string("category")),
-          Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
-          getPlayersForAutoGenTag(tagId),
-          UUID.fromString("07f96895-4b4a-46a5-9ac6-18aa354ffd08"),
-          List()
-        )
-      }).list.apply()
+        getClimbBotId match {
+          case Some(botId) => Some(
+            new Tag(
+            Some(tagId),
+            new RiotId[Game](rs.string("game_key")),
+            rs.string("title"), rs.string("description"),
+            new Category(rs.string("category")),
+            Duration(rs.long("timestamp"), TimeUnit.MILLISECONDS),
+            getPlayersForAutoGenTag(tagId),
+            botId,
+            List())
+          )
+          case _ => None
+        }
+      }).list.apply().flatten
+    }
+  }
+
+  private def getClimbBotId: Option[UUID] = {
+    DB readOnly { implicit session =>
+      val id = sql"SELECT id FROM account.user WHERE user_id ='0'".map(rs => {
+        rs.string("id")
+      }).single().apply()
+      id match {
+        case Some(uuid) => Some(UUID.fromString(uuid))
+        case _ => None
+      }
     }
   }
   private def getPlayersForAutoGenTag(tagId: InternalId[Tag]): Set[Player] = {

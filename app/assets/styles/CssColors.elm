@@ -107,8 +107,11 @@ c_filter_tag_selected = hex "#96b3ff"
 c_tool_tip_background : Color
 c_tool_tip_background = hex "#2b2b2b"
 
-c_highlighted_player : Color
-c_highlighted_player = hex "#bcd7f5"
+c_highlighted_blue_icon : Color
+c_highlighted_blue_icon = hex "#bcd7f5"
+
+c_highlighted_red_icon : Color
+c_highlighted_red_icon = hex "#f79494"
 
 c_tag_option : Color
 c_tag_option = hex "#80acbb"

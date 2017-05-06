@@ -87,6 +87,13 @@ checkQuery query metadata =
 metadataView : Location -> MetaData -> Html Msg
 metadataView loc metadata =
   let
+    (league, tournament) =
+      case (String.contains "LCS" metadata.tournament.league) of
+        True -> (metadata.tournament.league,
+                (toString metadata.tournament.year)
+                ++ " " ++ metadata.tournament.split
+                ++ " " ++ metadata.tournament.phase)
+        False -> ("International", (toString metadata.tournament.year) ++ " " ++ metadata.tournament.league)
     date = fromTime metadata.timeFrame.gameDate
     patchComponents = split "." metadata.timeFrame.patch |> Array.fromList
     extractStr : Maybe String -> String
@@ -102,12 +109,8 @@ metadataView loc metadata =
     [ td [ ]
       [ text <| (monthToString <| month date) ++ " " ++ (toString <| day date) ++ " " ++ (toString <| year date)
       ]
-    , td [] [ text metadata.tournament.league ]
-    , td [] [ text
-              ( (toString metadata.tournament.year)
-                ++ " " ++ metadata.tournament.split
-                ++ " " ++ metadata.tournament.phase)
-            ]
+    , td [] [ text league ]
+    , td [] [ text tournament ]
     , td [] [ text patch ]
     , td [] [ text <| toString metadata.timeFrame.week ]
     , td [] [ text <| metadata.blueTeamName ]

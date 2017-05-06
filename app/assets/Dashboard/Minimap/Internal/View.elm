@@ -86,13 +86,15 @@ iconColor : State -> PlayerId -> Maybe PlayerId -> List PlayerId -> CssClass
 iconColor iconState playerId hoveredPlayer highlightedPlayers =
   case hoveredPlayer of
     Nothing ->
-      case (List.member playerId highlightedPlayers) of
-        False -> IconColor iconState.side
-        True -> HighlightedIconColor
+      case (List.member playerId highlightedPlayers, iconState.side) of
+        (False, _ ) -> IconColor iconState.side
+        (True, Blue) -> HighlightedBlueIcon
+        (True, Red) -> HighlightedRedIcon
     Just hoveredId ->
-      case playerId == hoveredId of
-        False -> IconColor iconState.side
-        True -> HighlightedIconColor
+      case (playerId == hoveredId, iconState.side) of
+        (False, _ ) -> IconColor iconState.side
+        (True, Blue) -> HighlightedBlueIcon
+        (True, Red) -> HighlightedRedIcon
 
 buildingToHtml : Minimap.Types.Model -> Icon -> Icon -> Icon -> Icon -> (Float, Float, Side, Building) -> Html a
 buildingToHtml model blueT redT blueH redH (x, y, side, building) =
