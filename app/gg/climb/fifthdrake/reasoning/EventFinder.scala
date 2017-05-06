@@ -28,8 +28,14 @@ object EventFinder{
   val hpDeltaThreshold = 50
   val fightDistThreshold = 1000.0
   val skirmishThreshold = 3
-  val teamfightThreshold = 8
+  val teamfightThreshold = 6
 
+  val sameLocationThreshold = 575
+  val sameTimeThreshold = 10
+
+  def sameEvents(e1: Fight, e2: Fight): Boolean = {
+    distance(e1.location, e2.location) < sameLocationThreshold
+  }
   /**
     * Calculates all events over the course of an entire game
     * Currently each events trigger is rule based
@@ -48,16 +54,15 @@ object EventFinder{
     }
     val events = new ListBuffer[(Time, Set[GameEvent])]()
     val gameLength = metadata.gameDuration.toMillis.toInt
-    val rate = samplingRate.toMillis.toInt
+    val rate = 5*samplingRate.toMillis.toInt
 
     for(t <- 0 until gameLength by rate) {
       val timeStamp = Duration(t, timeUnit)
       val redPlayers = redPlayersOverTime.map{case (p, ps) => p -> ps(timeStamp)}
       val bluePlayers = bluePlayersOverTime.map{case (p, ps) => p -> ps(timeStamp)}
       val fights = getFights(bluePlayers, redPlayers)
-      val skirmishes: Set[GameEvent] = getSkirmishes(fights).map(FightEvent)
-      val teamfights: Set[GameEvent] = getTeamFights(fights).map(FightEvent)
-      events += Tuple2(timeStamp, skirmishes ++ teamfights)
+      val teamfights: Set[Teamfight] = getTeamFights(fights)
+      events += Tuple2(timeStamp, teamfights.asInstanceOf[Set[GameEvent]])
     }
     new ListEventStream[Time, Set[GameEvent]](events.toList)
   }
@@ -86,7 +91,7 @@ object EventFinder{
     }).map(f => f.get).toList
 
   private def getFight(bluePlayer: (Player, (Option[PlayerState], PlayerState)),
-               redPlayer: (Player, (Option[PlayerState], PlayerState))): Option[Fight] = {
+                       redPlayer: (Player, (Option[PlayerState], PlayerState))) : Option[Fight] = {
     for {
       redPrevState <- redPlayer._2._1
       bluePrevState <- bluePlayer._2._1
@@ -142,24 +147,39 @@ object EventFinder{
     Math.sqrt(Math.pow(loc1.x - loc2.x, 2) + Math.pow(loc1.y - loc2.y, 2))
 
 
-
   def generateFightTags(game: Game, gameKey : String, userId : UUID): Seq[Tag] = {
     val events = getAllEventsForGame(game)
     events.getAll.flatMap { case (time, eventSet) =>
       eventSet.flatMap{ (event: GameEvent) =>
         event match {
-          case fightEvent: FightEvent =>
+          case skirm : Skirmish => None
             val sec = time.toSeconds % 60 match {
               case x if x < 10 => "0" + time.toSeconds % 60
               case _ => "" + time.toSeconds % 60
             }
             Some(new Tag(
               new RiotId[Game](gameKey),
-              s"Fight killed at ${time.toMinutes}:$sec",
-              s"Fight occurred with ${fightEvent.fight.playersInvolved.map(_.ign).mkString(", ")}",
-              new Category("Objective"),
+              s"Skirmish at ${time.toMinutes}:$sec",
+              s"Skirmish involving ${skirm.playersInvolved.map(_.ign).mkString(", ")}",
+              new Category("TeamFight"),
               time,
-              fightEvent.fight.playersInvolved,
+              skirm.playersInvolved,
+              userId,
+              List()
+            )
+            )
+          case fightEvent: Teamfight =>
+            val sec = time.toSeconds % 60 match {
+              case x if x < 10 => "0" + time.toSeconds % 60
+              case _ => "" + time.toSeconds % 60
+            }
+            Some(new Tag(
+              new RiotId[Game](gameKey),
+              s"TeamFight at ${time.toMinutes}:$sec",
+              s"TeamFight involving ${fightEvent.playersInvolved.map(_.ign).mkString(", ")}",
+              new Category("TeamFight"),
+              time,
+              fightEvent.playersInvolved,
               userId,
               List()
             )
