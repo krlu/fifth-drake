@@ -8,9 +8,9 @@ import scala.concurrent.duration.Duration
 
 
 sealed trait GameEvent
-case class FightEvent(fight: Fight) extends GameEvent
 
-sealed class Fight(val playersInvolved: Set[Player], val location: LocationData)
+
+sealed class Fight(val playersInvolved: Set[Player], val location: LocationData) extends GameEvent
 case class Gank(players: Set[Player], loc: LocationData) extends Fight(players, loc)
 case class Teamfight(players: Set[Player], loc: LocationData) extends Fight(players, loc)
 case class Skirmish(players: Set[Player], loc: LocationData) extends Fight(players, loc)
