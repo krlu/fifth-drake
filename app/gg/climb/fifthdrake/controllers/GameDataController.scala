@@ -197,15 +197,22 @@ class GameDataController(dbh: DataAccessHandler,
 
   def getTags(gameKey: String): Action[AnyContent] =
     (AuthenticatedAction andThen AuthorizationFilter andThen TagAction.refiner(gameKey, dbh)) { request =>
-      val gameData = dbh.getGame(new RiotId[Game](gameKey))
-      val timelineEvents: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
-      var autoGenTags = dbh.getAutoGenTagsForGame(gameKey)
-      if(autoGenTags.isEmpty){
-        val foundTags = EventFinder.generateObjectivesTags(gameData,timelineEvents, gameKey, request.request.user.uuid)
-        foundTags.foreach(t => dbh.insertAutoGenTag(t))
-        autoGenTags = dbh.getAutoGenTagsForGame(gameKey)
+      val gameDataOption = dbh.getGame(new RiotId[Game](gameKey))
+      gameDataOption match {
+        case Some(gameData) =>
+          val timelineEvents: Seq[GameEvent] = dbh.getTimelineForGame(new RiotId[Timeline](gameKey))
+          var autoGenTags = dbh.getAutoGenTagsForGame(gameKey)
+          if(autoGenTags.isEmpty){
+            val objectiveTags =
+              EventFinder.generateObjectivesTags(gameData,timelineEvents, gameKey, request.request.user.uuid)
+            val fightTags = EventFinder.generateFightTags(gameData, gameKey, request.request.user.uuid)
+            objectiveTags.foreach(t => dbh.insertAutoGenTag(t))
+            fightTags.foreach(t => dbh.insertAutoGenTag(t))
+            autoGenTags = dbh.getAutoGenTagsForGame(gameKey)
+          }
+          Ok(Json.toJson(request.gameTags ++ autoGenTags))
+        case _ => Ok(Json.toJson(request.gameTags))
       }
-      Ok(Json.toJson(request.gameTags ++ autoGenTags))
   }
 
   private implicit val tagWrites = new Writes[Tag] {

@@ -6,9 +6,9 @@ import gg.climb.fifthdrake._
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role}
 import gg.climb.fifthdrake.lolobjects.game.state._
-import gg.climb.fifthdrake.lolobjects.game.{GameData, MetaData}
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.ramenx.{EventStream, ListEventStream}
+import play.api.Logger
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
@@ -33,10 +33,11 @@ object EventFinder{
   /**
     * Calculates all events over the course of an entire game
     * Currently each events trigger is rule based
+    *
     * @param game - A game
     * @return ListEventStream[Duration,  Events at timeStamp]
     */
-  def getAllEventsForGame(game: Game): EventStream[Time, Set[GameEvent]] ={
+  private def getAllEventsForGame(game: Game): EventStream[Time, Set[GameEvent]] ={
     val (metadata, gameData) = game
 
     val redPlayersOverTime = gameData.teams(Red).playerStates.map{
@@ -60,8 +61,6 @@ object EventFinder{
     }
     new ListEventStream[Time, Set[GameEvent]](events.toList)
   }
-
-  def getObjectiveTaken(side : Side, players: Map[Player, PlayerState]): Option[Objective] = None
 
   def getGank(fights: List[Option[Fight]]): Option[Set[Gank]]= None
 
@@ -106,6 +105,7 @@ object EventFinder{
 
   /**
     * Merge sets of players with intersections by taking set unions
+    *
     * @param groups - List of player groups
     * @return groups
     */
@@ -142,11 +142,39 @@ object EventFinder{
     Math.sqrt(Math.pow(loc1.x - loc2.x, 2) + Math.pow(loc1.y - loc2.y, 2))
 
 
-  def generateObjectivesTags(gameData: Option[(MetaData, GameData)],
+
+  def generateFightTags(game: Game, gameKey : String, userId : UUID): Seq[Tag] = {
+    val events = getAllEventsForGame(game)
+    events.getAll.flatMap { case (time, eventSet) =>
+      eventSet.flatMap{ (event: GameEvent) =>
+        event match {
+          case fightEvent: FightEvent =>
+            val sec = time.toSeconds % 60 match {
+              case x if x < 10 => "0" + time.toSeconds % 60
+              case _ => "" + time.toSeconds % 60
+            }
+            Some(new Tag(
+              new RiotId[Game](gameKey),
+              s"Fight killed at ${time.toMinutes}:$sec",
+              s"Fight occurred with ${fightEvent.fight.playersInvolved.map(_.ign).mkString(", ")}",
+              new Category("Objective"),
+              time,
+              fightEvent.fight.playersInvolved,
+              userId,
+              List()
+            )
+            )
+          case _ => None
+        }
+      }
+    }
+  }
+
+  def generateObjectivesTags(gameData: Game,
                              timelineEvents: Seq[GameEvent],
                              gameKey : String, userId : UUID): Seq[Tag] = {
-    println("running event finder........")
-    val players = gameData.get._2.teams(Blue).playerStates ++ gameData.get._2.teams(Red).playerStates
+    Logger.info(s"Searching for Objectives events")
+    val players = gameData._2.teams(Blue).playerStates ++ gameData._2.teams(Red).playerStates
     val participants = players.map{ case (player, states) =>
       new RiotId[(Side, Role)](states.apply(Duration.Zero).participantId.toString) -> player
     }
