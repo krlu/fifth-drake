@@ -73,11 +73,9 @@ object EventFinder{
       .filter(p => p.size >= teamfightThreshold)
       .map( p => Teamfight(p, getCentroid(fights.map(f => f.location).toSet))).toSet
 
-
   private def getSkirmishes(fights: List[Fight]): Set[Skirmish] = mergeGroups(fights.map(f => f.playersInvolved))
       .filter(p => p.size >= skirmishThreshold && p.size < teamfightThreshold)
       .map( p => Skirmish(p, getCentroid(fights.map(f => f.location).toSet))).toSet
-
 
   private def getFights(bluePlayers: Map[Player, (Option[PlayerState], PlayerState)],
                               redPlayers:  Map[Player, (Option[PlayerState], PlayerState)]): List[Fight] = {
@@ -175,7 +173,7 @@ object EventFinder{
             }
             Some(new Tag(
               new RiotId[Game](gameKey),
-              s"TeamFight at ${time.toMinutes}:$sec",
+              s"Fight at ${time.toMinutes}:$sec",
               s"TeamFight involving ${fightEvent.playersInvolved.map(_.ign).mkString(", ")}",
               new Category("TeamFight"),
               time,
