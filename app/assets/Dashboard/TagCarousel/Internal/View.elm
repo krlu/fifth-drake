@@ -7,7 +7,7 @@ import Html.CssHelpers exposing (withNamespace)
 import Html.Events exposing (onClick, onMouseLeave, onMouseOver)
 import String
 import TagCarousel.Css exposing (CssClass(..), namespace)
-import TagCarousel.Types exposing (Model, Msg(..), Tag, TagForm, TagId)
+import TagCarousel.Types exposing (Model, Msg(..), Tag, TagFilter(..), TagForm, TagId)
 import Html.Attributes exposing (checked, defaultValue, for, href, placeholder, rel, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import SettingsTypes exposing (GroupId, UserId)
@@ -20,49 +20,45 @@ view model permissions currentUserId players =
   let
 
   {------------ Apply filters to list of tags -------------}
-
-    autoFilteredTags =
-      case model.showAutoTags of
-        True -> List.filter (\tag -> String.contains "auto" tag.id) model.tags
-        False -> []
-    groupFilteredTags =
-      List.filter (\tag -> not <| String.contains "auto" tag.id)
-      <| List.filter (tagInAllGroups model.groupFilters) model.tags
-    tags = List.sortBy .timestamp (filteredTags ++ autoFilteredTags)
-           |> List.map (\tag ->
-              tagHtml tag permissions currentUserId model.lastClickedTag
-                model.tagForm.active model.deleteTagButton model.editTagButton)
+    (filteredTags, autoTagFilterCss, groupTagFilterCss, myTagFilterCss, allTagsFilterCss) =
+      case model.tagFilter of
+        AllTags ->
+          (model.tags, UnselectedFilter, UnselectedFilter, UnselectedFilter, SelectedFilter)
+        AutoTags ->
+          (List.filter (\tag -> isAutoTag tag) model.tags,
+            SelectedFilter, UnselectedFilter, UnselectedFilter, UnselectedFilter)
+        GroupTags -> (List.filter (tagInAllGroups model.groupFilters) model.tags,
+           UnselectedFilter, SelectedFilter, UnselectedFilter, UnselectedFilter)
+        MyTags ->
+          (List.filter (\tag -> tag.author.id == currentUserId) model.tags,
+          UnselectedFilter, UnselectedFilter, SelectedFilter, UnselectedFilter)
     tagsShare = List.sortBy .timestamp model.tags
                 |> List.filter (\tag -> tag.author.id == currentUserId)
                 |> List.map (\tag -> tagShareModeHtml tag permissions model.tagForm.active)
 
+
     {----------------- Generate HTML/CSS elements for Tag Carousel -------------------}
 
-    (filteredTags, authorFilterCss) =
-      case model.filteredByAuthor of
-        True -> (List.filter (\tag -> tag.author.id == currentUserId) groupFilteredTags, SelectedFilter)
-        False -> (groupFilteredTags, UnselectedFilter)
-    (autoFilteredCss, autoFilteredLabel) =
-      case model.showAutoTags of
-        True -> (UnselectedFilter, "Hide Auto-Tags")
-        False -> (SelectedFilter, "Show Auto-Tags")
+    tags = List.sortBy .timestamp (filteredTags)
+           |> List.map (\tag ->
+              tagHtml tag permissions currentUserId model.lastClickedTag
+                model.tagForm.active model.deleteTagButton model.editTagButton)
     tagFormView = tagFormHtml model players
     carouselCss =
-      if model.tagForm.active then
-        [TagCarousel, MinimizedCarousel]
-      else
-        [TagCarousel]
-    autoTagsFilterHtml = buildFilterHtml ToggleShowTags autoFilteredLabel [("width", "11vw")] autoFilteredCss
-    authorFilterHtml = buildFilterHtml FilterByAuthor "My Tags" [] authorFilterCss
+      case model.tagForm.active of
+        True -> [TagCarousel, MinimizedCarousel]
+        False -> [TagCarousel]
+    allTagsFilterHtml = buildFilterHtml ShowAllTags "All Tags" allTagsFilterCss
+    autoTagsFilterHtml = buildFilterHtml ShowAutoTags "Auto Tags" autoTagFilterCss
+    myTagFilterHtml = buildFilterHtml ShowMyTags "My Tags" myTagFilterCss
     groupFilterHtml =
       List.map (\perm ->
-        buildFilterHtml (UpdateGroupFilters perm.groupId) "Group Tags" []
-        <| groupFilterCss perm.groupId model.groupFilters) permissions
+        buildFilterHtml (UpdateGroupFilters perm.groupId) "Group Tags" groupTagFilterCss) permissions
     (shareFormButtonLabel, tagsHtml, filterHtml) =
       case model.isShareForm of
        True ->
         ("Done", tagsShare, [])
-       False -> ("Share Tags", tags, [autoTagsFilterHtml, authorFilterHtml] ++ groupFilterHtml)
+       False -> ("Share Tags", tags, [allTagsFilterHtml, autoTagsFilterHtml, myTagFilterHtml] ++ groupFilterHtml)
     carouselControlsHtml =
       case (List.length permissions) == 0 of
         False ->
@@ -88,24 +84,17 @@ view model permissions currentUserId players =
 
 {------------ Carousel Filter functions --------------}
 
-groupFilterCss : GroupId -> List GroupId -> CssClass
-groupFilterCss groupId filters =
-  case List.member groupId filters of
-    True -> SelectedFilter
-    False -> UnselectedFilter
-
 tagInAllGroups : List GroupId -> TagCarousel.Types.Tag -> Bool
 tagInAllGroups groupIds tag =
   not
   <| List.member False
   <| List.map (\id -> List.member id tag.authorizedGroups) groupIds
 
-buildFilterHtml : Msg -> String -> List (String, String) -> CssClass -> Html Msg
-buildFilterHtml action label styles filterCss =
+buildFilterHtml : Msg -> String -> CssClass -> Html Msg
+buildFilterHtml action label  filterCss =
   div
   [class [FilterTagCss, filterCss, CarouselControlCss]
   , onClick action
-  , style styles
   ]
   [ text label
   ]
@@ -117,7 +106,6 @@ tagFormHtml : Model -> List (PlayerId, String, String, String) -> Html Msg
 tagFormHtml model players =
   let
     tagForm = model.tagForm
-    x = Debug.log "" tagForm.selectedIds
     checkBoxes = players |> List.map (\playerData -> playerDataToHtml playerData tagForm.selectedIds)
   in
     if tagForm.active then
@@ -226,19 +214,25 @@ tagHtml tag permissions currentUserId lastClickedTag formActive deleteButton edi
         True -> selectedCss ++ [AltTag]
         False -> selectedCss
     deleteHtml =
-      [ p [class [TagOptionsCss], onClick (DeleteTag tag.id)]
-        [ img
-          [src deleteButton]
-          []
-        ]
-      ]
+      case isAutoTag tag of
+        True -> []
+        False ->
+          [ p [class [TagOptionsCss], onClick (DeleteTag tag.id)]
+            [ img
+              [src deleteButton]
+              []
+            ]
+          ]
     editHtml =
-      [ p [class [TagOptionsCss], onClick (EditTag tag), style [("left", "2vw")]]
-        [ img
-          [src editTagButton]
-          []
-        ]
-      ]
+      case isAutoTag tag of
+        True -> []
+        False ->
+          [ p [class [TagOptionsCss], onClick (EditTag tag), style [("left", "2vw")]]
+            [ img
+              [src editTagButton]
+              []
+            ]
+          ]
   in
     li
       [ class selectedAndAltCss ]
@@ -253,6 +247,9 @@ tagHtml tag permissions currentUserId lastClickedTag formActive deleteButton edi
 
 
 {-------------- Helper functions --------------}
+
+isAutoTag : Tag -> Bool
+isAutoTag tag = String.contains "auto" tag.id
 
 tagHtmlContents : Tag -> List (Html Msg)
 tagHtmlContents tag =

@@ -2,7 +2,7 @@ module TagCarousel.Internal.Update exposing (..)
 
 import GameModel exposing (Player, PlayerId, Timestamp)
 import TagCarousel.Internal.TagUtils exposing (defaultTagForm)
-import TagCarousel.Types exposing (Model, Msg(..), ShareData, Tag, TagForm, TagId)
+import TagCarousel.Types exposing (Model, Msg(..), ShareData, Tag, TagFilter(..), TagForm, TagId)
 import String as String exposing (toInt)
 import TagCarousel.Internal.Delete as Delete
 import TagCarousel.Internal.Save as Save
@@ -97,12 +97,6 @@ update msg model ts =
         newTagForm = { oldTagForm | selectedIds = newIdsList}
       in
         (Nothing, { model | tagForm = newTagForm }, Cmd.none)
-    UpdateShare ->
-      let
-        oldTagForm = model.tagForm
-        newTagForm = { oldTagForm | toShare = not oldTagForm.toShare }
-      in
-      (Nothing, { model | tagForm = newTagForm }, Cmd.none)
     ToggleShare tagId -> (Nothing, model, Share.sendRequest tagId model.host)
     ShareToggled (Ok shareData) ->
      let
@@ -115,28 +109,19 @@ update msg model ts =
         newFormBool = not model.isShareForm
       in
       (Nothing, {model | isShareForm = newFormBool}, Cmd.none)
-    FilterByAuthor ->
-      let
-        newBool = not model.filteredByAuthor
-      in
-      (Nothing, {model | filteredByAuthor = newBool}, Cmd.none)
+    ShowAllTags ->   (Nothing, {model | tagFilter = AllTags}, Cmd.none)
+    ShowMyTags ->  (Nothing, {model | tagFilter = MyTags}, Cmd.none)
     UpdateGroupFilters groupId ->
       let
         newFilters =
           case List.member groupId model.groupFilters of
-            True -> List.filter (\filterId -> groupId /= groupId) model.groupFilters
+            True -> model.groupFilters
             False -> model.groupFilters ++ [groupId]
       in
-        (Nothing, {model | groupFilters = newFilters}, Cmd.none)
-    HighlightPlayers playerIds ->
-      (Nothing, {model | highlightedPlayers = playerIds}, Cmd.none)
-    UnhighlightPlayers ->
-      (Nothing, {model | highlightedPlayers = []}, Cmd.none)
-    ToggleShowTags ->
-      let
-        newToggle = not model.showAutoTags
-      in
-        (Nothing, {model| showAutoTags = newToggle}, Cmd.none)
+        (Nothing, {model | groupFilters = newFilters, tagFilter = GroupTags}, Cmd.none)
+    HighlightPlayers playerIds -> (Nothing, {model | highlightedPlayers = playerIds}, Cmd.none)
+    UnhighlightPlayers -> (Nothing, {model | highlightedPlayers = []}, Cmd.none)
+    ShowAutoTags -> (Nothing, {model| tagFilter = AutoTags}, Cmd.none)
 
 
 filterTags: List Tag -> String -> List Tag
@@ -158,7 +143,6 @@ switchTag form =
     , title = ""
     , description = ""
     , category = "Objective"
-    , toShare = False
     , tagId = Nothing
     }
 

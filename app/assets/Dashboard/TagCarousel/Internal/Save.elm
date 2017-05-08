@@ -29,7 +29,6 @@ createRequest model ts =
           , ("category", string model.category)
           , ("timestamp", int ts)
           , ("relevantPlayerIds", list <| List.map string model.selectedIds)
-          , ("shareWithGroup", bool model.toShare)
           ] ++ tagId)
     body = jsonBody jsonData
   in

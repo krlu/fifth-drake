@@ -9,7 +9,8 @@ type alias TagId = String
 type alias FirstName = String
 type alias LastName = String
 type alias Host = String
-type alias ToShare = Bool
+
+type TagFilter = MyTags | GroupTags | AutoTags | AllTags
 
 type Msg
   = TagClick (Timestamp, TagId)
@@ -24,15 +25,15 @@ type Msg
   | SwitchForm
   | SaveTag
   | TagSaved (Result Http.Error (List Tag))
-  | UpdateShare
   | ToggleShare TagId
   | ShareToggled (Result Http.Error ShareData)
   | ToggleCarouselForm
-  | FilterByAuthor
   | UpdateGroupFilters GroupId
   | HighlightPlayers (List PlayerId)
   | UnhighlightPlayers
-  | ToggleShowTags
+  | ShowAutoTags
+  | ShowAllTags
+  | ShowMyTags
 
 type alias Model =
   { host               : Host
@@ -44,8 +45,7 @@ type alias Model =
   , deleteTagButton    : String
   , editTagButton      : String
   , isShareForm        : Bool
-  , filteredByAuthor   : Bool
-  , showAutoTags       : Bool
+  , tagFilter          : TagFilter
   , groupFilters       : List GroupId
   }
 
@@ -68,7 +68,6 @@ type alias TagForm =
   , gameId      : GameId
   , host        : Host
   , active      : Bool
-  , toShare     : ToShare
   , tagId       : Maybe TagId
   }
 

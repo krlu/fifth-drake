@@ -1,4 +1,5 @@
 module TagCarousel.Css exposing (..)
+import Css.Colors exposing (black)
 import Css.Elements exposing (div, img)
 import CssColors as Color
 import Css exposing (..)
@@ -95,13 +96,16 @@ labelImageSize : Float
 labelImageSize = 20 -- px
 
 carouselControlHeight : Float
-carouselControlHeight = 40 -- px
+carouselControlHeight = 39 -- px
 
 carouselControlWidth : Float
 carouselControlWidth = 100 -- px
 
-shareTagBorderRadius : Float
-shareTagBorderRadius = 10 -- px
+carouselControlBorderRadius : Float
+carouselControlBorderRadius = 10 -- px
+
+carouselControlBorderWidth : Float
+carouselControlBorderWidth = 1 --px
 
 shareTagFontSize: Float
 shareTagFontSize = 18 -- px
@@ -306,12 +310,16 @@ css =
   , class CarouselControlCss
     [ height (carouselControlHeight |> px)
     , width (carouselControlWidth |> px)
+    , property "border-width" ((toString carouselControlBorderWidth ) ++ "px")
+    , borderStyle groove
+    , borderBottomStyle none
+    , borderColor (rgb 0 0 0)
     ]
   , class ShareTagCss
     [ backgroundColor Color.c_share_tag_button
     , lineHeight (carouselControlHeight |> px)
     , textAlign center
-    , borderRadius (shareTagBorderRadius |> px)
+    , borderRadius (carouselControlBorderRadius |> px)
     , fontSize (shareTagFontSize |> px)
     , hover
       [ backgroundColor Color.c_share_tag_button_hover
@@ -321,16 +329,16 @@ css =
   , class FilterTagCss
     [ lineHeight (carouselControlHeight |> px)
     , textAlign center
-    , borderRadius (shareTagBorderRadius |> px)
+    , borderRadius4 (carouselControlBorderRadius |> px) (carouselControlBorderRadius |> px) (0 |> px) (0 |> px)
     , fontSize (shareTagFontSize |> px)
     , hover [ cursor pointer ]
     ]
-    , class SelectedFilter
-        [ backgroundColor Color.c_filter_tag_selected
-        ]
-    , class UnselectedFilter
-      [ backgroundColor Color.c_filter_tag
+  , class SelectedFilter
+      [ backgroundColor Color.c_filter_tag_selected
       ]
+  , class UnselectedFilter
+    [ backgroundColor Color.c_filter_tag
+    ]
   , class CarouselContainer
     [ width (100 |> pct)
     , height (carouselContainerHeight |> px)
