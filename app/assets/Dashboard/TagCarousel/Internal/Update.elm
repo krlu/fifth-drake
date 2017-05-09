@@ -112,13 +112,7 @@ update msg model ts =
     ShowAllTags ->   (Nothing, {model | tagFilter = AllTags}, Cmd.none)
     ShowMyTags ->  (Nothing, {model | tagFilter = MyTags}, Cmd.none)
     UpdateGroupFilters groupId ->
-      let
-        newFilters =
-          case List.member groupId model.groupFilters of
-            True -> model.groupFilters
-            False -> model.groupFilters ++ [groupId]
-      in
-        (Nothing, {model | groupFilters = newFilters, tagFilter = GroupTags}, Cmd.none)
+      (Nothing, {model | tagFilter = GroupTags groupId}, Cmd.none)
     HighlightPlayers playerIds -> (Nothing, {model | highlightedPlayers = playerIds}, Cmd.none)
     UnhighlightPlayers -> (Nothing, {model | highlightedPlayers = []}, Cmd.none)
     ShowAutoTags -> (Nothing, {model| tagFilter = AutoTags}, Cmd.none)

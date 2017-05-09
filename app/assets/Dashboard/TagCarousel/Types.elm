@@ -10,7 +10,7 @@ type alias FirstName = String
 type alias LastName = String
 type alias Host = String
 
-type TagFilter = MyTags | GroupTags | AutoTags | AllTags
+type TagFilter = MyTags | GroupTags GroupId| AutoTags | AllTags
 
 type Msg
   = TagClick (Timestamp, TagId)
@@ -46,7 +46,6 @@ type alias Model =
   , editTagButton      : String
   , isShareForm        : Bool
   , tagFilter          : TagFilter
-  , groupFilters       : List GroupId
   }
 
 type alias Tag =

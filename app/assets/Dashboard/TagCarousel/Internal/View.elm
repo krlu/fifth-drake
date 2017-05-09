@@ -20,6 +20,7 @@ view model permissions currentUserId players =
   let
 
   {------------ Apply filters to list of tags -------------}
+
     (filteredTags, autoTagFilterCss, groupTagFilterCss, myTagFilterCss, allTagsFilterCss) =
       case model.tagFilter of
         AllTags ->
@@ -27,7 +28,7 @@ view model permissions currentUserId players =
         AutoTags ->
           (List.filter (\tag -> isAutoTag tag) model.tags,
             SelectedFilter, UnselectedFilter, UnselectedFilter, UnselectedFilter)
-        GroupTags -> (List.filter (tagInAllGroups model.groupFilters) model.tags,
+        GroupTags groupId -> (List.filter (tagInAllGroups [groupId]) model.tags,
            UnselectedFilter, SelectedFilter, UnselectedFilter, UnselectedFilter)
         MyTags ->
           (List.filter (\tag -> tag.author.id == currentUserId) model.tags,
@@ -35,7 +36,6 @@ view model permissions currentUserId players =
     tagsShare = List.sortBy .timestamp model.tags
                 |> List.filter (\tag -> tag.author.id == currentUserId)
                 |> List.map (\tag -> tagShareModeHtml tag permissions model.tagForm.active)
-
 
     {----------------- Generate HTML/CSS elements for Tag Carousel -------------------}
 
