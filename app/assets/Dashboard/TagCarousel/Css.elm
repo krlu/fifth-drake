@@ -337,7 +337,7 @@ css =
       [ backgroundColor Color.c_filter_tag_selected
       ]
   , class UnselectedFilter
-    [ backgroundColor Color.c_filter_tag
+    [ backgroundColor Color.c_carousel
     ]
   , class CarouselContainer
     [ width (100 |> pct)

@@ -28,7 +28,7 @@ type Msg
   | ToggleShare TagId
   | ShareToggled (Result Http.Error ShareData)
   | ToggleCarouselForm
-  | UpdateGroupFilters GroupId
+  | ShowTagsForGroup GroupId
   | HighlightPlayers (List PlayerId)
   | UnhighlightPlayers
   | ShowAutoTags
