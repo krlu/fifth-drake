@@ -111,7 +111,7 @@ update msg model ts =
       (Nothing, {model | isShareForm = newFormBool}, Cmd.none)
     ShowAllTags ->   (Nothing, {model | tagFilter = AllTags}, Cmd.none)
     ShowMyTags ->  (Nothing, {model | tagFilter = MyTags}, Cmd.none)
-    UpdateGroupFilters groupId ->
+    ShowTagsForGroup groupId ->
       (Nothing, {model | tagFilter = GroupTags groupId}, Cmd.none)
     HighlightPlayers playerIds -> (Nothing, {model | highlightedPlayers = playerIds}, Cmd.none)
     UnhighlightPlayers -> (Nothing, {model | highlightedPlayers = []}, Cmd.none)

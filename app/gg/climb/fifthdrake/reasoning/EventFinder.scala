@@ -33,9 +33,6 @@ object EventFinder{
   val sameLocationThreshold = 575
   val sameTimeThreshold = 10
 
-  def sameEvents(e1: Fight, e2: Fight): Boolean = {
-    distance(e1.location, e2.location) < sameLocationThreshold
-  }
   /**
     * Calculates all events over the course of an entire game
     * Currently each events trigger is rule based
@@ -54,42 +51,64 @@ object EventFinder{
     }
     val events = new ListBuffer[(Time, Set[GameEvent])]()
     val gameLength = metadata.gameDuration.toMillis.toInt
-    val rate = 5*samplingRate.toMillis.toInt
+    val rate = samplingRate.toMillis.toInt
 
     for(t <- 0 until gameLength by rate) {
       val timeStamp = Duration(t, timeUnit)
       val redPlayers = redPlayersOverTime.map{case (p, ps) => p -> ps(timeStamp)}
       val bluePlayers = bluePlayersOverTime.map{case (p, ps) => p -> ps(timeStamp)}
-      val fights = getFights(bluePlayers, redPlayers)
-      val teamfights: Set[Teamfight] = getTeamFights(fights)
-      events += Tuple2(timeStamp, teamfights.asInstanceOf[Set[GameEvent]])
+      val fights = getFights(bluePlayers, redPlayers, timeStamp)
+      val teamfights: Set[Teamfight] = getTeamFights(fights, timeStamp)
+
+      val comparisons = teamfights.flatMap { fight =>
+        val timesWithEvents = events.filter{case (timestamp, event) =>
+          event.nonEmpty
+        }
+        if(timesWithEvents.isEmpty)
+          Set(false)
+        else
+          timesWithEvents.last._2.map { event => fight.equals(event)}
+      }
+      if(!comparisons.contains(true))
+        events += Tuple2(timeStamp, teamfights.asInstanceOf[Set[GameEvent]])
     }
+
     new ListEventStream[Time, Set[GameEvent]](events.toList)
   }
 
+  /**
+    * TODO: Define positions on map that count as "in lane"
+    *
+    * @param fights - generic fights
+    * @return
+    */
   def getGank(fights: List[Option[Fight]]): Option[Set[Gank]]= None
 
-  private def getTeamFights(fights: List[Fight]): Set[Teamfight] = mergeGroups(fights.map(f => f.playersInvolved))
+  private def getTeamFights(fights: List[Fight],
+                            timeStamp : Duration): Set[Teamfight] = mergeGroups(fights.map(f => f.playersInvolved))
       .filter(p => p.size >= teamfightThreshold)
-      .map( p => Teamfight(p, getCentroid(fights.map(f => f.location).toSet))).toSet
+      .map( p => Teamfight(p, getCentroid(fights.map(f => f.location).toSet), timeStamp)).toSet
 
-  private def getSkirmishes(fights: List[Fight]): Set[Skirmish] = mergeGroups(fights.map(f => f.playersInvolved))
+  private def getSkirmishes(fights: List[Fight],
+                            timeStamp : Duration): Set[Skirmish] = mergeGroups(fights.map(f => f.playersInvolved))
       .filter(p => p.size >= skirmishThreshold && p.size < teamfightThreshold)
-      .map( p => Skirmish(p, getCentroid(fights.map(f => f.location).toSet))).toSet
+      .map( p => Skirmish(p, getCentroid(fights.map(f => f.location).toSet), timeStamp)).toSet
 
   private def getFights(bluePlayers: Map[Player, (Option[PlayerState], PlayerState)],
-                              redPlayers:  Map[Player, (Option[PlayerState], PlayerState)]): List[Fight] = {
+                        redPlayers:  Map[Player, (Option[PlayerState], PlayerState)],
+                        timestamp : Duration): List[Fight] = {
     for{
         redPlayer: (Player, (Option[PlayerState], PlayerState)) <- redPlayers
         bluePlayer: (Player, (Option[PlayerState], PlayerState)) <- bluePlayers
-      } yield{getFight(bluePlayer, redPlayer)}
+      } yield{getFight(bluePlayer, redPlayer, timestamp)}
     }.filter(f => f match {
       case None => false
       case _ => true
     }).map(f => f.get).toList
 
   private def getFight(bluePlayer: (Player, (Option[PlayerState], PlayerState)),
-                       redPlayer: (Player, (Option[PlayerState], PlayerState))) : Option[Fight] = {
+                       redPlayer: (Player, (Option[PlayerState], PlayerState)),
+                       timestamp : Duration) : Option[Fight] = {
     for {
       redPrevState <- redPlayer._2._1
       bluePrevState <- bluePlayer._2._1
@@ -101,8 +120,7 @@ object EventFinder{
         (blueHpDelta > hpDeltaThreshold || redHpDelta > hpDeltaThreshold)
     } yield {
         new Fight(Set(bluePlayer._1, redPlayer._1),
-                                    getCentroid(Set(bluePlayer._2._2.location,
-                                                    redPlayer._2._2.location)))
+          getCentroid(Set(bluePlayer._2._2.location, redPlayer._2._2.location)), timestamp)
     }
   }
 
@@ -141,16 +159,12 @@ object EventFinder{
     new LocationData(x,y,1.0)
   }
 
-  private def distance(loc1: LocationData, loc2: LocationData): Double =
-    Math.sqrt(Math.pow(loc1.x - loc2.x, 2) + Math.pow(loc1.y - loc2.y, 2))
-
-
   def generateFightTags(game: Game, gameKey : String, userId : UUID): Seq[Tag] = {
     val events = getAllEventsForGame(game)
     events.getAll.flatMap { case (time, eventSet) =>
       eventSet.flatMap{ (event: GameEvent) =>
         event match {
-          case skirm : Skirmish => None
+          case skirm : Skirmish =>
             val sec = time.toSeconds % 60 match {
               case x if x < 10 => "0" + time.toSeconds % 60
               case _ => "" + time.toSeconds % 60
@@ -241,4 +255,3 @@ object EventFinder{
     }
   }
 }
-

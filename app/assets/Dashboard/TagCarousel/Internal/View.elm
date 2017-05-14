@@ -53,7 +53,7 @@ view model permissions currentUserId players =
     myTagFilterHtml = buildFilterHtml ShowMyTags "My Tags" myTagFilterCss
     groupFilterHtml =
       List.map (\perm ->
-        buildFilterHtml (UpdateGroupFilters perm.groupId) "Group Tags" groupTagFilterCss) permissions
+        buildFilterHtml (ShowTagsForGroup perm.groupId) "Group Tags" groupTagFilterCss) permissions
     (shareFormButtonLabel, tagsHtml, filterHtml) =
       case model.isShareForm of
        True ->
