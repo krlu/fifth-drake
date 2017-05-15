@@ -68,7 +68,7 @@ view model permissions currentUserId players =
            [ text shareFormButtonLabel
            ]
           ] ++ filterHtml)
-        True -> [ div [class [CarouselControlCss]] []]
+        True -> filterHtml
   in
     div [class [CarouselContainer]]
     [ div [class [CarouselControls]]
