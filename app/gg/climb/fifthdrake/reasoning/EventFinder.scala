@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import gg.climb.fifthdrake._
 import gg.climb.fifthdrake.lolobjects.RiotId
-import gg.climb.fifthdrake.lolobjects.esports.{Player, Role}
+import gg.climb.fifthdrake.lolobjects.esports.{Jungle, Player, Role}
 import gg.climb.fifthdrake.lolobjects.game.state._
 import gg.climb.fifthdrake.lolobjects.tagging.{Category, Tag}
 import gg.climb.ramenx.{EventStream, ListEventStream}
@@ -77,26 +77,47 @@ object EventFinder{
   }
 
   /**
-    * TODO: Define positions on map that count as "in lane"
-    *
-    * @param fights - generic fights
+    * Option[PlayerState] is previous state (if there exists a previous state)
+    * @param bluePlayers - blue team
+    * @param redPlayers - red team
+    * @param timestamp - in game time
     * @return
     */
-  def getGank(fights: List[Option[Fight]]): Option[Set[Gank]]= None
+  def getGank(bluePlayers: Map[Player, (Option[PlayerState], PlayerState)],
+              redPlayers:  Map[Player, (Option[PlayerState], PlayerState)],
+              fights: List[Fight], timestamp: Duration): Set[Gank]= {
+    val allPlayers = bluePlayers ++ redPlayers
+    getSkirmishes(fights, timestamp).flatMap { skirm =>
+      val junglers = skirm.playersInvolved.filter(p => p.role.equals(Jungle))
+      val junglerInLane = junglers.exists { jungler =>
+        val states = allPlayers(jungler)
+        states._1 match {
+          case None => false
+          case Some(prevState) => getLocationType(jungler, prevState, states._2).equals(InLane)
+        }
+      }
+      junglerInLane match {
+        case true => Some(Gank(skirm.players, skirm.location, timestamp))
+        case false => None
+      }
+    }
+  }
 
-  private def getTeamFights(fights: List[Fight],
-                            timeStamp : Duration): Set[Teamfight] = mergeGroups(fights.map(f => f.playersInvolved))
+  private def getLocationType(player : Player, prevState : PlayerState, state: PlayerState) : LocationType = ???
+
+  private def getTeamFights(fights: List[Fight], timestamp : Duration): Set[Teamfight]
+    = mergeGroups(fights.map(f => f.playersInvolved))
       .filter(p => p.size >= teamfightThreshold)
-      .map( p => Teamfight(p, getCentroid(fights.map(f => f.location).toSet), timeStamp)).toSet
+      .map( p => Teamfight(p, getCentroid(fights.map(f => f.location).toSet), timestamp)).toSet
 
-  private def getSkirmishes(fights: List[Fight],
-                            timeStamp : Duration): Set[Skirmish] = mergeGroups(fights.map(f => f.playersInvolved))
+  private def getSkirmishes(fights: List[Fight], timestamp : Duration): Set[Skirmish]
+    = mergeGroups(fights.map(f => f.playersInvolved))
       .filter(p => p.size >= skirmishThreshold && p.size < teamfightThreshold)
-      .map( p => Skirmish(p, getCentroid(fights.map(f => f.location).toSet), timeStamp)).toSet
+      .map( p => Skirmish(p, getCentroid(fights.map(f => f.location).toSet), timestamp)).toSet
 
   private def getFights(bluePlayers: Map[Player, (Option[PlayerState], PlayerState)],
                         redPlayers:  Map[Player, (Option[PlayerState], PlayerState)],
-                        timestamp : Duration): List[Fight] = {
+                        timestamp: Duration): List[Fight] = {
     for{
         redPlayer: (Player, (Option[PlayerState], PlayerState)) <- redPlayers
         bluePlayer: (Player, (Option[PlayerState], PlayerState)) <- bluePlayers

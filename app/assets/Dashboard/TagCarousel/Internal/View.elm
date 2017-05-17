@@ -178,12 +178,8 @@ tagShareModeHtml : Tag -> List Permission -> Bool -> Html Msg
 tagShareModeHtml tag permissions formActive =
   let
     tagCss = [TagCss]
-    isShared =
-      List.member True <| List.map (\perm -> List.member perm.groupId tag.authorizedGroups) permissions
-    selectedCss =
-      case isShared of
-        True -> tagCss ++ [HighlightSharedTag]
-        False -> tagCss ++ [UnsharedTag]
+    isShared = List.member True <| List.map (\perm -> List.member perm.groupId tag.authorizedGroups) permissions
+    selectedCss = (if isShared then HighlightSharedTag else UnsharedTag) :: tagCss
     selectedAndAltCss =
       case formActive of
         True -> selectedCss ++ [AltTag]
