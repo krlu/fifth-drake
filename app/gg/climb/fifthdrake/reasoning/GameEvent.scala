@@ -13,17 +13,20 @@ sealed trait GameEvent
 sealed class Fight(val playersInvolved: Set[Player],
                    val location: LocationData,
                    val timestamp: Duration) extends GameEvent {
+
+  private val sameLocationThreshold = 4000
+  private val sameTimeThreshold = 60
   override def equals(that: Any) = that match {
     case that : Fight =>
       sameLocation(this, that) &&
-      Math.abs(this.timestamp.toSeconds - that.timestamp.toSeconds) < 60
+      Math.abs(this.timestamp.toSeconds - that.timestamp.toSeconds) < sameTimeThreshold
     case _ => false
   }
 
   override def hashCode = this.hashCode
 
   def sameLocation(e1: Fight, e2: Fight): Boolean = {
-    distance(e1.location, e2.location) < 4000
+    distance(e1.location, e2.location) < sameLocationThreshold
   }
 }
 
