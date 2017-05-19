@@ -30,9 +30,6 @@ object EventFinder{
   val skirmishThreshold = 3
   val teamfightThreshold = 6
 
-  val sameLocationThreshold = 575
-  val sameTimeThreshold = 10
-
   /**
     * Calculates all events over the course of an entire game
     * Currently each events trigger is rule based
@@ -77,6 +74,9 @@ object EventFinder{
   }
 
   /**
+    * (9000, 13125)
+    * (4500, 13125)
+    * ()
     * Option[PlayerState] is previous state (if there exists a previous state)
     * @param bluePlayers - blue team
     * @param redPlayers - red team
@@ -93,7 +93,7 @@ object EventFinder{
         val states = allPlayers(jungler)
         states._1 match {
           case None => false
-          case Some(prevState) => getLocationType(jungler, prevState, states._2).equals(InLane)
+          case Some(prevState) => LocationReasoning.getLocationType(jungler, prevState, states._2).equals(InLane)
         }
       }
       junglerInLane match {
@@ -102,8 +102,6 @@ object EventFinder{
       }
     }
   }
-
-  private def getLocationType(player : Player, prevState : PlayerState, state: PlayerState) : LocationType = ???
 
   private def getTeamFights(fights: List[Fight], timestamp : Duration): Set[Teamfight]
     = mergeGroups(fights.map(f => f.playersInvolved))
