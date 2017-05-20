@@ -28,12 +28,6 @@ object LocationReasoning {
     (13535.15625, 5097.65625),
     (13535.15625, 9257.8125))
 
-  def createLineChecker(p1: (Double, Double), p2: (Double, Double)): (Double, Double) => Boolean = {
-    val m = (p2._2 - p1._2)/(p1._1 - p1._1)
-    val b = p1._2 - m * p1._1
-    (x : Double, y : Double) => y == m*x + b
-  }
-
   def getLocationType(player : Player, prevState : PlayerState, state: PlayerState) : LocationType = {
     val prevLoc = prevState.location
     if(inBase(prevLoc))
