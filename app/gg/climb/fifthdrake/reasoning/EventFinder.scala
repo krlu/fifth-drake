@@ -56,8 +56,9 @@ object EventFinder{
       val bluePlayers = bluePlayersOverTime.map{case (p, ps) => p -> ps(timeStamp)}
       val fights = getFights(bluePlayers, redPlayers, timeStamp)
       val teamfights: Set[Teamfight] = getTeamFights(fights, timeStamp)
-
-      val comparisons = teamfights.flatMap { fight =>
+      val ganks : Set[Gank] = getGank(bluePlayers, redPlayers, fights, timeStamp)
+      val allFights = teamfights.asInstanceOf[Set[GameEvent]] ++ ganks.asInstanceOf[Set[GameEvent]]
+      val comparisons = allFights.flatMap { fight =>
         val timesWithEvents = events.filter{case (timestamp, event) =>
           event.nonEmpty
         }
@@ -67,7 +68,7 @@ object EventFinder{
           timesWithEvents.last._2.map { event => fight.equals(event)}
       }
       if(!comparisons.contains(true))
-        events += Tuple2(timeStamp, teamfights.asInstanceOf[Set[GameEvent]])
+        events += Tuple2(timeStamp, allFights)
     }
 
     new ListEventStream[Time, Set[GameEvent]](events.toList)
@@ -88,17 +89,21 @@ object EventFinder{
               fights: List[Fight], timestamp: Duration): Set[Gank]= {
     val allPlayers = bluePlayers ++ redPlayers
     getSkirmishes(fights, timestamp).flatMap { skirm =>
-      val junglers = skirm.playersInvolved.filter(p => p.role.equals(Jungle))
-      val junglerInLane = junglers.exists { jungler =>
-        val states = allPlayers(jungler)
-        states._1 match {
-          case None => false
-          case Some(prevState) => LocationReasoning.getLocationType(jungler, prevState, states._2).equals(InLane)
-        }
-      }
-      junglerInLane match {
-        case true => Some(Gank(skirm.players, skirm.location, timestamp))
-        case false => None
+      timestamp.toSeconds > 900 match {
+        case true => None
+        case false =>
+          val junglers = skirm.playersInvolved.filter(p => p.role.equals(Jungle))
+          val junglerInLane = junglers.exists { jungler =>
+            val states = allPlayers(jungler)
+            states._1 match {
+              case None => false
+              case Some(prevState) => LocationReasoning.getLocationType(jungler, prevState, states._2).equals(InLane)
+            }
+          }
+          junglerInLane match {
+            case true => Some(Gank(skirm.players, skirm.location, timestamp))
+            case false => None
+          }
       }
     }
   }
@@ -182,12 +187,12 @@ object EventFinder{
     val events = getAllEventsForGame(game)
     events.getAll.flatMap { case (time, eventSet) =>
       eventSet.flatMap{ (event: GameEvent) =>
+        val sec = time.toSeconds % 60 match {
+          case x if x < 10 => "0" + time.toSeconds % 60
+          case _ => "" + time.toSeconds % 60
+        }
         event match {
           case skirm : Skirmish =>
-            val sec = time.toSeconds % 60 match {
-              case x if x < 10 => "0" + time.toSeconds % 60
-              case _ => "" + time.toSeconds % 60
-            }
             Some(new Tag(
               new RiotId[Game](gameKey),
               s"Skirmish at ${time.toMinutes}:$sec",
@@ -197,13 +202,8 @@ object EventFinder{
               skirm.playersInvolved,
               userId,
               List()
-            )
-            )
+            ))
           case fightEvent: Teamfight =>
-            val sec = time.toSeconds % 60 match {
-              case x if x < 10 => "0" + time.toSeconds % 60
-              case _ => "" + time.toSeconds % 60
-            }
             Some(new Tag(
               new RiotId[Game](gameKey),
               s"Fight at ${time.toMinutes}:$sec",
@@ -213,8 +213,18 @@ object EventFinder{
               fightEvent.playersInvolved,
               userId,
               List()
-            )
-            )
+            ))
+          case gank : Gank =>
+            Some(new Tag(
+              new RiotId[Game](gameKey),
+              s"Gank at ${time.toMinutes}:$sec",
+              s"Gank involving ${gank.playersInvolved.map(_.ign).mkString(", ")}",
+              new Category("TeamFight"),
+              time,
+              gank.playersInvolved,
+              userId,
+              List()
+            ))
           case _ => None
         }
       }

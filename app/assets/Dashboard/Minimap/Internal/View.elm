@@ -121,7 +121,6 @@ killedBuildingToHtml model building objective =
   let
     bottom = minimapHeight * (objective.position.y / model.mapHeight)
     left = minimapWidth * (objective.position.x / model.mapWidth)
-    loc = Debug.log "" (objective.position.x, objective.position.y)
     styles =
       style
       [ ("bottom", (toString bottom) ++ "px")
