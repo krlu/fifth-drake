@@ -6,12 +6,12 @@ import gg.climb.fifthdrake._
 import gg.climb.fifthdrake.lolobjects.esports.Player
 import gg.climb.fifthdrake.lolobjects.game.state._
 
-/**
-  * Created by Kenneth on 5/18/2017.
-  */
-object LocationReasoning {
+object MapRegion{
 
   private val baseRadius = 6546
+  private val bottomLeft = new LocationData(0, 0, 1.0)
+  private val topRight = new LocationData(15000, 15000, 1.0)
+
   private val upperJunglePolygon = List(
     (9462.890625, 13300.78125),
     (4365.234375, 13300.78125),
@@ -38,8 +38,6 @@ object LocationReasoning {
       InLane
   }
   private def inBase(loc : LocationData) = {
-    val bottomLeft = new LocationData(0, 0, 1.0)
-    val topRight = new LocationData(15000, 15000, 1.0)
     distance(bottomLeft, loc) < baseRadius || distance(topRight, loc) < baseRadius
   }
   private def inJunglePolygons(loc : LocationData): Boolean = {

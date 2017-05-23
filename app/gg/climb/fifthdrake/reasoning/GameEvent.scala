@@ -1,6 +1,5 @@
 package gg.climb.fifthdrake.reasoning
 
-import gg.climb.fifthdrake.distance
 import gg.climb.fifthdrake.lolobjects.RiotId
 import gg.climb.fifthdrake.lolobjects.esports.{Player, Role}
 import gg.climb.fifthdrake.lolobjects.game.state.{LocationData, Side}
@@ -8,27 +7,11 @@ import gg.climb.fifthdrake.lolobjects.game.state.{LocationData, Side}
 import scala.concurrent.duration.Duration
 
 
-sealed trait GameEvent
+sealed class GameEvent
 
 sealed class Fight(val playersInvolved: Set[Player],
                    val location: LocationData,
-                   val timestamp: Duration) extends GameEvent {
-
-  private val sameLocationThreshold = 4000
-  private val sameTimeThreshold = 60
-  override def equals(that: Any) = that match {
-    case that : Fight =>
-      sameLocation(this, that) &&
-      Math.abs(this.timestamp.toSeconds - that.timestamp.toSeconds) < sameTimeThreshold
-    case _ => false
-  }
-
-  override def hashCode = this.hashCode
-
-  def sameLocation(e1: Fight, e2: Fight): Boolean = {
-    distance(e1.location, e2.location) < sameLocationThreshold
-  }
-}
+                   val timestamp: Duration) extends GameEvent
 
 case class Gank(players: Set[Player], loc: LocationData, time: Duration) extends Fight(players, loc, time)
 case class Teamfight(players: Set[Player], loc: LocationData, time: Duration) extends Fight(players, loc, time)
