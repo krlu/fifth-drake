@@ -14,7 +14,10 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
 
 /**
-  * For automatically generating tags for events
+  * Calculates all events over the course of an entire game
+  * Currently events are determined via a rule based system
+  * Then Automatically generates tags for each event
+  * Objectives are taken directly from timeline json
   */
 object EventFinder{
 
@@ -29,13 +32,7 @@ object EventFinder{
   private val teamfightThreshold = 6
   private val sameLocationThreshold = 4000
   private val sameTimeThreshold = 60
-  /**
-    * Calculates all events over the course of an entire game
-    * Currently each events trigger is rule based
-    *
-    * @param game - A game
-    * @return ListEventStream[Duration,  Events at timeStamp]
-    */
+
   private def getAllEventsForGame(game: Game): EventStream[Time, Set[GameEvent]] ={
     val (metadata, gameData) = game
 
@@ -62,16 +59,9 @@ object EventFinder{
     new ListEventStream[Time, Set[GameEvent]](events.toList)
   }
 
-  /**
-    * Option[PlayerState] is previous state (if there exists a previous state)
-    * @param bluePlayers - blue team
-    * @param redPlayers - red team
-    * @param timestamp - in game time
-    * @return
-    */
   private def getGank(bluePlayers: Map[Player, (Option[PlayerState], PlayerState)],
               redPlayers:  Map[Player, (Option[PlayerState], PlayerState)],
-              fights: List[Fight], timestamp: Duration): Set[Gank]= {
+              fights: Set[Fight], timestamp: Duration): Set[Gank]= {
     val allPlayers = bluePlayers ++ redPlayers
     getSkirmishes(fights, timestamp).flatMap { skirm =>
       timestamp.toSeconds match {
@@ -92,20 +82,20 @@ object EventFinder{
       }
     }
   }
-  private def getTeamFights(fights: List[Fight], timestamp : Duration): Set[Teamfight]
+  private def getTeamFights(fights: Set[Fight], timestamp : Duration): Set[Teamfight]
     = mergeGroups(fights.map(f => f.playersInvolved))
-      .filter(p => p.size >= teamfightThreshold)
-      .map( p => Teamfight(p, getCentroid(fights.map(f => f.location).toSet), timestamp)).toSet
+      .filter(group => group.size >= teamfightThreshold)
+      .map( group => Teamfight(group, getCentroid(fights.map(f => f.location)), timestamp))
 
-  private def getSkirmishes(fights: List[Fight], timestamp : Duration): Set[Skirmish]
+  private def getSkirmishes(fights: Set[Fight], timestamp : Duration): Set[Skirmish]
     = mergeGroups(fights.map(f => f.playersInvolved))
-      .filter(p => p.size >= skirmishThreshold && p.size < teamfightThreshold)
-      .map( p => Skirmish(p, getCentroid(fights.map(f => f.location).toSet), timestamp)).toSet
+      .filter(group => group.size >= skirmishThreshold && group.size < teamfightThreshold)
+      .map( group => Skirmish(group, getCentroid(fights.map(f => f.location)), timestamp))
 
   private def getUniqueFights(prevEvents : Seq[(Time, Set[GameEvent])],
                               bluePlayers: Map[Player, (Option[PlayerState], PlayerState)],
                               redPlayers:  Map[Player, (Option[PlayerState], PlayerState)],
-                              timestamp: Duration): List[Fight] = {
+                              timestamp: Duration): Set[Fight] = {
     val fights = getFights(bluePlayers, redPlayers, timestamp)
     fights.flatMap{ fight =>
       val timesWithEvents = prevEvents.filter{ case (_, events) =>
@@ -126,7 +116,7 @@ object EventFinder{
   }
   private def getFights(bluePlayers: Map[Player, (Option[PlayerState], PlayerState)],
                         redPlayers:  Map[Player, (Option[PlayerState], PlayerState)],
-                        timestamp: Duration): List[Fight] = {
+                        timestamp: Duration): Set[Fight] = {
     for{
         redPlayer: (Player, (Option[PlayerState], PlayerState)) <- redPlayers
         bluePlayer: (Player, (Option[PlayerState], PlayerState)) <- bluePlayers
@@ -134,7 +124,7 @@ object EventFinder{
     }.filter(f => f match {
       case None => false
       case _ => true
-    }).map(f => f.get).toList
+    }).map(f => f.get).toSet
 
   private def getFight(bluePlayer: (Player, (Option[PlayerState], PlayerState)),
                        redPlayer: (Player, (Option[PlayerState], PlayerState)),
@@ -159,13 +149,7 @@ object EventFinder{
   private def sameLocation(e1: Fight, e2: Fight): Boolean =
     distance(e1.location, e2.location) < sameLocationThreshold
 
-  /**
-    * Merge sets of players with intersections by taking set unions
-    *
-    * @param groups - List of player groups
-    * @return groups
-    */
-  private def mergeGroups(groups: List[Group]): List[Group] = {
+  private def mergeGroups(groups: Set[Group]): Set[Group] = {
     val mergedGroups = new ListBuffer[Group]()
     var numMerges = 0
     for(pair <- groups){
@@ -177,13 +161,12 @@ object EventFinder{
       }
     }
     if(numMerges > 0) {
-      mergeGroups(mergedGroups.toList)
+      mergeGroups(mergedGroups.toSet)
     }
     else {
-      mergedGroups.toList
+      mergedGroups.toSet
     }
   }
-
   private def containsIntersection(sets : List[Group], u : Group): Option[Int] = {
     sets.indices.find(i => u.intersect(sets(i)).nonEmpty)
   }
@@ -198,95 +181,73 @@ object EventFinder{
     val events = getAllEventsForGame(game)
     events.getAll.flatMap { case (time, eventSet) =>
       eventSet.flatMap{ (event: GameEvent) =>
-        val sec = secondsFormat(time.toSeconds)
-        event match {
+        val timeStr = secondsFormat(time)
+        val eventData = event match {
           case skirm : Skirmish =>
-            Some(new Tag(
-              new RiotId[Game](gameKey),
-              s"Skirmish at ${time.toMinutes}:$sec",
-              s"Skirmish involving ${skirm.playersInvolved.map(_.ign).mkString(", ")}",
-              new Category("TeamFight"),
-              time,
-              skirm.playersInvolved,
-              userId,
-              List()
-            ))
+            Some(s"Skirmish at $timeStr", skirm.playersInvolved, new Category("TeamFight"))
           case fightEvent: Teamfight =>
-            Some(new Tag(
-              new RiotId[Game](gameKey),
-              s"Fight at ${time.toMinutes}:$sec",
-              s"TeamFight involving ${fightEvent.playersInvolved.map(_.ign).mkString(", ")}",
-              new Category("TeamFight"),
-              time,
-              fightEvent.playersInvolved,
-              userId,
-              List()
-            ))
+            Some(s"Fight at $timeStr", fightEvent.playersInvolved, new Category("TeamFight"))
           case gank : Gank =>
-            Some(new Tag(
-              new RiotId[Game](gameKey),
-              s"Gank at ${time.toMinutes}:$sec",
-              s"Gank involving ${gank.playersInvolved.map(_.ign).mkString(", ")}",
-              new Category("TeamFight"),
-              time,
-              gank.playersInvolved,
-              userId,
-              List()
-            ))
+            Some(s"Gank at $timeStr", gank.playersInvolved, new Category("TeamFight"))
           case _ => None
+        }
+        eventData match {
+          case Some((title, players, category)) =>
+            Some(new Tag( new RiotId[Game](gameKey),
+              title, s"$title involving ${players.map(_.ign).mkString(", ")}",
+              category, time, players, userId, List()))
+          case None => None
         }
       }
     }
   }
 
-  def generateObjectivesTags(gameData: Game,
-                             timelineEvents: Seq[GameEvent],
+  def generateObjectivesTags(gameData: Game, timelineEvents: Seq[GameEvent],
                              gameKey : String, userId : UUID): Seq[Tag] = {
     Logger.info(s"Searching for Objectives events")
-    val players = gameData._2.teams(Blue).playerStates ++ gameData._2.teams(Red).playerStates
-    val participants = players.map{ case (player, states) =>
+    val allPlayers = gameData._2.teams(Blue).playerStates ++ gameData._2.teams(Red).playerStates
+    val participants = allPlayers.map{ case (player, states) =>
       new RiotId[(Side, Role)](states.apply(Duration.Zero).participantId.toString) -> player
     }
     timelineEvents.flatMap { event =>
-      event match {
+      val eventData = event match {
         case drag: DragonKill =>
-          val sec = secondsFormat(drag.timestamp.toSeconds)
-          Some(new Tag(
-            new RiotId[Game](gameKey),
-            s"${drag.dragonType.name} killed at ${drag.timestamp.toMinutes}:$sec",
+          val timeStr = secondsFormat(drag.timestamp)
+          Some(s"${drag.dragonType.name} killed at $timeStr",
             s"${drag.dragonType.name} taken by ${participants(drag.killer).ign}",
             new Category("Objective"),
             drag.timestamp,
-            Set(participants(drag.killer)),
-            userId,
-            List()
-          ))
+            Set(participants(drag.killer)))
         case building: BuildingKill =>
-          val sec = secondsFormat(building.timestamp.toSeconds)
+          val timeStr = secondsFormat(building.timestamp)
           val side = building.killer.id match {
             case "100" => Blue
             case "200" => Red
           }
           val description = building.buildingType match {
-            case nex: NexusTurret => "Side nexus turret destroyed"
+            case nex: NexusTurret => s"${side.name} nexus turret destroyed"
             case _ => s"${side.name} ${building.lane.name} ${building.buildingType.name} destroyed"
           }
-          Some(new Tag(
-            new RiotId[Game](gameKey),
-            s"${building.buildingType.name} killed at ${building.timestamp.toMinutes}:$sec",
+          Some(s"${building.buildingType.name} destroyed at $timeStr",
             description,
             new Category("Objective"),
             building.timestamp,
-            Set(),
-            userId,
-            List()
-          ))
+            Set.empty[Player])
         case _ => None
+      }
+      eventData match {
+        case Some((title, desc, category, time, playersInvolved)) =>
+          Some(new Tag(new RiotId[Game](gameKey), title, desc, category, time, playersInvolved, userId, List()))
+        case None => None
       }
     }
   }
-  private def secondsFormat(sec : Long): String = sec % 60 match {
-    case x if x < 10 => "0" + sec % 60
-    case _ => "" + sec % 60
+  private def secondsFormat(time : Time): String = {
+    val sec = time.toSeconds
+    val secStr = sec % 60 match {
+      case x if x < 10 => "0" + sec % 60
+      case _ => sec % 60
+    }
+    s"${time.toMinutes}:$secStr"
   }
 }
