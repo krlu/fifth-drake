@@ -32,6 +32,7 @@ object EventFinder{
   private val teamfightThreshold = 6
   private val sameLocationThreshold = 4000
   private val sameTimeThreshold = 60
+  private val gankTimeThreshold = 900
 
   private def getAllEventsForGame(game: Game): EventStream[Time, Set[GameEvent]] ={
     val (metadata, gameData) = game
@@ -42,7 +43,7 @@ object EventFinder{
     val bluePlayersOverTime = gameData.teams(Blue).playerStates.map {
       case(p , ps) => p -> ps.withPrev(windowSize * samplingRate, _-_)
     }
-    val events = new ListBuffer[(Time, Set[GameEvent])]()
+    var events = List.empty[(Time, Set[GameEvent])]
     val gameLength = metadata.gameDuration.toMillis.toInt
     val rate = samplingRate.toMillis.toInt
 
@@ -54,9 +55,9 @@ object EventFinder{
       val teamfights: Set[Teamfight] = getTeamFights(fights, timeStamp)
       val ganks : Set[Gank] = getGank(bluePlayers, redPlayers, fights, timeStamp)
       val allFights = teamfights.asInstanceOf[Set[GameEvent]] ++ ganks.asInstanceOf[Set[GameEvent]]
-      events += Tuple2(timeStamp, allFights)
+      events = events :+ Tuple2(timeStamp, allFights)
     }
-    new ListEventStream[Time, Set[GameEvent]](events.toList)
+    new ListEventStream[Time, Set[GameEvent]](events)
   }
 
   private def getGank(bluePlayers: Map[Player, (Option[PlayerState], PlayerState)],
@@ -65,7 +66,7 @@ object EventFinder{
     val allPlayers = bluePlayers ++ redPlayers
     getSkirmishes(fights, timestamp).flatMap { skirm =>
       timestamp.toSeconds match {
-        case x if x > 900 => None
+        case x if x > gankTimeThreshold => None
         case _ =>
           val junglers = skirm.playersInvolved.filter(p => p.role.equals(Jungle))
           val junglerInLane = junglers.exists { jungler =>
@@ -121,10 +122,7 @@ object EventFinder{
         redPlayer: (Player, (Option[PlayerState], PlayerState)) <- redPlayers
         bluePlayer: (Player, (Option[PlayerState], PlayerState)) <- bluePlayers
       } yield{getFight(bluePlayer, redPlayer, timestamp)}
-    }.filter(f => f match {
-      case None => false
-      case _ => true
-    }).map(f => f.get).toSet
+    }.flatMap(f => f).toSet
 
   private def getFight(bluePlayer: (Player, (Option[PlayerState], PlayerState)),
                        redPlayer: (Player, (Option[PlayerState], PlayerState)),
