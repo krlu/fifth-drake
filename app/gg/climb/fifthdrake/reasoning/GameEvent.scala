@@ -7,23 +7,20 @@ import gg.climb.fifthdrake.lolobjects.game.state.{LocationData, Side}
 import scala.concurrent.duration.Duration
 
 
-sealed trait GameEvent {
-  val location: LocationData
-  val timestamp: Duration
-}
+sealed abstract class GameEvent(val location: LocationData, val timestamp: Duration)
 
 sealed class Fight(val playersInvolved: Set[Player],
-                   val location: LocationData,
-                   val timestamp: Duration) extends GameEvent {
+                   override val location: LocationData,
+                   override val timestamp: Duration) extends GameEvent(location, timestamp){
 }
 
 case class Gank(players: Set[Player], loc: LocationData, time: Duration) extends Fight(players, loc, time)
 case class Teamfight(players: Set[Player], loc: LocationData, time: Duration) extends Fight(players, loc, time)
 case class Skirmish(players: Set[Player], loc: LocationData, time: Duration) extends Fight(players, loc, time)
 
-class Objective(val location: LocationData,
-                val timestamp: Duration,
-                val killerId : RiotId[(Side, Role)]) extends GameEvent {
+class Objective(override val location: LocationData,
+                override val timestamp: Duration,
+                val killerId : RiotId[(Side, Role)]) extends GameEvent(location, timestamp) {
 }
 
 case class DragonKill(loc: LocationData, dragonType: Dragon, time: Duration,
