@@ -11,8 +11,7 @@ sealed abstract class GameEvent(val location: LocationData, val timestamp: Durat
 
 sealed class Fight(val playersInvolved: Set[Player],
                    override val location: LocationData,
-                   override val timestamp: Duration) extends GameEvent(location, timestamp){
-}
+                   override val timestamp: Duration) extends GameEvent(location, timestamp)
 
 case class Gank(players: Set[Player], loc: LocationData, time: Duration) extends Fight(players, loc, time)
 case class Teamfight(players: Set[Player], loc: LocationData, time: Duration) extends Fight(players, loc, time)
@@ -20,8 +19,7 @@ case class Skirmish(players: Set[Player], loc: LocationData, time: Duration) ext
 
 class Objective(override val location: LocationData,
                 override val timestamp: Duration,
-                val killerId : RiotId[(Side, Role)]) extends GameEvent(location, timestamp) {
-}
+                val killerId : RiotId[(Side, Role)]) extends GameEvent(location, timestamp)
 
 case class DragonKill(loc: LocationData, dragonType: Dragon, time: Duration,
                       killer : RiotId[(Side, Role)]) extends Objective(loc, time, killer)
