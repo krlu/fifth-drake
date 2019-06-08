@@ -11,14 +11,14 @@ module.exports = {
 			path.join(srcPath, "dashboard.js")
 		],
 		navbar: [
-		  path.join(srcPath, "navbar.js")
+			path.join(srcPath, "navbar.js")
 		],
-    homepage: [
-      path.join(srcPath, "homepage.js")
-    ],
-    settings: [
-      path.join(srcPath, "settings.js")
-    ]
+		homepage: [
+			path.join(srcPath, "homepage.js")
+		],
+		settings: [
+			path.join(srcPath, "settings.js")
+		]
 	},
 
 	output: {
@@ -79,14 +79,14 @@ module.exports = {
 	},
 
 	plugins: [
-	    new CopyWebpackPlugin([
-            { from: "public/champion/*", to: buildPath }
-        ])
-    ],
+		new CopyWebpackPlugin([
+			{ from: "public/champion/*", to: buildPath }
+		])
+	],
 
 	devServer: {
 		port: 3000,
-        outputPath: buildPath,
+		outputPath: buildPath,
 		contentBase: path.join(__dirname, "public/"),
 		historyApiFallback: {
 			index: 'index.html',
@@ -98,7 +98,7 @@ module.exports = {
 			{
 				context: ['/game/**/data', '/game/**/tags'],
 				target: 'http://localhost:4000'
-            }
+			}
 		]
 	}
 };
